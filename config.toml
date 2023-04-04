@@ -59,3 +59,7 @@ autoHeadingIDType = "blackfriday"
 
 [markup.tableOfContents]
 startLevel = 1
+
+[outputs]
+  home = ["Atom", "HTML","JSON"] # <domain>/atom.xml
+  page = ["HTML"]
