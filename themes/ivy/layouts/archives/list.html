@@ -1,4 +1,4 @@
-{{ define "main" }}
+{{ partial "header.html" . }}
   <div class="posts archive">
     {{ partial "breadcrumb.html" . }}
     
@@ -28,4 +28,5 @@
     </div>
     {{- end }}
   </div><!--posts-group end-->
-{{ end }}
+
+{{ partial "footer-cus.html" . }}
