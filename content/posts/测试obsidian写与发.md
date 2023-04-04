@@ -1,6 +1,6 @@
 ---
 title: 测试obsidian写与发
-tags: [Tips]
+tags: [Tips,log,2023]
 date: 2023-04-04 23:05:13
 author: Xin
 draft: false
