@@ -1,7 +1,7 @@
 baseURL = "https://elizen.me/"
 languageCode = "en-us"
 title = "Counting Stars💫"
-theme = "hello-friend"
+theme = "ivy"
 disqusShortname = "cos0"
 hasCJKLanguage = true
 enableEmoji = true
