@@ -24,4 +24,4 @@ hideInList: true
 ### 博客程序
 
 - hugo：[https://gohugo.io](https://gohugo.io)
-- 主题：[木木](https://immmmm.com) 的 [hello-friend](https://github.com/lmm214/immmmm/tree/master/themes/hello-friend)
+- 主题：From [Elizen](https://elizen.me/)
