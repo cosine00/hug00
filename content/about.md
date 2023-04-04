@@ -21,7 +21,3 @@ hideInList: true
 
 {{< album >}}
 
-### 博客程序
-
-- hugo：[https://gohugo.io](https://gohugo.io)
-- 主题：From [Elizen](https://elizen.me/)
