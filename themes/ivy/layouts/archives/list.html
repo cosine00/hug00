@@ -1,9 +1,5 @@
 {{ partial "header.html" . }}
-  <div class="posts archive">
-    {{ partial "breadcrumb.html" . }}
-    
-    <h1 class="post-title">{{.Title}}</h1>
-    共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇日志
+      共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇日志
 
     <div id="all-tags">
       {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
