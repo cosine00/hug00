@@ -1,6 +1,4 @@
 ---
-title: "Search Here"
-sitemap:
-  priority : 0.1
+title: "搜索"
 layout: "search"
 ---
