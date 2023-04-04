@@ -30,7 +30,7 @@ footnotereturnlinkcontents = "↩"
   url="/about/"
   weight="4"
    [[menu.main]]
-  name="测试"
+  name="存档"
   url="/archives/"
   weight="5"
   
