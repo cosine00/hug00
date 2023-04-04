@@ -35,8 +35,8 @@ footnotereturnlinkcontents = "↩"
 
 [params]
   # description abou this website
-  description = "莫思身外无穷事<br>且尽生前有限杯"
-  footer = "&copy; [Elizen](https://elizen.me) | since 2023"
+  description = "莫思身外无穷事         且尽生前有限杯"
+  footer = "&copy; [Counting Stars💫](https://www.huxin1216.xyz/) | since 2023"
   highlightjsCDN = "//cdn.bootcss.com"
   highlightjsLang = ["r", "yaml", "tex"]
   highlightjsTheme = "github"
