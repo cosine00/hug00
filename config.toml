@@ -8,8 +8,8 @@ enableEmoji = true
 footnotereturnlinkcontents = "↩"
 
 [permalinks]
-  posts = "/posts/:year/:month/:slug/"
-  newsletter = "/newsletter/:year/:month/:slug/"
+  posts = "/posts/:filename/"
+  
 
 [menu]
   [[menu.main]]
