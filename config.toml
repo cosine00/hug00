@@ -25,8 +25,8 @@ footnotereturnlinkcontents = "↩"
   url="/about/"
   weight="3"
   [[menu.main]]
-  name="搜索"
-  url="/search/"
+  name="存档"
+  url="/archives/"
   weight="4"
   
 
