@@ -1,0 +1,62 @@
+baseURL = "https://elizen.me/"
+languageCode = "en-us"
+title = "Elizen"
+theme = "ivy"
+disqusShortname = "elizen"
+hasCJKLanguage = true
+enableEmoji = true
+footnotereturnlinkcontents = "↩"
+
+[permalinks]
+  posts = "/posts/:year/:month/:slug/"
+  newsletter = "/newsletter/:year/:month/:slug/"
+
+[menu]
+  [[menu.main]]
+  name="电影"
+  url="/movies/"
+  weight="1"
+  [[menu.main]]
+  name="阅读"
+  url="/books/"
+  weight="2"
+  [[menu.main]]
+  name="归档"
+  url="/posts/"
+  weight="3"
+  [[menu.main]]
+  name="通讯"
+  url="/newsletter/"
+  weight="4"
+  [[menu.main]]
+  name="孩童"
+  url="/kids/"
+  weight="5"
+
+[params]
+  # description abou this website
+  description = "There is only one thing in the world worse than being talked about, and that is not being talked about."
+  footer = "&copy; [Elizen](https://elizen.me) | since 2009"
+  highlightjsCDN = "//cdn.bootcss.com"
+  highlightjsLang = ["r", "yaml", "tex"]
+  highlightjsTheme = "github"
+  highlightjsVersion = "9.12.0"
+
+[params.twikoo]
+	enable = true
+
+[blackfriday]
+extensionsmask = [ "noIntraEmphasis" ]
+fractions = false
+
+[markup.highlight]
+codeFences = false
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.goldmark.parser]
+autoHeadingIDType = "blackfriday"
+
+[markup.tableOfContents]
+startLevel = 1
