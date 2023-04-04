@@ -1,5 +1,4 @@
 ---
-title: "归档"
+title: "归档文章"
 type: "archives"
-slug: "/archive"
 ---
