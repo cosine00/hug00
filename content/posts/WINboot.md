@@ -1,5 +1,6 @@
 ---
 title: "WIN平台开机自启动设置"
+author: Xin
 date: 2023-03-24 21:00:00
 tags: [Log]
 ---

@@ -1,5 +1,6 @@
 ---
 title: "Hello,Hugo~"
+author: Xin
 date: 2023-01-01 21:00:00
 tags: [Log]
 ---
