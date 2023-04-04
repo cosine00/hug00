@@ -18,7 +18,7 @@ footnotereturnlinkcontents = "↩"
   weight="1"
   [[menu.main]]
   name="归档"
-  url="/posts/"
+  url="/archives/"
   weight="2"
   [[menu.main]]
   name="关于"
