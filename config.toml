@@ -61,5 +61,5 @@ autoHeadingIDType = "blackfriday"
 startLevel = 1
 
 [outputs]
-  home = ["Atom", "HTML","JSON"] # <domain>/atom.xml
+  home = ["HTML","JSON"] # <domain>/atom.xml
   page = ["HTML"]
