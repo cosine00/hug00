@@ -1,4 +1,4 @@
 ---
-title: "狂人日记"
+title: "哔哔"
 layout: "bb"
 ---
