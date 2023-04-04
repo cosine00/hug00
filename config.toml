@@ -21,7 +21,7 @@ footnotereturnlinkcontents = "↩"
   url="/posts/"
   weight="2"
   [[menu.main]]
-  name="搜索"
+  name="标签"
   url="/tags/"
   weight="3"  
   [[menu.main]]
