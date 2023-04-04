@@ -1,5 +1,6 @@
-baseURL = "https://elizen.me/"
+baseURL = "https://www.huxin1216.xyz/"
 languageCode = "en-us"
+timeZone = 'Asia/Shanghai'
 title = "Counting Stars💫"
 theme = "ivy"
 disqusShortname = "cos0"
