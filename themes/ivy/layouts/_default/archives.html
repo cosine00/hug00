@@ -70,10 +70,7 @@
       <div class="archive-entry">
         <li class="archive-entry-title">
           <a href="{{.Permalink}}">{{.Title}}<span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span></a>
-          {{- .Title | markdownify }}
-          {{- if .Draft }}<sup><span class="entry-isdraft">&nbsp;&nbsp;[draft]</span></sup>{{- end }}
-        </li>             
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
+         </li>        
       </div>
       {{- end }}
       {{- end }}
