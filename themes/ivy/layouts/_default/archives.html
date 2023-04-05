@@ -63,10 +63,7 @@
         <li class="archive-entry-title">
           {{- .Title | markdownify }}
           {{- if .Draft }}<sup><span class="entry-isdraft">&nbsp;&nbsp;[draft]</span></sup>{{- end }}
-        </li>
-        <div class="archive-meta">
-          {{- partial "post_meta.html" . -}}
-        </div>       
+        </li>             
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </div>
       {{- end }}
