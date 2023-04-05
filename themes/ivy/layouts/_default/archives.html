@@ -4,8 +4,9 @@
 共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇日志
 
 <div id="all-tags">
-  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}{{ printf "%s " $name }}
+  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
   <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>
+  {{ printf "%s " $name }}
   {{- end -}}
 </div>
 
