@@ -12,16 +12,6 @@ footnotereturnlinkcontents = "↩"
   posts = "/posts/:slug/"
   
 
- # for search
-    # https://fusejs.io/api/options.html
-    fuseOpts:
-        isCaseSensitive: false
-        shouldSort: true
-        location: 0
-        distance: 1000
-        threshold: 0.4
-        minMatchCharLength: 0
-        keys: ["title", "permalink", "summary", "content"]
 
 [menu]
   [[menu.main]]
@@ -54,6 +44,17 @@ footnotereturnlinkcontents = "↩"
   highlightjsLang = ["r", "yaml", "tex"]
   highlightjsTheme = "github"
   highlightjsVersion = "9.12.0"
+
+  # for search
+  # https://fusejs.io/api/options.html
+    fuseOpts:
+        isCaseSensitive: false
+        shouldSort: true
+        location: 0
+        distance: 1000
+        threshold: 0.4
+        minMatchCharLength: 0
+        keys: ["title", "permalink", "summary", "content"]
   
 
 [params.twikoo]
