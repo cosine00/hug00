@@ -6,6 +6,11 @@
 {{ (index (split .Content "<!--# ON_HOLD -->") 0) | safeHTML }}
 {{ else }}
 {{ .Content }}
+{{ if .Params.tags }}
+<span class="post-tags">
+  {{ range .Params.tags }}
+    #<a href="{{ (urlize (printf "tags/%s" . )) | absURL }}/">{{ . }}</a>&nbsp;
+</span>
 {{ end }}
 
 {{ partial "footer.html" . }}
