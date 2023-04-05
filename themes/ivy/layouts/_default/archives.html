@@ -69,7 +69,7 @@
       {{- if eq .Kind "page" }}
       <div class="archive-entry">
         <li class="archive-entry-title">
-          <a href="{{.Permalink}}"><span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;{{.Title}}</a>
+          <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;<a href="{{.Permalink}}">{{.Title}}</a>
          </li>        
       </div>
       {{- end }}
