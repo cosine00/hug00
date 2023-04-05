@@ -1,6 +1,14 @@
 {{ partial "header.html" . }}
 
 
+共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇日志
+
+<div id="all-tags">
+  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
+  <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>
+  {{- end -}}
+</div>
+
 {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
 
 {{- if .Site.Params.ShowAllPagesInArchive }}
@@ -61,6 +69,7 @@
       {{- if eq .Kind "page" }}
       <div class="archive-entry">
         <li class="archive-entry-title">
+          <a href="{{.Permalink}}">{{.Title}}<span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span></a>
           {{- .Title | markdownify }}
           {{- if .Draft }}<sup><span class="entry-isdraft">&nbsp;&nbsp;[draft]</span></sup>{{- end }}
         </li>             
