@@ -1,29 +1,48 @@
 {{ partial "header.html" . }}
-
-<div class="posts searchPage">
-
-  <div class="search-box">
-    <input type="text" id="searchBoxInput" placeholder="搜点啥……">
-    <button id="searchBoxButton">
-    <svg t="1556783211810" class="search-box-icon" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
-      xmlns="http://www.w3.org/2000/svg" p-id="2078" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <defs>
-        <style type="text/css"></style>
-      </defs>
-      <path
-        d="M981.39652054 920.86314525L704.56522859 644.0318533a366.65501012 366.65501012 0 1 0-61.73503038 65.64040943L917.55859375 984.40065827z m-856.17925347-493.12920861a284.19142939 284.19142939 0 1 1 283.89101562 284.19142939A284.49184317 284.49184317 0 0 1 125.06706019 427.73393664z"
-        fill="" p-id="2079" data-spm-anchor-id="a313x.7781069.0.i2"></path>
-    </svg>
-    </button>
+<header class="page-header">
+  <h1>{{- (printf "%s&nbsp;" .Title ) | htmlUnescape -}}
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+  </h1>
+  {{- if .Description }}
+  <div class="post-description">
+      {{ .Description }}
   </div>
+  {{- end }}
+  {{- if not (.Param "hideMeta") }}
+  <div class="post-meta">
+      
+  </div>
+  {{- end }}
+</header>
 
-  <span id="searchCount"></span>
-
-  <div id="searchResult" class=""></div>
-  
+<div id="searchbox">
+  <input id="searchInput" autofocus placeholder="{{ .Params.placeholder | default (printf "%s ↵" .Title) }}"
+      aria-label="search" type="search" autocomplete="off">
+  <ul id="searchResults" aria-label="search results"></ul>
 </div>
 <script type="text/javascript" src='https://fastly.jsdelivr.net/npm/fuse-js-latest@3.1.0/dist/fuse.min.js'></script>
-<script type="text/javascript" src='/search.js'></script>
+<script type="text/javascript" src='/fastsearch.js'></script>
+<script type="text/javascript" src='/fuse.basic.min.js'></script>
 
+{{- if not (.Param "hideTags") }}
+{{- $taxonomies := .Site.Taxonomies.tags }}
+{{- if gt (len $taxonomies) 0 }}
+<h2 style="margin-top: 32px">{{- (.Param "tagsTitle") | default "标签" }}</h2>
+<ul class="terms-tags">
+  {{- range $name, $value := $taxonomies }}
+  {{- $count := .Count }}
+  {{- with site.GetPage (printf "/tags/%s" $name) }}
+  <li>
+      <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
+  </li>
+  {{- end }}
+  {{- end }}
+</ul>
+{{- end }}
+{{- end }}
 
 {{ partial "footer-cus.html" . }}
