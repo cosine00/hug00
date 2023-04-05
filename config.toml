@@ -12,6 +12,17 @@ footnotereturnlinkcontents = "↩"
   posts = "/posts/:slug/"
   
 
+ # for search
+    # https://fusejs.io/api/options.html
+    fuseOpts:
+        isCaseSensitive: false
+        shouldSort: true
+        location: 0
+        distance: 1000
+        threshold: 0.4
+        minMatchCharLength: 0
+        keys: ["title", "permalink", "summary", "content"]
+
 [menu]
   [[menu.main]]
   name="哔哔"
