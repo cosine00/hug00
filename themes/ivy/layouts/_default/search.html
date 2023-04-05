@@ -26,7 +26,11 @@
 
   <div id="searchResult" class=""></div>
   
-
+</div>
+<script type="text/javascript" src='https://fastly.jsdelivr.net/npm/fuse-js-latest@3.1.0/dist/fuse.min.js'></script>
+<script type="text/javascript" src='/fastsearch.js'></script>
+<script type="text/javascript" src='/search.js'></script>
+<script type="text/javascript" src='/fuse.basic.min.js'></script>
 
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
