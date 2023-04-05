@@ -24,6 +24,8 @@
       aria-label="search" type="search" autocomplete="off">
   <ul id="searchResults" aria-label="search results"></ul>
 </div>
+<script type="text/javascript" src='https://fastly.jsdelivr.net/npm/fuse-js-latest@3.1.0/dist/fuse.min.js'></script>
+<script type="text/javascript" src='/search.js'></script>
 
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
@@ -39,6 +41,7 @@
   {{- end }}
   {{- end }}
 </ul>
+
 {{- end }}
 {{- end }}
 
