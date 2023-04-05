@@ -33,7 +33,10 @@ footnotereturnlinkcontents = "↩"
   name="搜索"
   url="/search/"
   weight="5"
- 
+ [[menu.main]]
+  name="存档"
+  url="/archives/"
+  weight="6"
   
   
 
