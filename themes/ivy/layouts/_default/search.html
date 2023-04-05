@@ -26,11 +26,20 @@
 
   <div id="searchResult" class=""></div>
   
-</div>
-<script type="text/javascript" src='https://fastly.jsdelivr.net/npm/fuse-js-latest@3.1.0/dist/fuse.min.js'></script>
-<script type="text/javascript" src='/fastsearch.js'></script>
-<script type="text/javascript" src='/search.js'></script>
-<script type="text/javascript" src='/fuse.basic.min.js'></script>
+  {{- /* Search */}}
+  {{- if (eq .Layout `search`) -}}
+  <link crossorigin="anonymous" rel="preload" as="fetch" href="../index.json">
+  {{- $fastsearch := resources.Get "js/fastsearch.js" | js.Build (dict "params" (dict "fuseOpts" site.Params.fuseOpts)) | resources.Minify }}
+  {{- $fusejs := resources.Get "js/fuse.basic.min.js" }}
+  {{- $license_js := resources.Get "js/license.js" }}
+  {{- if not site.Params.assets.disableFingerprinting }}
+  {{- $search := (slice $fusejs $license_js $fastsearch ) | resources.Concat "assets/js/search.js" | fingerprint }}
+  <script defer crossorigin="anonymous" src="{{ $search.RelPermalink }}" integrity="{{ $search.Data.Integrity }}"></script>
+  {{- else }}
+  {{- $search := (slice $fusejs $fastsearch ) | resources.Concat "assets/js/search.js" }}
+  <script defer crossorigin="anonymous" src="{{ $search.RelPermalink }}"></script>
+  {{- end }}
+  {{- end -}}
 
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
