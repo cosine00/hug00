@@ -6,6 +6,6 @@
 {{ (index (split .Content "<!--# ON_HOLD -->") 0) | safeHTML }}
 {{ else }}
 {{ .Content }}
-{{ if .Params.tags }}
 {{ end }}
+
 {{ partial "footer.html" . }}
