@@ -5,7 +5,7 @@
 
 <div id="all-tags">
   {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
-  <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>&&nbsp;&nbsp;&nbsp;
+  <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>&nbsp;&nbsp;&nbsp;
   {{- end -}}
 </div>
 
