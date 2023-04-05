@@ -43,8 +43,7 @@ footnotereturnlinkcontents = "↩"
   highlightjsLang = ["r", "yaml", "tex"]
   highlightjsTheme = "github"
   highlightjsVersion = "9.12.0"
-  # 是否开启本地搜索
-  fastSearch = true
+  
 
 [params.twikoo]
 	enable = true
