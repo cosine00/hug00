@@ -1,6 +1,6 @@
 #searchbox input {
     padding: 4px 10px;
-    width: 100%;
+    width: 300px;
     color: var(--primary);
     font-weight: bold;
     border: 2px solid var(--tertiary);
