@@ -1,4 +1,4 @@
 ---
-title: "归档"
+title: "Posts"
 type: "archives"
 ---
