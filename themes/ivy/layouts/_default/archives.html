@@ -69,10 +69,8 @@
       {{- if eq .Kind "page" }}
       <div class="archive-entry">
         <li class="archive-entry-title">
-          <a href="{{.Permalink}}">{{.Title}}<span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span></a>
-         </li>  
-      //相对时间
-      window.Lately && Lately.init({ target: '.post-date' });      
+          <a href="{{.Permalink}}"><span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;{{.Title}}</a>
+         </li>        
       </div>
       {{- end }}
       {{- end }}
