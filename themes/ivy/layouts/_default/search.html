@@ -28,7 +28,7 @@
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
 {{- if gt (len $taxonomies) 0 }}
-<h2 style="margin-top: 32px">{{- (.Param "tagsTitle") | default "tags" }}</h2>
+<h2 style="margin-top: 32px">{{- (.Param "tagsTitle") | default "标签" }}</h2>
 <ul class="terms-tags">
   {{- range $name, $value := $taxonomies }}
   {{- $count := .Count }}
