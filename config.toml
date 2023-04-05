@@ -19,24 +19,17 @@ footnotereturnlinkcontents = "↩"
   weight="1"
   [[menu.main]]
   name="归档"
-  url="/posts/"
+  url="/archives/"
   weight="2"
   [[menu.main]]
-  name="标签"
-  url="/tags/"
-  weight="3"  
+  [[menu.main]]
+  name="搜索"
+  url="/search/" 
   [[menu.main]]
   name="关于"
   url="/about/"
   weight="4"
-  [[menu.main]]
-  name="搜索"
-  url="/search/"
-  weight="5"
- [[menu.main]]
-  name="存档"
-  url="/archives/"
-  weight="6"
+  
   
   
 
