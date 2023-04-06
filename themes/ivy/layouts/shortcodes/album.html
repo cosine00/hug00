@@ -32,10 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
               });
             }
             //解析内置资源文件
-           if(data[i].resourceList && data[i].resourceList.length > 0){
+            if(data[i].resourceList && data[i].resourceList.length > 0){
               var resourceList = data[i].resourceList;
               for(var j=0;j < resourceList.length;j++){
-                var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleString( , {
+                var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleString(undefined, {
   year: 'numeric', // 显示年份，例如：'2023'
   month: '2-digit', // 显示月份，例如：'04'
   day: '2-digit', // 显示日期，例如：'06'
