@@ -37,7 +37,7 @@ footnotereturnlinkcontents = "↩"
   
 
 [params]
-  # description abou this website
+  # description about this website
   description = "🌩️🌩️🌩️莫思身外无穷事，且尽生前有限杯。"
   footer = "&copy; [Counting Stars💫](https://www.huxin1216.xyz/) | since 2023"
   highlightjsCDN = "//cdn.bootcss.com"
@@ -64,6 +64,8 @@ unsafe = true
 autoHeadingIDType = "blackfriday"
 
 [markup.tableOfContents]
+endLevel = 3
+ordered = false
 startLevel = 1
 
 [outputs]
