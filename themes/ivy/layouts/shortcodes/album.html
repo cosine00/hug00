@@ -32,43 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
               });
             }
             //解析内置资源文件
-            // 获取当前时间
-var now = new Date();
-
-// 将日期字符串转换为 Date 对象
-var createdTs = new Date(resourceList[j].createdTs * 1000);
-
-// 计算时间差，单位为毫秒
-var timeDifference = now - createdTs;
-
-// 将时间差转换为分钟
-var timeDifferenceInMinutes = Math.floor(timeDifference / (1000 * 60));
-
-// 定义时间差对应的相对时间
-var relativeTime = '';
-if (timeDifferenceInMinutes < 60) {
-  // 小于60分钟，显示"几分钟前"
-  relativeTime = timeDifferenceInMinutes + '分钟前';
-} else if (timeDifferenceInMinutes < 1440) {
-  // 小于24小时，显示"几小时前"
-  var hours = Math.floor(timeDifferenceInMinutes / 60);
-  relativeTime = hours + '小时前';
-} else {
-  // 大于等于24小时，显示"几天前"
-  var days = Math.floor(timeDifferenceInMinutes / 1440);
-  relativeTime = days + '天前';
-}
-
-
-            if(data[i].resourceList && data[i].resourceList.length > 0){
+           if(data[i].resourceList && data[i].resourceList.length > 0){
               var resourceList = data[i].resourceList;
               for(var j=0;j < resourceList.length;j++){
                 var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleString(undefined, {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  timeZone: 'UTC'
-}).replace(/\//g, '/') + ' ' + relativeTime;
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                timeZone: 'UTC'
+               }).replace(/\//g, '/') + ' ' + relativeTime;
                 var restype = resourceList[j].type.slice(0,5);
                 var resexlink = resourceList[j].externalLink
                 var resLink = ''
@@ -90,6 +62,32 @@ if (timeDifferenceInMinutes < 60) {
         resultAll = galleryBefore + result + galleryAfter
         galleryDom.innerHTML = resultAll
         //相对时间
+        // 获取当前时间
+       var now = new Date();
+
+       // 将日期字符串转换为 Date 对象
+        var createdTs = new Date(resourceList[j].createdTs * 1000);
+
+       // 计算时间差，单位为毫秒
+       var timeDifference = now - createdTs;
+
+       // 将时间差转换为分钟
+       var timeDifferenceInMinutes = Math.floor(timeDifference / (1000 * 60));
+
+       // 定义时间差对应的相对时间
+       var relativeTime = '';
+       if (timeDifferenceInMinutes < 60) {
+       // 小于60分钟，显示"几分钟前"
+       relativeTime = timeDifferenceInMinutes + '分钟前';
+       } else if (timeDifferenceInMinutes < 1440) {
+       // 小于24小时，显示"几小时前"
+       var hours = Math.floor(timeDifferenceInMinutes / 60);
+       relativeTime = hours + '小时前';
+       } else {
+       // 大于等于24小时，显示"几天前"
+       var days = Math.floor(timeDifferenceInMinutes / 1440);
+       relativeTime = days + '天前';
+       }
         window.Lately && Lately.init({ target: '.photo-time'});
     });
 });
