@@ -44,6 +44,8 @@ footnotereturnlinkcontents = "↩"
   highlightjsLang = ["r", "yaml", "tex"]
   highlightjsTheme = "github"
   highlightjsVersion = "9.12.0"  
+  showtoc: true
+  tocopen: true
   
 
 [params.twikoo]
