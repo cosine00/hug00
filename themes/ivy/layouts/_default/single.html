@@ -2,12 +2,6 @@
 
 {{ if .Params.show_toc }} {{ .TableOfContents }} {{ end }}
 
-{{ if .Site.Params.page_view_conter }}
-  <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
-{{ partial "page_view_counter.html" . }}
-  阅读 </span></span>|<span class="post-date">共{{ .WordCount  }}字</span>，阅读约<span class="more-meta"> {{ .ReadingTime  }} 分钟</span>
-
-{{ end }}
 
 {{ if (and (eq (getenv "HUGO_BLOGDOWN_POST_RELREF") "") (and (and .Params.date (lt (now.AddDate 0 0 ($.Site.Params.holdDays | default -90)) .Date)) (in (string .Content) "<!--# ON_HOLD -->"))) }}
 {{ (index (split .Content "<!--# ON_HOLD -->") 0) | safeHTML }}
