@@ -17,7 +17,7 @@ hideInList: true
 {{< books >}}
 
 
-### 近期光影 <small>[🔗](/album)</small>
+### 近期光影 <small>[🔗](/photos)</small>
 
 {{< album >}}
 
