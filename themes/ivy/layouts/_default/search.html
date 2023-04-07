@@ -1,36 +1,23 @@
 {{ partial "header.html" . }}
-<header class="page-header">
-  <h1>{{- (printf "%s&nbsp;" .Title ) | htmlUnescape -}}
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-  </h1>
-  <div class="search-box">
-    <input type="text" id="searchBoxInput" placeholder="搜点啥……">
-    <button id="searchBoxButton">
-    <svg t="1556783211810" class="search-box-icon" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
-      xmlns="http://www.w3.org/2000/svg" p-id="2078" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <defs>
-        <style type="text/css"></style>
-      </defs>
-      <path
-        d="M981.39652054 920.86314525L704.56522859 644.0318533a366.65501012 366.65501012 0 1 0-61.73503038 65.64040943L917.55859375 984.40065827z m-856.17925347-493.12920861a284.19142939 284.19142939 0 1 1 283.89101562 284.19142939A284.49184317 284.49184317 0 0 1 125.06706019 427.73393664z"
-        fill="" p-id="2079" data-spm-anchor-id="a313x.7781069.0.i2"></path>
-    </svg>
-    </button>
-  </div>
 
-  <span id="searchCount"></span>
+<div id="search-results"></div>
+    <div class="search-loading">Loading...</div>
 
-  <div id="searchResult" class=""></div>
-  
-</div>
-<script type="text/javascript" src='https://fastly.jsdelivr.net/npm/fuse-js-latest@3.1.0/dist/fuse.min.js'></script>
-<script type="text/javascript" src='/fastsearch.js'></script>
-<script type="text/javascript" src='/search.js'></script>
-<script type="text/javascript" src='/fuse.basic.min.js'></script>
+    <script id="search-result-template" type="text/x-js-template">
+    <div id="summary-${key}">
+        <h3><a href="${link}">${title}</a></h3>
+        <p>${snippet}</p>
+        <p>
+            <small>
+                ${ isset tags }Tags: ${tags}<br>${ end }
+            </small>
+        </p>
+    </div>
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js" integrity="sha512-Nqw1tH3mpavka9cQCc5zWWEZNfIPdOYyQFjlV1NvflEtQ0/XI6ZQ+H/D3YgJdqSUJlMLAPRj/oXlaHCFbFCjoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
