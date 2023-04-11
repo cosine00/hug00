@@ -1,4 +1,4 @@
 ---
-title: "我的相册"
+title: "光影"
 layout: "album"
 ---
