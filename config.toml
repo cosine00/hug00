@@ -23,8 +23,8 @@ footnotereturnlinkcontents = "↩"
   url="/archives/"
   weight="2" 
   [[menu.main]]
-  name="搜索"
-  url="/search/"
+  name="光影"
+  url="/album/"
   weight="3"
   [[menu.main]]
   name="关于"
