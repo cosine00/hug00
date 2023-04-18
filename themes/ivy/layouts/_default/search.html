@@ -1,37 +1,44 @@
 {{ partial "header.html" . }}
 
-<div id="search-results"></div>
-    <div class="search-loading">Loading...</div>
-
-    <script id="search-result-template" type="text/x-js-template">
-    <div id="summary-${key}">
-        <h3><a href="${link}">${title}</a></h3>
-        <p>${snippet}</p>
-        <p>
-            <small>
-                ${ isset tags }Tags: ${tags}<br>${ end }
-            </small>
-        </p>
+<header class="page-header">
+    <h1>{{- (printf "%s&nbsp;" .Title ) | htmlUnescape -}}
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </h1>
+    {{- if .Description }}
+    <div class="post-description">
+        {{ .Description }}
     </div>
-    </script>
+    {{- end }}
+    {{- if not (.Param "hideMeta") }}
+    <div class="post-meta">
+        
+    </div>
+    {{- end }}
+</header>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js" integrity="sha512-Nqw1tH3mpavka9cQCc5zWWEZNfIPdOYyQFjlV1NvflEtQ0/XI6ZQ+H/D3YgJdqSUJlMLAPRj/oXlaHCFbFCjoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<div id="searchbox">
+    <input id="searchInput" autofocus placeholder="{{ .Params.placeholder | default (printf "%s ↵" .Title) }}"
+        aria-label="search" type="search" autocomplete="off">
+    <ul id="searchResults" aria-label="search results"></ul>
+</div>
 
 {{- if not (.Param "hideTags") }}
 {{- $taxonomies := .Site.Taxonomies.tags }}
 {{- if gt (len $taxonomies) 0 }}
 <h2 style="margin-top: 32px">{{- (.Param "tagsTitle") | default "标签" }}</h2>
 <ul class="terms-tags">
-  {{- range $name, $value := $taxonomies }}
-  {{- $count := .Count }}
-  {{- with site.GetPage (printf "/tags/%s" $name) }}
-  <li>
-      <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
-  </li>
-  {{- end }}
-  {{- end }}
+    {{- range $name, $value := $taxonomies }}
+    {{- $count := .Count }}
+    {{- with site.GetPage (printf "/tags/%s" $name) }}
+    <li>
+        <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
+    </li>
+    {{- end }}
+    {{- end }}
 </ul>
 {{- end }}
 {{- end }}
