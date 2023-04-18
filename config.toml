@@ -13,7 +13,7 @@ footnotereturnlinkcontents = "↩"
   
 # for search
 # https://fusejs.io/api/options.html
-fuseOpts:
+fuseOpts: 
   isCaseSensitive: false
   shouldSort: true
   location: 0
