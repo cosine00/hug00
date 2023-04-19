@@ -19,14 +19,4 @@ tags: [Log]
 
 另外路上遇到有人问我们这是什么团，怎么这么多美女。这一句可把我们领导高兴坏了，财务部最不缺的可不就是这个嘛🤣
 
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelklwW-ac15EFcmvA/root/content)
-
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjellPmHupuqzvWk19g/root/content)
-
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelmEaPiwjMPn66K4A/root/content)
-
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelnPmeghOMYnsJYMQ/root/content)
-
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelovrHgTemjes5x9Q/root/content)
-
-![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelpXUCJzKKtxo0BWQ/root/content)
+<gallery>![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelklwW-ac15EFcmvA/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjellPmHupuqzvWk19g/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelmEaPiwjMPn66K4A/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelnPmeghOMYnsJYMQ/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelovrHgTemjes5x9Q/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelpXUCJzKKtxo0BWQ/root/content)<gallery>
