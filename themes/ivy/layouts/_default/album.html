@@ -61,10 +61,22 @@ document.addEventListener("DOMContentLoaded", () => {
         var galleryBefore = `<div class="memos-photo-wrapper">`
         var galleryAfter = `</div>`
         resultAll = galleryBefore + result + galleryAfter
-        galleryDom.innerHTML = resultAll
-        
+        galleryDom.innerHTML = resultAll        
         //相对时间
-        window.Lately && Lately.init({ target: '.photo-time'});
+        window.Lately && Lately.init({ target: '.photo-time'})
+        //相册排版
+        imgStatus.watch('.photo-img', function(imgs) {
+            if(imgs.isDone()){
+              waterfall('.gallery-photos');
+              let pagePhoto = document.querySelectorAll('.gallery-photo');
+              for(var i=0;i < pagePhoto.length;i++){pagePhoto[i].className += " visible"};
+            }
+          });
+          window.addEventListener('resize', function () {
+            waterfall('.gallery-photos');
+          });
+        //图片灯箱
+          window.ViewImage && ViewImage.init('.gallery-photo img');
     });
 });
 </script>
