@@ -15,8 +15,14 @@ tags: [Log]
 
 最后一天的行程很轻松，早上9:30吃完早餐后，我们集合前往灵隐寺和杭州西湖游玩。尽管是星期一，但游客仍然很多，不过比前一天少了很多。灵隐寺有着1600多年的历史，烧香拜佛的人很多。想要烧香的朋友可以在门口免费领取香并进殿。导游说了一句很好的话，烧香拜佛祈愿只是给自己设定一个目标，让菩萨作为见证人。回去后，在工作生活中要朝着这个目标努力前进，幸福是要靠自己争取的，而不是躺着等待。寺内还有“请十八子”的地方，一串45元。同行的一位小伙伴请了20多串，说是许多朋友拜托她一起请的，看得我们目瞪口呆。灵隐寺游玩后，我们吃过团餐，前往西湖。西湖很大，我们只有约三个小时的时间。我们坐了一趟游船，从远处欣赏了三潭映月、断桥和雷峰塔等景色。下船后，我们在苏堤上走了一段，停下来在樱花丛下拍照。约四点，我们联系司机，前往机场等待登机。晚上七点的航班延误了将近两小时，晚上九点多才起飞，11点半到达深圳。然后我们各自搭车或乘地铁回家，基本上都是在28号零点以后到家的。
 
-虽然行程因为航班延误搞得比较疲惫，但还是很开心。终于出去放松了一趟，疫情三年把人憋坏了，出去走走短暂远离工作和生活的压力，享受一段放松的时光。同时整个财务部18人小分队一起出去玩，也可以增进彼此间的交流和了解，平常大家坐在办公室中俨然机器人一样完成各种工作任务，在旅途中大家又会展现出另一面，放飞自我。
+虽然行程因为航班延误搞得比较疲惫，但还是很开心。终于出去放松了一趟，疫情三年把人憋坏了，出去走走短暂远离工作和生活的压力，喘口气。
+附一首ChatGPT作的打油诗：
 
-另外路上遇到有人问我们这是什么团，怎么这么多美女。这一句可把我们领导高兴坏了，财务部最不缺的可不就是这个嘛🤣
+《别离杭州乌镇》
+
+行程短暂三天程， 杭州乌镇心醉情。 
+西湖山水人间境， 乌镇古乡梦里行。 
+舟游水上几时别， 古镇小桥何处寻。 
+别离不舍情难断， 期待再逢花开时。
 
 <gallery>![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelklwW-ac15EFcmvA/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjellPmHupuqzvWk19g/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelmEaPiwjMPn66K4A/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelnPmeghOMYnsJYMQ/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelovrHgTemjes5x9Q/root/content)![](https://api.onedrive.com/v1.0/shares/s!AvbwY01LMvkHjelpXUCJzKKtxo0BWQ/root/content)<gallery>
