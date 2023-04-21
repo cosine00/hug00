@@ -1,5 +1,5 @@
 ---
-title: Obsidian 装修记
+title: 装修好了
 tags: [log,折腾]
 date: 2023-04-21 15:38:30
 author: ❤
