@@ -26,12 +26,12 @@ footnotereturnlinkcontents = "↩"
   url="/album/"
   weight="3"
   [[menu.main]]
-  name="AI"
-  url="https://chat.huxin1216.xyz/"
-  weight="4"
-  [[menu.main]]
   name="关于"
   url="/about/"
+  weight="4"
+  [[menu.main]]
+  name="AI"
+  url="https://chat.huxin1216.xyz/"
   weight="5"
   
   
