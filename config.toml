@@ -26,8 +26,8 @@ footnotereturnlinkcontents = "↩"
   url="/album/"
   weight="3"
   [[menu.main]]
-  name="ChatGPT"
-  url="chat.huxin1216.xyz"
+  name="AI"
+  url="https://chat.huxin1216.xyz/"
   weight="4"
   [[menu.main]]
   name="关于"
