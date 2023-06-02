@@ -6,6 +6,7 @@ author: ❤
 draft: false
 hideInList: false
 isTop: false
+slug: Mixc-garage-art-musume
 feature: 
 ---
 小红书看到万象前海有一个儿童书展——“萌镜漫游”，于是趁今天清明节放假开车去25公里外的万象前海遛娃。书展规模比较小，只在L2、L3两个楼层的中庭区域，娃指哪我们跟着去哪。后来在其他楼层随意逛逛，发现B2层有一个车库美术馆，正在进行有关AI艺术作品的展出。最近ChatGPT和AIGC火热，不由引起兴趣。

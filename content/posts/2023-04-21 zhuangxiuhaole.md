@@ -6,6 +6,7 @@ author: ❤
 draft: false
 hideInList: false
 isTop: false
+slug: zhuangxiuhaole
 feature: 
 ---
 Obsidian 原生程序很简陋，但经不住铺天盖地的安利诱惑，尝试用起来看看。在折腾了一两个月后，终于有点样子了，现在已替代OneNote和Notion成为PC端主要使用的笔记软件。

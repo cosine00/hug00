@@ -6,6 +6,7 @@ date: 2023-04-02 17:45:06
 draft: false
 hideInList: false
 isTop: false
+slug: hugowithobsidian
 feature: 
 ---
 在Obsidian中写Hugo博客发布
