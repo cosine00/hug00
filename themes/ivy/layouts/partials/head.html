@@ -38,11 +38,6 @@
 
 {{- /* Styles */}}
 
-{{- if (and (isset .Site.Params "dark_mode_enable") .Site.Params.dark_mode_enable) -}}
-  <script>
-    document.body.classList.toggle("dark-mode", window.matchMedia('(prefers-color-scheme: dark)').matches);
-  </script>
-{{- end -}}
 
 {{- /* includes */}}
 {{- $includes := slice }}
