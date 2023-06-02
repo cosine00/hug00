@@ -501,6 +501,11 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
  background-position: 0 100%;
 }
 
+body.dark-mode {
+  background-color: #2b2b2b;
+  color: #f5f5f5;
+}
+
 /* Photos */
 
 .page-photos figure{max-width:80%;margin:0 auto 3rem;}
