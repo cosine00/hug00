@@ -30,7 +30,7 @@ footnotereturnlinkcontents = "↩"
   url="/about/"
   weight="4"
   [[menu.main]]
-  name="AI"
+  name="对话"
   url="https://chat.huxin1216.xyz/"
   weight="5"
   
