@@ -26,13 +26,17 @@ footnotereturnlinkcontents = "↩"
   url="/album/"
   weight="3"
   [[menu.main]]
+  name="简悦"
+  url="https://huxin.notion.site/huxin/2acaf4feb2a846a3864c1c0b861716bf?v=5b780a28f6a444a28ae2e464002906f1"
+  weight="4"
+  [[menu.main]]
   name="关于"
   url="/about/"
-  weight="4"
+  weight="5"
   [[menu.main]]
   name="对话"
   url="https://chat.huxin1216.xyz/"
-  weight="5"
+  weight="6"
   
   
   
