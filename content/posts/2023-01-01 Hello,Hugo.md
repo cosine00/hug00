@@ -1,6 +1,6 @@
 ---
 title: "Hello,Hugo~"
-author: Xin
+author: ❤
 date: 2023-01-01 21:00:00
 tags: [Log]
 slug: hello-hugo
