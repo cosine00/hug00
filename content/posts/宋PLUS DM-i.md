@@ -3,8 +3,8 @@ title: 宋PLUS DM-i
 tags: [日常]
 date: 2023-08-29 16:22:01
 author: Xin
-draft: true
-slug: 
+draft: false
+slug: songplusdmi
 hideInList: false
 isTop: false
 feature: 
@@ -20,7 +20,8 @@ feature:
 虽然后续还是磕磕碰碰，比如变道把我不准时机、停车倒不进库，路边侧方挪半天，但经过这一段长途旅程，整体底气还是足了许多。不上路永远是恐惧，上路了才知晓自己能否驾驭。开车没有想象中那么难，但也不能掉以轻心，害人害己。
 熟练之后，就带着家人周末到处去打卡深圳各个公园、海边，五六十公里也说去就去，这是没车的时候不敢想的。车远远地扩大了活动半径，以前可能就在家周围三五公里范围内转转，超过这个半径就会感觉不方便而放弃。
 宋PLUS DM-i这辆车好与坏，因为我没有对比，也不是很懂车。但这一年时间用下来，个人是比较满意的。
-这一年，开车回了三趟老家，去了一样南宁，周边转悠了佛山、惠州、珠海。
+这一年，开车回了三趟老家，去了一样南宁，周边转悠了佛山、惠州、珠海。最长的一次驾驶记录，今年春节回深，一个人开了21.5个小时。
 13766公里，HEV里程8966公里，EV里程4800公里。
 加油5696元，充电269元，停车费3045元。
+<gallery>![](https://raw.githubusercontent.com/cosine00/Image/main/202308291753745.jpg)![](https://raw.githubusercontent.com/cosine00/Image/main/202308291750624.jpg)![](https://raw.githubusercontent.com/cosine00/Image/main/202308291753083.jpg)<gallery>
 
