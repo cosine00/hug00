@@ -4,7 +4,6 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    let limit = 100
     var memoUrl = "https://s.dusays.com/"
     var galleryUrl = memoUrl+"api/v1/memo?creatorId=63&rowStatus=NORMAL&tag=相册&limit=20"
     fetch(galleryUrl).then(res => res.json()).then( resdata =>{
