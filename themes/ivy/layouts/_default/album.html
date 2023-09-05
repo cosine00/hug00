@@ -3,12 +3,8 @@
 <div id="album"></div>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    let limit = 100
     var memoUrl = "https://s.dusays.com/"
-    //var creatorId = 63
-    //var galleryUrl = memoUrl+"api/memo?creatorId="+creatorId+"&rowStatus=NORMAL&limit="+limit+"&tag=相册"
     var galleryUrl = memoUrl+"api/v1/memo?creatorId=63&rowStatus=NORMAL&tag=相册&limit=20"
-    let nowNum = 63;
     fetch(galleryUrl).then(res => res.json()).then( resdata =>{
         var result = '',resultAll="",data = resdata.data
         for(var i=0;i < data.length;i++){
