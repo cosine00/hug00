@@ -2,11 +2,9 @@
 
 <div id="album"></div>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    let limit = 100    
+document.addEventListener("DOMContentLoaded", () => {  
     var memoUrl = "https://me.edui.fun/"
     var galleryUrl = memoUrl+"api/v1/memo?creatorId=101&rowStatus=NORMAL&tag=相册&limit=20"
-    let nowNum = 1;
     fetch(galleryUrl).then(res => res.json()).then( resdata =>{
         var result = '',resultAll="",data = resdata.data
         for(var i=0;i < data.length;i++){
