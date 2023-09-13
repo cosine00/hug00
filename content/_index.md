@@ -17,6 +17,6 @@ title: Home
 
 ## 近期观影
 
-{{< movies 8>}}
+{{< movies >}}
 
 ## 近期发文
