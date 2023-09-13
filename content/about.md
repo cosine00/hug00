@@ -19,7 +19,7 @@ hideInList: true
 
 ### 近期光影 <small>[🔗](/album)</small>
 
-{{< album 4>}}
+{{< album >}}
 
 ### 博客相关  
 
