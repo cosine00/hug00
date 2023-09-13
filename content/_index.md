@@ -19,4 +19,8 @@ title: Home
 
 {{< movies >}}
 
+## 近期观影
+
+{{< album >}}
+
 ## 近期发文
