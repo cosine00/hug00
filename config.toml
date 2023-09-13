@@ -22,8 +22,8 @@ footnotereturnlinkcontents = "↩"
   url="/archives/"
   weight="2" 
   [[menu.main]]
-  name="影音"
-  url="/movies/"
+  name="光影"
+  url="/album/"
   weight="3"
   [[menu.main]]
   name="简悦"
