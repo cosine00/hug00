@@ -10,6 +10,9 @@ title: Home
 更多内容请访问 [Posts](/posts/) 或者 [Clip](https://clip.hux.ink/)。
 
 ---
+## 近期唠叨
+
+{{< memos >}}
 
 ## 近期阅读
 
