@@ -1,11 +1,6 @@
 {{ partial "header.html" . }}
 
-<div class="post">
-  <h2 class="post-title"><a href="{{ .Permalink }}">{{ .Title | markdownify }}</a> <span onclick="randomMemo()">/回忆</span> <span onclick="serchMemo()">/搜索</span> <span class="setid" onclick="setOpenID()">/设置</span></h2>
-  <div class="post-content">
-    <div id="bber"></div>
-  </div>
-</div>
+<div id="bber"></div>
 <script type="text/javascript">
   var bbMemos = {
     memos : 'https://i.hux.ink:5233/',//修改为自己的 apiurl，末尾有 / 斜杠
