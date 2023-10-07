@@ -11,3 +11,5 @@ slug: hello-hugo
 
 However，
 Hello，Hugo~
+
+❤
