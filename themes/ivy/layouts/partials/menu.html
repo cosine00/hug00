@@ -8,10 +8,10 @@
   <ul>
   {{ $currentPage := . }}
   {{ range (default .Site.Menus.main (index .Site.Menus ($.Scratch.Get "section"))) }}
-   {{ if .URL | strings.HasPrefix "http" }}
-    <a href="{{ .URL }}" target="_blank">{{ .Name }}</a>
+  {{ if .URL | strings.HasPrefix "http" }}
+  <li{{ if eq .URL $currentPage.RelPermalink }} class="active"{{ end }}><a href="{{ .URL }}" target="_blank">{{ .Name }}</a></li>
    {{ else }}
-    <a href="{{ .URL }}">{{ .Name }}</a>
+   <li{{ if eq .URL $currentPage.RelPermalink }} class="active"{{ end }}><a href="{{ .URL }}">{{ .Name }}</a></li>
     {{ end }}
   {{ end }}
   {{ partial "menu_extra.html" . }}
