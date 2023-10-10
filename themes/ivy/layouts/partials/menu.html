@@ -9,7 +9,7 @@
   {{ $currentPage := . }}
   {{ range (default .Site.Menus.main (index .Site.Menus ($.Scratch.Get "section"))) }}
   <li{{ if eq .URL $currentPage.RelPermalink }} class="active"{{ end }}>
-    {{ if .URL | strings.HasPrefix "http" }}
+    {{ if .URL | strings.HasPrefix "https" }}
       <a href="{{ .URL }}" target="_blank">{{ .Name }}</a>
     {{ else }}
       <a href="{{ .URL }}">{{ .Name }}</a>
