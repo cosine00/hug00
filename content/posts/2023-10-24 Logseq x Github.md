@@ -9,4 +9,4 @@ hideInList: false
 isTop: false
 feature: 
 ---
-iOS因为
+这些时间用Logseq比较多，相对Obsidian顺手一些。每天自动
