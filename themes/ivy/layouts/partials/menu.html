@@ -6,10 +6,14 @@
     <span class="text">Menu</span>
   </label>
   <ul>
-  {{ $currentPage := . }}
-  {{ range (default .Site.Menus.main (index .Site.Menus ($.Scratch.Get "section"))) }}
-  <li{{ if eq .URL $currentPage.RelPermalink }} class="active"{{ end }}><a href="{{ .URL }}">{{ .Name }}</a></li>
-  {{ end }}
-  {{ partial "menu_extra.html" . }}
+    {{ $currentPage := . }}
+    {{ range (default .Site.Menus.main (index .Site.Menus ($.Scratch.Get "section"))) }}
+      <li{{ if eq .URL $currentPage.RelPermalink }} class="active"{{ end }}>
+        <a href="{{ .URL }}"{{ if not (strings.HasPrefix .URL "http") }} target="_self"{{ else }} target="_blank"{{ end }}>
+          {{ .Name }}
+        </a>
+      </li>
+    {{ end }}
+    {{ partial "menu_extra.html" . }}
   </ul>
 </nav>
