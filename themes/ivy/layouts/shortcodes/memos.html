@@ -10,7 +10,7 @@
               var bbCont = data[i].content
               var newbbCont = bbCont.replace(/!\[.*?\]\((.*?)\)/g,' <a href="$1" target="_blank">🌅</a> ').replace(/\[(.*?)\]\((.*?)\)/g,' <a href="$2" target="_blank">$1 🔗</a> ')
               var emoji = '✨'; // 修改这里，设置你想要的emoji
-              result += `<li class="item">${emoji} <span class="datetime">${bbTime}</span>\n${newbbCont}</li>`;
+              result += `<li class="item"> <span class="datetime">${bbTime}</span>  ${emoji}${newbbCont}</li>`;
           }
           var bbDom = document.querySelector('#momos-ss');
           var bbBefore = `<div class="momos-sswrap"><ul class="momos-sslist">`
