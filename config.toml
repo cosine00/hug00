@@ -30,9 +30,13 @@ footnotereturnlinkcontents = "↩"
   url="https://clip.hux.ink/"
   weight="4"
   [[menu.main]]
+  name="跑步"
+  url="https://run.hux.ink//"
+  weight="5"
+  [[menu.main]]
   name="关于"
   url="/about/"
-  weight="5"
+  weight="6"
  
   
   
