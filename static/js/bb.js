@@ -44,7 +44,7 @@ const allCSS = `
 .bb-timeline pre p{display:inline-block;}
 .bb-timeline pre p:empty{display:none;}
 .bb-cont p{magin:0;}
-.bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;font-family:KaiTi,STKaiti,STFangsong!important;}
+.bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;font-family:STZHONGS,KaiTi,STKaiti,STFangsong!important;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;font-family:Georgia,serif;line-height:2rem;}
 .tag-span{color:#42b983;cursor:pointer;}
 #tag-list{font-size:1.8rem;}
