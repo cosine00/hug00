@@ -5,7 +5,7 @@ tags:
   - 折腾
 date: 2023-11-01 11:58:14
 author: ❤
-draft: true
+draft: false
 slug: runningpage
 hideInList: false
 isTop: false
@@ -31,3 +31,7 @@ feature:
 比较遗憾的是以前的跑步数据都是 Nike run club 里面，Nike 的refresh_token 获取不到，没办法同步过来，目前只有从开启 Nike 连接 Strava 之后的已经存储在 Strava 里面的数据。
 
 ![](https://raw.githubusercontent.com/cosine00/Image/main/202311011757011.png)
+
+![](https://raw.githubusercontent.com/cosine00/Image/main/202311011803148.jpg)
+
+❤
