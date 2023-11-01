@@ -23,7 +23,11 @@ feature:
 ![](https://raw.githubusercontent.com/cosine00/Image/main/202311011730574.png)
 
 下一步需要将仓库中Yihong大神的已有跑步数据文件删除，分别删除以下路径文件：\assets(里面带年份的文件)、\run_page\data.db 、\src\static\activities.json。删除完毕后进入仓库的「Actions」>「Run Data Svnc」>「Run workflow」执行数据同步。
-![](https://raw.githubusercontent.com/cosine00/Image/main/202311011742664.png)
-执行过程仍会报错，但点入详情可以看到数据同步已经完成，只是github pages发布出现问题。同时也可以返回刚刚删除数据文件的路径下进行确认，看是否产生了新的数据文件。
 
-最后就是部署到 Vercle了
+执行完返回刚刚删除数据文件的路径下，可以看到新同步的数据文件已经产生。
+
+最后就是打开Github Page 或者部署到  Vercle 。Done ！
+
+比较遗憾的是跑步数据都是 Nike run club 里面，Nike获取不到
+
+![](https://raw.githubusercontent.com/cosine00/Image/main/202311011757011.png)
