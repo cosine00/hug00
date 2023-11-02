@@ -3,12 +3,13 @@ title: '关于'
 layout: 'posts'
 hideInList: true
 ---
-> Of all the gin joints in all the towns in all the world,she walks into mine.
+> 一个人的命运啊，当然要靠自我奋斗，但是也要考虑到历史的进程。—— 长者
 > 
-> 世界上有那么多的城镇，城镇有那么多的酒馆，她却偏偏走进了我的。——《卡萨布兰卡》
+> 不要把时代的α当成自己的β
   
 ### 关于我
 
+Cos0 Xin
 90后，阿卡林省人，现居深圳。如果重来一次，我想选杭州或者南京。
 
 财务🐶一枚，CICPA。
