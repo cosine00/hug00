@@ -1,12 +1,13 @@
 ---
 title: 在Obsidian中写Hugo博客发布
-author: ❤
-tags: [Log]
+author: 落落vici
+tags:
+  - Log
 date: 2023-04-02 17:45:06
 draft: false
 hideInList: false
 isTop: false
-feature: 
+feature:
 ---
 在Obsidian中写Hugo博客发布
 
