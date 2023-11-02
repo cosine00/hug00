@@ -3,10 +3,11 @@ title: '关于'
 layout: 'posts'
 hideInList: true
 ---
-莫思身外无穷事，且尽生前有限杯。
-
-第一次知道这句诗是在《笑傲江湖》中，后来一查才知道是
-
+> Of all the gin joints in all the towns in all the world,she walks into mine.
+> 
+> 世界上有那么多的城镇，城镇有那么多的酒馆，她却偏偏走进了我的。——《卡萨布兰卡》
+  
+### 关于我
 
 90后，阿卡林省人，现居深圳。如果重来一次，我想选杭州或者南京。
 
