@@ -26,7 +26,7 @@ feature:
 
 执行完返回刚刚删除数据文件的路径下，可以看到新同步的数据文件已经产生。
 
-最后就是打开Github Page 或者部署到  Vercle 。Done ！
+最后就是打开Github Page 或者部署到  Vercel 。Done ！
 
 比较遗憾的是以前的跑步数据都是 Nike run club 里面，Nike 的refresh_token 获取不到，没办法同步过来，目前只有从开启 Nike 连接 Strava 之后的已经存储在 Strava 里面的数据。那就慢慢跑下去吧，会积少成多的。
 
