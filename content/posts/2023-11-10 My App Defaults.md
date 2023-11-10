@@ -13,7 +13,7 @@ feature:
 以前写过一篇[我的常用app](https://mp.weixin.qq.com/s/rS6B6JSaHeqj3Ep72BMTjg)，昨天看到一个[App Defaults](https://defaults.rknight.me/)页面，很多博主列出自己的应用清单，跟风更新一下iOS端的。
 
 - 📧 邮件：Spark（聚合登录QQ、Outlook和Gmail邮箱）
-- 🗂 文件管理及同步：OneDrive（拼车Office365主要是为了1TB容量，同步工作文件和照片），Synology Drive（入了群晖之后开始用的）
+- 📁 文件管理及同步：OneDrive（拼车Office365主要是为了1TB容量，同步工作文件和照片），Synology Drive（入了群晖之后开始用的）
 - 📷 相机：自带相机、FIMO（模拟相机胶卷，虽然全部付费解锁了，但最爱用的还是免费的EK-80）
 - 🖼 照片：自带照片、Synology Photos（没升iCloud容量，通过群晖套件备份相册，公网IP也基本上实现远程查看秒开）
 - 📝 笔记：Drafts（打开即写，快速方便），Memos（自建运行在群晖上，日常碎碎念，可以通过插件同步到Logseq），Logseq（移动端只查看不记录，通过Git拉取）
