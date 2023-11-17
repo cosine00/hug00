@@ -22,3 +22,8 @@ Hello，Hugo~
 ![](https://i.hux.ink:5233/o/r/49/04E4EFA5-1AA0-485A-B8A8-8A425872E8CD.jpg)
 ![](https://i.hux.ink:5233/o/r/50/93794B27-A00C-4D9A-8453-D0D6B50EB9C8.jpg)
 ![](https://i.hux.ink:5233/o/r/51/7D496DAD-79E0-414A-917D-E788F5941935.jpg)
+
+
+<img src="https://i.hux.ink:5233/o/r/48/B668DAF3-EFEB-47A2-969F-D4889681FCD6.jpg"  width="300" height="300">
+
+<img src="https://i.hux.ink:5233/o/r/51/7D496DAD-79E0-414A-917D-E788F5941935.jpg"  width="600" height="300">
