@@ -24,8 +24,8 @@ var t;const i=window,s$1=i.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{creat
  * SPDX-License-Identifier: BSD-3-Clause
  */var l,o;class s extends u$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1);}render(){return T}}s.finalized=!0,s._$litElement$=!0,null===(l=globalThis.litElementHydrateSupport)||void 0===l||l.call(globalThis,{LitElement:s});const n=globalThis.litElementPolyfillSupport;null==n||n({LitElement:s});(null!==(o=globalThis.litElementVersions)&&void 0!==o?o:globalThis.litElementVersions=[]).push("3.3.2");
 
-//const DEFAULT_EMOJIS = 'ðŸ‘,thumbs-up;ðŸ˜„,smile-face;ðŸŽ‰,party-popper;ðŸ˜Ž,cool;ðŸ˜•,confused-face;â¤ï¸,red-heart;ðŸš€,rocket;ðŸ‘€,eyes;ðŸ‘Ž,thumbs-down;';
-const DEFAULT_EMOJIS = 'ðŸ‘,thumbs-up;ðŸŽ‰,party-popper;â¤ï¸,red-heart;ðŸ˜Ž,cool;ðŸ˜„,smile-face;ðŸš€,rocket;';
+//const DEFAULT_EMOJIS = '👍,thumbs-up;😄,smile-face;🎉,party-popper;😎,cool;😕,confused-face;❤️,red-heart;🚀,rocket;👀,eyes;👎,thumbs-down;';
+const DEFAULT_EMOJIS = '👍,thumbs-up;🎉,party-popper;❤️,red-heart;😎,cool;😄,smile-face;🚀,rocket;';
 
 class EmojiReaction extends s {
   static properties = {
@@ -171,7 +171,7 @@ class EmojiReaction extends s {
     </style>
     <!-- container -->
     <div style="flex-wrap: nowrap; max-width: 100%; display: flex; gap: 0.375rem;height: 1.5rem;" class="${this?.theme === 'dark' || (this?.theme === 'system' && system_theme === 'dark') ? 'container-dark' : 'container'}">
-      <!-- ç°è‰²ç¬‘è„¸ -->
+      <!-- 灰色笑脸 -->
       <div style="position: relative; user-select: none;">
         <div id="start-smile" @click="${this._showAvailable}"
           style="border-radius: 800px; width: 1rem; height: 1rem; line-height: 1rem; padding: 0.25rem;">
@@ -224,11 +224,11 @@ class EmojiReaction extends s {
       }
       return { emoji, reaction_name }
     }).filter(val => val);
-    // åˆå§‹åŒ– endpoint
+    // 初始化 endpoint
     if (!this?.endpoint) {
       this.endpoint = 'https://api.emaction.cool';
     }
-    // è¯·æ±‚æŽ¥å£ï¼ŒèŽ·å–å“ªäº› emoji æœ‰ reaction æ•°é‡
+    // 请求接口，获取哪些 emoji 有 reaction 数量
     let url_2_generate_id = '';
     const canonical = document.head.querySelector("link[rel='canonical']");
     url_2_generate_id = canonical && canonical.href ? canonical.href : window.location.href;
@@ -245,11 +245,11 @@ class EmojiReaction extends s {
     .then(resp => resp.json())
     .then(resp => {
       if (!resp?.data || !Array.isArray(resp?.data?.reactionsGot)) {
-        throw new Error("èŽ·å– reactions å‡ºé”™ï¼")
+        throw new Error("获取 reactions 出错！")
       }
       return resp;
     });
-    // èŽ·å¾—çš„ reactions æ•°é‡æ”¾åˆ° arr é‡Œ
+    // 获得的 reactions 数量放到 arr 里
     reactionsGot.forEach(reaction => {
       arr.forEach(availableReaction => {
         if (reaction.reaction_name === availableReaction.reaction_name) {
@@ -257,10 +257,10 @@ class EmojiReaction extends s {
         }
       });
     });
-    // è¯»å– localStorageï¼ŒèŽ·å–å½“å‰ç”¨æˆ·ç‚¹å‡»è¿‡çš„ emoji
+    // 读取 localStorage，获取当前用户点击过的 emoji
     const storageKey = `meReactedReactions_${this.reactTargetId}`;
     const meReactedReactions = JSON.parse(window.localStorage.getItem(storageKey) || "[]");
-    // å½“å‰ç”¨æˆ·ç‚¹å‡»çŠ¶æ€æ”¾åˆ° arr
+    // 当前用户点击状态放到 arr
     meReactedReactions.forEach(reaction_name => {
       arr.forEach(availableReaction => {
         if (reaction_name === availableReaction.reaction_name) {
@@ -268,7 +268,7 @@ class EmojiReaction extends s {
         }
       });
     });
-    // åˆå§‹åŒ– avaiableArray
+    // 初始化 avaiableArray
     this.availableReactions = arr;
   }
 
@@ -281,7 +281,7 @@ class EmojiReaction extends s {
     const { name: reaction_name } = e.target.dataset;
     const reaction = this.availableReactions.find(ele => ele.reaction_name === reaction_name);
     if (!reaction) {
-      console.error("æœªçŸ¥çš„ reaction!");
+      console.error("未知的 reaction!");
       return
     }
     const cancel = reaction?.meReacted ? true : false;
@@ -295,13 +295,13 @@ class EmojiReaction extends s {
       return val
     });
     this.showAvailable = false;
-    // è¯·æ±‚æŽ¥å£ï¼Œæ›´æ–° react æ•°é‡
+    // 请求接口，更新 react 数量
     await fetch(this.endpoint + '/reaction?' + new URLSearchParams({
       targetId: this.reactTargetId,
       reaction_name,
       diff: cancel ? -1 : 1
     }), { method: "PATCH"});
-    // æ›´æ–° localStorage
+    // 更新 localStorage
     const storageKey = `meReactedReactions_${this.reactTargetId}`;
     const meReactedReactionsSet = new Set(JSON.parse(window.localStorage.getItem(storageKey) || "[]"));
     if (cancel) {
