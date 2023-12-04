@@ -22,7 +22,7 @@ footnotereturnlinkcontents = "↩"
   url="/archives/"
   weight="2" 
    [[menu.main]]
-  name="圈子"
+  name="他们"
   url="https://immmmm.com/friends/"
   weight="3"
   [[menu.main]]
