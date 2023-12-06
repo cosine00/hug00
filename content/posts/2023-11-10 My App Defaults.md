@@ -1,7 +1,7 @@
 ---
 title: My App Defaults
 tags:
-  - 整理
+  - 折腾
 date: 2023-11-10 17:19:59
 author: 落落vici
 draft: false
