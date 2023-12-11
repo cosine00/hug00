@@ -1,5 +1,6 @@
 {{ partial "header.html" . }}
 
+
 共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章
 
 <div id="all-tags">
@@ -13,8 +14,6 @@
 {{- if .Site.Params.ShowAllPagesInArchive }}
 {{- $pages = site.RegularPages }}
 {{- end }}
-
-{{- $totalWords := 0 -}}
 
 {{- range $pages.GroupByPublishDate "2006" }}
 {{- if ne .Key "0001" }}
@@ -71,12 +70,9 @@
       <div class="archive-entry">
         <li class="archive-entry-title">
           <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;<a href="{{.Permalink}}">{{.Title}}</a>
-          {{- $wordCount := len .Content | split " " | len -}}
-          {{- $totalWords = add $totalWords $wordCount -}}
-          <span class="post-word-count">字数: {{ $wordCount }}</span>
-        </li>        
+         </li>        
       </div>
-{{- end }}
+      {{- end }}
       {{- end }}
     </div>
   </div>
@@ -84,9 +80,5 @@
 </div>
 {{- end }}
 {{- end }}
-
-<div id="total-word-count">
-  总字数: {{ $totalWords }}
-</div>
 
 {{ partial "footer-cus.html" . }}
