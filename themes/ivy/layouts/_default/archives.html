@@ -1,10 +1,6 @@
 {{ partial "header.html" . }}
 
-
 共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章
-<div id="total-word-count">
-  总字数: {{ $totalWords }}
-</div>
 
 <div id="all-tags">
   {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
@@ -80,7 +76,7 @@
           <span class="post-word-count">字数: {{ $wordCount }}</span>
         </li>        
       </div>
-      {{- end }}
+{{- end }}
       {{- end }}
     </div>
   </div>
@@ -88,5 +84,9 @@
 </div>
 {{- end }}
 {{- end }}
+
+<div id="total-word-count">
+  总字数: {{ $totalWords }}
+</div>
 
 {{ partial "footer-cus.html" . }}
