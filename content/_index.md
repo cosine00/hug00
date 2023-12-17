@@ -10,10 +10,6 @@ title: Home
 更多内容请访问 [Posts](/posts/) 或者 [Memos](https://i.hux.ink:5233/explore)。
 
 ---
-## 近期唠叨
-
-{{< memos >}}
-
 ## 近期阅读
 
 {{< books >}}
