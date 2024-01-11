@@ -38,6 +38,7 @@ Obsidian 安装[image-auto-upload-plugin](https://github.com/renmu123/obsidian-i
 准确来说，其实不是去端口号，只是一个重新定向。需要两个子域名完成两个步骤设置：
 - 在 Cloudflare DNS 记录页面，添加新的子域名 DNS 记录 CNAME 指向原有子域名，此处不用添加端口号，开启代理
 - 从 Cloudflare 左侧的功能区进入 规则 - Origin Rules，添加一条规则，当匹配到新的子域名时重写到原有子域名的某个端口
+
 利用这个方法就可以免记群晖各种服务的端口号了，比如搭在群晖里面的 Memos。
 
 ![cloudflare-04.png](https://img.hux.ink/image/2024/01/cloudflare-04.png)
@@ -49,7 +50,8 @@ Obsidian 安装[image-auto-upload-plugin](https://github.com/renmu123/obsidian-i
 - DNS 解析记录中，开启橙色小云朵代理，即开启了CDN，加速和保护流量。
 - 缓存设置，将缓存级别设置为“忽略查询字符串”，浏览器缓存 TTL设置为5天或以上。
 - 从左边栏 速度 - 优化 进入，启用所有可用设置。
-这样一通操作下来，博客页面加载的确快了许多，以前memos单页要转半天，现在几秒加载完毕。
+
+这样一通操作下来，博客页面加载的确快了许多，以前 Memos 单页要转半天，现在几秒加载完毕。
 
 ![cloudflare-06.png](https://img.hux.ink/image/2024/01/cloudflare-06.png)
 
