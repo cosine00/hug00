@@ -44,7 +44,9 @@ Obsidian 安装[image-auto-upload-plugin](https://github.com/renmu123/obsidian-i
 
 ![cloudflare-05.png](https://img.hux.ink/image/2024/01/cloudflare-05.png)
 
-### 
+### 加速 Hugo 博客访问
+
+开启 CDN，
 
 目前除了多图排版不如意，本来想应用木木老师的[Hugo 多图排版这样来](https://immmmm.com/about-images-gird/)
 ❤
