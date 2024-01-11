@@ -55,6 +55,6 @@ Obsidian 安装[image-auto-upload-plugin](https://github.com/renmu123/obsidian-i
 
 ![cloudflare-06.png](https://img.hux.ink/image/2024/01/cloudflare-06.png)
 
-新年的第一回折腾，目前博客除了多图排版不如意（本来想应用木木老师的[Hugo 多图排版这样来](https://immmmm.com/about-images-gird/)，但不生效），其他都还好啦。建立这个博客记些流水账，只有域名是付费的，其他都是白嫖，还奢求啥呢。
+新年的第一回折腾，目前博客除了多图排版不如意（本来想应用木木老师的[Hugo 多图排版这样来](https://immmmm.com/about-images-gird/)，但不生效），其他都还好啦。建立这个博客记些流水账，只有域名是付费的，其他都是白嫖，夫复何求。
 
 ❤
