@@ -11,7 +11,7 @@ hideInList: false
 isTop: false
 feature:
 ---
-这个 Hugo 博客自去年年初启用，到现在折腾近一年，最近用 Cloudflare 优化了一下，使用和访问速度直接起飞。
+这个 Hugo 博客自去年年初启用，到现在折腾近一年，最近用 Cloudflare 优化了一下，使用和访问速度有了不少提升。
 
 ### 将域名托管到 Cloudflare 进行解析
 
@@ -35,7 +35,16 @@ Obsidian 安装[image-auto-upload-plugin](https://github.com/renmu123/obsidian-i
 
 ### 用 Cloudflare 去端口号
 
-准确来说，其实不是去端口号，只是一个重新定向。
+准确来说，其实不是去端口号，只是一个重新定向。需要两个子域名完成两个步骤设置：
+- 在 Cloudflare DNS 记录页面，添加新的子域名 DNS 记录 CNAME 指向原有子域名，此处不用添加端口号，开启代理
+- 从 Cloudflare 左侧的功能区进入 规则 - Origin Rules，添加一条规则，当匹配到新的子域名时重写到原有子域名的某个端口
+利用这个方法就可以免记群晖中各种服务的端口号了，比如搭在群晖里面的 Memos。
+
+![cloudflare-04.png](https://img.hux.ink/image/2024/01/cloudflare-04.png)
+
+![cloudflare-05.png](https://img.hux.ink/image/2024/01/cloudflare-05.png)
+
+### 
 
 目前除了多图排版不如意，本来想应用木木老师的[Hugo 多图排版这样来](https://immmmm.com/about-images-gird/)
 ❤
