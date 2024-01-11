@@ -1,5 +1,5 @@
 ---
-title: Cloudflare 优化助力
+title: Cloudflare 优化助力 Hugo
 date: 2024-01-11 14:15:00
 tags:
   - Log
