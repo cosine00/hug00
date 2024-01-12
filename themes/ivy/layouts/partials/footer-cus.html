@@ -1,21 +1,12 @@
-{{$scratch := newScratch}}
-{{$totalWord := 0}}
-{{ range (where .Site.Pages "Kind" "page" )}}
-    {{$scratch.Add "total" .WordCount}}
-{{ end }}
-
-{{$totalWord = $scratch.Get "total" }}
-
 <footer>
   {{ partial "foot_custom.html" . }}
   <hr>
   {{ partial "footer_highlightjs" . }}
-  <span>共 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章 共 {{$totalWord}} 字 </span>
   {{ with .Site.Params.footer }}
   <div class="copyright">{{ . | markdownify }}</div>
   {{ end }}
-</footer>
-</article>
-{{ template "_internal/google_analytics.html" . }}
-</body>
+  </footer>
+  </article>
+  {{ template "_internal/google_analytics.html" . }}
+  </body>
 </html>
