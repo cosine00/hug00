@@ -8,7 +8,7 @@
 
 {{$totalWord = $scratch.Get "total" }}
 
-共计 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章， {{$totalWord}} 字
+共 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章， 总计 {{$totalWord}} 字
 
 <div id="all-tags">
   {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
