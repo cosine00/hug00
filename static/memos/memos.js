@@ -1,5 +1,5 @@
 /**
- * memos.js 24.1.16
+ * memos.js 24.1.17
  * https://immmmm.com/
  */
 var memosData = {
@@ -40,18 +40,23 @@ var memoDefaultList = [
 
 var userNow = `
 <div class="user-now card-item flex-fill mb-3 row">
-  <div class="item-avatar p-3"><img class="call-memos-editor user-now-avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/></div>
+  <div class="call-memos-editor item-avatar p-3 "><img class="user-now-avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/ style="pointer-events: none;"></div>
   <span class="user-now-name"></span>
   <div class="row-fill">
     <span class="search-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21l-4.3-4.3"/></g></svg>
     </span>
+    <span class="userlist-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 19a6 6 0 0 0-12 0"/><circle cx="8" cy="9" r="4"/><path d="M22 19a6 6 0 0 0-6-6a4 4 0 1 0 0-8"/></g></svg>
+    </span>
     <span class="randomuser-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16m-8-8v8m-4 8l-2 3m12 0l-2-3m0-4"/></g></svg>
     </span>
-    <span class="back-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
-      <svg class="users-switch" xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9m2.9 2.8a6.14 6.14 0 0 0-.8 7.5"/><circle cx="12" cy="9" r="2"/><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47M19.1 1.9a9.96 9.96 0 0 1 0 14.1m-9.6 2h5M8 22l4-11l4 11"/></g></svg>
-      <svg class="d-none users-refresh" xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9a9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5m5 4a9 9 0 0 1-9 9a9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></g></svg>
+    <span class="gobbs-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9m2.9 2.8a6.14 6.14 0 0 0-.8 7.5"/><circle cx="12" cy="9" r="2"/><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47M19.1 1.9a9.96 9.96 0 0 1 0 14.1m-9.6 2h5M8 22l4-11l4 11"/></g></svg>
+    </span> 
+    <span class="gohome-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m3 9l9-7l9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></g></svg>
     </span>
   </div>
 </div>`
@@ -139,6 +144,7 @@ var randomBtn = document.querySelector(".random-btn");
 var switchUserBtn = document.querySelector(".switchUser-btn");
 var loadEditorBtn = document.querySelector(".call-memos-editor");
 var searchBtn = document.querySelector(".search-memos");
+var userlistBtn = document.querySelector(".userlist-memos");
 var randomUserBtn = document.querySelector(".randomuser-memos");
 var submitApiBtn = document.querySelector(".submit-openapi-btn");
 var submitMemoBtn = document.querySelector(".submit-memos-btn");
@@ -155,6 +161,8 @@ var editMemoBtn = document.querySelector(".edit-memos-btn");
 var cancelEditBtn = document.querySelector(".cancel-edit-btn");
 var biaoqingBtn = document.querySelector(".biao-qing-btn");
 var usernowDom = document.querySelector(".user-now");
+var goHomeBtn = document.querySelector('.gohome-memos')
+var goBbsBtn = document.querySelector('.gobbs-memos')
 
 var memoDom = document.querySelector(memosData.listDom);
 var skeleton = `<div class="el-loading"><div class="el-skeleton mb-3"></div><div class="el-skeleton mb-3"></div><div class="el-skeleton width-50 mb-3"></div><div class="el-skeleton mb-3"></div><div class="el-skeleton mb-3"></div><div class="el-skeleton width-50 mb-3"></div></div>`;
@@ -183,15 +191,30 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    memoList = await getMemoListData(); // 获取自定义列表
-  } catch (error) {
-    memoList = memoDefaultList
-    console.error('load memoDefaultList');
+  // 获取自定义列表
+  if(typeof memosJson !== 'undefined'){
+    try {
+      memoList = await getMemoListData(memosJson.url); // 获取自定义列表
+    } catch (error) {
+      memoList = memoDefaultList
+    }
+  }else{
+    try {
+      memoList = await getMemoListData('../memos/memos.json'); // 获取自定义列表
+    } catch (error) {
+      memoList = memoDefaultList
+    }
   }
   memoFollow();
   getEditIcon();
 });
+
+// 获取自定义 memos.json 订阅列表
+async function getMemoListData(url) {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.myMemoList
+}
 
 function memoFollow() {
   //getMemos();
@@ -203,26 +226,6 @@ function memoFollow() {
     }
     updateData(memoData)
     cocoMessage.success("加载中");
-  });
-
-  var titleDom = document.querySelector('.back-memos');
-  titleDom.addEventListener("click", function () {
-    let backSVG = document.querySelectorAll('.back-memos svg')
-    for(const nowSVG of backSVG){
-      nowSVG.classList.toggle("d-none");
-    }
-    if(memosContType == 1) {
-      getMemos();
-      let usernowName = document.querySelector(".user-now-name");
-      let usernowAvatar = document.querySelector(".user-now-avatar");
-      usernowName.innerHTML = ""
-      usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      cocoMessage.success("有啥新鲜事儿？");
-    }else{
-      randomUser = 0;
-      getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
-      cocoMessage.success("返回 "+memoList[0].creatorName+" 的 Memos");
-    }
   });
 
   async function getMemoCount(m) {
@@ -368,10 +371,12 @@ function memoFollow() {
       });
     for (var i = 0; i < data.length; i++) {
       let memo = data[i];
+      let link = memo.link;
       let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
       let avatar = memo.avatar;
       let count = memo.count || "";
       let website = memo.website;
+      let creatorId = memo.creatorId;
       let creatorName = memo.creatorName;
       let createdTs = memo.createdTs;
       let memosId = createdTs+memo.id;
@@ -398,11 +403,10 @@ function memoFollow() {
       let memosFormString = JSON.stringify(memosForm).replace(/"/g, '&quot;');
 
       //解析 content 内 md 格式图片
-      let loadUrl = memosData.loadUrl;
       let imgArr = memo.content.match(IMG_REG);
       let imgStr = String(imgArr).replace(/[,]/g, '');
       if (imgArr) {
-          let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="${loadUrl}" data-src="$2"></div>`)
+          let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`)
           memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${memosImg}</div></div>`
       }
       // NeoDB
@@ -418,7 +422,7 @@ function memoFollow() {
       let memosTag = '';
       if (tagArr) {
         memosTag = tagArr.map(t=>{
-          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${memo.link}','${memo.creatorId}','${memo.creatorName}','${memo.avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
+          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${link}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
         }).join('');
       }else{
         memosTag = `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2 no-cursor">动态</div>`;
@@ -439,7 +443,7 @@ function memoFollow() {
                 imgLink = `${memo.link}/o/r/${resourceList[j].id}/${fileId}`;
             }
           if (restype == 'image') {
-            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="${loadUrl}" data-src="${imgLink}"/></div>`;
+            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
             resImgLength = resImgLength + 1
           }
           if (restype !== 'image') {
@@ -453,17 +457,12 @@ function memoFollow() {
           memosRes += `<p class="datasource">${resUrl}</p>`
         }
       }
-      if (memosContType === 0 && randomUser !== 1) {
-        itemOption = `<div class="item-option mr-1"><div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn" onclick="getUserMemos('${memo.link}', '${memo.creatorId}','${memo.creatorName}','${memo.avatar}')">只看他</a>`;
-        if (memosOpenId) {
-          itemOption += `<a class="btn" data-form="${memosFormString}" onclick="transPond(this)">转发</a>`;
-        } else {
-          itemOption += `<a class="btn" href="${memosLink}">查看</a>`;
-        }
-        itemOption += `</div></div></div>`;
-      } else if (memosAccess === 1 && randomUser !== 1) {
+      let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+      if (memosOpenId != null && memosOpenId !== ""  && memoList[0].creatorId == creatorId && memoList[0].link == link) {
         itemOption = `<div class="item-option mr-1"><div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn edit-btn" data-form="${memoString}" onclick="editMemo(this)">编辑</a><a class="btn" onclick="archiveMemo('${memo.id}')">归档</a><a class="btn" onclick="deleteMemo('${memo.id}')">删除</a></div></div></div>`;
-      }
+      }else{
+        itemOption = `<div class="item-option mr-1"><a class="d-flex" href="${memosLink}" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"></path></svg></a></div>`;
+      } 
       itemContent = `<div class="item-content"><div class="item-inner">${memosRes}</div><div class="item-footer d-flex mt-2"><div class="d-flex">${memosTag}</div>`;
       if (twikooEnv) {
         itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center"><a data-id="${memo.id}" data-time="${createdTs}" data-env="${twikooEnv}" data-path="${memosLink}" onclick="loadTwikoo(this)" rel="noopener noreferrer" class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01"/></svg></a><span class="ml-1">${count}</span></div></div></div><div id="${memosId}" class="item-comment mt-3 d-none"></div>`;
@@ -473,7 +472,7 @@ function memoFollow() {
         itemContent += `<div class="d-flex flex-fill justify-content-end"></div></div>`;
       }
       itemContent += `</div></div></div>`
-      result += `<div class="memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${memo.link}', '${memo.creatorId}','${memo.creatorName}','${memo.avatar}')" class="item-avatar mr-3" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs">${new Date(createdTs * 1000).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
+      result += `<div class="memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${link}', '${creatorId}','${creatorName}','${avatar}')" class="item-avatar mr-2" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs" onclick="viaNow('${creatorName}','${memosLink}')">${new Date(createdTs * 1000).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
     } // end for
 
     memoDom.insertAdjacentHTML('beforeend', result);
@@ -595,6 +594,47 @@ searchBtn.addEventListener("click", function () {
     }
   }
 });
+
+//显示订阅列表
+userlistBtn.addEventListener("click", function () {
+  let userlistDom = document.querySelector(".userlist");
+  if(userlistDom){
+    userlistDom.remove();
+  }else{
+    let userlistDom = `<div class="userlist card-item d-flex flex-wrap mb-3 animate__animated animate__fadeIn">`;
+    for (var i = 0; i < memoList.length; i++) {
+      let nowMemo = memoList[i]
+      userlistDom += `<div onclick="getUserMemos('${nowMemo.link}', '${nowMemo.creatorId}','${nowMemo.creatorName}','${nowMemo.avatar}')" class="item-avatar" style="background-image:url(${nowMemo.avatar})"></div>`
+    }
+    userlistDom += `</div>`;
+    memosDom.insertAdjacentHTML('beforebegin', userlistDom);
+  }
+});
+
+//返回个人主页
+function goHome(){
+  randomUser = 0;
+  getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+  cocoMessage.success("Hi， "+memoList[0].creatorName);
+};
+
+//切换为广场模式
+function goBbs(){
+  getMemos();
+  let usernowName = document.querySelector(".user-now-name");
+  let usernowAvatar = document.querySelector(".user-now-avatar");
+  usernowName.innerHTML = ""
+  usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+  cocoMessage.success("有啥新鲜事儿？");
+};
+
+goHomeBtn.addEventListener("click", function () {
+  goHome();
+});
+goBbsBtn.addEventListener("click", function () {
+  goBbs()
+});
+
 //随机个人
 randomUserBtn.addEventListener("click", function () {
   randomUser = 1;
@@ -605,9 +645,10 @@ randomUserBtn.addEventListener("click", function () {
   let randomIndex = Math.floor(Math.random() * (memoList.length +1));
   let userNowData = memoList[randomIndex]
   getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"","")
-  cocoMessage.success("有缘人呢？哦，是：  "+userNowData.creatorName);
+  cocoMessage.success(userNowData.creatorName+" 上线～");
 });
-//重载 reloadUser()
+
+//重载当前 user
 function reloadUser(){
   let tagnowHas = document.querySelector(".memos-tagnow") || ''
   if(tagnowHas) tagnowHas.remove();
@@ -623,8 +664,6 @@ function reloadUser(){
 
 // 获取指定用户列表
 async function getUserMemos(u,i,n,a,t,s) {
-    document.querySelector('.back-memos svg.users-refresh').classList.add("d-none")
-    document.querySelector('.back-memos svg.users-switch').classList.remove("d-none")
     memoDom.innerHTML = skeleton;
     loadBtn.classList.add('d-none');
     memoData = [],memoCreatorMap = {}, page = 1,nums = 0,dataNum = 0,memosContType = 1;
@@ -634,11 +673,11 @@ async function getUserMemos(u,i,n,a,t,s) {
     };
     let userMemoUrl;
     if(t){
-      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&tag=${t}&rowStatus=NORMAL&limit=500`;
+      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&tag=${t}&rowStatus=NORMAL&limit=480`;
     }else if(s){
       userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&content=${s}&rowStatus=NORMAL&limit=${limit}`;
     }else{
-      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&rowStatus=NORMAL&limit=500`;
+      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&rowStatus=NORMAL&limit=480`;
     }
     try {
       let response = await fetch(userMemoUrl);
@@ -841,7 +880,7 @@ function editMemo(memo) {
           ()=>{
             submitMemoBtn.classList.remove("d-none");
             editMemoDom.classList.add("d-none");
-            location.reload();
+            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
           })
         }
       })
@@ -873,52 +912,63 @@ function setMemoTag(e){
 }
 //归档
 function archiveMemo(memoId) {
-  memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-  if(memosOpenId && memoId){
-    let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
-    let memoBody = {id:memoId,rowStatus:"ARCHIVED"};
-    fetch(memoUrl, {
-      method: 'PATCH',
-      body: JSON.stringify(memoBody),
-      headers: {
-        'Authorization': `Bearer ${memosOpenId}`,
-        'Content-Type': 'application/json'
-      }
-    }).then(function(res) {
-      if (res.ok) {
-        cocoMessage.success(
-        '归档成功',
-        ()=>{
-          location.reload();
-        })
-      }
-    })
+  let isOk = confirm("确认归档？");
+  if(isOk){
+    memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+    if(memosOpenId && memoId){
+      let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+      let memoBody = {id:memoId,rowStatus:"ARCHIVED"};
+      fetch(memoUrl, {
+        method: 'PATCH',
+        body: JSON.stringify(memoBody),
+        headers: {
+          'Authorization': `Bearer ${memosOpenId}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(function(res) {
+        if (res.ok) {
+          cocoMessage.success(
+          '归档成功',
+          ()=>{
+            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+          })
+        }
+      })
+    }
   }
 }
 
 //删除
 function deleteMemo(memoId) {
-  memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-  if(memosOpenId && memoId){
-    let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
-    fetch(memoUrl, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${memosOpenId}`,
-        'Content-Type': 'application/json'
-      }
-    }).then(function(res) {
-      if (res.ok) {
-        cocoMessage.success(
-        '删除成功',
-        ()=>{
-          location.reload();
-        })
-      }
-    }).catch(err => {
-      cocoMessage.error('出错了，再检查一下吧')
-    })
+  let isOk = confirm("确认删除？");
+  if(isOk){
+    memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+    if(memosOpenId && memoId){
+      let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+      fetch(memoUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${memosOpenId}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(function(res) {
+        if (res.ok) {
+          cocoMessage.success(
+          '删除成功',
+          ()=>{
+            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+          })
+        }
+      }).catch(err => {
+        cocoMessage.error('出错了，再检查一下吧')
+      })
+    }
   }
+}
+
+function viaNow(name,link){
+  let viaCopy = ` （via [@${name}](${link})）`
+  navigator.clipboard.writeText(viaCopy).then(() => {alert(viaCopy)});
 }
 
 function getEditIcon() {
@@ -1159,7 +1209,7 @@ function getEditIcon() {
           cocoMessage.success(
             '发送成功',
             () => {
-              location.reload();
+	        getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
             })
         }
       });
@@ -1233,7 +1283,7 @@ function getEditIcon() {
           cocoMessage.success('保存成功', () => {
             memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
             memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-            location.reload();
+            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
             hasMemosOpenId();
           });
         }
@@ -1277,8 +1327,8 @@ function getEditIcon() {
       NETEASE_MUSIC_REG = /<a.*?href="https:\/\/music\.163\.com\/.*id=([0-9]+)".*?>.*<\/a>/g,
       QQMUSIC_REG = /<a.*?href="https\:\/\/y\.qq\.com\/.*(\/[0-9a-zA-Z]+)(\.html)?".*?>.*?<\/a>/g;
       marked.setOptions({
-        breaks: !0,
-        smartypants: !0,
+        breaks: true,
+        smartypants: false,
         langPrefix: 'language-'
       });
 
@@ -1286,6 +1336,7 @@ function getEditIcon() {
       let memo = data[i];
       let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
       let avatar = memo.avatarUrl;
+      let creatorId = memo.creatorId;
       let creatorName = memo.creatorName;
       let createdTs = memo.createdTs;
       let memosId = memo.id;
@@ -1300,11 +1351,10 @@ function getEditIcon() {
         .replace(QQMUSIC_REG, `<meting-js auto="https://y.qq.com/n/yqq/song$1.html"></meting-js>`)
       
       //解析 content 内 md 格式图片
-      let loadUrl = memosData.loadUrl;
       let imgArr = memo.content.match(IMG_REG);
       let imgStr = String(imgArr).replace(/[,]/g, '');
       if (imgArr) {
-        let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="${loadUrl}" data-src="$2"></div>`);
+        let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`);
         memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${memosImg}</div></div>`;        
       }
       
@@ -1312,7 +1362,7 @@ function getEditIcon() {
       let memosTag = '';
       if (tagArr) {
         memosTag = tagArr.map(t=>{
-          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${memosPath}','${memo.creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
+          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${memosPath}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
         }).join('');
       }else{
         memosTag = `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2">动态</div>`;
@@ -1333,7 +1383,7 @@ function getEditIcon() {
             imgLink = `${memosPath}/o/r/${resourceList[j].id}/${fileId}`;
           }
           if (restype == 'image') {
-            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="${loadUrl}" data-src="${imgLink}"/></div>`;
+            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
             resImgLength = resImgLength + 1
           }
           if (restype !== 'image') {
@@ -1353,7 +1403,7 @@ function getEditIcon() {
       result += `<div class="d-flex animate__animated animate__fadeIn mb-3">
       <div class="card-item flex-fill p-3">
         <div class="item-header d-flex mb-3">
-          <div class="item-avatar mr-3" style="background-image:url(${avatar})"></div>
+          <div class="item-avatar mr-2" style="background-image:url(${avatar})"></div>
           <div class="item-sub d-flex flex-column">
             <div class="item-creator"><a href="${memosPath}" target="_blank">${creatorName}</a></div>
             <div class="item-mate mt-2 text-xs">${new Date(createdTs * 1000).toLocaleString()}</div>
@@ -1408,13 +1458,6 @@ function deleteImage(e){
     window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResourceList));
     e.remove()
   } 
-}
-
-// 获取自定义 memos.json 订阅列表
-async function getMemoListData() {
-  const response = await fetch('../memos/memos.json');
-  const data = await response.json();
-  return data.myMemoList
 }
 
 // 获取 owo.json 文件中的数据
