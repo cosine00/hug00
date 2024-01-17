@@ -3,8 +3,8 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
       let limit = 8
-      var memoUrl = "https://me.edui.fun/"
-      var galleryUrl = memoUrl+"api/v1/memo?creatorId=101&rowStatus=NORMAL&tag=相册&limit=8"
+      var memoUrl = "https://i.hux.ink:5233/"
+      var galleryUrl = memoUrl+"api/v1/memo?creatorId=1&rowStatus=NORMAL&tag=相册&limit=8"
       fetch(galleryUrl).then(res => res.json()).then( resdata =>{
           var result = '',resultAll="",data = resdata
           for(var i=0;i < data.length;i++){
