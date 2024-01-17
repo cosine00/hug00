@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 function memoAlbum(numb){
   let limit = numb || 8;
-  var memoUrl = "https://i.hux.ink:5233/"
-  //var creatorId = 1
+  var memoUrl = "https://me.edui.fun/"
+  //var creatorId = 101
   //var galleryUrl = memoUrl+"api/memo?creatorId="+creatorId+"&rowStatus=NORMAL&limit="+limit+"&tag=相册"
-  var galleryUrl = memoUrl+"api/v1/memo?rowStatus=NORMAL&limit="+limit+"&tag=相册"
+  var galleryUrl = memoUrl+"api/memo?rowStatus=NORMAL&limit="+limit+"&tag=相册"
   let nowNum = 1;
   fetch(galleryUrl).then(res => res.json()).then( resdata =>{
       var result = '',resultAll="",data = resdata.data
