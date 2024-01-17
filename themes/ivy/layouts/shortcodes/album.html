@@ -2,8 +2,9 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+      let limit = 8
       var memoUrl = "https://me.edui.fun/"
-      var galleryUrl = memoUrl+"api/v1/memo?creatorId=101&rowStatus=NORMAL&tag=相册&limit=20"
+      var galleryUrl = memoUrl+"api/v1/memo?creatorId=101&rowStatus=NORMAL&tag=相册&limit=8"
       fetch(galleryUrl).then(res => res.json()).then( resdata =>{
           var result = '',resultAll="",data = resdata
           for(var i=0;i < data.length;i++){
@@ -39,13 +40,13 @@
                     resLink = memoUrl+'o/r/'+resourceList[j].id+'/'+fileId
                   }
                   if(restype == 'image'){
-                      result += '<div class="gallery-photo visible"><img class="photo-img" loading="lazy" decoding="async" src="'+resLink+'"/><span class="photo-title">'+galleryTitle+'</span><span class="photo-time">'+galleryTime+'</span></div>'
+                      result += '<div class="memos-photo"><img class="photo-img" loading="lazy" decoding="async" src="'+resLink+'"/><span class="photo-title">'+galleryTitle+'</span><span class="photo-time">'+galleryTime+'</span></div>'
                   }
                 }
               }
           }
           var galleryDom = document.querySelector('#album');
-          var galleryBefore = `<div class="gallery-photos page">`
+          var galleryBefore = `<div class="memos-photo-wrapper">`
           var galleryAfter = `</div>`
           resultAll = galleryBefore + result + galleryAfter
           galleryDom.innerHTML = resultAll
