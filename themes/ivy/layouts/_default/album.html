@@ -13,9 +13,7 @@
             var imgs = galleryTitle.match(/\!\[(.*?)\s*(.*?)\]\((.*?)\)/g)
             //解析 content 内 md 格式图片
             if(imgs){
-              imgs.forEach(item => {
-                if(nowNum < limit ){
-                  nowNum ++
+              imgs.forEach(item => {                
                   let img = item.replace(/!\[.*?\]\((.*?)\)/g,'$1'),
                       time, title, tmp = item.replace(/!\[(.*?)\]\(.*?\)/g,'$1');
                   if (tmp.indexOf(' ') != -1) {
@@ -40,15 +38,15 @@
 }).replace(/\//g, '/'); // 将默认的日期分隔符替换为斜杠，以符合指定的日期格式
                 var restype = resourceList[j].type.slice(0,5);
                 var resexlink = resourceList[j].externalLink
-                var resLink = ''
-                if(resexlink){
-                  resLink = resexlink
-                }else{
-                  resLink = memoUrl+'o/r/'+resourceList[j].id+'/'+resourceList[j].filename
-                }
-                if(restype == 'image' && nowNum <= limit ){
-                    nowNum ++
-                    result += '<div class="memos-photo"><img class="photo-img" loading="lazy" decoding="async" src="'+resLink+'"/><span class="photo-title">'+galleryTitle+'</span><span class="photo-time">'+galleryTime+'</span></div>'
+                var resLink = '',fileId=''
+                    if(resexlink){
+                      resLink = resexlink
+                    }else{
+                      fileId = resourceList[j].publicId || resourceList[j].filename
+                      resLink = memoUrl+'o/r/'+resourceList[j].id+'/'+fileId
+                    }
+                    if(restype == 'image'){
+                      result += '<div class="memos-photo"><img class="photo-img" loading="lazy" decoding="async" src="'+resLink+'"/><span class="photo-title">'+galleryTitle+'</span><span class="photo-time">'+galleryTime+'</span></div>'
                 }
               }
             }
