@@ -28,11 +28,7 @@
               if(data[i].resourceList && data[i].resourceList.length > 0){
                 var resourceList = data[i].resourceList;
                 for(var j=0;j < resourceList.length;j++){
-                  var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleDateString('zh-CN', {
-  year: 'numeric', // 显示年份，例如：'2023'
-  month: '2-digit', // 显示月份，例如：'04'
-  day: '2-digit', // 显示日期，例如：'06'
-}).replace(/\//g, '/'); // 将默认的日期分隔符替换为斜杠，以符合指定的日期格式
+                  var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleString()
                   var restype = resourceList[j].type.slice(0,5);
                   var resexlink = resourceList[j].externalLink
                   var resLink = '',fileId=''
