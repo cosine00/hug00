@@ -1,40 +1,38 @@
 /**
- * memos.js 24.1.17
+ * memos.js 24.1.22
  * https://immmmm.com/
  */
 var memosData = {
   dom:"#memos",
   listDom:"#memo-list",
-  limit:"8",
-  gravatar:"https://cravatar.cn"
+  limit:"8"
 }
-var gravatar = memosData.gravatar;
 var memosDom = document.querySelector(memosData.dom);
 
 let memoList
 var memoDefaultList = [
   {
-    creatorName:'林木木',
-    website:'https://immmmm.com',
-    link:'https://me.edui.fun',
-    creatorId:'101',
-    avatar:gravatar+'/avatar/ba83fa02fc4b2ba621514941307e21be.jpeg?s=400',
-    twikoo:'https://metk.edui.fun'
+    "creatorName": "林木木",
+    "website": "https://immmmm.com",
+    "link": "https://me.edui.fun",
+    "creatorId": "101",
+    "avatar": "https://cravatar.cn/avatar/ba83fa02fc4b2ba621514941307e21be?s=80",
+    "twikoo": "https://metk.edui.fun"
   },{
-    creatorName:'归臧',
-    website:'https://nuoea.com/',
-    link:'https://memos.nuoea.com',
-    creatorId:'101',
-    avatar:gravatar+'/avatar/020d365ea2596ef6d516143bb0552704.jpeg?s=400',
-    twikoo:'https://twikoo.nuoea.com'
+    "creatorName": "归臧",
+    "website": "https://nuoea.com/",
+    "link": "https://memos.nuoea.com",
+    "creatorId": "101",
+    "avatar": "https://cravatar.cn/avatar/020d365ea2596ef6d516143bb0552704?s=80",
+    "twikoo": "https://twikoo.nuoea.com"
   },{
-    creatorName:'koobai',
-    website:'https://koobai.com',
-    link:'https://memos.koobai.com',
-    creatorId:'1',
-    avatar:gravatar+'/avatar/3b3d336a7d389b7ae8531cbe177ae9b7.jpeg?s=400',
-    artalk:'https://c.koobai.com',
-    artSite:'空白唠叨'
+    "creatorName": "koobai",
+    "website": "https://koobai.com",
+    "link": "https://memos.koobai.com",
+    "creatorId": "1",
+    "avatar": "https://cravatar.cn/avatar/3b3d336a7d389b7ae8531cbe177ae9b7?s=80",
+    "artalk": "https://c.koobai.com",
+    "artSite": "空白唠叨"
   }
 ];
 
@@ -43,19 +41,23 @@ var userNow = `
   <div class="call-memos-editor item-avatar p-3 "><img class="user-now-avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/ style="pointer-events: none;"></div>
   <span class="user-now-name"></span>
   <div class="row-fill">
-    <span class="search-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
+    <input class="search-memos-input border-b input-text py-2 animate__animated animate__fadeIn animate__fadeInRight d-none" type="text" placeholder="想搜点啥？" id="">
+    <span class="search-memos-btn button d-md-flex p-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21l-4.3-4.3"/></g></svg>
     </span>
-    <span class="userlist-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 19a6 6 0 0 0-12 0"/><circle cx="8" cy="9" r="4"/><path d="M22 19a6 6 0 0 0-6-6a4 4 0 1 0 0-8"/></g></svg>
+    <span class="memos-theme-toggle button d-md-flex p-2 mr-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8a2.83 2.83 0 0 0 4 4a4 4 0 1 1-4-4m0-6v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>
     </span>
-    <span class="randomuser-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
+    <span class="userlist-memos button d-md-flex p-2 mr-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 19a6 6 0 0 0-12 0"/><circle cx="8" cy="9" r="4"/><path d="M22 19a6 6 0 0 0-6-6a4 4 0 1 0 0-8"/></g></svg>
+    </span>
+    <span class="randomuser-memos button d-md-flex p-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16m-8-8v8m-4 8l-2 3m12 0l-2-3m0-4"/></g></svg>
     </span>
-    <span class="gobbs-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-2">
+    <span class="gobbs-memos button d-md-flex p-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9m2.9 2.8a6.14 6.14 0 0 0-.8 7.5"/><circle cx="12" cy="9" r="2"/><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47M19.1 1.9a9.96 9.96 0 0 1 0 14.1m-9.6 2h5M8 22l4-11l4 11"/></g></svg>
     </span> 
-    <span class="gohome-memos button d-md-flex pt-3 pb-3 pl-2 pr-2 mr-3">
+    <span class="gohome-memos button d-md-flex p-2 mr-3">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m3 9l9-7l9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></g></svg>
     </span>
   </div>
@@ -70,27 +72,27 @@ var memosEditorCont = `
         <textarea class="memos-editor-textarea text-sm" rows="1" placeholder="任何想法..."></textarea>
       </div>
       <div class="memos-image-list d-flex flex-fill line-xl flex-wrap"></div>
-      <div class="memos-editor-tools pt-3">
+      <div class="memos-editor-tools pt-1">
         <div class="d-flex flex-wrap">
-          <div class="button outline action-btn biao-qing-btn mr-3">
+          <div class="button outline action-btn biao-qing-btn mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2s4-2 4-2M9 9h.01M15 9h.01"/></g></svg>
           </div>
-          <div class="button outline action-btn tag-btn mr-3">
+          <div class="button outline action-btn tag-btn mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 9h16M4 15h16M10 3L8 21m8-18l-2 18"/></svg>
           </div>
-          <div class="button outline action-btn codeone-btn mr-3">
+          <div class="button outline action-btn codeone-btn mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 7l-5 5l5 5m8 0l5-5l-5-5"/></svg>
           </div>
-          <div class="button outline action-btn code-btn mr-3">
+          <div class="button outline action-btn code-btn mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 8l-4 4l4 4m10-8l4 4l-4 4M14 4l-4 16"/></svg>
           </div>
-          <div class="button outline action-btn mr-3 link-btn">
+          <div class="button outline action-btn mr-2 link-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17H7A5 5 0 0 1 7 7h2m6 0h2a5 5 0 1 1 0 10h-2m-7-5h8"/></svg>
           </div>
-          <div class="button outline action-btn mr-3 linkpic-btn">
+          <div class="button outline action-btn mr-2 linkpic-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></g></svg>
           </div>
-          <div class="button outline action-btn image-btn mr-3" onclick="this.lastElementChild.click()">
+          <div class="button outline action-btn image-btn mr-2" onclick="this.lastElementChild.click()">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7m4 2h6m-3-3v6"/><circle cx="9" cy="9" r="2"/><path d="m21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></g></svg>
             <input class="memos-upload-image-input d-none" type="file" accept="image/*">
           </div>
@@ -99,39 +101,49 @@ var memosEditorCont = `
           <div class="memos-tag-list d-none mt-2 animate__animated animate__fadeIn"></div>
         </div>
       </div>
-      <div class="memos-editor-footer border-t mt-2 pt-2 ">
+      <div class="memos-editor-footer border-t mt-2 pt-2 flex-wrap">
         <div class="d-flex">
-          <div class="editor-selector select outline">
-            <select class="select-memos-value pl-2 pr-4 py-2"><option value="PUBLIC">所有人可见</option><option value="PROTECTED">仅登录可见</option><option value="PRIVATE">仅自己可见</option></select>
-          </div>
-          <div class="button outline random-btn mx-2 p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2l4 4l-4 4M2 6h1.9c1.5 0 2.9.9 3.6 2.2M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14l4 4l-4 4"/></g></svg>
-          </div>
           <div class="button outline switchUser-btn d-none d-md-flex mr-2 p-2">
             <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 7h-9m3 10H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></g></svg>
           </div>
+          <div class="button outline private-btn mr-2 p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v12l3-3l2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8"/></svg>
+          </div>
+          <div class="button outline random-btn mr-2 p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2l4 4l-4 4M2 6h1.9c1.5 0 2.9.9 3.6 2.2M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14l4 4l-4 4"/></g></svg>
+          </div>
         </div>
         <div class="editor-submit d-flex flex-fill justify-content-end">
+          <div class="editor-selector select outline mr-5">
+            <select class="select-memos-value pl-2 pr-4 py-2">
+              <option value="PUBLIC">公开</option>
+              <option value="PRIVATE">私有</option>
+            </select>
+          </div>
           <div class="edit-memos d-none">
             <button class="outline cancel-edit-btn mr-3 px-3 py-2" title="取消">取消</button>
-            <button class="primary edit-memos-btn px-3 py-2" title="保存">保存</button>
+            <button class="primary edit-memos-btn px-5 py-2" title="保存">保存</button>
           </div>
-          <button class="primary submit-memos-btn px-3 py-2" title="记下">记下</button>
+          <button class="primary submit-memos-btn px-5 py-2" title="记下">记下</button>
         </div>
       </div>
     </div>
     <div class="memos-editor-option animate__animated animate__fadeIn d-none">
       <div class="row flex-fill mr-3 p-2">
-        <input name="memos-path-url" class="memos-path-input input-text col-6" type="text" value="" placeholder="Memo 网址（最后无斜杠）">
-        <input name="memos-token-url" class="memos-token-input input-text col-6" type="text" value="" placeholder="Access Tokens">
+        <input name="memos-path-url" class="memos-path-input border-b input-text col-6 py-2" type="text" value="" placeholder="Memo 网址">
+        <input name="memos-token-url" class="memos-token-input border-b input-text col-6 py-2" type="text" value="" placeholder="Access Tokens">
+        <input name="artalk-url" class="memos-artalk-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选]Artalk 评论网址">
+        <input name="artalk-site-name" class="memos-artalksite-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选] Artalk 站点名称">
+        <input name="twikoo-path-url" class="memos-twikoo-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选]Twikoo 评论网址">
       </div>
-      <button class="primary submit-openapi-btn px-3 py-2">保存</button>
+      <button class="primary submit-openapi-btn px-5 py-2">保存</button>
     </div>
   </div>
   <div class="memos-random d-none"></div>
 </div>`;
 memosDom.insertAdjacentHTML('afterbegin',memosEditorCont);
 
+var themeTogglebtn = document.querySelector(".memos-theme-toggle");
 var memosEditorInner = document.querySelector(".memos-editor-inner"); 
 var memosEditorOption = document.querySelector(".memos-editor-option");
 var memosRadomCont = document.querySelector(".memos-random");
@@ -141,9 +153,11 @@ var codeBtn = document.querySelector(".code-btn");
 var linkBtn = document.querySelector(".link-btn");
 var linkPicBtn = document.querySelector(".linkpic-btn");
 var randomBtn = document.querySelector(".random-btn");
+var privateBtn = document.querySelector(".private-btn");
 var switchUserBtn = document.querySelector(".switchUser-btn");
 var loadEditorBtn = document.querySelector(".call-memos-editor");
-var searchBtn = document.querySelector(".search-memos");
+var searchBtn = document.querySelector(".search-memos-btn");
+var searchInput = document.querySelector(".search-memos-input");
 var userlistBtn = document.querySelector(".userlist-memos");
 var randomUserBtn = document.querySelector(".randomuser-memos");
 var submitApiBtn = document.querySelector(".submit-openapi-btn");
@@ -151,16 +165,28 @@ var submitMemoBtn = document.querySelector(".submit-memos-btn");
 var memosVisibilitySelect = document.querySelector(".select-memos-value");
 var pathInput = document.querySelector(".memos-path-input");
 var tokenInput = document.querySelector(".memos-token-input");
+var artalkInput = document.querySelector(".memos-artalk-input");
+var artalkSiteInput = document.querySelector(".memos-artalksite-input");
+var twikooInput = document.querySelector(".memos-twikoo-input");
 var uploadImageInput = document.querySelector(".memos-upload-image-input");
 var memosTextarea = document.querySelector(".memos-editor-textarea");
+var getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
+var getMode = window.localStorage && window.localStorage.getItem("memos-mode");
 var memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
 var memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
-var getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
+var memosMeID = window.localStorage && window.localStorage.getItem("memos-me-id");
+var memosMeNickname = window.localStorage && window.localStorage.getItem("memos-me-nickname");
+var memosMeAvatarUrl = window.localStorage && window.localStorage.getItem("memos-me-avatarurl");
+var memosMeArtalk = window.localStorage && window.localStorage.getItem("memos-artalk-input");
+var memosMeArtalkSite = window.localStorage && window.localStorage.getItem("memos-artalksite-input");
+var memosMeTwikoo = window.localStorage && window.localStorage.getItem("memos-twikoo-input");
+
 var editMemoDom = document.querySelector(".edit-memos");
 var editMemoBtn = document.querySelector(".edit-memos-btn");
 var cancelEditBtn = document.querySelector(".cancel-edit-btn");
 var biaoqingBtn = document.querySelector(".biao-qing-btn");
 var usernowDom = document.querySelector(".user-now");
+var usernowBtnDom = document.querySelectorAll(".user-now .button");
 var goHomeBtn = document.querySelector('.gohome-memos')
 var goBbsBtn = document.querySelector('.gobbs-memos')
 
@@ -173,39 +199,84 @@ var loadBtn = document.querySelector("button.button-load");
 
 var limit = memosData.limit,page = 1,nums = 0,dataNum = 0,memosContType = 0, memosAccess = 0,randomUser = 0;
 var memoData = [],memosStr = [],memoCreatorMap = {},twikooCount = {},artalkCount = {};
+let memosMode;
+let nowLink;
+let nowId;
+let nowName;
+let nowAvatar;
+var memoChangeDate = 0;
+var getSelectedValue = window.localStorage && window.localStorage.getItem("memos-visibility-select") || "PUBLIC";
 
 document.addEventListener("DOMContentLoaded", () => {
+  let getTheme = window.localStorage && window.localStorage.getItem("theme");
+	let isDark = getTheme === "dark";
+	let isLight = getTheme === "light";
   //切换主题
-	var getTheme = window.localStorage && window.localStorage.getItem("theme");
-	var isDark = getTheme === "dark";
-	var isLight = getTheme === "light";
 	if (getTheme !== null) {
 		document.body.classList.toggle("dark-theme",isDark);
 	}
-	Array.prototype.forEach.call(document.querySelectorAll('.theme-toggle'), function(el){
-    el.addEventListener('click', function() {
-			document.body.classList.toggle("dark-theme");
-			window.localStorage && window.localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
-		});
-	});
+  if (getTheme == null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		document.body.classList.add("dark-theme","dark");
+  }
+});
+
+themeTogglebtn.addEventListener('click', function() {
+  if(!document.body.classList.contains("dark")){
+    document.body.classList.add("dark-theme","dark");
+    window.localStorage && window.localStorage.setItem("theme","dark");
+  }else{
+    document.body.classList.remove("dark-theme","dark");
+    window.localStorage && window.localStorage.setItem("theme","light");
+  }
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
   // 获取自定义列表
   if(typeof memosJson !== 'undefined'){
     try {
-      memoList = await getMemoListData(memosJson.url); // 获取自定义列表
+      memoOurList = await getMemoListData(memosJson.url); // 获取自定义列表
     } catch (error) {
-      memoList = memoDefaultList
+      memoOurList = memoDefaultList
     }
   }else{
     try {
-      memoList = await getMemoListData('../memos/memos.json'); // 获取自定义列表
+      memoOurList = await getMemoListData("https://memobbs.app/memos.json"); // 获取自定义列表
     } catch (error) {
-      memoList = memoDefaultList
+      memoOurList = memoDefaultList
     }
   }
-  memoFollow();
+  if(typeof memosMyList !== 'undefined'){
+    const mergedArray = [...memosMyList, ...memoOurList];
+    memoList = mergedArray.filter((item, index) => {
+      const stringifiedItem = JSON.stringify(item);
+      return index === mergedArray.findIndex(obj => {
+        return JSON.stringify(obj) === stringifiedItem;
+      });
+    });
+  }else{
+    memoList = memoOurList
+  }
+
+  //查询当前页面 window.location.origin 作为主页展示
+  let memobbsAdmin = []
+  let memobbsLink = window.location.origin;
+  let linkIndex = memoList.findIndex(item => (item.website == memobbsLink))
+  if(linkIndex >= 0){
+    memobbsAdmin.push(memoList[linkIndex])
+    const mergedArray2 = [...memobbsAdmin, ...memoList];
+    memoList = mergedArray2.filter((item, index) => {
+      const stringifiedItem = JSON.stringify(item);
+      return index === mergedArray2.findIndex(obj => {
+        return JSON.stringify(obj) === stringifiedItem;
+      });
+    });
+  }
+  
+  nowLink = memosPath || memoList[0].link;
+  nowId = memosMeID || memoList[0].creatorId;
+  nowName = memosMeNickname || memoList[0].creatorName;
+  nowAvatar = memosMeAvatarUrl || memoList[0].avatar;
+  memoFollow(getMode);
   getEditIcon();
 });
 
@@ -216,10 +287,25 @@ async function getMemoListData(url) {
   return data.myMemoList
 }
 
-function memoFollow() {
-  //getMemos();
-  getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
-  
+function memoFollow(mode) {
+  //记忆显示模式
+  usernowBtnDom.forEach((item) => {item.classList.remove('current');})
+  if(mode == "MEMOSHOME"){
+    goHomeBtn.classList.add("current")
+    getUserMemos(nowLink,nowId,nowName,nowAvatar)
+  }else if(mode == "MEMOSBBS"){
+    goBbsBtn.classList.add("current")
+    getMemos();
+  }else if(mode == "RANDUSER"){
+    randomUserBtn.classList.add("current")
+    goRandUser()
+  }else if(mode == "NOPUBLIC"){
+    getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",mode)
+  }else{
+    goHomeBtn.classList.add("current")
+    getUserMemos(nowLink,nowId,nowName,nowAvatar)
+  }
+
   loadBtn.addEventListener("click", function () {
     if(page < dataNum) {
       page++;
@@ -323,7 +409,6 @@ function memoFollow() {
   }
   this.getMemoCount = getMemoCount;
 
-
   function updateData(res) {
     res.sort((i,o)=>{
       return( o.createdTs - i.createdTs)
@@ -347,175 +432,176 @@ function memoFollow() {
     };
     updateHtml(memosStr);
   }
-  
-  // 插入 html 
-  async function updateHtml(data) {
-    let result = '',itemOption = '',itemContent = '';
-    let TAG_REG = /#([^#\s!.,;:?"'()]+)(?= )/g, 
-      IMG_REG = /\!\[(.*?)\]\((.*?)\)/g,
-      LINK_REG = /(?<!!)\[(.*?)\]\((.*?)\)/g,
-      LINE_REG = /\n/g,
-      BLOCKQUDTE_REG = /\>.*$/g,
-      CODE_REG = /\```.*$/g,
-      DEODB_LINK_REG = /(https:\/\/(www|movie|book)\.douban\.com\/(game|subject)\/[0-9]+\/).*?/g,
-      BILIBILI_REG = /<a.*?href="https:\/\/www\.bilibili\.com\/video\/((av[\d]{1,10})|(BV([\w]{10})))\/?".*?>.*<\/a>/g,
-      NETEASE_MUSIC_REG = /<a.*?href="https:\/\/music\.163\.com\/.*id=([0-9]+)".*?>.*<\/a>/g,
-      QQMUSIC_REG = /<a.*?href="https\:\/\/y\.qq\.com\/.*(\/[0-9a-zA-Z]+)(\.html)?".*?>.*?<\/a>/g,
-      QQVIDEO_REG = /<a.*?href="https:\/\/v\.qq\.com\/.*\/([a-z|A-Z|0-9]+)\.html".*?>.*<\/a>/g,
-      YOUKU_REG = /<a.*?href="https:\/\/v\.youku\.com\/.*\/id_([a-z|A-Z|0-9|==]+)\.html".*?>.*<\/a>/g,
-      YOUTUBE_REG = /<a.*?href="https:\/\/www\.youtube\.com\/watch\?v\=([a-z|A-Z|0-9]{11})\".*?>.*<\/a>/g;
-      marked.setOptions({
-        breaks: true,
-        smartypants: false,
-        langPrefix: 'language-'
-      });
-    for (var i = 0; i < data.length; i++) {
-      let memo = data[i];
-      let link = memo.link;
-      let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
-      let avatar = memo.avatar;
-      let count = memo.count || "";
-      let website = memo.website;
-      let creatorId = memo.creatorId;
-      let creatorName = memo.creatorName;
-      let createdTs = memo.createdTs;
-      let memosId = createdTs+memo.id;
-      let twikooEnv = memo.twikoo;
-      let artalkEnv = memo.artalk;
-      let artSite = memo.artSite;
-      let memosLink = memo.link + "/m/" + memo.id;
-      let memosRes = memo.content
-        .replace(TAG_REG, "")
-        .replace(IMG_REG, "")
-        .replace(DEODB_LINK_REG, "")
-        .replace(LINK_REG, `<a class='primary' href='$2' target='_blank'>$1</a>`)
-        memosRes = marked.parse(memosRes)
-        .replace(BILIBILI_REG, `<div class='video-wrapper'><iframe src='//www.bilibili.com/blackboard/html5mobileplayer.html?bvid=$1&as_wide=1&high_quality=1&danmaku=0' scrolling='no' border='0' frameborder='no' framespacing='0' allowfullscreen='true'></iframe></div>`)
-        .replace(NETEASE_MUSIC_REG, `<meting-js auto='https://music.163.com/#/song?id=$1'></meting-js>`)
-        .replace(QQMUSIC_REG, `<meting-js auto='https://y.qq.com/n/yqq/song$1.html'></meting-js>`)
-        .replace(QQVIDEO_REG, `<div class='video-wrapper'><iframe src='//v.qq.com/iframe/player.html?vid=$1' allowFullScreen='true' frameborder='no'></iframe></div>`)
-        .replace(YOUKU_REG, `<div class='video-wrapper'><iframe src='https://player.youku.com/embed/$1' frameborder=0 'allowfullscreen'></iframe></div>`)
-        .replace(YOUTUBE_REG, `<div class='video-wrapper'><iframe src='https://www.youtube.com/embed/$1' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen title='YouTube Video'></iframe></div>`)
 
-      let transData = memo.content.replace(TAG_REG, "").replace(IMG_REG, "").replace(LINK_REG, "$1").replace(LINE_REG, " ").replace(BLOCKQUDTE_REG, "").replace(CODE_REG, "");
-      if(transData.length>140){transData = transData.substring(0,140) + '...'};
-      let memosForm = {creatorName:creatorName,content:transData,url:memosLink};
-      let memosFormString = JSON.stringify(memosForm).replace(/"/g, '&quot;');
-
-      //解析 content 内 md 格式图片
-      let imgArr = memo.content.match(IMG_REG);
-      let imgStr = String(imgArr).replace(/[,]/g, '');
-      if (imgArr) {
-          let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`)
-          memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${memosImg}</div></div>`
-      }
-      // NeoDB
-      let neodbArr = memo.content.match(DEODB_LINK_REG);
-      let neodbDom = '';
-      if(neodbArr){
-        for(let k=0;k < neodbArr.length;k++){
-          neodbDom += await fetchNeoDB(neodbArr[k])
-        }
-      }
-      //标签
-      let tagArr = memo.content.match(TAG_REG);
-      let memosTag = '';
-      if (tagArr) {
-        memosTag = tagArr.map(t=>{
-          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${link}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
-        }).join('');
-      }else{
-        memosTag = `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2 no-cursor">动态</div>`;
-      }
-      
-      //解析内置资源文件
-      if (memo.resourceList && memo.resourceList.length > 0) {
-        let resourceList = memo.resourceList;
-        let imgUrl = '',resUrl = '',resImgLength = 0;
-        for (let j = 0; j < resourceList.length; j++) {
-          let restype = resourceList[j].type.slice(0, 5);
-          let resexlink = resourceList[j].externalLink;
-          let imgLink = '', fileId = '';
-            if (resexlink) {
-                imgLink = resexlink
-            } else {
-                fileId = resourceList[j].publicId || resourceList[j].filename
-                imgLink = `${memo.link}/o/r/${resourceList[j].id}/${fileId}`;
-            }
-          if (restype == 'image') {
-            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
-            resImgLength = resImgLength + 1
-          }
-          if (restype !== 'image') {
-            resUrl += `<a target="_blank" rel="noreferrer" href="${imgLink}">${resourceList[j].filename}</a>`;
-          }
-        }
-        if (imgUrl) {
-          memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${imgUrl}</div></div>`
-        }
-        if (resUrl) {
-          memosRes += `<p class="datasource">${resUrl}</p>`
-        }
-      }
-      let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-      if (memosOpenId != null && memosOpenId !== ""  && memoList[0].creatorId == creatorId && memoList[0].link == link) {
-        itemOption = `<div class="item-option mr-1"><div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn edit-btn" data-form="${memoString}" onclick="editMemo(this)">编辑</a><a class="btn" onclick="archiveMemo('${memo.id}')">归档</a><a class="btn" onclick="deleteMemo('${memo.id}')">删除</a></div></div></div>`;
-      }else{
-        itemOption = `<div class="item-option mr-1"><a class="d-flex" href="${memosLink}" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"></path></svg></a></div>`;
-      } 
-      itemContent = `<div class="item-content"><div class="item-inner">${memosRes}</div><div class="item-footer d-flex mt-2"><div class="d-flex">${memosTag}</div>`;
-      if (twikooEnv) {
-        itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center"><a data-id="${memo.id}" data-time="${createdTs}" data-env="${twikooEnv}" data-path="${memosLink}" onclick="loadTwikoo(this)" rel="noopener noreferrer" class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01"/></svg></a><span class="ml-1">${count}</span></div></div></div><div id="${memosId}" class="item-comment mt-3 d-none"></div>`;
-      } else if (artalkEnv) {
-        itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center"><a data-id="${memo.id}" data-time="${createdTs}" data-env="${artalkEnv}" data-path="${artSite}" onclick="loadArtalk(this)" rel="noopener noreferrer" class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01"/></svg></a><span class="ml-1">${count}</span></div></div></div><div id="${memosId}" class="item-comment mt-3 d-none"></div>`;
-      } else {
-        itemContent += `<div class="d-flex flex-fill justify-content-end"></div></div>`;
-      }
-      itemContent += `</div></div></div>`
-      result += `<div class="memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${link}', '${creatorId}','${creatorName}','${avatar}')" class="item-avatar mr-2" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs" onclick="viaNow('${creatorName}','${memosLink}')">${new Date(createdTs * 1000).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
-    } // end for
-
-    memoDom.insertAdjacentHTML('beforeend', result);
-    loadBtn.textContent = "加载更多";
-    function animation() {
-      var animate = document.getElementsByClassName("animate__animated");
-      Array.prototype.slice.call(animate,0).forEach(function(i,index){
-        const top = i.getBoundingClientRect().top; // 目标元素dom距离顶部的高度
-        if (top <= window.innerHeight) { // 当top小于等于文档显示区域的高时，就进入可视区域了
-          i.classList.contains('animate__fadeIn"') ? '' : i.classList.add("animate__fadeIn")
-        }
-      })
-    }
-    animation();
-    
-    window.addEventListener('scroll', animation);
-    //图片灯箱
-    window.ViewImage && ViewImage.init('.images-wrapper img')
-    //相对时间
-    window.Lately && Lately.init({
-      target: '.item-mate'
-    });
-    //延迟加载
-    let observer = lozad('.lozad');
-    observer.observe();
-    //下拉菜单
-    let dropdowns = document.querySelectorAll(".dropdown");
-    Array.from(dropdowns).forEach(function(dropdown) {
-      let lis = Array.from(dropdown.children).slice(1);
-      dropdown.addEventListener("mouseenter", function() {
-        lis.forEach(function(item) {
-          item.classList.remove("d-none");
-        });
-      });
-      dropdown.addEventListener("mouseleave", function() {
-        lis.forEach(function(item) {
-          item.classList.add("d-none");
-        });
-      });
-    });
-  }
 };
 
+// 插入 html 
+async function updateHtml(data) {
+  let result = '',itemOption = '',itemContent = '';
+  let TAG_REG = /#([^#\s!.,;:?"'()]+)(?= )/g, 
+    IMG_REG = /\!\[(.*?)\]\((.*?)\)/g,
+    LINK_REG = /(?<!!)\[(.*?)\]\((.*?)\)/g,
+    LINE_REG = /\n/g,
+    BLOCKQUDTE_REG = /\>.*$/g,
+    CODE_REG = /\```.*$/g,
+    DEODB_LINK_REG = /(https:\/\/(www|movie|book)\.douban\.com\/(game|subject)\/[0-9]+\/).*?/g,
+    BILIBILI_REG = /<a.*?href="https:\/\/www\.bilibili\.com\/video\/((av[\d]{1,10})|(BV([\w]{10})))\/?".*?>.*<\/a>/g,
+    NETEASE_MUSIC_REG = /<a.*?href="https:\/\/music\.163\.com\/.*id=([0-9]+)".*?>.*<\/a>/g,
+    QQMUSIC_REG = /<a.*?href="https\:\/\/y\.qq\.com\/.*(\/[0-9a-zA-Z]+)(\.html)?".*?>.*?<\/a>/g,
+    QQVIDEO_REG = /<a.*?href="https:\/\/v\.qq\.com\/.*\/([a-z|A-Z|0-9]+)\.html".*?>.*<\/a>/g,
+    YOUKU_REG = /<a.*?href="https:\/\/v\.youku\.com\/.*\/id_([a-z|A-Z|0-9|==]+)\.html".*?>.*<\/a>/g,
+    YOUTUBE_REG = /<a.*?href="https:\/\/www\.youtube\.com\/watch\?v\=([a-z|A-Z|0-9]{11})\".*?>.*<\/a>/g;
+    marked.setOptions({
+      breaks: true,
+      smartypants: false,
+      langPrefix: 'language-'
+    });
+  for (var i = 0; i < data.length; i++) {
+    let memo = data[i];
+    let link = memo.link;
+    let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
+    let avatar = memo.avatar;
+    let count = memo.count || "";
+    let website = memo.website;
+    let creatorId = memo.creatorId;
+    let creatorName = memo.creatorName;
+    let createdTs = memo.createdTs;
+    let memosId = createdTs+memo.id;
+    let memosVisibility = memo.visibility
+    let twikooEnv = memo.twikoo;
+    let artalkEnv = memo.artalk;
+    let artSite = memo.artSite;
+    let memosLink = memo.link + "/m/" + memo.id;
+    let memosRes = memo.content
+      .replace(TAG_REG, "")
+      .replace(IMG_REG, "")
+      .replace(DEODB_LINK_REG, "")
+      .replace(LINK_REG, `<a class='primary' href='$2' target='_blank'>$1</a>`)
+      memosRes = marked.parse(memosRes)
+      .replace(BILIBILI_REG, `<div class='video-wrapper'><iframe src='//www.bilibili.com/blackboard/html5mobileplayer.html?bvid=$1&as_wide=1&high_quality=1&danmaku=0' scrolling='no' border='0' frameborder='no' framespacing='0' allowfullscreen='true'></iframe></div>`)
+      .replace(NETEASE_MUSIC_REG, `<meting-js auto='https://music.163.com/#/song?id=$1'></meting-js>`)
+      .replace(QQMUSIC_REG, `<meting-js auto='https://y.qq.com/n/yqq/song$1.html'></meting-js>`)
+      .replace(QQVIDEO_REG, `<div class='video-wrapper'><iframe src='//v.qq.com/iframe/player.html?vid=$1' allowFullScreen='true' frameborder='no'></iframe></div>`)
+      .replace(YOUKU_REG, `<div class='video-wrapper'><iframe src='https://player.youku.com/embed/$1' frameborder=0 'allowfullscreen'></iframe></div>`)
+      .replace(YOUTUBE_REG, `<div class='video-wrapper'><iframe src='https://www.youtube.com/embed/$1' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen title='YouTube Video'></iframe></div>`)
+    let transData = memo.content.replace(TAG_REG, "").replace(IMG_REG, "").replace(LINK_REG, "$1").replace(LINE_REG, " ").replace(BLOCKQUDTE_REG, "").replace(CODE_REG, "");
+    if(transData.length>140){transData = transData.substring(0,140) + '...'};
+    let memosForm = {creatorName:creatorName,content:transData,url:memosLink};
+    let memosFormString = JSON.stringify(memosForm).replace(/"/g, '&quot;');
+    //解析 content 内 md 格式图片
+    let imgArr = memo.content.match(IMG_REG);
+    let imgStr = String(imgArr).replace(/[,]/g, '');
+    if (imgArr) {
+        let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`)
+        memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${memosImg}</div></div>`
+    }
+    // NeoDB
+    let neodbArr = memo.content.match(DEODB_LINK_REG);
+    let neodbDom = '';
+    if(neodbArr){
+      for(let k=0;k < neodbArr.length;k++){
+        neodbDom += await fetchNeoDB(neodbArr[k])
+      }
+    }
+    //标签
+    let tagArr = memo.content.match(TAG_REG);
+    let memosTag = '';
+    if (tagArr) {
+      memosTag = tagArr.map(t=>{
+        return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${link}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
+      }).join('');
+    }else{
+      memosTag = `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2 no-cursor">动态</div>`;
+    }
+    
+    //解析内置资源文件
+    if (memo.resourceList && memo.resourceList.length > 0) {
+      let resourceList = memo.resourceList;
+      let imgUrl = '',resUrl = '',resImgLength = 0;
+      for (let j = 0; j < resourceList.length; j++) {
+        let restype = resourceList[j].type.slice(0, 5);
+        let resexlink = resourceList[j].externalLink;
+        let imgLink = '', fileId = '';
+        if (resexlink) {
+            imgLink = resexlink
+        } else {
+            fileId = resourceList[j].publicId || resourceList[j].filename
+            imgLink = `${memo.link}/o/r/${resourceList[j].id}`;///${fileId}
+        }
+        if (restype == 'image') {
+          imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
+          resImgLength = resImgLength + 1
+        }
+        if (restype !== 'image') {
+          resUrl += `<a target="_blank" rel="noreferrer" href="${imgLink}">${resourceList[j].filename}</a>`;
+        }
+      }
+      if (imgUrl) {
+        memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${imgUrl}</div></div>`
+      }
+      if (resUrl) {
+        memosRes += `<p class="datasource">${resUrl}</p>`
+      }
+    }
+    let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+    if (memosOpenId != null && memosOpenId !== ""  && nowId == creatorId && nowLink == link) {
+      itemOption = `<div class="item-option mr-1"><div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn edit-btn" data-form="${memoString}" onclick="editMemo(this)">编辑</a><a class="btn" onclick="archiveMemo('${memo.id}')">归档</a><a class="btn" onclick="deleteMemo('${memo.id}')">删除</a></div></div></div>`;
+    }else{
+      itemOption = `<div class="item-option mr-1"><a class="d-flex" href="${memosLink}" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"></path></svg></a></div>`;
+    } 
+    itemContent = `<div class="item-content"><div class="item-inner">${memosRes}</div><div class="item-footer d-flex mt-2"><div class="d-flex">${memosTag}</div>`;
+    if (twikooEnv && memosVisibility == "PUBLIC") {
+      itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center"><a data-id="${memo.id}" data-time="${createdTs}" data-env="${twikooEnv}" data-path="${memosLink}" onclick="loadTwikoo(this)" rel="noopener noreferrer" class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01"/></svg></a><span class="ml-1">${count}</span></div></div></div><div id="${memosId}" class="item-comment mt-3 d-none"></div>`;
+    } else if (artalkEnv && memosVisibility == "PUBLIC") {
+      itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center"><a data-id="${memo.id}" data-time="${createdTs}" data-env="${artalkEnv}" data-path="${artSite}" onclick="loadArtalk(this)" rel="noopener noreferrer" class="d-flex"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01"/></svg></a><span class="ml-1">${count}</span></div></div></div><div id="${memosId}" class="item-comment mt-3 d-none"></div>`;
+    } else if(memosVisibility !== "PUBLIC"){
+      itemContent += `<div class="d-flex flex-fill justify-content-end"><div class="item d-flex align-items-center mr-1" onclick="getUserMemos('${link}','${creatorId}','${creatorName}','${avatar}','','','NOPUBLIC')"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 14 14"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1.68 4.206C2.652 6.015 4.67 7.258 7 7.258c2.331 0 4.348-1.243 5.322-3.052M2.75 5.596L.5 7.481m4.916-.415L4.333 9.794m6.917-4.198l2.25 1.885m-4.92-.415l1.083 2.728"/></svg></div></div></div>`;
+    } else {
+      itemContent += `<div class="d-flex flex-fill justify-content-end"></div></div>`;
+    }
+    itemContent += `</div></div></div>`
+    result += `<div class="memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${link}', '${creatorId}','${creatorName}','${avatar}')" class="item-avatar mr-2" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs" onclick="viaNow('${creatorName}','${memosLink}')">${new Date(createdTs * 1000 - 5 ).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
+  } // end for
+  
+  memoDom.insertAdjacentHTML('beforeend', result);
+  loadBtn.textContent = "加载更多";
+  function animation() {
+    var animate = document.getElementsByClassName("animate__animated");
+    Array.prototype.slice.call(animate,0).forEach(function(i,index){
+      const top = i.getBoundingClientRect().top; // 目标元素dom距离顶部的高度
+      if (top <= window.innerHeight) { // 当top小于等于文档显示区域的高时，就进入可视区域了
+        i.classList.contains('animate__fadeIn"') ? '' : i.classList.add("animate__fadeIn")
+      }
+    })
+  }
+  animation();
+  
+  window.addEventListener('scroll', animation);
+  //图片灯箱
+  window.ViewImage && ViewImage.init('.images-wrapper img')
+  //相对时间
+  window.Lately && Lately.init({
+    target: '.item-mate'
+  });
+  //延迟加载
+  let observer = lozad('.lozad');
+  observer.observe();
+  //下拉菜单
+  let dropdowns = document.querySelectorAll(".dropdown");
+  Array.from(dropdowns).forEach(function(dropdown) {
+    let lis = Array.from(dropdown.children).slice(1);
+    dropdown.addEventListener("mouseenter", function() {
+      lis.forEach(function(item) {
+        item.classList.remove("d-none");
+      });
+    });
+    dropdown.addEventListener("mouseleave", function() {
+      lis.forEach(function(item) {
+        item.classList.add("d-none");
+      });
+    });
+  });
+}
 
 function withTimeout(millis, promise) {
   let timeout = new Promise((resolve, reject) =>
@@ -565,34 +651,55 @@ async function getMemos(search) {
   setTimeout(function() {
     loadBtn.classList.remove('d-none');
   }, 1000);
-  setTimeout(function() {
+  //setTimeout(function() {
     window.scrollTo({
-      top: usernowDom.offsetTop - 20,
+      top: usernowDom.offsetTop - 30,
       behavior: "smooth"
     });
-  }, 800);
+  //}, 800);
+  goBbsBtn.classList.remove("noclick")
 }
+
 //搜索 Memo
 searchBtn.addEventListener("click", function () {
-  let tagnowHas = document.querySelector(".memos-tagnow") || ''
-  if(tagnowHas) tagnowHas.remove();
-  let serchText = prompt('搜点啥？','');
-  let usernowName = document.querySelector(".user-now-name").innerHTML;
-  if(serchText !== "" && serchText != null){
-    let serchDom = `
-      <div class="memos-tagnow row p-2 mb-2"">
-        <div class="memos-tagnow-title mr-3">当前搜索:</div>
-        <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser()">${serchText}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
-      </div>`
-    memosDom.insertAdjacentHTML('beforebegin', serchDom);
-    if(usernowName == ""){
-      getMemos(serchText)
-    }else{
-      let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
-      let userNowData = memoList[userNameIndex]
-      getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"",serchText)
-    }
+  if(searchInput.classList.contains("d-none")){
+    searchInput.classList.remove("d-none")
+    searchInput.focus();
+  }else{
+    searchInput.classList.add("animate__fadeOutRight")
+    setTimeout(function() {
+      searchInput.classList.add("d-none")
+      searchInput.classList.remove("animate__fadeOutRight")
+    }, 500);
   }
+  searchInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      let tagnowHas = document.querySelector(".memos-tagnow")
+      if(tagnowHas) tagnowHas.remove();
+      const serchText = searchInput.value;
+      let usernowName = document.querySelector(".user-now-name").innerHTML;
+      if(serchText !== "" && serchText != null){
+        let serchDom = `
+          <div class="memos-tagnow row p-2 mb-2"">
+            <div class="memos-tagnow-title mr-3">当前搜索:</div>
+            <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser('search')">${serchText}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
+          </div>`
+        memosDom.insertAdjacentHTML('beforebegin', serchDom);
+        if(usernowName == ""){
+          getMemos(serchText)
+        }else{
+          let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
+          if(userNameIndex == -1){
+            getUserMemos(nowLink,nowId,nowName,nowAvatar,"",serchText)
+          }else{
+            let userNowData = memoList[userNameIndex]
+            getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"",serchText)
+          }
+        }
+        searchInput.value = ''
+      }
+    }
+  });
 });
 
 //显示订阅列表
@@ -613,31 +720,47 @@ userlistBtn.addEventListener("click", function () {
 
 //返回个人主页
 function goHome(){
+  goHomeBtn.classList.add("noclick")
+  usernowBtnDom.forEach((item) => {item.classList.remove('current');})
+  goHomeBtn.classList.add("current")
+  goBbsBtn.classList.remove("current")
   randomUser = 0;
-  getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
-  cocoMessage.success("Hi， "+memoList[0].creatorName);
+  getUserMemos(nowLink,nowId,nowName,nowAvatar)
+  cocoMessage.success("Hi， "+nowName);
 };
 
 //切换为广场模式
 function goBbs(){
+  goBbsBtn.classList.add("noclick")
+  usernowBtnDom.forEach((item) => {item.classList.remove('current');})
+  goBbsBtn.classList.add("current")
+  goHomeBtn.classList.remove("current")
   getMemos();
   let usernowName = document.querySelector(".user-now-name");
   let usernowAvatar = document.querySelector(".user-now-avatar");
-  usernowName.innerHTML = ""
-  usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+  usernowName.innerHTML = "";
+  usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+  //goBbsBtn.classList.remove("noclick")
   cocoMessage.success("有啥新鲜事儿？");
 };
 
 goHomeBtn.addEventListener("click", function () {
+  window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSHOME");
   goHome();
 });
 goBbsBtn.addEventListener("click", function () {
+  window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSBBS");
   goBbs()
 });
-
-//随机个人
 randomUserBtn.addEventListener("click", function () {
+  window.localStorage && window.localStorage.setItem("memos-mode",  "RANDUSER");
+  goRandUser()
+});
+//随机个人
+function goRandUser(){
   randomUser = 1;
+  usernowBtnDom.forEach((item) => {item.classList.remove('current');})
+  randomUserBtn.classList.add("current")
   let usernowName = document.querySelector(".user-now-name");
   let usernowAvatar = document.querySelector(".user-now-avatar");
   usernowName.innerHTML = ""
@@ -646,72 +769,138 @@ randomUserBtn.addEventListener("click", function () {
   let userNowData = memoList[randomIndex]
   getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"","")
   cocoMessage.success(userNowData.creatorName+" 上线～");
-});
+}
 
 //重载当前 user
-function reloadUser(){
-  let tagnowHas = document.querySelector(".memos-tagnow") || ''
+function reloadUser(mode){
+  let tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
   let usernowName = document.querySelector(".user-now-name").innerHTML;
   if(usernowName == ""){
     getMemos()
   }else{
     let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
-    let userNowData = memoList[userNameIndex]
-    getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"","")
+    if(userNameIndex == -1){
+      getUserMemos(nowLink,nowId,nowName,nowAvatar)
+    }else{
+      let userNowData = memoList[userNameIndex]
+      getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar)
+    }
+  }
+  if(mode == "search"){
+    memosTextarea.value = '';
   }
 }
 
 // 获取指定用户列表
-async function getUserMemos(u,i,n,a,t,s) {
+async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
     memoDom.innerHTML = skeleton;
     loadBtn.classList.add('d-none');
+    randomUserBtn.classList.add("noclick")
     memoData = [],memoCreatorMap = {}, page = 1,nums = 0,dataNum = 0,memosContType = 1;
     memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
-    if (u == memosPath) {
+    let usernowName = document.querySelector(".user-now-name");
+    let usernowAvatar = document.querySelector(".user-now-avatar");
+    usernowName.innerHTML = name;
+    usernowAvatar.src = avatar;
+    if (link == memosPath) {
       memosAccess = 1;
     };
     let userMemoUrl;
-    if(t){
-      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&tag=${t}&rowStatus=NORMAL&limit=480`;
-    }else if(s){
-      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&content=${s}&rowStatus=NORMAL&limit=${limit}`;
+    if(tag){
+      userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&tag=${tag}&rowStatus=NORMAL&limit=50`;
+    }else if(search){
+      userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&content=${search}&rowStatus=NORMAL&limit=${limit}`;
+    }else if(mode == "NOPUBLIC"){
+      userMemoUrl = `${link}/api/v1/memo`;
+    }else if(random){
+      userMemoUrl = `${link}/api/v1/memo?&limit=1&offset=${random}`;
     }else{
-      userMemoUrl = `${u}/api/v1/memo?creatorId=${i}&rowStatus=NORMAL&limit=480`;
+      userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&rowStatus=NORMAL&limit=50`;
     }
-    try {
-      let response = await fetch(userMemoUrl);
-      if (!response.ok) {
-        throw new Error(response.statusText);
+
+    if (link == memosPath) {
+      try {
+        let response = await fetch(userMemoUrl,{
+            headers: {
+              'Authorization': `Bearer ${memosOpenId}`,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache',
+            },
+            cache: 'no-store',
+        });
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        let data = await response.json();
+        data.forEach(item => {
+          item.avatar = memosMeAvatarUrl
+          item.link = memosPath
+          item.twikoo = memosMeTwikoo
+          item.artalk = memosMeArtalk
+          item.artSite = memosMeArtalkSite
+        });
+        if (mode == "NOPUBLIC") {
+          memosCount = data.length;
+          window.localStorage && window.localStorage.setItem("memos-response-count", memosCount);
+          data = data.filter((item) => item.visibility !== "PUBLIC");
+        }
+        memoData = data.flatMap(result => result);
+        memoList.forEach(item => {
+          memoCreatorMap[item.creatorName] = item;
+        });
+        memoData = memoData.map(item => {
+          let data = memoCreatorMap[item.creatorName];
+          return {...item, ...data};
+        });
+        if (mode !== "NOPUBLIC") {
+          memoData = await this.getMemoCount(memoData);
+        }
+        memoDom.innerHTML = "";
+        this.updateData(memoData);
+        if(!random && memoData.length >= 8 ){
+          setTimeout(function() {
+            loadBtn.classList.remove('d-none');
+          }, 1000);
+        }
+      } catch (error) {
+        console.error(error);
       }
-      let data = await response.json();
-      memoData = data.flatMap(result => result);
-      memoList.forEach(item => {
-        memoCreatorMap[item.creatorName] = item;
-      });
-      memoData = memoData.map(item => {
-        let data = memoCreatorMap[item.creatorName];
-        return {...item, ...data};
-      });
-      memoData = await this.getMemoCount(memoData);
-      memoDom.innerHTML = "";
-      let usernowName = document.querySelector(".user-now-name");
-      let usernowAvatar = document.querySelector(".user-now-avatar");
-      usernowName.innerHTML = n;
-      usernowAvatar.src = a;
-      this.updateData(memoData);
-      setTimeout(function() {
-        loadBtn.classList.remove('d-none');
-      }, 1000);
-    } catch (error) {
-      console.error(error);
+    }else{
+        try {
+          let response = await fetch(userMemoUrl);
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          let data = await response.json();
+          memoData = data.flatMap(result => result);
+          memoList.forEach(item => {
+            memoCreatorMap[item.creatorName] = item;
+          });
+          memoData = memoData.map(item => {
+            let data = memoCreatorMap[item.creatorName];
+            return {...item, ...data};
+          });
+          memoData = await this.getMemoCount(memoData);
+          memoDom.innerHTML = "";
+          this.updateData(memoData);
+          if(memoData.length >= 8 ){
+            setTimeout(function() {
+              loadBtn.classList.remove('d-none');
+            }, 1000);
+          }
+        } catch (error) {
+          console.error(error);
+        }
     }
     setTimeout(function() {
-      window.scrollTo({
-        top: usernowDom.offsetTop - 20,
-        behavior: "smooth"
-      });
+      goHomeBtn.classList.remove("noclick")
+      randomUserBtn.classList.remove("noclick")
     }, 800);
+    window.scrollTo({
+      top: usernowDom.offsetTop - 30,
+      behavior: "smooth"
+    });
 }
 // Fetch NeoDB
 async function fetchNeoDB(url){
@@ -733,7 +922,7 @@ async function fetchNeoDB(url){
 }
 //获取指定 Tag
 function getTagNow(u,i,n,a,e){
-  let tagnowHas = document.querySelector(".memos-tagnow") || ''
+  let tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
   let tagName = e.innerHTML
   let tagnowDom = `
@@ -765,11 +954,6 @@ function loadTwikoo(i) {
       el: '#twikoo', 
       path: twikooPath 
     });
-    //let memoDomArtalk = document.querySelector(`.memo-${Number(twikooTime)+Number(twikooId)}`)
-    //window.scrollTo({
-    //  top: memoDomArtalk.offsetTop,
-    //  behavior: "smooth"
-    //});
   }else{
     twikooDom.classList.add('d-none');
     document.getElementById("twikoo").remove()
@@ -799,101 +983,94 @@ function loadArtalk(e) {
       server: artalkEnv,
       emoticons: false
     });
-    //let memoDomArtalk = document.querySelector(`.memo-${Number(artalkTime) + Number(artalkId)}`)
-    //window.scrollTo({
-    //  top: memoDomArtalk.offsetTop,
-    //  behavior: "smooth"
-    //});
   }else{
     artalkDom.classList.add('d-none');
     document.getElementById("artalk").remove()
   }
 }
 
-//转发
-function transPond(item){
-  let a = JSON.parse(item.getAttribute("data-form"));
-  getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display"),
-  memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-  if(getEditor == "show"){
-    let transRes = `[@${a.creatorName}](${a.url}) \n\n> ${a.creatorName}: ${a.content}`;
-    memosTextarea.value = transRes;
-    memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
-    document.body.scrollIntoView({behavior: 'smooth'})
-  }else{
-    document.body.scrollIntoView({behavior: 'smooth'})
-  }
-}
-
-//修改
+//编辑修改
+let memosOldSelect;
 function editMemo(memo) {
-  let e = JSON.parse(memo.getAttribute("data-form"));
-  let memoContent = e.content,memoId = e.id,memoRelationList = e.relationList,memoResourceList = e.resourceList,memoVisibility = e.visibility;
-  getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display"),
+  memosOldSelect = memosVisibilitySelect.value;
+  getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
   memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
   if(memosOpenId && getEditor == "show"){
-    memosTextarea.value = memoContent;
+    document.querySelector(".memos-image-list").innerHTML = '';
+    let e = JSON.parse(memo.getAttribute("data-form"));
+    let memoResList = e.resourceList,memosResource = [],imageList = "";
+    memosVisibilitySelect.value = e.visibility;
+    window.localStorage && window.localStorage.setItem("memos-editor-dataform",JSON.stringify(e));
+    window.localStorage && window.localStorage.setItem("memos-visibility-select",memosVisibilitySelect.value);
+    memosTextarea.value = e.content;
     memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
     submitMemoBtn.classList.add("d-none");
     editMemoDom.classList.remove("d-none");
+    if(memoResList.length > 0){
+      for (let i = 0; i < memoResList.length; i++) {
+        let imgLink = '', fileId = '',resexlink = memoResList[i].externalLink;
+        if (resexlink) {
+            imgLink = resexlink
+        } else {
+            fileId = memoResList[i].publicId || memoResList[i].filename
+            imgLink = `${memosPath}/o/r/${memoResList[i].id}`;///${fileId}
+        }
+        memosResource.push(memoResList[i].id);
+        imageList += `<div data-id="${memoResList[i].id}" class="imagelist-item d-flex text-xs mt-2 mr-2" onclick="deleteImage(this)"><div class="d-flex image-background" style="background-image:url(${imgLink})"><span class="d-none">${fileId}</span></div></div>`;
+      }
+      window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResource));
+      document.querySelector(".memos-image-list").insertAdjacentHTML('afterbegin', imageList);
+      //imageListDrag()
+    }
     document.body.scrollIntoView({behavior: 'smooth'});
   }
-  editMemoBtn.addEventListener("click", function () {
-    memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token"),
-    memoContent = memosTextarea.value,
-    memoResourceList = window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list")) ? window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list")) : e.resourceList,
-    memoVisibility = memosVisibilitySelect.value;
-    let TAG_REG = /(?<=#)([^#\s!.,;:?"'()]+)(?= )/g;
-    let memosTag = memoContent.match(TAG_REG);
-    let hasContent = memoContent.length !== 0;
-    if (hasContent) {
-      let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
-      let memoBody = {content:memoContent,id:memoId,relationList:memoRelationList,resourceList:memoResourceList,visibility:memoVisibility}
-      fetch(memoUrl, {
-        method: 'PATCH',
-        body: JSON.stringify(memoBody),
-        headers: {
-          'Authorization': `Bearer ${memosOpenId}`,
-          'Content-Type': 'application/json'
-        }
-      }).then(function(res) {
-        if (res.ok) {
-          if (memosTag !== null) {
-            let memoTagUrl = `${memosPath}/api/v1/tag`;
-            (async () => {
-              for await (let i of memosTag) {
-                let response = await fetch(memoTagUrl, {
-                  method: 'POST',
-                  headers: {
-                    'Authorization': `Bearer ${memosOpenId}`,
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    name: i
-                  })
-                });
-              }
-            })();
-          }
-          cocoMessage.success(
-          '保存成功',
-          ()=>{
-            submitMemoBtn.classList.remove("d-none");
-            editMemoDom.classList.add("d-none");
-            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
-          })
-        }
-      })
-    }
-  })
 }
+
+editMemoBtn.addEventListener("click", function () {
+  let dataformNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-editor-dataform"));
+  let memoId = dataformNow.id,memoRelationList = dataformNow.relationList,
+  memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token"),
+  memoContent = memosTextarea.value,
+  memocreatedTs = dataformNow.createdTs,
+  memoVisibility = memosVisibilitySelect.value,
+  memoResourceList = window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list"));
+  if(memoChangeDate == 1){
+    memocreatedTs = Math.floor(Date.now() / 1000);;
+  }
+  let hasContent = memoContent.length !== 0;
+  if (hasContent) {
+    let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+    let memoBody = {content:memoContent,id:memoId,createdTs:memocreatedTs,relationList:memoRelationList,resourceIdList:memoResourceList,visibility:memoVisibility}
+    fetch(memoUrl, {
+      method: 'PATCH',
+      body: JSON.stringify(memoBody),
+      headers: {
+        'Authorization': `Bearer ${memosOpenId}`,
+        'Content-Type': 'application/json'
+      }
+    }).then(function(res) {
+      if (res.ok) {
+        let tagnowHas = document.querySelector(".memos-tagnow")
+        if(tagnowHas) tagnowHas.remove();
+        cocoMessage.success(
+        '修改成功',
+        ()=>{
+          memosVisibilitySelect.value = memosOldSelect;
+          memoChangeDate = 0;
+          clearTextarea();
+        })
+      }
+    })
+  }
+})
 
 cancelEditBtn.addEventListener("click", function () {
   if (!editMemoDom.classList.contains("d-none")) {
-    memosTextarea.value = '';
-    memosTextarea.style.height = 'inherit';
+    memosVisibilitySelect.value = memosOldSelect;
+    window.localStorage && window.localStorage.removeItem("memos-editor-dataform");
     editMemoDom.classList.add("d-none");
     submitMemoBtn.classList.remove("d-none");
+    clearTextarea("cancel")
   }
 })
 
@@ -930,7 +1107,8 @@ function archiveMemo(memoId) {
           cocoMessage.success(
           '归档成功',
           ()=>{
-            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+            let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+            getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
           })
         }
       })
@@ -956,7 +1134,8 @@ function deleteMemo(memoId) {
           cocoMessage.success(
           '删除成功',
           ()=>{
-            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+            let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+            getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
           })
         }
       }).catch(err => {
@@ -978,7 +1157,7 @@ function getEditIcon() {
   let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
   let getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
   let isHide = getEditor === "hide";
-
+  memosVisibilitySelect.value = getSelectedValue;
   window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResource));
   window.localStorage && window.localStorage.setItem("memos-relation-list",  JSON.stringify(memosRelation));
 
@@ -1093,7 +1272,6 @@ function getEditIcon() {
 
   function insertValue(t) {
     let textLength = t.length;
-    //console.log(textLength)
     memosTextarea.value += t;
     memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
     // 更新光标位置
@@ -1102,20 +1280,60 @@ function getEditIcon() {
     memosTextarea.focus()
   }
 
+  memosVisibilitySelect.addEventListener('change', function() {
+    memoNowSelct = window.localStorage && window.localStorage.getItem("memos-visibility-select");
+    var selectedValue = memosVisibilitySelect.value;
+    window.localStorage && window.localStorage.setItem("memos-visibility-select",selectedValue);
+    if(memoNowSelct == "PRIVATE" && selectedValue == "PUBLIC"){
+      memoChangeDate = 1;
+    }
+  });
+
+  privateBtn.addEventListener("click", async function () {
+    if (!privateBtn.classList.contains("private")) {
+      privateBtn.classList.add("private")
+      memosVisibilitySelect.value = "PRIVATE"
+      usernowBtnDom.forEach((item) => {item.classList.remove('current');})
+      window.localStorage && window.localStorage.setItem("memos-mode",  "NOPUBLIC");
+      let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+      getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","NOPUBLIC")
+      cocoMessage.success("进入「私有浏览」模式")
+    }else{
+      memosVisibilitySelect.value = "PUBLIC"
+      window.localStorage && window.localStorage.setItem("memos-mode",  "");
+      privateBtn.classList.remove("private")
+      getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","")
+      cocoMessage.success("已退出「私有浏览」模式")
+    }
+  });
+  
   randomBtn.addEventListener("click", async function () {
     memosCount = window.localStorage && window.localStorage.getItem("memos-response-count");
-    try {
-      let randomNum = random(0,memosCount);
-      let randomUrl = `${memosPath}/api/v1/memo/all?&limit=1&offset=${randomNum}`;
-      let res = await fetch(randomUrl);
-      if (res.ok) {
-        let resdata = await res.json();
-        updateAvatarUrl(resdata);
-      } else {
-        cocoMessage.error('出错了，再检查一下吧!');
+    if(!memosCount){
+      try {
+        let userMemoUrl = `${nowLink}/api/v1/memo`
+        let response = await fetch(userMemoUrl,{
+            headers: {
+              'Authorization': `Bearer ${memosOpenId}`,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache',
+            },
+            cache: 'no-store',
+        });
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        let data = await response.json();
+        memosCount = data.length - 1;
+        window.localStorage && window.localStorage.setItem("memos-response-count", memosCount);
+        let randomNum = random(0,memosCount);
+        getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","",randomNum)
+      } catch (error) {
+        console.error(error);
       }
-    } catch (err) {
-      cocoMessage.error('网络错误');
+    }else{
+      let randomNum = random(0,memosCount);
+      getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","",randomNum)
     }
   });
 
@@ -1123,10 +1341,12 @@ function getEditIcon() {
     let filesData = uploadImageInput.files[0];
     if (uploadImageInput.files.length !== 0){
       uploadImage(filesData);
+      cocoMessage.info('图片上传中……');
     }
   });
 
   async function uploadImage(data) {
+    let memosResourceListNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-resource-list")) || [];
     let imageData = new FormData();
     let blobUrl = `${memosPath}/api/v1/resource/blob`;
     imageData.append('file', data, data.name)
@@ -1139,14 +1359,23 @@ function getEditIcon() {
     })
     let res = await resp.json();
     if(res.id){
+      let resexlink = res.externalLink;
+      let imgLink = '', fileId = '';
+      if (resexlink) {
+          imgLink = resexlink
+      } else {
+          fileId = res.publicId || res.filename
+          imgLink = `${memosPath}/o/r/${res.id}`;///${fileId}
+      }
       let imageList = "";
-      imageList += `<div data-id="${res.id}" class="memos-tag d-flex text-xs mt-2 mr-2" onclick="deleteImage(this)"><div class="d-flex px-2 justify-content-center">${res.filename}</div></div>`;
+      imageList += `<div data-id="${res.id}" class="imagelist-item d-flex text-xs mt-2 mr-2" onclick="deleteImage(this)"><div class="d-flex image-background" style="background-image:url(${imgLink})"><span class="d-none">${fileId}</span></div></div>`;
       document.querySelector(".memos-image-list").insertAdjacentHTML('afterbegin', imageList);
       cocoMessage.success(
       '上传成功',
       ()=>{
-        memosResource.push(res.id);
-        window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResource));
+        memosResourceListNow.push(res.id);
+        window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResourceListNow));
+        imageListDrag()
       })
     }
   };
@@ -1165,7 +1394,14 @@ function getEditIcon() {
     }else if(pathInput.value == null || pathInput.value == ''){
       cocoMessage.info('请输入Path');
     }else{
-      getMemosData(pathInput.value,tokenInput.value);
+      let pathInputValue = pathInput.value;
+      if (pathInputValue.substr(-1) === '/') {
+        pathInputValue = pathInputValue.substr(0, pathInputValue.length - 1);
+      }
+      getMemosData(pathInputValue,tokenInput.value);
+      if(artalkInput.value !== null || artalkInput.value !== '') window.localStorage && window.localStorage.setItem("memos-artalk-input", artalkInput.value);
+      if(artalkSiteInput.value !== null || artalkSiteInput.value !== '') window.localStorage && window.localStorage.setItem("memos-artalksite-input", artalkSiteInput.value);
+      if(twikooInput.value !== null || twikooInput.value !== '') window.localStorage && window.localStorage.setItem("memos-twikoo-input", twikooInput.value);
     }
   });
 
@@ -1178,6 +1414,7 @@ function getEditIcon() {
     let memosTag = memosContent.match(TAG_REG);
     let  hasContent = memosContent.length !== 0;
     if (memosOpenId && hasContent) {
+      submitMemoBtn.classList.add("noclick")
       let memoUrl = `${memosPath}/api/v1/memo`;
       let memoBody = {content:memosContent,relationList:memosRelation,resourceIdList:memosResource,visibility:memosVisibility}
       fetch(memoUrl, {
@@ -1209,11 +1446,10 @@ function getEditIcon() {
           cocoMessage.success(
             '发送成功',
             () => {
-	        getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+              clearTextarea()
             })
         }
       });
-      
     }else if(!hasContent){
       cocoMessage.info('内容不能为空');
     }else{
@@ -1244,7 +1480,7 @@ function getEditIcon() {
       }).then(response => {
         let taglist = "";
         response.map((t)=>{
-          taglist += `<div class="memos-tag d-flex text-xs mt-2 mr-2 px-2" onclick="setMemoTag(this)">#${t}</div>`;
+          taglist += `<div class="imagelist-item d-flex text-xs mt-2 mr-2 px-2" onclick="setMemoTag(this)">#${t}</div>`;
         })
         document.querySelector(".memos-tag-list").innerHTML = taglist;
         //cocoMessage.success('准备就绪');
@@ -1266,7 +1502,7 @@ function getEditIcon() {
 
   async function getMemosData(p,t) {
     try {
-      let response = await fetch(`${p}/api/v1/memo`,{
+      let response = await fetch(`${p}/api/v1/user/me`,{//api/v1/status,memo;api/v1/user/me
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${t}`,
@@ -1276,14 +1512,20 @@ function getEditIcon() {
       if (response.ok) {
         let resdata = await response.json();
         if (resdata) {
-          memosCount = resdata.length;
+          memosMeID = resdata.id;
+          memosMeNickname = resdata.nickname;
+          memosMeAvatarUrl = resdata.avatarUrl;
           window.localStorage && window.localStorage.setItem("memos-access-path", p);
           window.localStorage && window.localStorage.setItem("memos-access-token", t);
-          window.localStorage && window.localStorage.setItem("memos-response-count", memosCount);
+          window.localStorage && window.localStorage.setItem("memos-visibility-select","PUBLIC");
+          window.localStorage && window.localStorage.setItem("memos-me-id", memosMeID);
+          window.localStorage && window.localStorage.setItem("memos-me-nickname", memosMeNickname);
+          window.localStorage && window.localStorage.setItem("memos-me-avatarurl", memosMeAvatarUrl);
           cocoMessage.success('保存成功', () => {
             memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
             memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-            getUserMemos(memoList[0].link,memoList[0].creatorId,memoList[0].creatorName,memoList[0].avatar,"")
+            location.reload();
+            //getUserMemos(memosPath,memosMeID,memosMeNickname,memosMeNickname,"")
             hasMemosOpenId();
           });
         }
@@ -1293,160 +1535,6 @@ function getEditIcon() {
     } catch (error) {
       cocoMessage.error('出错了，再检查一下吧!');
     }
-  }
-
-  async function updateAvatarUrl(e) {
-    try {
-      let response = await fetch(`${memosPath}/api/v1/user/me`,{
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${memosOpenId}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response.ok) {
-        let resdata = await response.json();
-        e.forEach(item => {
-          item.avatarUrl = resdata.avatarUrl;
-        });
-        updateRadom(e);
-      } else {
-        cocoMessage.error('出错了，再检查一下吧!');
-      }
-    } catch (error) {
-      cocoMessage.error('出错了，再检查一下吧!');
-    }
-  }
-
-  function updateRadom(data) {
-    let result = '',itemOption = '';
-    let TAG_REG = /#((?!^\d+$)[^\s#,.!()/\d]+)/g, 
-      IMG_REG = /\!\[(.*?)\]\((.*?)\)/g,
-      LINK_REG = /\[(.*?)\]\((.*?)\)/g, 
-      BILIBILI_REG = /<a.*?href="https:\/\/www\.bilibili\.com\/video\/((av[\d]{1,10})|(BV([\w]{10})))\/?".*?>.*<\/a>/g,
-      NETEASE_MUSIC_REG = /<a.*?href="https:\/\/music\.163\.com\/.*id=([0-9]+)".*?>.*<\/a>/g,
-      QQMUSIC_REG = /<a.*?href="https\:\/\/y\.qq\.com\/.*(\/[0-9a-zA-Z]+)(\.html)?".*?>.*?<\/a>/g;
-      marked.setOptions({
-        breaks: true,
-        smartypants: false,
-        langPrefix: 'language-'
-      });
-
-    for (let i = 0; i < data.length; i++) {
-      let memo = data[i];
-      let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
-      let avatar = memo.avatarUrl;
-      let creatorId = memo.creatorId;
-      let creatorName = memo.creatorName;
-      let createdTs = memo.createdTs;
-      let memosId = memo.id;
-      let memosLink = `${memosPath}/m/${memosId}`;
-      let memosRes = memo.content
-        .replace(TAG_REG, "")
-        .replace(IMG_REG, "")
-        .replace(LINK_REG, `<a class="primary" href="$2" target="_blank">$1</a>`)
-        memosRes = marked.parse(memosRes)
-        .replace(BILIBILI_REG, `<div class="video-wrapper"><iframe src="//player.bilibili.com/player.html?bvid=$1&as_wide=1&high_quality=1&danmaku=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe></div>`)
-        .replace(NETEASE_MUSIC_REG, `<meting-js auto="https://music.163.com/#/song?id=$1"></meting-js>`)
-        .replace(QQMUSIC_REG, `<meting-js auto="https://y.qq.com/n/yqq/song$1.html"></meting-js>`)
-      
-      //解析 content 内 md 格式图片
-      let imgArr = memo.content.match(IMG_REG);
-      let imgStr = String(imgArr).replace(/[,]/g, '');
-      if (imgArr) {
-        let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`);
-        memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${memosImg}</div></div>`;        
-      }
-      
-      let tagArr = memo.content.match(TAG_REG);
-      let memosTag = '';
-      if (tagArr) {
-        memosTag = tagArr.map(t=>{
-          return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${memosPath}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
-        }).join('');
-      }else{
-        memosTag = `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2">动态</div>`;
-      }
-      
-      //解析内置资源文件
-      if (memo.resourceList && memo.resourceList.length > 0) {
-        let resourceList = memo.resourceList;
-        let imgUrl = '',resUrl = '',resImgLength = 0;
-        for (let j = 0; j < resourceList.length; j++) {
-          let restype = resourceList[j].type.slice(0, 5);
-          let resexlink = resourceList[j].externalLink;
-          let imgLink = '', fileId = '';
-          if (resexlink) {
-            imgLink = resexlink
-          } else {
-            fileId = resourceList[j].publicId || resourceList[j].filename
-            imgLink = `${memosPath}/o/r/${resourceList[j].id}/${fileId}`;
-          }
-          if (restype == 'image') {
-            imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
-            resImgLength = resImgLength + 1
-          }
-          if (restype !== 'image') {
-            resUrl += `<a target="_blank" rel="noreferrer" href="${imgLink}">${resourceList[j].filename}</a>`;
-          }
-        }
-        if (imgUrl) {
-          memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2">${imgUrl}</div></div>`
-        }
-        if (resUrl) {
-          memosRes += `<p class="datasource">${resUrl}</p>`
-        }
-      }
-      itemOption = `<div class="item-option mr-1">
-      <div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn edit-btn" data-form="${memoString}" onclick="editMemo(this)">编辑</a><a class="btn" onclick="archiveMemo('${memosId}')">归档</a><a class="btn" onclick="deleteMemo('${memosId}')">删除</a></div>
-      </div></div>`;
-      result += `<div class="d-flex animate__animated animate__fadeIn mb-3">
-      <div class="card-item flex-fill p-3">
-        <div class="item-header d-flex mb-3">
-          <div class="item-avatar mr-2" style="background-image:url(${avatar})"></div>
-          <div class="item-sub d-flex flex-column">
-            <div class="item-creator"><a href="${memosPath}" target="_blank">${creatorName}</a></div>
-            <div class="item-mate mt-2 text-xs">${new Date(createdTs * 1000).toLocaleString()}</div>
-          </div>
-          ${itemOption}
-        </div>
-      <div class="item-content">
-        <div class="item-inner">${memosRes}</div>
-        <div class="item-footer d-flex mt-2">
-          <div class="d-flex">${memosTag}</div>
-          <div class="d-flex flex-fill justify-content-end">
-            <div class="item d-flex align-items-center"><a class="d-flex" href="${memosLink}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"/></svg></a></div>
-          </div>
-        </div>
-      </div>
-    </div></div>`;
-    };
-    memosRadomCont.innerHTML = result;
-
-    //图片灯箱
-    window.ViewImage && ViewImage.init('.images-wrapper img')
-    //相对时间
-    window.Lately && Lately.init({
-      target: '.item-mate'
-    });
-    //延迟加载
-    let observer = lozad('.lozad');
-    observer.observe();
-    //下拉菜单
-    let dropdowns = document.querySelectorAll(".dropdown");
-    Array.from(dropdowns).forEach(function(dropdown) {
-      let lis = Array.from(dropdown.children).slice(1);
-      dropdown.addEventListener("mouseenter", function() {
-        lis.forEach(function(item) {
-          item.classList.remove("d-none");
-        });
-      });
-      dropdown.addEventListener("mouseleave", function() {
-        lis.forEach(function(item) {
-          item.classList.add("d-none");
-        });
-      });
-    });
   }
 }
 
@@ -1460,251 +1548,78 @@ function deleteImage(e){
   } 
 }
 
+function imageListDrag(){// 获取包含所有图像元素的父元素
+  const imageList = document.querySelector('.memos-image-list');
+  // 存储被拖动的元素
+  let draggedItem = null;
+  let memosResourceList;
+  // 为每个图像元素添加拖动事件监听器
+  imageList.querySelectorAll('.imagelist-item').forEach(item => {
+    item.draggable = true;
+    // 当拖动开始时
+    item.addEventListener('dragstart', function(e) {
+      // 存储被拖动的元素
+      draggedItem = this;
+      memosResourceList = [];
+    });
+    // 当拖动元素进入目标区域时
+    item.addEventListener('dragover', function(e) {
+      e.preventDefault(); // 阻止默认行为
+      this.classList.add('dragover'); // 添加拖动进入样式
+    });
+  
+    // 当拖动元素离开目标区域时
+    item.addEventListener('dragleave', function() {
+      this.classList.remove('dragover'); // 移除拖动进入样式
+    });
+  
+    // 当拖动元素放置到目标区域时
+    item.addEventListener('drop', function(e) {
+      e.preventDefault(); // 阻止默认行为
+      this.classList.remove('dragover'); // 移除拖动进入样式
+      // 计算拖动元素中心点
+      const rect = this.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      // 判断鼠标相对中心点的位置
+      const isLeft = e.clientX < centerX;
+      if (isLeft) {
+        // 插入到前一个元素前
+        this.parentNode.insertBefore(draggedItem, this.previousElementSibling);
+      } else {
+        // 插入到后一个元素后  
+        this.parentNode.insertBefore(draggedItem, this.nextElementSibling); 
+      }
+      document.querySelectorAll('.memos-image-list .imagelist-item').forEach((item) => {
+        let itemId = Number(item.dataset.id)
+        memosResourceList.push(itemId);
+      })
+      window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResourceList));
+    });
+  });
+}
+
+function clearTextarea(mode){
+  if (!editMemoDom.classList.contains("d-none")) {
+    window.localStorage && window.localStorage.removeItem("memos-editor-dataform");
+    editMemoDom.classList.add("d-none");
+    submitMemoBtn.classList.remove("d-none");
+  }
+  submitMemoBtn.classList.remove("noclick");
+  document.querySelector(".memos-image-list").innerHTML = '';
+  window.localStorage && window.localStorage.removeItem("memos-resource-list");
+  window.localStorage && window.localStorage.removeItem("memos-relation-list");
+  let memosTextarea = document.querySelector(".memos-editor-textarea")
+  memosTextarea.value = '';
+  memosTextarea.style.height = 'inherit';
+  let memosMode = mode || window.localStorage && window.localStorage.getItem("memos-mode");
+  if(memosMode != "cancel"){
+    getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
+  }
+}
 // 获取 owo.json 文件中的数据
 let emojiSelectorVisible = false;
 let emojiSelector;
-let emojis = [
-  {  
-    "icon": "😂",
-    "text": "哭笑不得"
-  },
-  {
-    "icon": "😎",
-    "text": "酷"
-  },
-  {
-    "icon": "😏",
-    "text": "坏笑"
-  },
-  {
-    "icon": "😅",
-    "text": "流汗"
-  },
-  {
-    "icon": "😄",
-    "text": "笑"
-  },
-  {
-    "icon": "😜",
-    "text": "调皮"
-  },
-  {
-    "icon": "🤣",
-    "text": "笑倒"
-  },
-  {
-    "icon": "😭",
-    "text": "大哭"
-  },
-  {
-    "icon": "🙄",
-    "text": "白眼"
-  },
-  {
-    "icon": "🤐",
-    "text": "嘘"
-  },
-  {
-    "icon": "😋",
-    "text": "美食脸"
-  },
-  {
-    "icon": "🥶",
-    "text": "冰冻"
-  },
-  {
-    "icon": "🥵",
-    "text": "热"
-  },
-    {
-    "icon": "😴",
-    "text": "睡觉"
-  },
-  {
-    "icon": "🤧",
-    "text": "打喷嚏"
-  },
-  {
-    "icon": "🍉",
-    "text": "西瓜"
-  },
-  {
-    "icon": "😱",
-    "text": "惊恐"
-  },
-  {
-    "icon": "👋",
-    "text": "招手"
-  },
-  {
-    "icon": "🔨",
-    "text": "锤子"
-  },
-  {
-    "icon": "🐶",
-    "text": "小狗"
-  },
-  {
-    "icon": "👏",
-    "text": "鼓掌"
-  },
-  {
-    "icon": "🙈",
-    "text": "不看"
-  },
-  {
-    "icon": "😓",
-    "text": "汗"
-  },
-  {
-    "icon": "😍",
-    "text": "爱心眼"
-  },
-  {
-    "icon": "🤝",
-    "text": "握手"
-  },
-  {
-    "icon": "🥺",
-    "text": "求你"
-  },
-  {
-    "icon": "😔",
-    "text": "沮丧"
-  },
-  {
-    "icon": "😪",
-    "text": "困"
-  },
-  {
-    "icon": "😕",
-    "text": "困惑"
-  },
-  {
-    "icon": "🤷‍♂️",
-    "text": "摊手"
-  },
-  {
-    "icon": "😛",
-    "text": "舌头"
-  },
-  {
-    "icon": "🤭",
-    "text": "偷笑"
-  },
-  {
-    "icon": "🤮",
-    "text": "呕吐"
-  },
-  {
-    "icon": "🥺",
-    "text": "求你"
-  },
-  {
-    "icon": "🙂",
-    "text": "轻松的笑"
-  },
-  {
-    "icon": "😈",
-    "text": "恶魔"
-  },
-  {
-    "icon": "😃",
-    "text": "笑脸"
-  },
-  {
-    "icon": "🤫",
-    "text": "嘘"
-  },
-  {
-    "icon": "😒",
-    "text": "无语"
-  },
-  {
-    "icon": "😵",
-    "text": "晕"
-  },
-  {
-    "icon": "💪",
-    "text": "加油"
-  },
-  {
-    "icon": "👍",
-    "text": "赞"
-  },
-  {
-    "icon": "👎",  
-    "text": "踩"
-  },
-  {
-    "icon": "😡",
-    "text": "愤怒"
-  },
-  {
-    "icon": "🤬",
-    "text": "怒骂"
-  },
-  {
-    "icon": "😖",
-    "text": "心烦"
-  },
-  {
-    "icon": "🌹",
-    "text": "玫瑰"
-  },
-  {
-    "icon": "🏃",
-    "text": "跑步"
-  },
-  {
-    "icon": "😆",
-    "text": "大笑"
-  },
-  {
-    "icon": "💵",
-    "text": "钞票"
-  },
-  {
-    "icon": "😘",
-    "text": "飞吻"
-  },
-  {
-    "icon": "😷",
-    "text": "生病"
-  },
-  {
-    "icon": "🤕",
-    "text": "受伤"
-  },
-  {
-    "icon": "🎉",
-    "text": "庆祝"
-  },
-  {
-    "icon": "❤️",
-    "text": "红心"
-  },
-  {
-    "icon": "💔",
-    "text": "心碎"
-  },
-  {
-    "icon": "😣",
-    "text": "无奈"
-  },
-  {
-    "icon": "😘",
-    "text": "飞吻"
-  },
-  {
-    "icon": "💩",
-    "text": "一坨便便"
-  },
-  {
-    "icon": "🤩",
-    "text": "爱慕"
-  }
-];
+let emojis = [{"icon": "😂","text": "哭笑不得"},{"icon": "😎","text": "酷"},{"icon": "😏","text": "坏笑"},{"icon": "😅","text": "流汗"},{"icon": "😄","text": "笑"},{"icon": "😜","text": "调皮"},{"icon": "🤣","text": "笑倒"},{"icon": "😭","text": "大哭"},{"icon": "🙄","text": "白眼"},{"icon": "🤐","text": "嘘"},{"icon": "😋","text": "美食脸"},{"icon": "🥶","text": "冰冻"},{"icon": "🥵","text": "热"},{"icon": "😴","text": "睡觉"},{"icon": "🤧","text": "打喷嚏"},{"icon": "🍉","text": "西瓜"},{"icon": "😱","text": "惊恐"},{"icon": "👋","text": "招手"},{"icon": "🔨","text": "锤子"},{"icon": "🐶","text": "小狗"},{"icon": "👏","text": "鼓掌"},{"icon": "🙈","text": "不看"},{"icon": "😓","text": "汗"},{"icon": "😍","text": "爱心眼"},{"icon": "🤝","text": "握手"},{"icon": "🥺","text": "求你"},{"icon": "😔","text": "沮丧"},{"icon": "😪","text": "困"},{"icon": "😕","text": "困惑"},{"icon": "🤷‍♂️","text": "摊手"},{"icon": "😛","text": "舌头"},{"icon": "🤭","text": "偷笑"},{"icon": "🤮","text": "呕吐"},{"icon": "🥺","text": "求你"},{"icon": "🙂","text": "轻松的笑"},{"icon": "😈","text": "恶魔"},{"icon": "😃","text": "笑脸"},{"icon": "🤫","text": "嘘"},{"icon": "😒","text": "无语"},{"icon": "😵","text": "晕"},{"icon": "💪","text": "加油"},{"icon": "👍","text": "赞"},{"icon": "👎",  "text": "踩"},{"icon": "😡","text": "愤怒"},{"icon": "🤬","text": "怒骂"},{"icon": "😖","text": "心烦"},{"icon": "🌹","text": "玫瑰"},{"icon": "🏃","text": "跑步"},{"icon": "😆","text": "大笑"},{"icon": "💵","text": "钞票"},{"icon": "😘","text": "飞吻"},{"icon": "😷","text": "生病"},{"icon": "🤕","text": "受伤"},{"icon": "🎉","text": "庆祝"},{"icon": "❤️","text": "红心"},{"icon": "💔","text": "心碎"},{"icon": "😣","text": "无奈"},{"icon": "😘","text": "飞吻"},{"icon": "💩","text": "一坨便便"},{"icon": "🤩","text": "爱慕"}];
 
 // 表情选择器点击事件处理
 biaoqingBtn.addEventListener("click", function (event) {
