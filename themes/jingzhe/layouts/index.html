@@ -1,0 +1,63 @@
+{{ define "body_classes" }}page-home{{ end }}
+{{ define "main" }}
+<title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+<div class="new-index-nrong">
+<div>
+<!--memos--> 
+<div class="memos-header">
+<div id="memos"></div>
+</div>
+<div id="bber"></div>
+<script src="https://fastly.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!--memos 内容-->
+<script src="/js/memos.js?v=1.3.2"></script>
+<script src="/js/coco-message.min.js"></script>
+<!--评论加载-->
+<link href="https://img.koobai.com/Artalk.css" rel="stylesheet">
+<script src="https://img.koobai.com/Artalk.js"></script>
+<!--memos结束--> 
+</div>  
+
+<!--侧边栏--> 
+<div>
+<div class="sidebar-biaot">随机照片</div>
+<div class="photo-home img-hide" view-image>
+  <script src="/js/photo.js"></script>
+  </div>
+
+<div class="sidebar-biaot">最新博文</div> 
+{{ $posts := first 4 (where .Site.RegularPages "Type" "in" "posts") }}
+<div class="sidebar-page img-hide">
+{{ range $posts }} 
+<div class="sidebar-bowen">
+<!--30 天内新博文-->  
+{{ if gt .Date (now.AddDate 0 0 -15) }}
+<div class="sidebar_article_new">NEW</div>
+{{ end }}
+<!--<!--30 天内新博文结束-->
+<div class="sidebar-posts-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+<div class="archive-time">
+  <script>
+    document.write(formatDate({{ .Date.Unix }})); 
+  </script>
+</div>
+</div>
+{{ end }}
+</div>
+
+<div class="sidebar-biaot">最新观影</div>
+<div class="content-index">{{ .Content }}</div>
+
+<div class="sidebar-biaot">博文标签</div>
+<div class="archives_tags">
+  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
+  <div class="list-tags img-hide"><a href="/tags/{{ $name | urlize }}"> {{ $name }} <span class="archives_tags_f">({{ .Count }})</span></a></div>
+  {{- end -}}
+</div>
+
+</div>
+<!--侧边栏结束--> 
+</div>
+{{ end }}
+{{ define "footer_js" }}
+{{ end }}

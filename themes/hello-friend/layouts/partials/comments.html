@@ -1,0 +1,12 @@
+<!-- twikoo -->
+{{- if .Site.Params.twikoo.enable}}
+{{- if not .Site.IsServer }}
+<div class="pagination__title">
+  <span class="pagination__title-h">欢迎评论</span>
+  <hr />
+</div>
+  <div id="tcomment"></div>
+  <script src="/twikoo1629.js"></script>
+  <script>twikoo.init({ envId: 'https://twikoo.hux.ink/', el: '#tcomment' })</script>
+  {{- end }}
+{{- end }}

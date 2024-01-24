@@ -1,0 +1,115 @@
+// hardware硬件页样式
+.quanju{
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-gap: 10px; /* 中间空10px间距 */
+	@include breakpoint('medium') {
+		grid-template-columns: repeat(3, 1fr);
+		grid-gap: 15px; /* 中间空10px间距 */
+	  }	
+}
+.duiqi{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.duiqi img{
+	max-width: 70%;
+	margin: 0;
+	transition: transform 0.3s ease;
+	@include breakpoint('medium') {
+		max-width: 60%;
+	  }	
+}
+.bankuai{
+	background: #F8F8F8;
+	padding: 40px 0 50px 0;
+	border-radius: 4px;
+}
+.bankuai a:hover{
+	text-decoration: none;
+}
+.hardware-text{
+	text-align: center;
+	color: var(--sanji-color);
+	margin-top: 20px;
+}
+.hardware-title{
+	margin-bottom: 4px;
+	font-size:1rem;
+	padding: 0 10px;
+	@include breakpoint('medium') {
+	  font-size:0.85rem;
+	  padding: 0;
+	}	
+}
+.hardware-title a{	
+	color: var(--text-content-color);
+}
+.hardware-title a:hover{
+	text-decoration: underline;
+}
+.hardware-jiage{
+	margin-left: auto;
+	font-size: 0.85rem;
+	border-radius:20px;
+	font-family: var(--font-family-code);
+	@include breakpoint('medium') {
+		font-size: 0.75rem;
+	  }
+}
+.liing_2_right{
+	justify-content: center; /* 水平居中对齐 */
+	display: flex;
+}
+.tiyi{
+	color: var(--text-highlight-color);
+	font-size: 1rem;
+	border: 0.5px solid var(--text-highlight-color);
+    padding: 5px 8px;
+	border-radius: 20px;
+	margin-top: 6px;
+	@include breakpoint('medium') {
+		font-size: 0.75rem;
+	  }
+}
+.tiyi:hover{
+	text-decoration: underline;
+}
+.tiyi:empty,.details:empty {
+	display:none;
+  }
+
+.note {
+	display: none;
+	@include breakpoint('medium') {
+	display: block;
+	position: absolute;
+	padding: 15px;
+	z-index: 10;
+	top: 0;
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
+	color: var(--erji-color);
+	font-size: 0.9rem;
+	line-height: 1.6;
+	opacity: 0;
+	transition: opacity 0.6s ease;
+	  }	
+  }
+.bankuai:hover .note {
+	opacity: 1;
+  }
+
+
+// 夜间模式页面样式
+@media (prefers-color-scheme: dark) {
+	.bankuai{
+		background: var(--background-dark-color);
+	}
+	.hardware-text{
+		color: var(--erji-color);
+	}
+	.hardware-title a,.note{
+		color: var(--text-content-dark-color);
+	}
+}

@@ -1,0 +1,123 @@
+.header {
+  display: flex;
+  padding: 25px 0 25px 0;
+  align-items: center;
+  @include breakpoint('medium') {
+    display: block;
+    padding: 0;
+    z-index: 100;
+    padding: 20px 0 10px 0;
+  }
+}
+.about-koobai{
+  display: none;
+  @include breakpoint('medium') {
+    margin-bottom: 25px;
+    margin-left: 8px;
+    display: block;
+  }
+}
+.about-koobai img{
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid #222;
+  opacity: .5;
+  transition: opacity .3s ease-in-out;
+}
+.about-koobai img:hover{
+  opacity: 1;
+}
+.new-heard-menu{
+  display: grid;
+  gap: 30px;
+}
+.menu-current svg{
+  color: var(--text-highlight-color) !important;
+}
+.menu-current a{
+  color: var(--text-highlight-color) !important;
+}
+.header-logo img {
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+  margin-right: 8px;
+  border-radius: 50%;
+  border: 1px solid #222;
+}
+.header-title {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--text-content-color);
+  font-family: var(--font-family-title);
+ }
+
+.menu-main {
+  display: flex;
+  grid-gap: 25px; /* 中间空10px间距 */
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+ }
+ .header-menu a {
+  color: var(--erji-color);
+  font-size: 1rem;
+  font-family: var(--font-family-title);
+  padding-top: 2px;
+ }
+ .header-menu{
+  display: flex;
+  align-items: center;
+ }
+.header-menu svg{
+  margin-right: 10px;
+  color: var(--sanji-color);
+  width: 22px;
+  height: 22px;
+}
+.header-menu img{
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #222;
+  margin-right: 10px;
+}
+.heard-rss svg path,.menu-main svg{
+  fill: #999;
+}
+.githuab svg{
+  width: 20px;
+  fill: #999;
+}
+.heard-rss svg path:hover,.githuab svg:hover,.menu-main svg:hover{
+  fill: #666;
+}
+
+ // 页面宽度小于900样式
+@media (max-width:900px){
+  .menu-main,.new-heard-menu {
+    display: none;
+   }
+}
+@media (min-width:900px){
+  .header-logo,.header-title{
+    display: none;
+  }
+}
+// 夜间模式页面样式
+@media (prefers-color-scheme: dark) {
+  .header-title,.header-menu a{
+    color: var(--sanji-color);
+  }
+  .header-menu svg{
+    color: var(--erji-color);
+  }
+  .githuab svg,.heard-rss svg path,.menu-main svg{
+    fill: #666;
+  }
+  .heard-rss svg path:hover,.githuab svg:hover,.menu-main svg:hover{
+    fill: #999;
+  }
+}

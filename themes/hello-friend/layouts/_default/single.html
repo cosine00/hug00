@@ -1,0 +1,105 @@
+{{ define "head" }}
+  {{ if .Next -}}<link rel="prefetch" href="{{ .Next.Permalink }}">{{- end }}
+  {{ if .Prev -}}<link rel="prefetch" href="{{ .Prev.Permalink }}">{{- end }}
+{{ end }}
+
+{{ define "main" }}
+  {{ $isntDefault := not (or (eq (trim $.Site.Params.contentTypeName " ") "posts") (eq (trim $.Site.Params.contentTypeName " ") "")) }}
+  {{ $contentTypeName := cond $isntDefault (string $.Site.Params.contentTypeName) "posts" }}
+  
+  {{ $PostCate := .File.Path | replaceRE ".*posts/(.*)/.*" "$1"}}
+  <div class="post {{ $PostCate }}">
+    {{ partial "breadcrumb.html" . }}
+  {{ if eq $PostCate "chat"}}
+      {{ .Render "chat"}}
+      <div class="post-content">
+        <a href="{{ .Permalink }}" rel="link"><img loading="lazy" decoding="async" class="post-avatar avatar" src="https://cravatar.cn/avatar/ba83fa02fc4b2ba621514941307e21be"></a>
+          {{ .Content }}
+      </div>
+  {{ else }}
+    <h2 class="post-title"><a href="{{ .Permalink }}">{{ .Title | markdownify }}</a></h2>
+    <div class="post-meta">
+      {{ if .Date | default nil }}
+        <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatSingle | default "2006-01-02") }}</span>
+        {{- if .Site.Params.twikoo.enable -}}
+          <span> / <span id="twikoo_visitors">0</span> 阅读</span>
+        {{- end }}
+        {{ if eq .Type $contentTypeName }}
+          {{ if $.Site.Params.LastModDisplay }}
+            {{ partial "lastmod.html" . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </div>
+    {{ if eq $PostCate "weekly"}}
+      {{ "[![Feedly](https://api-shields.edui.fun/badge/dynamic/json?url=https%3A%2F%2Fapi.swo.moe%2Fstats%2Ffeedly%2Fhttps%253A%252F%252Fimmmmm.com%252Fweekly&query=count&color=282c34&label=Feedly&labelColor=2bb24c&logo=feedly&logoColor=ffffff&suffix=+subs&cacheSeconds=3600)](https://immmmm.com/weekly) [![Telegram](https://api-shields.edui.fun/badge/dynamic/json?url=https%3A%2F%2Fapi.swo.moe%2Fstats%2Ftelegram%2Fmemos_bbs&query=count&color=2CA5E0&label=Memos+%E5%B9%BF%E5%9C%BA&labelColor=383838&logo=telegram&suffix=+°C&cacheSeconds=3600)](https://t.me/memos_bbs) [![Telegram](https://api-shields.edui.fun/badge/dynamic/json?url=https%3A%2F%2Fapi.swo.moe%2Fstats%2Ftelegram%2Flmm214&query=count&color=2CA5E0&label=%E6%9E%97%E6%9C%A8%E6%9C%A8%E5%92%8C%E4%BB%96%E7%9A%84%E6%9C%8B%E5%8F%8B%E4%BB%AC&labelColor=383838&logo=telegram&suffix=+°C&cacheSeconds=3600)](https://t.me/lmm214)" | markdownify }}
+    {{ else }}  
+      {{ if .Params.feature}}
+        {{ if .Params.UseRelativeCover }}
+          <img loading='lazy' decoding="async" src="{{ (printf "%s%s" .Permalink .Params.feature ) }}" class="post-cover" />
+        {{ else }}
+          <img loading='lazy' decoding="async" src="{{ .Params.feature | absURL }}" class="post-cover" />
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  
+    <div class="post-content">
+      {{ if .Params.toc }}{{ .TableOfContents }}{{ end }}
+      {{ .Content }}
+      {{ .Render "path"}}
+    </div>
+
+    {{ if .Params.tags }}
+      <span class="post-tags">
+        {{ range .Params.tags }}
+          #<a href="{{ (urlize (printf "tags/%s" . )) | absURL }}/">{{ . }}</a>&nbsp;
+        {{ end }}
+      </span>
+    {{ end }}
+  {{ end }}
+
+    <script type="module" src="/emaction.js?v=2308072"></script>
+    <emoji-reaction theme="system" class="reaction" endpoint="https://api-emaction.immmmm.com" reacttargetid="immmmm-{{ .File.BaseFileName }}"></emoji-reaction>
+
+    <div class="clear"></div>
+    
+    {{ if eq .Type $.Site.Params.contentTypeName }}
+      {{ if or .Next .Prev }}
+        <div class="pagination">
+          <div class="pagination__title">
+            {{ if and .File .Site.Params.EditPath}}
+              <a class="pagination__title-h" href="https://github.com/lmm214/immmmm/edit/master/content/{{ replace .File.Path "\\" "/" }}" target="_blank" rel="noopener">阅读更多</a>
+            {{ else}}
+              <span class="pagination__title-h">阅读更多</span>
+            {{ end }}
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            {{ if .NextInSection }}
+              <span class="button previous">
+                <a href="{{ .NextInSection.Permalink }}">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">{{ .NextInSection.Title }}</span>
+                </a>
+              </span>
+            {{ end }}
+            {{ if .PrevInSection }}
+              <span class="button next">
+                <a href="{{ .PrevInSection.Permalink }}">
+                  <span class="button__text">{{ .PrevInSection.Title }}</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    {{ end }}
+
+
+    {{ if not (eq .Params.Comments "false") }}
+        {{ partial "comments.html" . }}
+    {{ end }}
+
+    </div>
+{{ end }}

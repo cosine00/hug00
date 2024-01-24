@@ -1,0 +1,136 @@
+:root {
+  --font-family-paragraph: 'HarmonyOS_Regular', Helvetica, sans-serif;
+  --font-family-title: 'HarmonyOS_Medium', Helvetica, sans-serif;
+  --font-family-code: 'JetBrainsMono','HarmonyOS_Regular', Helvetica, sans-serif;
+  --bankuai-color: #f6f6f6;
+  --background-color: #fff;
+  --background-dark-color: #201d1e;
+  --text-content-color:#222;
+  --text-content-dark-color:#BBB;
+  --text-highlight-color:#FC9151;
+  --frame-dark-color: #332D2F;
+  --frame-color: #eee;
+  --erji-color: #666;
+  --sanji-color: #999;
+}
+$breakpoints: (
+  'small': 700px,
+  'medium': 900px,
+  'large': 1200px,
+);
+
+@import 'normalize';
+@import 'breakpoints';
+@import 'header';
+@import 'footer';
+@import 'content';
+@import 'intro';
+@import 'summary';
+@import 'main-menu-mobile';
+@import 'pygments/github';
+@import 'comment';
+@import 'app';
+@import 'hardware';
+@import 'tags';
+@import 'movies';
+@import 'memos';
+@import 'photo';
+@import 'index';
+@import 'about';
+@import 'list';
+@import url('https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css');
+@import url('https://s1.hdslb.com/bfs/static/jinkela/long/font/medium.css');
+
+@font-face {
+  font-family: JetBrainsMono;
+  font-display: swap;
+  src: url('https://img.koobai.com/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  unicode-range: U+61-7a,U+41-5a,U+30-39;
+}
+
+html, body {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background-color);
+  font-family: var(--font-family-paragraph);
+  color: var(--text-content-color);
+  margin: 0;
+  padding: 0 20px 0 20px;
+  overflow-x: hidden;
+  @include breakpoint('small') {
+    padding: 0 30px 0 30px;
+  }
+}
+
+.wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  @include breakpoint('medium') {
+      display: grid;
+      grid-gap: 40px;
+      grid-template-columns: 100px 1fr;
+      margin-top: 60px;
+    }
+}
+.page-blog-single,.page-hardware,.page-app,.page-about,.page-blog-list{
+  max-width: 1080px;
+  margin: auto;
+}
+.page-blog-single .memos-search-ico,.page-hardware .memos-search-ico,.page-app .memos-search-ico,.page-about .memos-search-ico,.page-movies .memos-search-ico,.page-blog-list .memos-search-ico{
+  display: none;
+}
+
+//日间模式新增属性
+
+.highlight {
+pre {background: var(--bankuai-color);}
+}
+.highlight{background-color: var(--bankuai-color);}
+
+
+// 夜间模式页面样式
+@media (prefers-color-scheme: dark) {
+body {
+    background: #1A1718;
+    color: var(--text-content-dark-color);
+}
+p {
+  color: var(--text-content-dark-color);
+}
+h1,
+h2{
+  color: #CCCCCC;
+}
+h3 {
+  color: #FFF;
+}
+a {
+  color: var(--text-content-dark-color);
+}
+.author{
+  color: #CCCCCC;
+}
+.summary-date{color: #AAAAAA;}
+.highlight {
+pre {
+  background: #1f1d1d;
+  color: var(--text-content-dark-color);}
+}
+.highlight{background-color: var(--background-dark-color);}
+img {filter: brightness(0.8) contrast(1.2); }
+}
+
+// 页面上滑加载动画
+@media (min-width: 900px) {
+.img-hide {
+  opacity: 0;
+  transform: translateY(6%);
+  transition: opacity 0.4s ease, transform 0.8s ease;
+}
+.img-hide.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+}
