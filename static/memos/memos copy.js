@@ -16,21 +16,21 @@ var memoDefaultList = [
     "website": "https://immmmm.com",
     "link": "https://me.edui.fun",
     "creatorId": "101",
-    "avatar": "https://gravatar.memobbs.app/avatar/ba83fa02fc4b2ba621514941307e21be?s=80",
+    "avatar": "https://cravatar.cn/avatar/ba83fa02fc4b2ba621514941307e21be?s=80",
     "twikoo": "https://metk.edui.fun"
   },{
     "creatorName": "归臧",
     "website": "https://nuoea.com/",
     "link": "https://memos.nuoea.com",
     "creatorId": "101",
-    "avatar": "https://gravatar.memobbs.app/avatar/020d365ea2596ef6d516143bb0552704?s=80",
+    "avatar": "https://cravatar.cn/avatar/020d365ea2596ef6d516143bb0552704?s=80",
     "twikoo": "https://twikoo.nuoea.com"
   },{
     "creatorName": "koobai",
     "website": "https://koobai.com",
     "link": "https://memos.koobai.com",
     "creatorId": "1",
-    "avatar": "https://gravatar.memobbs.app/avatar/3b3d336a7d389b7ae8531cbe177ae9b7?s=80",
+    "avatar": "https://cravatar.cn/avatar/3b3d336a7d389b7ae8531cbe177ae9b7?s=80",
     "artalk": "https://c.koobai.com",
     "artSite": "空白唠叨"
   }
@@ -45,34 +45,25 @@ var userNow = `
     <span class="search-memos-btn button d-md-flex p-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21l-4.3-4.3"/></g></svg>
     </span>
-    <div class="user-button-span row-fill">
     <span class="memos-theme-toggle button d-md-flex p-2 mr-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8a2.83 2.83 0 0 0 4 4a4 4 0 1 1-4-4m0-6v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>
     </span>
-    <span class="my-blog-feeds button d-md-flex p-2 mr-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 10v.2A3 3 0 0 1 8.9 16v0H5v0h0a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0m-3 6v6m6-3v3"/><path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"/></g></svg>
-    </span>
     <span class="userlist-memos button d-md-flex p-2 mr-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87m-3-12a4 4 0 0 1 0 7.75"/></g></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 19a6 6 0 0 0-12 0"/><circle cx="8" cy="9" r="4"/><path d="M22 19a6 6 0 0 0-6-6a4 4 0 1 0 0-8"/></g></svg>
     </span>
     <span class="randomuser-memos button d-md-flex p-2 mr-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0m16 4v-2.38c0-2.12 1.03-3.12 1-5.62c-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0m-4-3h4M4 13h4"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16m-8-8v8m-4 8l-2 3m12 0l-2-3m0-4"/></g></svg>
     </span>
     <span class="gobbs-memos button d-md-flex p-2 mr-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.8 20v-4.1l1.9.2a2.3 2.3 0 0 0 2.164-2.1V8.3A5.37 5.37 0 0 0 2 8.25c0 2.8.656 3.054 1 4.55a5.77 5.77 0 0 1 .029 2.758L2 20m17.8-2.2a7.5 7.5 0 0 0 .003-10.603M17 15a3.5 3.5 0 0 0-.025-4.975"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9m2.9 2.8a6.14 6.14 0 0 0-.8 7.5"/><circle cx="12" cy="9" r="2"/><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47M19.1 1.9a9.96 9.96 0 0 1 0 14.1m-9.6 2h5M8 22l4-11l4 11"/></g></svg>
     </span> 
     <span class="gohome-memos button d-md-flex p-2 mr-3">
       <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m3 9l9-7l9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></g></svg>
     </span>
-    </div>
   </div>
 </div>`
 memosDom.insertAdjacentHTML('beforebegin', userNow);
 
-var backTop = `<div class="backtop d-none"><svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m18 15l-6-6l-6 6"/></svg></div>`
-memosDom.insertAdjacentHTML('afterend', backTop);
-
-let cfwkAiUrl = window.localStorage && window.localStorage.getItem("memos-cfwkai-url")
 var memosEditorCont = `
 <div class="memos-editor animate__animated animate__fadeIn col-12 d-none">
   <div class="memos-editor-body mb-3 p-3">
@@ -105,13 +96,6 @@ var memosEditorCont = `
             <svg xmlns="http://www.w3.org/2000/svg" width="1.35rem" height="1.35rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7m4 2h6m-3-3v6"/><circle cx="9" cy="9" r="2"/><path d="m21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></g></svg>
             <input class="memos-upload-image-input d-none" type="file" accept="image/*">
           </div>
-          ${cfwkAiUrl != null && cfwkAiUrl !== "" ? `
-            <div class="button outline action-btn mr-2 cfworkerai-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2m16 0h2m-7-1v2m-6-2v2"/></g></svg>
-            </div>
-            <div class="button outline action-btn mr-2 cfworkerai-load-btn d-none noclick">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            </div>` : ""}
         </div>
         <div class="d-flex flex-fill">
           <div class="memos-tag-list d-none mt-2 animate__animated animate__fadeIn"></div>
@@ -127,9 +111,6 @@ var memosEditorCont = `
           </div>
           <div class="button outline random-btn mr-2 p-2">
             <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2l4 4l-4 4M2 6h1.9c1.5 0 2.9.9 3.6 2.2M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14l4 4l-4 4"/></g></svg>
-          </div>
-          <div class="button outline oneday-btn d-none p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width=".9rem" height=".9rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><path d="M16 2v4M8 2v4m-5 4h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></g></svg>
           </div>
         </div>
         <div class="editor-submit d-flex flex-fill justify-content-end">
@@ -154,7 +135,6 @@ var memosEditorCont = `
         <input name="artalk-url" class="memos-artalk-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选]Artalk 评论网址">
         <input name="artalk-site-name" class="memos-artalksite-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选] Artalk 站点名称">
         <input name="twikoo-path-url" class="memos-twikoo-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选]Twikoo 评论网址">
-        <input name="twikoo-path-url" class="cfwkai-url-input border-b input-text col-6 py-2" type="text" value="" placeholder="[可选]Cloudflare AI 网址">
       </div>
       <button class="primary submit-openapi-btn px-5 py-2">保存</button>
     </div>
@@ -164,7 +144,6 @@ var memosEditorCont = `
 memosDom.insertAdjacentHTML('afterbegin',memosEditorCont);
 
 var themeTogglebtn = document.querySelector(".memos-theme-toggle");
-var myFeedsBtn = document.querySelector(".my-blog-feeds");
 var memosEditorInner = document.querySelector(".memos-editor-inner"); 
 var memosEditorOption = document.querySelector(".memos-editor-option");
 var memosRadomCont = document.querySelector(".memos-random");
@@ -173,11 +152,7 @@ var codeoneBtn = document.querySelector(".codeone-btn");
 var codeBtn = document.querySelector(".code-btn");
 var linkBtn = document.querySelector(".link-btn");
 var linkPicBtn = document.querySelector(".linkpic-btn");
-var cfAiBtn = document.querySelector(".cfworkerai-btn") || "";
-var cfAiLoadBtn = document.querySelector(".cfworkerai-load-btn");
 var randomBtn = document.querySelector(".random-btn");
-var oneDayBtn = document.querySelector(".oneday-btn");
-var userButton = document.querySelector('.user-button-span');
 var privateBtn = document.querySelector(".private-btn");
 var switchUserBtn = document.querySelector(".switchUser-btn");
 var loadEditorBtn = document.querySelector(".call-memos-editor");
@@ -193,7 +168,6 @@ var tokenInput = document.querySelector(".memos-token-input");
 var artalkInput = document.querySelector(".memos-artalk-input");
 var artalkSiteInput = document.querySelector(".memos-artalksite-input");
 var twikooInput = document.querySelector(".memos-twikoo-input");
-var cfwkAiUrlInput = document.querySelector(".cfwkai-url-input");
 var uploadImageInput = document.querySelector(".memos-upload-image-input");
 var memosTextarea = document.querySelector(".memos-editor-textarea");
 var getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
@@ -235,13 +209,14 @@ var getSelectedValue = window.localStorage && window.localStorage.getItem("memos
 
 document.addEventListener("DOMContentLoaded", () => {
   let getTheme = window.localStorage && window.localStorage.getItem("theme");
-  if (getTheme !== null && getTheme == "dark"){
-			document.body.classList.add("dark-theme","dark");
-	}else{
-			document.body.classList.remove("dark-theme","dark");
+	let isDark = getTheme === "dark";
+	let isLight = getTheme === "light";
+  //切换主题
+	if (getTheme !== null) {
+		document.body.classList.toggle("dark-theme",isDark);
 	}
   if (getTheme == null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-	  document.body.classList.add("dark-theme","dark");
+		document.body.classList.add("dark-theme","dark");
   }
 });
 
@@ -317,7 +292,7 @@ function memoFollow(mode) {
   usernowBtnDom.forEach((item) => {item.classList.remove('current');})
   if(mode == "MEMOSHOME"){
     goHomeBtn.classList.add("current")
-    getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","MEMOSHOME")
+    getUserMemos(nowLink,nowId,nowName,nowAvatar)
   }else if(mode == "MEMOSBBS"){
     goBbsBtn.classList.add("current")
     getMemos();
@@ -325,8 +300,6 @@ function memoFollow(mode) {
     randomUserBtn.classList.add("current")
     goRandUser()
   }else if(mode == "NOPUBLIC"){
-    getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",mode)
-  }else if(mode == "oneday"){
     getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",mode)
   }else{
     goHomeBtn.classList.add("current")
@@ -437,34 +410,16 @@ function memoFollow(mode) {
   this.getMemoCount = getMemoCount;
 
   function updateData(res) {
-    let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
-    if(oneDayTag !== null){
-      const firstItem = res.slice(0, 1);
-      const restItems = res.slice(1);
-      // 对后面的内容进行排序
-      restItems.sort((a, b) => b.createdTs - a.createdTs);
-      // 将两部分合并在一起
-      const sortedArray = firstItem.concat(restItems);
-      // 返回排序后的数组
-      pagination(sortedArray)
-      dataNum = Math.ceil(sortedArray.length/limit);
-      nums = dataNum - 1;
-      if (page > nums) {
-        loadBtn.classList.add('d-none');
-        return
-      };
-    }else{
-      res.sort((i,o)=>{
-        return( o.createdTs - i.createdTs)
-      })
-      pagination(res)
-      dataNum = Math.ceil(res.length/limit);
-      nums = dataNum - 1;
-      if (page > nums) {
-        loadBtn.classList.add('d-none');
-        return
-      };
-    }
+    res.sort((i,o)=>{
+      return( o.createdTs - i.createdTs)
+    })
+    pagination(res)
+    dataNum = Math.ceil(res.length/limit);
+    nums = dataNum - 1;
+    if (page > nums) {
+      loadBtn.classList.add('d-none');
+      return
+    };
   }
   this.updateData = updateData;
 
@@ -482,10 +437,6 @@ function memoFollow(mode) {
 
 // 插入 html 
 async function updateHtml(data) {
-  let oneDayClass = "oneday";
-  let tagnowHas = document.querySelector(".memos-tagnow")
-  let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
-  let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
   let result = '',itemOption = '',itemContent = '';
   let TAG_REG = /#([^#\s!.,;:?"'()]+)(?= )/g, 
     IMG_REG = /\!\[(.*?)\]\((.*?)\)/g,
@@ -519,7 +470,7 @@ async function updateHtml(data) {
     let memosVisibility = memo.visibility
     let twikooEnv = memo.twikoo;
     let artalkEnv = memo.artalk;
-    let artSite = `${memo.artSite}`;
+    let artSite = memo.artSite;
     let memosLink = memo.link + "/m/" + memo.id;
     let memosRes = memo.content
       .replace(TAG_REG, "")
@@ -564,7 +515,6 @@ async function updateHtml(data) {
     }
     
     //解析内置资源文件
-    //console.log(memo)
     if (memo.resourceList && memo.resourceList.length > 0) {
       let resourceList = memo.resourceList;
       let imgUrl = '',resUrl = '',resImgLength = 0;
@@ -582,11 +532,8 @@ async function updateHtml(data) {
           imgUrl += `<div class="memo-resource w-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${imgLink}"/></div>`;
           resImgLength = resImgLength + 1
         }
-        if (restype == 'video') {
-          resUrl += `<video style="width:100%;" crossorigin="anonymous" src="${imgLink}" controls=""></video>`
-        }
-        if (restype !== 'video' && restype !== 'image') {
-          resUrl += `<a class="memos-tag p-1" target="_blank" rel="noreferrer" href="${imgLink}">${resourceList[j].filename}</a>`;
+        if (restype !== 'image') {
+          resUrl += `<a target="_blank" rel="noreferrer" href="${imgLink}">${resourceList[j].filename}</a>`;
         }
       }
       if (imgUrl) {
@@ -613,7 +560,7 @@ async function updateHtml(data) {
       itemContent += `<div class="d-flex flex-fill justify-content-end"></div></div>`;
     }
     itemContent += `</div></div></div>`
-    result += `<div class="${memosMode == "MEMOSHOME" && tagnowHas == null &&oneDayTag !== null && i == 0 ? oneDayClass : ''} memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${link}', '${creatorId}','${creatorName}','${avatar}')" class="item-avatar mr-2" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs" onclick="viaNow('${creatorName}','${memosLink}')">${new Date(createdTs * 1000 - 5 ).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
+    result += `<div class="memo-${memosId} d-flex animate__animated mb-3"><div class="card-item flex-fill p-3"><div class="item-header d-flex mb-3"><div class="d-flex flex-fill"><div onclick="getUserMemos('${link}', '${creatorId}','${creatorName}','${avatar}')" class="item-avatar mr-2" style="background-image:url(${avatar})"></div><div class="item-sub d-flex flex-column p-1"><div class="item-creator"><a href="${website}" target="_blank">${creatorName}</a></div><div class="item-mate mt-2 text-xs" onclick="viaNow('${creatorName}','${memosLink}')">${new Date(createdTs * 1000 - 5 ).toLocaleString()}</div></div></div>${itemOption}</div>${neodbDom+itemContent}</div></div>`;
   } // end for
   
   memoDom.insertAdjacentHTML('beforeend', result);
@@ -713,101 +660,47 @@ async function getMemos(search) {
   goBbsBtn.classList.remove("noclick")
 }
 
-myFeedsBtn.addEventListener('click', function(event) {
-  loadBtn.classList.add('d-none');
-  memoDom.innerHTML = skeleton;
-  usernowBtnDom.forEach((item) => {item.classList.remove('current');})
-  myFeedsBtn.classList.add("current")
-  let fetchUrl = "https://cf.edui.fun/all?rule=created&end=20"
-  fetch(fetchUrl).then(res => res.json()).then(resdata =>{
-    let myFeedData = resdata.article_data
-    var myFeedArticle = '';
-    for (var i = 0;i<myFeedData.length;i++){
-      var item = myFeedData[i];
-      myFeedArticle +=`
-      <div class="card-item flex-fill p-3">
-        <div class="d-flex flex-fill">
-          <div class="item-avatar mr-2" style="background-image:url(${item.avatar})"></div>
-          <div class="item-sub d-flex flex-column p-1">
-            <div class="item-creator"><a href="${item.link}" target="_blank" rel="noopener nofollow" >${item.title}</a></div>
-            <span class="myfeeds-floor">${item.floor}</span>
-            <div class="item-mate mt-2 text-xs">${item.updated}</div>
-          </div>
-        </div>
-      </div>
-      `;
-    }
-    memoDom.innerHTML = `<div class="myfeeds">${myFeedArticle}</div>`;
-    //相对时间
-    window.Lately && Lately.init({
-      target: '.item-mate'
-    });
-  })
-});
-
-//标签筛选且输入框为空，自动插入标签
-memosTextarea.addEventListener('focus', function(event) {
-  let nowTag = document.querySelector(".memos-tagnow-name")
-  if(nowTag !== null && memosTextarea.value == ""){
-    memosTextarea.value = "#"+nowTag.textContent+" ";
-  }
-});
-
 //搜索 Memo
 searchBtn.addEventListener("click", function () {
   if(searchInput.classList.contains("d-none")){
-    userButton.classList.add("d-none")
     searchInput.classList.remove("d-none")
     searchInput.focus();
-  }else if(!searchInput.classList.contains("d-none") && searchInput.value == ""){
+  }else{
     searchInput.classList.add("animate__fadeOutRight")
     setTimeout(function() {
-      userButton.classList.remove("d-none")
       searchInput.classList.add("d-none")
       searchInput.classList.remove("animate__fadeOutRight")
     }, 500);
-  }else if(searchInput.value !== ""){
-    searchNow(searchInput.value)
   }
   searchInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-      searchNow(searchInput.value)
+      let tagnowHas = document.querySelector(".memos-tagnow")
+      if(tagnowHas) tagnowHas.remove();
+      const serchText = searchInput.value;
+      let usernowName = document.querySelector(".user-now-name").innerHTML;
+      if(serchText !== "" && serchText != null){
+        let serchDom = `
+          <div class="memos-tagnow row p-2 mb-2"">
+            <div class="memos-tagnow-title mr-3">当前搜索:</div>
+            <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser('search')">${serchText}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
+          </div>`
+        memosDom.insertAdjacentHTML('beforebegin', serchDom);
+        if(usernowName == ""){
+          getMemos(serchText)
+        }else{
+          let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
+          if(userNameIndex == -1){
+            getUserMemos(nowLink,nowId,nowName,nowAvatar,"",serchText)
+          }else{
+            let userNowData = memoList[userNameIndex]
+            getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"",serchText)
+          }
+        }
+        searchInput.value = ''
+      }
     }
   });
 });
-
-function searchNow(serchText){
-  if(serchText !== ""){
-    let tagnowHas = document.querySelector(".memos-tagnow")
-    if(tagnowHas) tagnowHas.remove();
-    let usernowName = document.querySelector(".user-now-name").innerHTML;
-    let serchDom = `
-      <div class="memos-tagnow row p-2 mb-2"">
-        <div class="memos-tagnow-title mr-3">当前搜索:</div>
-        <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser('search')">${serchText}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
-      </div>`
-    memosDom.insertAdjacentHTML('beforebegin', serchDom);
-    if(usernowName == ""){
-      getMemos(serchText)
-    }else{
-      let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
-      if(userNameIndex == -1){
-        getUserMemos(nowLink,nowId,nowName,nowAvatar,"",serchText)
-      }else{
-        let userNowData = memoList[userNameIndex]
-        getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"",serchText)
-      }
-    }
-    searchInput.value = ''
-
-    searchInput.classList.add("animate__fadeOutRight")
-  setTimeout(function() {
-    userButton.classList.remove("d-none")
-    searchInput.classList.add("d-none")
-    searchInput.classList.remove("animate__fadeOutRight")
-  }, 500);
-  }
-}
 
 //显示订阅列表
 userlistBtn.addEventListener("click", function () {
@@ -818,7 +711,7 @@ userlistBtn.addEventListener("click", function () {
     let userlistDom = `<div class="userlist card-item d-flex flex-wrap mb-3 animate__animated animate__fadeIn">`;
     for (var i = 0; i < memoList.length; i++) {
       let nowMemo = memoList[i]
-      userlistDom += `<div onclick="getUserMemos('${nowMemo.link}', '${nowMemo.creatorId}','${nowMemo.creatorName.replace(/'/g, "’")}','${nowMemo.avatar}')" class="item-avatar" style="background-image:url(${nowMemo.avatar})"></div>`
+      userlistDom += `<div onclick="getUserMemos('${nowMemo.link}', '${nowMemo.creatorId}','${nowMemo.creatorName}','${nowMemo.avatar}')" class="item-avatar" style="background-image:url(${nowMemo.avatar})"></div>`
     }
     userlistDom += `</div>`;
     memosDom.insertAdjacentHTML('beforebegin', userlistDom);
@@ -853,20 +746,14 @@ function goBbs(){
 
 goHomeBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSHOME");
-  let tagnowHas = document.querySelector(".memos-tagnow")
-  if(tagnowHas) tagnowHas.remove();
   goHome();
 });
 goBbsBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSBBS");
-  let tagnowHas = document.querySelector(".memos-tagnow")
-  if(tagnowHas) tagnowHas.remove();
   goBbs()
 });
 randomUserBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "RANDUSER");
-  let tagnowHas = document.querySelector(".memos-tagnow")
-  if(tagnowHas) tagnowHas.remove();
   goRandUser()
 });
 //随机个人
@@ -920,18 +807,14 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
       memosAccess = 1;
     };
     let userMemoUrl;
-    if(tag && (random == null || random == "" )){
+    if(tag){
       userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&tag=${tag}&rowStatus=NORMAL&limit=50`;
     }else if(search){
       userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&content=${search}&rowStatus=NORMAL&limit=${limit}`;
     }else if(mode == "NOPUBLIC"){
       userMemoUrl = `${link}/api/v1/memo`;
     }else if(random){
-      if(tag){
-        userMemoUrl = `${link}/api/v1/memo?tag=${tag}&limit=1&offset=${random}`;
-      }else{
-        userMemoUrl = `${link}/api/v1/memo?&limit=1&offset=${random}`;
-      }
+      userMemoUrl = `${link}/api/v1/memo?&limit=1&offset=${random}`;
     }else{
       userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&rowStatus=NORMAL&limit=50`;
     }
@@ -946,62 +829,39 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
             },
             cache: 'no-store',
         });
-        if (response.ok) {
-          let data = await response.json();
-          let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
-          let oneDayTagCount = window.localStorage && window.localStorage.getItem("memos-oneday-count");
-          if( oneDayTag !== null && oneDayTagCount !== null && search == ""){
-            let randomOneNum = Math.floor(Math.random() * oneDayTagCount)
-            let oneDayUrl = `${memosPath}/api/v1/memo?tag=${oneDayTag}&limit=1&offset=${randomOneNum}`
-            //console.log(oneDayUrl)
-            try {
-              let responseOne = await fetch(oneDayUrl,{
-                headers: {
-                  'Authorization': `Bearer ${memosOpenId}`,
-                  'Content-Type': 'application/json',
-                  'Cache-Control': 'no-cache',
-                },
-                cache: 'no-store',
-              });
-              if (!responseOne.ok) {
-                throw new Error(`Request failed oneDay`);
-              }
-              dataone = await responseOne.json();
-              data.splice(0, 0, ...dataone);
-            } catch (error) {
-              console.error(error);
-            }
-          }
-          data.forEach(item => {
-            item.avatar = memosMeAvatarUrl
-            item.link = memosPath
-            item.twikoo = memosMeTwikoo
-            item.artalk = memosMeArtalk
-            item.artSite = `${memosMeArtalkSite}`
-          });
-          if (mode == "NOPUBLIC") {
-            memosCount = data.length;
-            window.localStorage && window.localStorage.setItem("memos-response-count",  memosCount);
-            data = data.filter((item) => item.visibility !== "PUBLIC");
-          }
-          memoData = data.flatMap(result => result);
-          memoList.forEach(item => {
-            memoCreatorMap[item.creatorName] = item;
-          });
-          memoData = memoData.map(item => {
-            let data = memoCreatorMap[item.creatorName];
-            return {...item, ...data};
-          });
-          if (mode !== "NOPUBLIC") {
-            memoData = await this.getMemoCount(memoData);
-          }
-          memoDom.innerHTML = "";
-          this.updateData(memoData);
-          if(!random && memoData.length >= 8 ){
-            setTimeout(function() {
-              loadBtn.classList.remove('d-none');
-            }, 1000);
-          }
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        let data = await response.json();
+        data.forEach(item => {
+          item.avatar = memosMeAvatarUrl
+          item.link = memosPath
+          item.twikoo = memosMeTwikoo
+          item.artalk = memosMeArtalk
+          item.artSite = memosMeArtalkSite
+        });
+        if (mode == "NOPUBLIC") {
+          memosCount = data.length;
+          window.localStorage && window.localStorage.setItem("memos-response-count", memosCount);
+          data = data.filter((item) => item.visibility !== "PUBLIC");
+        }
+        memoData = data.flatMap(result => result);
+        memoList.forEach(item => {
+          memoCreatorMap[item.creatorName] = item;
+        });
+        memoData = memoData.map(item => {
+          let data = memoCreatorMap[item.creatorName];
+          return {...item, ...data};
+        });
+        if (mode !== "NOPUBLIC") {
+          memoData = await this.getMemoCount(memoData);
+        }
+        memoDom.innerHTML = "";
+        this.updateData(memoData);
+        if(!random && memoData.length >= 8 ){
+          setTimeout(function() {
+            loadBtn.classList.remove('d-none');
+          }, 1000);
         }
       } catch (error) {
         console.error(error);
@@ -1331,7 +1191,12 @@ function getEditIcon() {
       } else if (keyCode === 13 && selectedTagIndex !== -1) {
         event.preventDefault();
         let tagName = matchingTags[selectedTagIndex].replace(/[#]/,'') + " "
-        insertValue(tagName,"",0)
+        insertValue(tagName);
+        let bracketIndex = memosTextarea.value.indexOf(tagName);
+        if (bracketIndex !== -1) {
+          memosTextarea.selectionStart = bracketIndex + tagName.length;
+          memosTextarea.selectionEnd = bracketIndex + tagName.length;
+        }
         memosTagList.querySelector('.memos-tag').classList.remove('selected');
         memosTagList.classList.add('d-none');
         selectedTagIndex = -1;
@@ -1366,21 +1231,54 @@ function getEditIcon() {
   //});
 
   codeoneBtn.addEventListener("click", function () {
-    insertValue(" `` ","`",2)
+    let memoCode = ' `` ';
+    insertValue(memoCode);
+    let bracketIndex = memosTextarea.value.indexOf(" `` ");
+    if (bracketIndex !== -1) {
+      memosTextarea.selectionStart = bracketIndex + 2;
+      memosTextarea.selectionEnd = bracketIndex + 2;
+    }
   });
 
   codeBtn.addEventListener("click", function () {
-    let memoCode = "\n```\n\n```\n";
-    insertValue(memoCode,"",5);
+    let memoCode = '```\n\n```';
+    insertValue(memoCode);
+    let bracketIndex = memosTextarea.value.indexOf("\n\n");
+    if (bracketIndex !== -1) {
+      memosTextarea.selectionStart = bracketIndex + 1;
+      memosTextarea.selectionEnd = bracketIndex + 1;
+    }
   });
 
   linkBtn.addEventListener("click", function () {
-    insertValue(" []() ","[",2)
+    let memoLink = ' []() ';
+    insertValue(memoLink);
+    let bracketIndex = memosTextarea.value.indexOf("[]()");
+    if (bracketIndex !== -1) {
+      memosTextarea.selectionStart = bracketIndex + 3;
+      memosTextarea.selectionEnd = bracketIndex + 3;
+    }
   });
 
   linkPicBtn.addEventListener("click", function () {
-    insertValue(" ![]() ","!",2)
+    let memoLink = ' ![]() ';
+    insertValue(memoLink);
+    let bracketIndex = memosTextarea.value.indexOf("![]()");
+    if (bracketIndex !== -1) {
+      memosTextarea.selectionStart = bracketIndex + 4;
+      memosTextarea.selectionEnd = bracketIndex + 4;
+    }
   });
+
+  function insertValue(t) {
+    let textLength = t.length;
+    memosTextarea.value += t;
+    memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
+    // 更新光标位置
+    memosTextarea.selectionStart = textLength;
+    memosTextarea.selectionEnd = textLength;
+    memosTextarea.focus()
+  }
 
   memosVisibilitySelect.addEventListener('change', function() {
     memoNowSelct = window.localStorage && window.localStorage.getItem("memos-visibility-select");
@@ -1410,17 +1308,10 @@ function getEditIcon() {
   });
   
   randomBtn.addEventListener("click", async function () {
-    let memosAllCount = window.localStorage && window.localStorage.getItem("memos-response-count");
-    let nowTag,userMemoUrl;
-    nowTagText = document.querySelector(".memos-tagnow-name") || ''
-    if(nowTagText){
-      nowTag = nowTagText.textContent;
-      userMemoUrl= `${nowLink}/api/v1/memo?tag=${nowTag}`
-    }else{
-      userMemoUrl = `${nowLink}/api/v1/memo/stats?creatorId=${nowId}`
-    }
-    if(!memosAllCount || nowTagText){
+    memosCount = window.localStorage && window.localStorage.getItem("memos-response-count");
+    if(!memosCount){
       try {
+        let userMemoUrl = `${nowLink}/api/v1/memo`
         let response = await fetch(userMemoUrl,{
             headers: {
               'Authorization': `Bearer ${memosOpenId}`,
@@ -1433,59 +1324,18 @@ function getEditIcon() {
           throw new Error(response.statusText);
         }
         let data = await response.json();
-        memosAllCount = data.length - 1;
-        if(!nowTag){
-          window.localStorage && window.localStorage.setItem("memos-response-count",memosAllCount);
-        }
-        let randomNum = random(0,memosAllCount);
-        getUserMemos(nowLink,nowId,nowName,nowAvatar,nowTag,"","",randomNum)
+        memosCount = data.length - 1;
+        window.localStorage && window.localStorage.setItem("memos-response-count", memosCount);
+        let randomNum = random(0,memosCount);
+        getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","",randomNum)
       } catch (error) {
         console.error(error);
       }
-      if(nowTagText){
-        oneDayBtn.classList.remove("d-none")
-      }
     }else{
-        let randomNum = random(0,memosAllCount);
-        getUserMemos(nowLink,nowId,nowName,nowAvatar,nowTag,"","",randomNum)
+      let randomNum = random(0,memosCount);
+      getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","",randomNum)
     }
   });
-
-  //开启回忆一条
-  oneDayBtn.addEventListener("click", async function () {
-    let oneDayNow = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
-    if (oneDayNow == null ) {
-      let nowTag = document.querySelector(".memos-tagnow-name").textContent
-      let nowTagCount;
-      let nowTagUrl= `${nowLink}/api/v1/memo?tag=${nowTag}`
-      try {
-        let response = await fetch(nowTagUrl,{
-            headers: {
-              'Authorization': `Bearer ${memosOpenId}`,
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-cache',
-            },
-            cache: 'no-store',
-        });
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        let data = await response.json();
-        nowTagCount = data.length - 1;
-        window.localStorage && window.localStorage.setItem("memos-oneday-tag",nowTag);
-        window.localStorage && window.localStorage.setItem("memos-oneday-count",nowTagCount);
-      } catch (error) {
-        console.error(error);
-      }
-      cocoMessage.success("开启「OneDay」")
-    }else{
-      window.localStorage && window.localStorage.removeItem("memos-oneday-tag");
-      window.localStorage && window.localStorage.removeItem("memos-oneday-count");
-      cocoMessage.success("已退出「OneDay」")
-    }
-    oneDayBtn.classList.add("d-none")
-  });
-  
 
   uploadImageInput.addEventListener('change', () => {
     let filesData = uploadImageInput.files[0];
@@ -1552,7 +1402,6 @@ function getEditIcon() {
       if(artalkInput.value !== null || artalkInput.value !== '') window.localStorage && window.localStorage.setItem("memos-artalk-input", artalkInput.value);
       if(artalkSiteInput.value !== null || artalkSiteInput.value !== '') window.localStorage && window.localStorage.setItem("memos-artalksite-input", artalkSiteInput.value);
       if(twikooInput.value !== null || twikooInput.value !== '') window.localStorage && window.localStorage.setItem("memos-twikoo-input", twikooInput.value);
-      if(cfwkAiUrlInput.value !== null || cfwkAiUrlInput.value !== '') window.localStorage && window.localStorage.setItem("memos-cfwkai-url", cfwkAiUrlInput.value);
     }
   });
 
@@ -1631,7 +1480,7 @@ function getEditIcon() {
       }).then(response => {
         let taglist = "";
         response.map((t)=>{
-          taglist += `<div class="memos-tag d-flex text-xs mt-2 mr-2 px-2" onclick="setMemoTag(this)">#${t}</div>`;
+          taglist += `<div class="imagelist-item d-flex text-xs mt-2 mr-2 px-2" onclick="setMemoTag(this)">#${t}</div>`;
         })
         document.querySelector(".memos-tag-list").innerHTML = taglist;
         //cocoMessage.success('准备就绪');
@@ -1686,34 +1535,6 @@ function getEditIcon() {
     } catch (error) {
       cocoMessage.error('出错了，再检查一下吧!');
     }
-  }
-}
-
-function insertValue(text,wrap,back) {
-  memosTextarea.focus();
-  const start = memosTextarea.selectionStart;
-  const end = memosTextarea.selectionEnd;
-  const selectedText = memosTextarea.value.substring(start, end);
-  if(selectedText == ""){
-    memosTextarea.value = memosTextarea.value.substring(0, start) + text + memosTextarea.value.substring(end);
-    memosTextarea.selectionStart = start + text.length - back;
-    memosTextarea.selectionEnd = start + text.length - back;
-  }else{
-    let wrapSelText;
-    if( wrap == "`" ){
-      wrapSelText = " `" + selectedText + "` ";
-      back = 0;
-    }
-    if( wrap == "[" ){
-      wrapSelText = " [" + selectedText + "]() ";
-    }
-    if( wrap == "!" ){
-      wrapSelText = " ![" + selectedText + "]() ";
-    }
-    const newText = memosTextarea.value.substring(0, start) + wrapSelText + memosTextarea.value.substring(end);
-    memosTextarea.value = newText;
-    memosTextarea.selectionStart = start + wrapSelText.length - back;
-    memosTextarea.selectionEnd = end + wrapSelText.length - back - selectedText.length;
   }
 }
 
@@ -1846,52 +1667,6 @@ function insertEmoji(emojiText) {
   memosTextarea.focus();
 }
 
-// 回到顶部
-let BackTop = document.querySelector(".backtop")
-document.onscroll = function() {
-	var iRollingLength = document.documentElement.scrollTop
-	if(iRollingLength > 300){
-		BackTop.classList.add("d-md-flex")
-	}else{
-		BackTop.classList.remove("d-md-flex")
-	}
-}
-BackTop.onclick=function(){
-	document.body.scrollIntoView({behavior: 'smooth'})
-};
-
-if(cfwkAiUrl != null && cfwkAiUrl !== ""){
-cfAiBtn.addEventListener('click', async function () {
-  let cfwkAiUrl = window.localStorage && window.localStorage.getItem("memos-cfwkai-url")
-  
-    cfAiBtn.classList.add("d-none","noclick")
-    cfAiLoadBtn.classList.remove("d-none")
-    let uuid = '';
-    const chars = 'abcdef0123456789';
-    for (let i = 0; i < 32; i++) {
-      const charIndex = Math.floor(Math.random() * chars.length);
-      uuid += chars[charIndex];
-      if (i === 7 || i === 11 || i === 15 || i === 19) {uuid += '-';}
-    }
-    try{
-      let textOld = memosTextarea.value
-      let input = encodeURIComponent(memosTextarea.value)
-      let fetchUrl = `${cfwkAiUrl}/${uuid}?q=${input}`
-      let aiResponse = await fetch(fetchUrl).then(res => res.json()).then(resdata =>{
-          return resdata[0].response[resdata[0].response.length - 1].content.response
-      })
-      //console.log(aiResponse)
-      if (aiResponse.length > 0) {
-        cfAiBtn.classList.remove("d-none","noclick")
-        cfAiLoadBtn.classList.add("d-none")
-        memosTextarea.value = `${textOld}\n----------\n${aiResponse}`
-        memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
-      }
-    } catch (error) {
-      cocoMessage.error('出错了，再检查一下吧!');
-    }
-});
-}
 
 /**
  * Lately.min.js 2.5.2
