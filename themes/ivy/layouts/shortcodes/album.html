@@ -2,7 +2,7 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-      var memoUrl = "https://memos.hux.ink/"
+      var memoUrl = "https://i.hux.ink:5233/"
       var galleryUrl = memoUrl+"api/v1/memo?creatorId=1&rowStatus=NORMAL&tag=相册&limit=2"
       fetch(galleryUrl).then(res => res.json()).then( resdata =>{
           var result = '',resultAll="",data = resdata
