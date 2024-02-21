@@ -12,6 +12,13 @@ var memosDom = document.querySelector(memosData.dom);
 let memoList
 var memoDefaultList = [
   {
+    "creatorName": "落落vici",
+    "website": "https://hux.ink",
+    "link": "https://i.hux.ink:5233",
+    "creatorId": "1",
+    "avatar": "https://cravatar.cn/avatar/bb78cd69edd84cdbdb99a491ea2dc6c8?s=400",
+    "twikoo": "https://twikoo.hux.ink"
+  },{
     "creatorName": "林木木",
     "website": "https://immmmm.com",
     "link": "https://me.edui.fun",
