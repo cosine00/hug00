@@ -16,6 +16,8 @@
   {{- end -}}
 </div>
 
+{{ partial "heatmap.html" . }}
+
 {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
 
 {{- if .Site.Params.ShowAllPagesInArchive }}
