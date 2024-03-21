@@ -28,8 +28,8 @@ feature:
 ![workout page02.png](https://img.hux.ink/image/2024/03/workout%20page02.png)
 
 4. 将仓库中已有的数据文件删除，分别删除以下路径文件：\assets(里面带年份的文件)、\run_page\data.db 、\src\static\activities.json。
-5. 删除完毕后进入仓库的「Actions」>「Run Data Svnc」>「Run workflow」执行数据同步。执行完返回刚刚删除数据文件的路径下，可以看到新同步的数据文件已经产生。
-6. 将项目部署到部署到 Vercel 或 Github Page。
+5. 删除完毕后进入仓库的「Actions」>「Run Data Sync」>「Run workflow」执行数据同步。执行完返回刚刚删除数据文件的路径下，可以看到新同步的数据文件已经产生。
+6. 将项目部署到 Vercel 或 Github Page。
 
 而后，页面就生成了，再将域名自定义一下。
 

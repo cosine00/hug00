@@ -22,7 +22,7 @@ feature:
 我选择的应用来源是  Strava ，按照[获取 Strava 数据](https://github.com/yihong0618/running_page/blob/master/README-CN.md#strava)的操作步骤，依次获取「STRAVA_CLIENT_ID」、「STRAVA_CLIENT_SECRET」和「STRAVA_CLIENT_REFRESH_TOKEN」三项内容，然后进入仓库的「Settings」>「Security」>「Secrets and variables」>「Actions」，选择顶部的「New repository secret」，将上述三项字段和已获取的值分别填写在此处。
 ![](https://raw.githubusercontent.com/cosine00/Image/main/202311011730574.png)
 
-下一步需要将仓库中Yihong大神的已有跑步数据文件删除，分别删除以下路径文件：\assets(里面带年份的文件)、\run_page\data.db 、\src\static\activities.json。删除完毕后进入仓库的「Actions」>「Run Data Svnc」>「Run workflow」执行数据同步。
+下一步需要将仓库中Yihong大神的已有跑步数据文件删除，分别删除以下路径文件：\assets(里面带年份的文件)、\run_page\data.db 、\src\static\activities.json。删除完毕后进入仓库的「Actions」>「Run Data Sync」>「Run workflow」执行数据同步。
 
 执行完返回刚刚删除数据文件的路径下，可以看到新同步的数据文件已经产生。
 
