@@ -450,9 +450,6 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
 @media screen and (max-width: 480px) {
 
   #menu-label {
-    padding: 0 10px; /* 调整内边距 */
-    height: auto; /* 根据内容自适应高度 */
-    line-height: normal; /* 恢复默认行高 */
     display: inline; /* 修改为内联元素，让文字显示在边框内 */
   }
   
