@@ -448,6 +448,11 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
 /* Portrait phone screens */
 
 @media screen and (max-width: 480px) {
+  #menu-container {
+    width: 40%; /* 将容器宽度设置为屏幕宽度的40% */
+    margin: 0 auto; /* 使容器水平居中 */
+  }
+
   #menu-label {
     display: flex; /* 将元素设置为 flexbox 布局 */
     align-items: center; /* 使元素在垂直方向上居中对齐 */
