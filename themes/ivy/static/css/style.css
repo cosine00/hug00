@@ -448,7 +448,26 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
 /* Portrait phone screens */
 
 @media screen and (max-width: 480px) {
-  
+  #menu-label {
+    display: inline-block;
+    padding: 0 10px;
+    height: 40px;
+    border: 1px solid;
+    cursor: pointer;
+    line-height: 40px;
+    color: #333;
+    font-size: 18px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#menu-label .icon {
+    padding-right: 5px;
+    width: 25px;
+}
+
+
   body {
     font-size: 16px;
   }
