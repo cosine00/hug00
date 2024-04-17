@@ -453,7 +453,6 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
     height: auto; /* 根据内容自适应高度 */
     line-height: normal; /* 恢复默认行高 */
     display: inline-block; /* 修改为内联块元素，让文字显示在边框内并具有宽度 */
-    margin: 10px; /* 增加一些外边距，让按钮更宽松 */
   }
 
   body {
