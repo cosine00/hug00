@@ -449,24 +449,12 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
 
 @media screen and (max-width: 480px) {
   #menu-label {
-    display: inline-block;
-    padding: 0 10px;
-    height: 42px;
-    border: 1px solid;
-    cursor: pointer;
-    line-height: 40px;
-    color: #333;
-    font-size: 18px;
-    margin-top: 5px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-#menu-label .icon {
-    padding-right: 5px;
-    width: 25px;
-}
-
+    padding: 0 20px; /* 调整内边距 */
+    height: auto; /* 根据内容自适应高度 */
+    line-height: normal; /* 恢复默认行高 */
+    display: inline-block; /* 修改为内联块元素，让文字显示在边框内并具有宽度 */
+    margin: 10px; /* 增加一些外边距，让按钮更宽松 */
+  }
 
   body {
     font-size: 16px;
