@@ -31,7 +31,7 @@ hideInList: true
 
 
 
-### 自用跳转链接
+### 链接Clip
 
 - [木木木木木](https://immmmm.com/)
 - [Elizen](https://elizen.me/)
