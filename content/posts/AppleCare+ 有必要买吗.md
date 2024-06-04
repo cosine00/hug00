@@ -4,8 +4,8 @@ date: 2024-06-04 17:01:42
 tags:
   - Log
 author: 落落vici
-draft: true
-slug: 
+draft: false
+slug: AppleCare+
 hideInList: false
 isTop: false
 feature:
@@ -16,7 +16,7 @@ feature:
 
 巧合的是，上一部手机 iPhone X 也是在使用了两年左右出现 Face ID 不可用的问题。
 
-新购的手机是iPhone 15 Pro，适用的 AppleCare+ 服务计划两年期价格是 ¥1,599 元，带来的保障是：适用于 iPhone 的 AppleCare+ 服务计划可延长服务保障期限至 2 年，在 2 年内还可提供不限次数的意外损坏保修服务，每次收取相应的服务费：对于屏幕或玻璃背板损坏，收取 ¥ 188 的服务费；对于其他意外损坏，收取 ¥ 628 的服务费。
+新购的手机是 iPhone 15 Pro，适用的 AppleCare+ 服务计划两年期价格是 ¥1,599 元，带来的保障是：适用于 iPhone 的 AppleCare+ 服务计划可延长服务保障期限至 2 年，在 2 年内还可提供不限次数的意外损坏保修服务，每次收取相应的服务费：对于屏幕或玻璃背板损坏，收取 ¥ 188 的服务费；对于其他意外损坏，收取 ¥ 628 的服务费。
 
 为了减小意外损坏后的损失，为新 iPhone 加购一个 AppleCare+ 看上去好像不错，但实际值得买吗，符合我的需求吗？
 
