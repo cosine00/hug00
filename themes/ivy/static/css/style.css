@@ -62,10 +62,32 @@ h3, h4, h5, h6 {
   text-align: left;
 }
 
-blockquote {
-  margin: 1em 0;
-  padding: 0 2em;
-  border-left: 3px solid #ddd;
+/*style settings blockquote quotation marks*/
+.markdown-content blockquote {
+  color: var(--text-normal);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.1);
+  padding-left: 35px;
+  padding-right: 10px;
+  margin-inline-start: 1%;
+  margin-inline-end: 1%;
+  border-left-width: 0px;
+  position: relative;
+}
+
+.markdown-content blockquote p {
+  margin-left: 0.7em;
+  margin-right: 0;
+  font-size: var(--font-size-preview-blockquote);
+}
+
+.markdown-content blockquote p:first-of-type::before {
+  content: '\ee81';
+  font-size: 2em;
+  font-family: boxicons;
+  color: var(--text-folder-file-icon);
+  position: absolute;
+  top: -0.4em;
+  left: -1.2em;
 }
 
 /* Code */
