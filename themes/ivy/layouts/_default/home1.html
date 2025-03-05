@@ -1,0 +1,11 @@
+{{ partial "header.html" . }}
+
+{{ $content := .Content }}
+{{ $latestPartial := partial "latest-posts.html" . }}
+{{ $content := replace $content "<!-- INSERT_latest-posts_HERE -->" $latestPartial }}
+{{ $memoPartial := partial "recent-memo.html" . }}
+{{ $content := replace $content "<!-- INSERT_MEMO_HERE -->" $memoPartial }}
+{{ $content | safeHTML }}
+
+
+{{ partial "footer-cus.html" . }}
