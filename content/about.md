@@ -26,5 +26,5 @@ hideInList: true
 
 ### 博客相关  [<span id="twikoo_visitors">0</span>](https://hux.ink/recent/)
 
-本博客主体使用了[Elizen](https://elizen.me/)的 Github 源码，在此基础上参考了[木木木木木](https://immmmm.com/)的许多features修改而成。作为一名零基础的代码小白，没有现成源码和ChatGPT的辅助，我是折腾不出来的。向他们表示感谢。🤞
+本博客主体使用了 [Elizen](https://elizen.me/) 的 Github 源码，在此基础上参考了[木木木木木](https://immmmm.com/)的许多 features 修改而成。作为一名零基础的代码小白，没有现成源码和 AI 的辅助，我是折腾不出来的。向他们表示感谢。🤞
 
