@@ -11,7 +11,8 @@
 {{ $.Scratch.Set "pages" .Pages }}
 {{ end }}
 <ul>
-  {{ range (where ($.Scratch.Get "pages") "Section" "posts") }}
+  {{ $currentYear := now.Year }} <!-- 获取当前年份 -->
+  {{ range where (where ($.Scratch.Get "pages") "Section" "posts") "Date.Year" "eq" $currentYear }}
   <li>
     <span class="date">{{ .Date.Format "2006/01/02" }}</span>&nbsp;&nbsp;&nbsp;
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
