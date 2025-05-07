@@ -17,7 +17,7 @@ var memoDefaultList = [
     "link": "https://i.hux.ink:5233",
     "creatorId": "1",
     "avatar": "https://cravatar.cn/avatar/bb78cd69edd84cdbdb99a491ea2dc6c8?s=400",
-    "twikoo": "https://twikoo.hux.ink"
+    "twikoo": "https://huxin.netlify.app/.netlify/functions/twikoo"
   },{
     "creatorName": "林木木",
     "website": "https://immmmm.com",
