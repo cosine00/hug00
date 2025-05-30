@@ -22,8 +22,8 @@ footnotereturnlinkcontents = "↩"
   url="/archives/"
   weight="2" 
   [[menu.main]]
-  name="发生"
-  url="https://news.hux.ink/"
+  name="光影"
+  url="/album/"
   weight="3"
   [[menu.main]]
   name="花园"
