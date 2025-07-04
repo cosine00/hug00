@@ -71,7 +71,7 @@ const allCSS = `
   display: none !important;
 }
 .emoji-reaction-bar {
-  margin: 0.5em 0 0 0;
+  margin-bottom: 0.5em;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -105,7 +105,7 @@ function renderMemos(memos) {
       }
     }
     let content = window.marked ? marked.parse(item.content) : item.content;
-    // 表情条（emaction）
+    // emaction表情条放到条目最上方
     let emojiBar = `<div class="emoji-reaction-bar"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></div>`;
     // 评论按钮和评论框
     let datacountDOM = `
@@ -118,11 +118,11 @@ function renderMemos(memos) {
     result += `
       <li>
         <div class="bb-item" style="position:relative;">
+          ${emojiBar}
           <div class="bb-cont">
             ${tags}
             ${content}
             ${resources}
-            ${emojiBar}
           </div>
           <div class="bb-info" style="position:relative;">
             <span class="datatime" title="${dateStr}">${dateStr}</span>
@@ -140,7 +140,7 @@ function renderMemos(memos) {
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 评论按钮点击后加载 twikoo
+  // 评论按钮点击后加载 twikoo（不滚动页面）
   document.querySelectorAll('.datacount').forEach(btn => {
     btn.addEventListener('click', function() {
       const memoId = btn.getAttribute('data-id');
@@ -149,13 +149,7 @@ function renderMemos(memos) {
         // 先收起其它已展开的
         document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
         twikooDom.classList.remove('d-none');
-        // 滚动到评论区
-        let domClass = document.getElementsByClassName('twikoo-' + memoId);
-        window.scrollTo({
-          top: domClass[0].offsetTop - 30,
-          behavior: "smooth"
-        });
-        // 初始化评论
+        // 不滚动页面
         if (!twikooDom.hasAttribute('data-inited')) {
           if (window.twikoo) {
             twikoo.init({
