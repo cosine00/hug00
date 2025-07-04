@@ -48,7 +48,7 @@ const allCSS = `
   text-decoration: underline;
 }
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
-.resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);overflow: auto;}
+.resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
 .resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:100%;height:0;cursor:zoom-in;}
 .resimg figure{max-height:50%;text-align:left;}
