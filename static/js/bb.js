@@ -32,7 +32,7 @@ const allCSS = `
 .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px;}
 .bb-timeline .bb-info a{text-decoration:none;}
 .bb-timeline .datatime{font-size:15px;}
-.bb-timeline .bb-cont{overflow-x:hidden;overflow-y:auto;margin-top:.5rem;max-height:50vh;}
+.bb-timeline .bb-cont{overflow-x:hidden;margin-top:.5rem;}
 .bb-timeline .datacount{position:absolute;right:0;bottom:0;cursor:pointer;display:flex;align-items:center;color:#42b983;font-size:1em;background:none;border:none;outline:none;padding:0 6px;}
 .bb-timeline .datacount svg{margin-left:4px;vertical-align:middle;}
 .bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto;}
