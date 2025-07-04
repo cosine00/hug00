@@ -139,7 +139,9 @@ function renderMemosPaged(memos, page) {
     }
     // 去除 content 中的 #标签
     let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
-    let content = window.marked ? marked.parse(contentText) : contentText;
+    // 把标签HTML插入到正文最前面
+    let contentWithTags = `${tags} ${contentText.replace(/\n/g, '  \n')}`; // 注意这里
+    let content = window.marked ? marked.parse(contentWithTags) : contentWithTags;
 
     // 标签和正文同一行
     let tagsAndContent = `${tags} ${content}`;
@@ -159,7 +161,7 @@ function renderMemosPaged(memos, page) {
         <div class="bb-item" style="position:relative;">
           ${emojiBar}
           <div class="bb-cont">
-            ${tagsAndContent}
+            ${content}
             ${resources}
           </div>
           <div class="bb-info" style="position:relative;">
