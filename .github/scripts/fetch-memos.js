@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 
-const MEMOS_API = 'https://i.hux.ink:5233/api/v1/memo?creatorId=1&rowStatus=NORMAL&limit=50';
+const MEMOS_API = 'https://i.hux.ink:5233/api/v1/memo?creatorId=1&rowStatus=NORMAL&limit=5000';
 
 (async () => {
   const res = await fetch(MEMOS_API);

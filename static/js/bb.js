@@ -39,7 +39,7 @@ const allCSS = `
 .bb-timeline pre p:empty{display:none;}
 .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem;}
-.tag-span{color:#42b983;cursor:pointer;}
+.tag-span{color:#42b983;font-weight:bold;background:#e6f9f0;border-radius:4px;padding:2px 6px;margin-right:4px;display:inline-block;}
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
@@ -67,10 +67,9 @@ loadCssCode(allCSS);
 function renderMemos(memos) {
   let result = "";
   memos.forEach(item => {
-    if (!item || !item.content || !item.createdTs) return; // 跳过无效条目
+    if (!item || !item.content || !item.createdTs) return;
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
-
     // 标签绿色并在最前
     let tags = (item.tags || []).map(tag => `<span class="tag-span">#${tag}</span>`).join(' ');
     let resources = '';
@@ -95,7 +94,12 @@ function renderMemos(memos) {
     result += `
       <li>
         <div class="bb-item">
-          <div class="bb-cont">${tags}${content}${resources}</div>
+          <div class="bb-cont">
+            ${tags}
+            ${content}
+            ${resources}
+            <div class="twikoo" data-id="${item.id}"></div>
+          </div>
           <div class="bb-info">
             <span class="datatime" title="${dateStr}">${dateStr}</span>
           </div>
@@ -107,6 +111,20 @@ function renderMemos(memos) {
   document.querySelector(bbMemo.domId).innerHTML = html;
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
+  // 初始化 twikoo 评论
+  if (window.twikoo) {
+    document.querySelectorAll('.twikoo').forEach(el => {
+      twikoo.init({
+        envId: bbMemo.twiEnv,
+        el: el,
+        path: el.getAttribute('data-id')
+      });
+    });
+  }
+  // 初始化 emaction 表情
+  if (window.emactionInit) {
+    emactionInit();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
