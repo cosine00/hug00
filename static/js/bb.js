@@ -132,7 +132,7 @@ function renderMemosPaged(memos, page) {
         resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
       }
     }
-    let content = window.marked ? marked.parse(item.content) : item.content;
+    let content = item.content; // 不用 marked.parse
     // emaction表情条放到条目最上方
     let emojiBar = `<div class="emoji-reaction-bar"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></div>`;
     // 评论按钮和评论框
