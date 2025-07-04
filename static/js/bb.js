@@ -94,6 +94,9 @@ const allCSS = `
   background: #42b983;
   color: #fff;
 }
+.bb-cont {
+  white-space: pre-line;
+}
 `
 loadCssCode(allCSS);
 

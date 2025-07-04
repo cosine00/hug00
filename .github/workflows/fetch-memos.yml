@@ -2,7 +2,7 @@ name: Fetch Memos
 
 on:
   schedule:
-    - cron: '0 * * * *' # 每小时执行一次
+    - cron: "0 0,0,2,14 * * *" 
   workflow_dispatch:
 
 jobs:
