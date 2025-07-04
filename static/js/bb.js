@@ -234,12 +234,16 @@ function renderMemosPaged(memos, page) {
       const memoId = btn.getAttribute('data-id');
       const twikooDom = document.querySelector('.twikoo-' + memoId);
       if (twikooDom.classList.contains('d-none')) {
+      // 先收起其它已展开的
+      document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
+      twikooDom.classList.remove('d-none');
       // 初始化Twikoo（含动态更新逻辑）
       if (!twikooDom.hasAttribute('data-inited')) {
-        twikoo.init({
-          envId: bbMemo.twiEnv,
-          el: '#twikoo-' + memoId,
-          path: '/m/' + memoId,
+        if (window.twikoo) {
+            twikoo.init({
+              envId: bbMemo.twiEnv,
+              el: '#twikoo-' + memoId,
+              path: '/m/' + memoId,
           onCommentLoaded: function() {
             // 动态获取评论数量
             const comments = document.querySelectorAll(`#twikoo-${memoId} .tk-comment`);
