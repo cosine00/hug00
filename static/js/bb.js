@@ -103,7 +103,7 @@ const allCSS = `
 .gallery-thumbnail img,
 .thumbnail-image {
   max-width: 100%;
-  max-height: 220px; /* 可根据需要调整 */
+  max-height: 320px; /* 可根据需要调整 */
   height: auto;
   width: auto;
   display: block;
