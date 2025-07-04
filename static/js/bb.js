@@ -235,38 +235,22 @@ function renderMemosPaged(memos, page) {
       const twikooDom = document.querySelector('.twikoo-' + memoId);
       if (twikooDom.classList.contains('d-none')) {
       // 先收起其它已展开的
-      document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
-      twikooDom.classList.remove('d-none');
-      // 初始化Twikoo（含动态更新逻辑）
-      if (!twikooDom.hasAttribute('data-inited')) {
-        if (window.twikoo) {
+        document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
+        twikooDom.classList.remove('d-none');
+        // 不滚动页面
+        if (!twikooDom.hasAttribute('data-inited')) {
+          if (window.twikoo) {
             twikoo.init({
               envId: bbMemo.twiEnv,
               el: '#twikoo-' + memoId,
               path: '/m/' + memoId,
-          onCommentLoaded: function() {
-            // 动态获取评论数量
-            const comments = document.querySelectorAll(`#twikoo-${memoId} .tk-comment`);
-            const svgPath = btn.querySelector('svg path');
-            const countSpan = btn.querySelector('.comment-count') || document.createElement('span');
-            
-            // 更新UI
-            if (comments.length > 0) {
-              svgPath.setAttribute('fill', '#800080');
-              countSpan.className = 'comment-count';
-              countSpan.textContent = comments.length;
-              if (!btn.contains(countSpan)) btn.appendChild(countSpan);
-            } else {
-              svgPath.setAttribute('fill', '#42b983');
-              countSpan.remove();
-            }
+            });
           }
-        });
-        twikooDom.setAttribute('data-inited', '1');
+          twikooDom.setAttribute('data-inited', '1');
+        }
+      } else {
+        twikooDom.classList.add('d-none');
       }
-    } else {
-      twikooDom.classList.add('d-none');
-    }
     });
   });
 
