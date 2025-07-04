@@ -146,8 +146,8 @@ function renderMemosPaged(memos, page) {
     // 标签和正文同一行
     let tagsAndContent = `${tags} ${content}`;
 
-    // emaction表情条放到条目最上方
-    let emojiBar = `<div class="emoji-reaction-bar"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></div>`;
+    // emaction表情条
+    let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
     // 评论按钮和评论框
     let datacountDOM = `
       <span class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${item.id}" title="评论">
@@ -159,13 +159,12 @@ function renderMemosPaged(memos, page) {
     result += `
       <li>
         <div class="bb-item" style="position:relative;">
-          ${emojiBar}
           <div class="bb-cont">
             ${content}
             ${resources}
           </div>
           <div class="bb-info" style="position:relative;">
-            <span class="datatime" title="${dateStr}">${dateStr}</span>
+            ${emojiBar}&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
             ${datacountDOM}
           </div>
           <div class="item-twikoo twikoo-${item.id} d-none">
