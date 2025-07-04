@@ -71,20 +71,34 @@ function renderMemos(memos) {
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
 
+    // 标签绿色并在最前
     let tags = (item.tags || []).map(tag => `<span class="tag-span">#${tag}</span>`).join(' ');
     let resources = '';
     if (item.resourceList && item.resourceList.length > 0) {
-@@ -92,27 +42,28 @@
+      let imgUrl = '';
+      let resImgLength = 0;
+      item.resourceList.forEach(res => {
+        let restype = res.type ? res.type.slice(0,5) : '';
+        let resLink = res.externalLink || res.publicUrl || res.filename || '';
+        if(restype === 'image' || resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
+          imgUrl += `<figure class="gallery-thumbnail"><img class="img thumbnail-image" src="${resLink}" /></figure>`;
+          resImgLength++;
+        }
+      });
+      if(imgUrl){
+        let resImgGrid = "";
+        if(resImgLength !== 1){resImgGrid = " grid grid-"+resImgLength}
+        resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
+      }
+    }
     let content = window.marked ? marked.parse(item.content) : item.content;
     result += `
       <li>
         <div class="bb-item">
-          <div class="bb-cont">${content}${resources}</div>
+          <div class="bb-cont">${tags}${content}${resources}</div>
           <div class="bb-info">
             <span class="datatime" title="${dateStr}">${dateStr}</span>
-            <span>${tags}</span>
           </div>
-
         </div>
       </li>
     `;
@@ -103,3 +117,4 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(res => res.json())
       .then(data => renderMemos(data));
   }
+});
