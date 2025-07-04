@@ -144,8 +144,12 @@ function renderMemosPaged(memos, page) {
         }
       });
       if(imgUrl){
-        // 统一所有图片都用 grid-2 样式
-        let resImgGrid = " grid grid-2";
+        let resImgGrid = "";
+        if(resImgLength === 1){
+        resImgGrid = " grid grid-2";
+      } else {
+        resImgGrid = " grid grid-"+resImgLength;
+      }
         resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
       }
     }
