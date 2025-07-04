@@ -110,6 +110,23 @@ const allCSS = `
   margin: 0.5em 0;
   object-fit: contain;
 }
+.datacount {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.comment-count {
+  margin-left: 4px;
+  font-size: 12px;
+  color: #800080; /* 紫色文字 */
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 0 4px;
+}
+.datacount:hover svg path {
+  fill: #a040a0; /* 悬停时加深紫色 */
+}
 `
 loadCssCode(allCSS);
 
@@ -168,8 +185,9 @@ function renderMemosPaged(memos, page) {
     let datacountDOM = `
       <span class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${item.id}" title="评论">
         <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="20" height="20">
-          <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="#42b983"/>
+          <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="${item.commentCount > 0 ? '#800080' : '#42b983'}"/>
         </svg>
+        ${item.commentCount > 0 ? `<span class="comment-count">${item.commentCount}</span>` : ''}
       </span>
     `;
     result += `
