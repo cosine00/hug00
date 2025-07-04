@@ -43,6 +43,10 @@ const allCSS = `
 .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem;}
 .tag-span{color:#42b983;font-weight:bold;background:#e6f9f0;border-radius:4px;padding:2px 6px;margin-right:4px;display:inline-block;}
+.tag-span.tag-filter {
+  cursor: pointer;
+  text-decoration: underline;
+}
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
@@ -106,11 +110,15 @@ function renderMemosPaged(memos, page) {
   let end = (page + 1) * pageSize;
   let showMemos = memos.slice(0, end);
   let result = "";
+  // 在 renderMemosPaged 里 result 之前加
+  if (memos.length !== allMemos.length) {
+    result += `<div class="bb-load"><button id="bb-show-all">显示全部</button></div>`;
+  }
   showMemos.forEach(item => {
     if (!item || !item.content || !item.createdTs) return;
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
-    let tags = (item.tags || []).map(tag => `<span class="tag-span">#${tag}</span>`).join(' ');
+    let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
     let resources = '';
     if (item.resourceList && item.resourceList.length > 0) {
       let imgUrl = '';
@@ -129,7 +137,13 @@ function renderMemosPaged(memos, page) {
         resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
       }
     }
-    let content = window.marked ? marked.parse(item.content) : item.content;
+    // 去除 content 中的 #标签
+    let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
+    let content = window.marked ? marked.parse(contentText) : contentText;
+
+    // 标签和正文同一行
+    let tagsAndContent = `${tags} ${content}`;
+
     // emaction表情条放到条目最上方
     let emojiBar = `<div class="emoji-reaction-bar"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></div>`;
     // 评论按钮和评论框
@@ -145,8 +159,7 @@ function renderMemosPaged(memos, page) {
         <div class="bb-item" style="position:relative;">
           ${emojiBar}
           <div class="bb-cont">
-            ${tags}
-            ${content}
+            ${tagsAndContent}
             ${resources}
           </div>
           <div class="bb-info" style="position:relative;">
@@ -166,6 +179,17 @@ function renderMemosPaged(memos, page) {
     html += `<div class="bb-load"><button id="bb-load-more">加载更多</button></div>`;
   }
   document.querySelector(bbMemo.domId).innerHTML = html;
+
+  // 标签筛选功能
+  document.querySelectorAll('.tag-span.tag-filter').forEach(span => {
+    span.onclick = function() {
+      const tag = this.getAttribute('data-tag');
+      const filtered = allMemos.filter(m => (m.tags || []).includes(tag));
+      currentPage = 0;
+      renderMemosPaged(filtered, currentPage);
+    }
+  });
+
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
@@ -205,6 +229,14 @@ function renderMemosPaged(memos, page) {
   if (loadMoreBtn) {
     loadMoreBtn.onclick = function() {
       currentPage++;
+      renderMemosPaged(allMemos, currentPage);
+    }
+  }
+  // 在标签点击事件后加
+  let showAllBtn = document.getElementById('bb-show-all');
+  if (showAllBtn) {
+    showAllBtn.onclick = function() {
+      currentPage = 0;
       renderMemosPaged(allMemos, currentPage);
     }
   }
