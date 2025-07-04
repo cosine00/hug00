@@ -2,11 +2,11 @@
 Last Modified time : 20240704 by Copilot
 */
 let bbMemo = {
-  memos: '/memos.json', // 只用本地json
+  memos: '/memos.json',
   limit: '10',
   creatorId: '1',
   domId: '#bber',
-  twiEnv: '', // 如需评论可配置
+  twiEnv: ''
 };
 
 if (typeof(bbMemos) !== "undefined") {
@@ -21,7 +21,9 @@ function loadCssCode(code){
   let head = document.getElementsByTagName('head')[0];
   head.appendChild(style);
 }
+
 const allCSS = `
+#bber{margin-top:1rem;width:auto!important;min-height:100vh;}
 .bb-timeline ul{margin:0;padding:0;}
 .bb-timeline ul li{margin-bottom:3rem;list-style-type:none;}
 .bb-timeline ul li .bb-cont ul li{margin-bottom:0;}
@@ -29,7 +31,7 @@ const allCSS = `
 .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;}
 .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px;}
 .bb-timeline .datatime{font-size:15px;}
-.bb-timeline .bb-cont{overflow-x:hidden;overflow-y:scroll;margin-top:.5rem;max-height:50vh;}
+.bb-timeline .bb-cont{overflow-x:hidden;overflow-y:auto;margin-top:.5rem;max-height:50vh;}
 .bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto;}
 .bb-timeline p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
 .bb-timeline pre{color:#aaa;}
@@ -65,6 +67,7 @@ loadCssCode(allCSS);
 function renderMemos(memos) {
   let result = "";
   memos.forEach(item => {
+    if (!item || !item.content || !item.createdTs) return; // 跳过无效条目
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
     let tags = (item.tags || []).map(tag => `<span class="tag-span">#${tag}</span>`).join(' ');
@@ -113,3 +116,4 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(res => res.json())
       .then(data => renderMemos(data));
   }
+});
