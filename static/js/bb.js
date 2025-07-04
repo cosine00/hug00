@@ -3,7 +3,7 @@ Last Modified time : 20240704 by Copilot
 */
 let bbMemo = {
   memos: '/memos.json',
-  limit: '10',
+  limit: 20, // 每页条数
   creatorId: '1',
   domId: '#bber',
   twiEnv: ''
@@ -76,12 +76,37 @@ const allCSS = `
   align-items: center;
   gap: 8px;
 }
+.bb-load {
+  text-align: center;
+  margin: 2em 0 1em 0;
+}
+.bb-load button {
+  background: #fff;
+  color: #42b983;
+  border: 1px solid #42b983;
+  border-radius: 4px;
+  padding: 8px 24px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background .2s;
+}
+.bb-load button:hover {
+  background: #42b983;
+  color: #fff;
+}
 `
 loadCssCode(allCSS);
 
-function renderMemos(memos) {
+let allMemos = [];
+let currentPage = 0;
+let pageSize = parseInt(bbMemo.limit) || 20;
+
+function renderMemosPaged(memos, page) {
+  let start = 0;
+  let end = (page + 1) * pageSize;
+  let showMemos = memos.slice(0, end);
   let result = "";
-  memos.forEach(item => {
+  showMemos.forEach(item => {
     if (!item || !item.content || !item.createdTs) return;
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
@@ -136,6 +161,10 @@ function renderMemos(memos) {
     `;
   });
   let html = `<section class="bb-timeline"><ul>${result}</ul></section>`;
+  // 加载更多按钮
+  if (end < memos.length) {
+    html += `<div class="bb-load"><button id="bb-load-more">加载更多</button></div>`;
+  }
   document.querySelector(bbMemo.domId).innerHTML = html;
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
@@ -170,6 +199,15 @@ function renderMemos(memos) {
   if (window.emactionInit) {
     emactionInit();
   }
+
+  // 加载更多按钮事件
+  let loadMoreBtn = document.getElementById('bb-load-more');
+  if (loadMoreBtn) {
+    loadMoreBtn.onclick = function() {
+      currentPage++;
+      renderMemosPaged(allMemos, currentPage);
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -178,6 +216,10 @@ document.addEventListener('DOMContentLoaded', function() {
     bbDom.innerHTML = `<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div>`;
     fetch(bbMemo.memos)
       .then(res => res.json())
-      .then(data => renderMemos(data));
+      .then(data => {
+        allMemos = data;
+        currentPage = 0;
+        renderMemosPaged(allMemos, currentPage);
+      });
   }
 });
