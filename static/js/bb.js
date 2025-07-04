@@ -98,6 +98,18 @@ const allCSS = `
   background: #42b983;
   color: #fff;
 }
+.bb-cont img,
+.resimg img,
+.gallery-thumbnail img,
+.thumbnail-image {
+  max-width: 100%;
+  max-height: 320px; /* 可根据需要调整 */
+  height: auto;
+  width: auto;
+  display: block;
+  margin: 0.5em 0;
+  object-fit: contain;
+}
 `
 loadCssCode(allCSS);
 
