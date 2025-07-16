@@ -51,7 +51,7 @@ const allCSS = `
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
 .resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:100%;height:0;cursor:zoom-in;}
-.resimg figure{max-height:50%;text-align:left;}
+.resimg figure{text-align:left;overflow: hidden;}
 .resimg figure img{max-height:50vh;}
 .resimg.grid figure,figcaption{margin:0!important;}
 .resimg.grid figure.gallery-thumbnail>img.thumbnail-image{position:absolute;top:0;left:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;}
