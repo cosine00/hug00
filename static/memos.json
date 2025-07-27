@@ -1,5 +1,25 @@
 [
   {
+    "id": 764,
+    "content": "#workout 没有压不住的心率，只有舍弃不下的配速。压心率慢跑5公里。",
+    "createdTs": 1753611767,
+    "resourceList": [
+      {
+        "id": 459,
+        "creatorId": 1,
+        "createdTs": 1753611713,
+        "updatedTs": 1753611713,
+        "filename": "1D887F41-47EE-475F-BD27-F3182102B8EA.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/07/1D887F41-47EE-475F-BD27-F3182102B8EA.jpg",
+        "type": "image/jpeg",
+        "size": 419969
+      }
+    ],
+    "tags": [
+      "workout"
+    ]
+  },
+  {
     "id": 763,
     "content": "#workout 开车到大沙河公园，大沙河-深圳湾-人才公园跑个15公里。人才公园太多人了，人挤人。",
     "createdTs": 1753530501,
