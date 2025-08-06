@@ -1,5 +1,25 @@
 [
   {
+    "id": 773,
+    "content": "#workout 趁雨停出去跑了一趟，然后通过strava同步到Garmin了，成功复现三圈分享，但成功之后感觉也就那么回事。",
+    "createdTs": 1754480033,
+    "resourceList": [
+      {
+        "id": 467,
+        "creatorId": 1,
+        "createdTs": 1754480005,
+        "updatedTs": 1754480005,
+        "filename": "94A00D8E-C123-42D7-8683-25C0E1D329AE.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/08/94A00D8E-C123-42D7-8683-25C0E1D329AE.jpg",
+        "type": "image/jpeg",
+        "size": 550579
+      }
+    ],
+    "tags": [
+      "workout"
+    ]
+  },
+  {
     "id": 772,
     "content": "#workout 下雨爬楼梯。",
     "createdTs": 1754309493,
