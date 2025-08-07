@@ -1,5 +1,35 @@
 [
   {
+    "id": 775,
+    "content": "#workout 今早又跑十公里测试了一下，不关注心率后也没那么累了。\n今天的数据路径是：Apple Watch自带体能训练记录→Strava→Garmin→NRC，全打通了，唯一的遗憾是步频数据没能传过来。",
+    "createdTs": 1754527101,
+    "resourceList": [
+      {
+        "id": 468,
+        "creatorId": 1,
+        "createdTs": 1754526925,
+        "updatedTs": 1754526925,
+        "filename": "FAAE103C-334F-40A6-9820-E5D138EC2A70.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/08/FAAE103C-334F-40A6-9820-E5D138EC2A70.jpg",
+        "type": "image/jpeg",
+        "size": 2136914
+      },
+      {
+        "id": 469,
+        "creatorId": 1,
+        "createdTs": 1754526930,
+        "updatedTs": 1754526930,
+        "filename": "98D223CE-B632-41A5-B402-7A9CE151414B.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/08/98D223CE-B632-41A5-B402-7A9CE151414B.jpg",
+        "type": "image/jpeg",
+        "size": 551347
+      }
+    ],
+    "tags": [
+      "workout"
+    ]
+  },
+  {
     "id": 774,
     "content": "详细了解了一下各种心率区间算法，以往的认知太片面了。明天开始不压心率了，撒开丫子跑就是。",
     "createdTs": 1754496526,
