@@ -1,5 +1,23 @@
 [
   {
+    "id": 776,
+    "content": "88全民健身日勋章，拿下。",
+    "createdTs": 1754613568,
+    "resourceList": [
+      {
+        "id": 470,
+        "creatorId": 1,
+        "createdTs": 1754613528,
+        "updatedTs": 1754613528,
+        "filename": "44528EA8-227A-4976-94FB-FB8CF2876871.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/08/44528EA8-227A-4976-94FB-FB8CF2876871.jpg",
+        "type": "image/jpeg",
+        "size": 384214
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 775,
     "content": "#workout 今早又跑十公里测试了一下，不关注心率后也没那么累了。\n今天的数据路径是：Apple Watch自带体能训练记录→Strava→Garmin→NRC，全打通了，唯一的遗憾是步频数据没能传过来。",
     "createdTs": 1754527101,
