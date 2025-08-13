@@ -1,0 +1,14 @@
+{{- $scratch := newScratch }}
+<!-- 创建时间 -->
+{{- if not .Date.IsZero -}}
+{{- $scratch.Add "meta" (slice (printf "创建:&nbsp;<span title='%s'>%s</span>" (.Date) (.Date.Format (default "January 2, 2006" .Site.Params.DateFormat)))) }}
+{{- end }}
+<!-- 作者 -->
+{{- with (partial "author.html" .) }}
+{{- $scratch.Add "meta" (slice .) }}
+{{- end }}
+
+<!-- 分隔方式 -->
+{{- with ($scratch.Get "meta") }}
+{{- delimit . "&nbsp;·&nbsp;" -}}
+{{- end -}}

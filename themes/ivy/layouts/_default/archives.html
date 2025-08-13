@@ -1,0 +1,50 @@
+{{ partial "header.html" . }}
+
+{{$scratch := newScratch}}
+{{$totalWord := 0}}
+{{ range (where .Site.Pages "Kind" "page" )}}
+    {{$scratch.Add "total" .WordCount}}
+{{ end }}
+
+{{$totalWord = $scratch.Get "total" }}
+
+共 {{ len (where .Site.RegularPages "Section" "posts") }} 篇文章， 总计 {{$totalWord}} 字
+
+<div id="all-tags">
+  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
+  <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>&nbsp;&nbsp;&nbsp;
+  {{- end -}}
+</div>
+
+{{ partial "heatmap.html" . }}
+
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+
+{{- if .Site.Params.ShowAllPagesInArchive }}
+{{- $pages = site.RegularPages }}
+{{- end }}
+
+{{- range $pages.GroupByPublishDate "2006" }}
+{{- if ne .Key "0001" }}
+<div class="archive-year">
+  <h3 class="archive-year-header">
+    {{- replace .Key "0001" "" }}年<sup class="archive-count">&nbsp;&nbsp;{{ len .Pages }}</sup>
+  </h3>
+  <div class="archive-posts">
+      {{- range .Pages }}
+      {{- if eq .Kind "page" }}
+      <div class="archive-entry">
+        <li class="archive-entry-title">
+          <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;<a href="{{.Permalink}}">{{.Title}}</a>
+         </li>        
+      </div>
+      {{- end }}
+      {{- end }}
+    </div>
+  </div>
+  {{- end }}
+</div>
+{{- end }}
+
+
+{{ partial "footer-cus.html" . }}

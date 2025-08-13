@@ -1,0 +1,46 @@
+<div id="latest-posts">
+  <style>
+    #latest-posts {
+      margin: 20px 0;
+    }
+
+    .post-grid {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .post-row {
+      display: flex;
+      width: 100%;
+    }
+
+    .post-item {
+      flex: 1 0 50%; /* 每行两个元素 */
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    .post-date {
+      margin-right: 5px; /* 调整日期和点号之间的间距 */
+    }
+
+    .bullet {
+      color: rgb(255, 0, 0); /* 修改为蓝色 */
+      font-weight: bold; /* 调整点号的样式 */
+    }
+  </style>
+
+  <div class="post-grid">
+    {{ $latestPosts := where .Site.RegularPages "Section" "posts" | first 6 }}
+    {{ range $index, $post := $latestPosts }}
+      {{ if eq (mod $index 2) 0 }}<div class="post-row">{{ end }}
+        <div class="post-item">
+          <span class="bullet">•</span> <!-- 添加点号 -->
+          <span class="post-date">{{ $post.Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>
+          <a href="{{ $post.Permalink }}">{{ $post.Title }}</a>
+        </div>
+      {{ if eq (mod $index 2) 1 }} </div> {{ end }}
+    {{ end }}
+    {{ if mod (len $latestPosts) 2 }} </div> {{ end }}
+  </div>
+</div>

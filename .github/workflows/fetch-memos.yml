@@ -1,0 +1,29 @@
+name: Fetch Memos
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # 每小时执行一次（UTC时间） 
+  workflow_dispatch:
+
+jobs:
+  fetch-memos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Fetch memos and save as JSON
+        run: node .github/scripts/fetch-memos.js
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update memos.json'
+          file_pattern: 'static/memos.json'

@@ -1,0 +1,17 @@
+{{ partial "header.html" . }}
+
+<div id="friend-circle-lite-root"></div>
+<script>
+    if (typeof UserConfig === 'undefined') {
+        var UserConfig = {
+            // 填写你的fc Lite地址
+            private_api_url: 'https://fc.hux.ink/',
+            // 点击加载更多时，一次最多加载几篇文章，默认20
+            page_turning_number: 20,
+            // 头像加载失败时，默认头像地址
+            error_img: 'https://hux.ink/favi.ico', // https://cdn.qyliu.top/i/2024/03/22/65fcea97b3ca6.png
+        }
+    }
+</script>
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/willow-god/Friend-Circle-Lite/main/fclite.min.css">
+<script src="/js/friendcircle.js"></script>

@@ -1,0 +1,55 @@
+name: Notion2Hugo
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: 
+      - notion_sync
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  notionSyncTask:
+    name: Sync Notion to Hugo
+    runs-on: ubuntu-latest
+    outputs:
+      HAS_CHANGES: ${{ steps.NotionSync.outputs.updated_count != '0' }}
+    steps:
+      - name: Checkout blog and theme
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Check the NOTION_SYNC_DATETIME
+        id: GetNotionSyncDatetime
+        run: |
+          NOTION_SYNC_DATETIME=$(git log -n 1 --grep="NotionSync" --format="%aI")
+          echo "NOTION_SYNC_DATETIME=$NOTION_SYNC_DATETIME" >> "$GITHUB_OUTPUT"
+          echo -e "Latest notion sync datetime:\n$NOTION_SYNC_DATETIME"
+
+      - name: Convert Notion to Markdown
+        id: NotionSync
+        uses: Doradx/notion2markdown-action@v1
+        with:
+          notion_secret: ${{ secrets.NOTION_SECRET }}
+          database_id: ${{ secrets.NOTION_DATABASE_ID }}
+          pic_migrate: true
+          pic_bed_config: ${{ secrets.PICBED_CONFIG }}
+          pic_compress: true
+          output_page_dir: 'content'
+          output_post_dir: 'content/posts/notion'
+          clean_unpublished_post: true
+          metas_keeped: slug
+          metas_excluded: pstatus, ptype
+          last_sync_datetime: ${{ steps.GetNotionSyncDatetime.outputs.NOTION_SYNC_DATETIME }}
+
+      - name: Commit & Push
+        if: steps.NotionSync.outputs.updated_count != '0'
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: 'content/'
+          commit_message: Automatic NotionSync.

@@ -1,0 +1,81 @@
+baseURL = "https://hux.ink/"
+languageCode = "en-us"
+timeZone = 'Asia/Shanghai'
+title = "Counting Stars💫"
+theme = "ivy"
+disqusShortname = "落落vici"
+hasCJKLanguage = true
+enableEmoji = true
+footnotereturnlinkcontents = "↩"
+
+[permalinks]
+  posts = "/posts/:slug/"
+  
+
+[menu]
+  [[menu.main]]
+  name="哔哔"
+  url="/bb/"
+  weight="1"
+  [[menu.main]]
+  name="归档"
+  url="/archives/"
+  weight="2" 
+  [[menu.main]]
+  name="光影"
+  url="/album/"
+  weight="3"
+  [[menu.main]]
+  name="花园"
+  url="https://clip.hux.ink/"
+  weight="4"
+  [[menu.main]]
+  name="悦动"
+  url="https://workout.hux.ink/"
+  weight="5"
+  [[menu.main]]
+  name="关于"
+  url="/about/"
+  weight="6"
+ 
+  
+  
+  
+
+  
+
+[params]
+  # description about this website
+  description = "🌩️🌩️🌩️欲买桂花同载酒，终不似，少年游。"
+  footer = "&copy; [Counting Stars💫 | Since 2023](https://hux.ink/index.xml)"
+  highlightjsCDN = "//cdn.bootcss.com"
+  highlightjsLang = ["r", "yaml", "tex"]
+  highlightjsTheme = "github"
+  highlightjsVersion = "9.12.0"  
+
+  
+
+[params.twikoo]
+	enable = true
+
+[blackfriday]
+extensionsmask = [ "noIntraEmphasis" ]
+fractions = false
+
+[markup.highlight]
+codeFences = false
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.goldmark.parser]
+autoHeadingIDType = "blackfriday"
+
+[markup.tableOfContents]
+endLevel = 3
+ordered = false
+startLevel = 1
+
+[outputs]
+  home = ["HTML","RSS","JSON"] # <domain>/atom.xml
+  page = ["HTML"]
