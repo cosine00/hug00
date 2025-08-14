@@ -180,7 +180,7 @@ hr {
 /* Layout */
 
 body {
-  width: 1010px;
+  width: 960px;
   margin: 0 auto;
   padding: 30px 0;
 }
@@ -192,7 +192,7 @@ body {
 }
 
 .main {
-  width: 750px;
+  width: 700px;
   padding: 32px 10px 20px 30px;
   margin-left: 260px;
   border-left: 2px solid black;
