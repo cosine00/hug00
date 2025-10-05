@@ -1,5 +1,23 @@
 [
   {
+    "id": 826,
+    "content": "中午接到4S电话让我早点过来，我三点钟来，接待顾问让我出去逛逛再回来，我五点钟顶着高温去艾溪湖跑了一段，回来告诉我还要继续等。\n\n艾溪湖的景色挺不错。",
+    "createdTs": 1759661239,
+    "resourceList": [
+      {
+        "id": 480,
+        "creatorId": 1,
+        "createdTs": 1759661204,
+        "updatedTs": 1759661204,
+        "filename": "A157895F-6EEB-46A4-B123-8A866DB9AF0C.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/10/A157895F-6EEB-46A4-B123-8A866DB9AF0C.jpg",
+        "type": "image/jpeg",
+        "size": 1743970
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 825,
     "content": "这次回来又赶上保养里程，约了下午的4S店，地图上看离艾溪湖很近，等下送车过去后到艾溪湖跑一圈。",
     "createdTs": 1759626667,
