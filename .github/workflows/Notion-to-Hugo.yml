@@ -1,6 +1,8 @@
 name: Notion2Hugo
 
 on:
+  schedule:
+    - cron: "0 16,12 * * *"
   workflow_dispatch:
   repository_dispatch:
     types: 
