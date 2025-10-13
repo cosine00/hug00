@@ -4,7 +4,7 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2025-10-11T10:08:00+00:00
+updated: 2025-10-13T06:18:00+00:00
 date: 2025-10-11T09:40:00+00:00
 slug: notion-sign-in
 title: Notion登不上了怎么办
@@ -25,7 +25,7 @@ id: 28971019-ed27-80b3-90e6-e4f23acd066a
 
 _东风快递镇楼_
 
-![](https://prod-files-secure.s3.us-west-2.amazonaws.com/9f262e53-5120-41f2-befa-55cc011782be/bb24583d-096b-46ff-9646-b49513e0b4c4/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XBHLPKPB%2F20251011%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20251011T100905Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGcaCXVzLXdlc3QtMiJIMEYCIQDMeUkHHMZoO%2Beb%2FzrVbj8iv1EGJwq0HM8h5Y7WYVwk%2BQIhAKBycnd2NaevVr3EVmIpFM80GYZ1Om5ZchVVNs919GhkKv8DCBAQABoMNjM3NDIzMTgzODA1IgwAA8sA3rttzEOMq%2F8q3AMMgS8JTsMKaKjNPeyYLqDTAPkmUyBqvV2gRA9LMJjsDwJhXfhOUJwsr7%2F3m2yP0lzdsMraAtAzRuk0yjlslrgQghmjYOi5Rnum5Z0ur0tH%2BhYbk4f4R6e2eBRlSUCcVVSYsP4zBPr0hzmuQHbv%2FabWqgrNogsem1YJCUnzDIyg%2FPEoBn67Hc4Ao9bmZct16G76OqgZkjvQnj41q3vEw5kZu%2FpZQNKzVwWJ%2FS%2FTU6F%2FPJswpH%2FE1ww%2FpQaUtyDYcAs1umU5VsHiPWDpeF0nk1QbeXFQzRS5%2FdazLrowtKUwTvlXUxmOpfqYnsJK3sA0buGcw6TMRhrHEVoLcgfNRFol2N35qFfyZT%2FP2lO2MNhwUOyecHolq1q5hwspqFrtZTfQ7nZvSFxsVI4SduWalrkCGasyE4hSwEUgXk1kelbgTwRRFea5OisuSCtxxfip6oczsR4Od3ZonfyrDDgBC5qKzwPsHK2xigKhoMHlr6hDujN7ktGRxzD%2FHqoMRFs3WthS9kabkSFqrFWouBW15Hk3COefPWhaPnJHDuZZq2VfqsSYfWVYi2egjOyKGW%2FO01vVoZX9oW32U2WtXR%2BxeuBp8pxCFZc%2BZ79OF1vZBFe5ldckrZRXB5qYmh1pZjDW96fHBjqkARPCUDhpX%2FpH4L30foeW9Ou%2BcVe5q5oljKNQGMJTcVufVeTsSi4NkWKpotvBjw4BQiBI9xlzivqf5iqCcDlRnR5aZgFb8PRlm7BrB5ekqaK%2BNacRFAFu4aUn6Qz4ZzOdSPPcqdmd4Y0K0UDc%2BsydO7373zusjpajt1u3%2Fj4hZBgRwynTsRnzqIoWjoe2p3cOIo%2F%2Bf4pawlzQKydQxhK4ZiMnltEv&X-Amz-Signature=4d0f812a57b3a3dd357afe6e3906054d7474ec83e8d84559913cad54ebcaa9b1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+![](https://img.hux.ink/image/2025/10/20251013141715007.webp)
 
 _本文直接在 Notion 中写就，通过 Github action 同步到 Hugo 中，测试是否成功。_
 
