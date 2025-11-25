@@ -33,6 +33,12 @@ jobs:
           echo "NOTION_SYNC_DATETIME=$NOTION_SYNC_DATETIME" >> "$GITHUB_OUTPUT"
           echo -e "Latest notion sync datetime:\n$NOTION_SYNC_DATETIME"
 
+      - name: Debug PICBED_CONFIG keys (safe)
+        env:
+          PICBED_CONFIG: ${{ secrets.PICBED_CONFIG }}
+        run: |
+          node -e "try{const cfg = JSON.parse(process.env.PICBED_CONFIG || '{}'); const pb = cfg.picBed || {}; console.log('picBed.uploader =', pb.uploader || '<not set>'); console.log('picBed keys =', Object.keys(pb));}catch(e){ console.error('PICBED_CONFIG not valid JSON:', e.message); process.exit(1);}"
+
       - name: Convert Notion to Markdown
         id: NotionSync
         uses: Doradx/notion2markdown-action@v1
