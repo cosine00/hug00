@@ -220,16 +220,29 @@ function renderMemosPaged(memos, page) {
       const memoId = btn.getAttribute('data-id');
       const attachDom = document.querySelector('.attach-' + memoId);
       if (attachDom.classList.contains('d-none')) {
-        // 显示所有图片缩略图
+        // 显示所有图片缩略图，布局自适应
         let imgHtml = '';
         const memo = allMemos.find(m => m.id == memoId);
         if (memo && memo.resourceList && memo.resourceList.length > 0) {
-          imgHtml += '<div class="resimg grid">';
+          let imgUrl = '';
+          let resImgLength = 0;
           memo.resourceList.forEach(res => {
+            let restype = res.type ? res.type.slice(0,5) : '';
             let resLink = res.externalLink || res.publicUrl || res.filename || '';
-            imgHtml += `<figure class="gallery-thumbnail"><img src="${resLink}" class="img thumbnail-image" style="width:140px;height:96px;object-fit:cover;cursor:pointer;border-radius:6px;" data-view-image /></figure>`;
+            if(restype === 'image' || resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
+              imgUrl += `<figure class="gallery-thumbnail"><img class="img thumbnail-image" src="${resLink}" data-view-image /></figure>`;
+              resImgLength++;
+            }
           });
-          imgHtml += '</div>';
+          if(imgUrl){
+            let resImgGrid = "";
+            if(resImgLength === 1){
+              resImgGrid = " grid grid-2";
+            } else {
+              resImgGrid = " grid grid-"+resImgLength;
+            }
+            imgHtml = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
+          }
         }
         attachDom.innerHTML = imgHtml;
         attachDom.classList.remove('d-none');
