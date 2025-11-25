@@ -220,17 +220,22 @@ function renderMemosPaged(memos, page) {
       const memoId = btn.getAttribute('data-id');
       const attachDom = document.querySelector('.attach-' + memoId);
       if (attachDom.classList.contains('d-none')) {
-        // 显示图片
+        // 显示图片并弹窗
         let imgHtml = '';
         const memo = allMemos.find(m => m.id == memoId);
         if (memo && memo.resourceList && memo.resourceList.length > 0) {
           memo.resourceList.forEach(res => {
             let resLink = res.externalLink || res.publicUrl || res.filename || '';
-            imgHtml += `<img src="${resLink}" style="max-width:100%;margin:8px 0;border-radius:6px;" />`;
+            imgHtml += `<img src="${resLink}" style="max-width:100%;margin:8px 0;border-radius:6px;cursor:pointer;" data-view-image />`;
           });
         }
         attachDom.innerHTML = imgHtml;
         attachDom.classList.remove('d-none');
+        // 自动弹窗第一个图片
+        setTimeout(() => {
+          const img = attachDom.querySelector('img[data-view-image]');
+          if (img) img.click();
+        }, 100);
       } else {
         // 收回图片
         attachDom.innerHTML = '';
