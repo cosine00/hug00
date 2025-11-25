@@ -133,6 +133,8 @@ loadCssCode(allCSS);
 let allMemos = [];
 let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 20;
+// 弹窗延迟（毫秒），可在模板中通过 bbMemos.viewImageDelay 覆盖
+bbMemo.viewImageDelay = bbMemo.viewImageDelay || 50;
 
 function renderMemosPaged(memos, page) {
   let start = 0;
@@ -214,44 +216,84 @@ function renderMemosPaged(memos, page) {
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 附件图片按钮点击后显示/收回图片缩略图
+  // 附件图片按钮点击后直接弹出图片查看器（不在条目下展开缩略图）
   document.querySelectorAll('.attach-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       const memoId = btn.getAttribute('data-id');
-      const attachDom = document.querySelector('.attach-' + memoId);
-      if (attachDom.classList.contains('d-none')) {
-        // 显示所有图片缩略图，布局自适应
-        let imgHtml = '';
-        const memo = allMemos.find(m => m.id == memoId);
-        if (memo && memo.resourceList && memo.resourceList.length > 0) {
-          let imgUrl = '';
-          let resImgLength = 0;
-          memo.resourceList.forEach(res => {
-            let restype = res.type ? res.type.slice(0,5) : '';
-            let resLink = res.externalLink || res.publicUrl || res.filename || '';
-            if(restype === 'image' || resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
-              imgUrl += `<figure class="gallery-thumbnail"><img class="img thumbnail-image" src="${resLink}" data-view-image /></figure>`;
-              resImgLength++;
-            }
-          });
-          if(imgUrl){
-            let resImgGrid = "";
-            if(resImgLength === 1){
-              resImgGrid = " grid grid-2";
-            } else {
-              resImgGrid = " grid grid-"+resImgLength;
-            }
-            imgHtml = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
+      const memo = allMemos.find(m => m.id == memoId);
+
+      if (memo && memo.resourceList && memo.resourceList.length > 0) {
+        // 创建临时隐藏容器存放图片
+        let tempContainer = document.createElement('div');
+        tempContainer.id = 'temp-image-viewer-' + memoId;
+        tempContainer.style.display = 'none';
+        document.body.appendChild(tempContainer);
+
+        // 收集图片并加入容器
+        let imageCount = 0;
+        memo.resourceList.forEach(res => {
+          let resLink = res.externalLink || res.publicUrl || res.filename || '';
+          let restype = res.type ? res.type.slice(0,5) : '';
+          if ((restype === 'image' || (resLink && resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i))) && resLink) {
+            let img = document.createElement('img');
+            img.src = resLink;
+            img.setAttribute('data-view-image', '');
+            tempContainer.appendChild(img);
+            imageCount++;
           }
+        });
+
+        if (imageCount > 0) {
+          // 初始化 ViewImage（优先）并自动打开第一张
+          if (window.ViewImage) {
+            ViewImage.init('#' + tempContainer.id + ' img');
+              // 延迟触发第一张图片点击，打开弹窗（延迟可配置）
+              const delay = parseInt(bbMemo.viewImageDelay) || 50;
+              setTimeout(() => {
+                const firstImg = tempContainer.querySelector('img');
+                if (firstImg) firstImg.click();
+              }, delay);
+
+              // 更鲁棒的关闭处理：兼容多种事件名，并提供回退超时
+              let cleaned = false;
+              const cleanTemp = () => {
+                if (cleaned) return;
+                cleaned = true;
+                if (tempContainer && tempContainer.parentNode) tempContainer.remove();
+                // 移除所有已绑定的事件
+                closeEventNames.forEach(ev => document.removeEventListener(ev, closeHandlers[ev]));
+                if (fallbackTimer) clearTimeout(fallbackTimer);
+              };
+
+              const closeEventNames = [
+                'view-image-close',
+                'viewimage:close',
+                'view-image:close',
+                'view-image-hide',
+                'view-image:hide',
+                'viewimage-close'
+              ];
+              const closeHandlers = {};
+              closeEventNames.forEach(ev => {
+                closeHandlers[ev] = function() { cleanTemp(); };
+                document.addEventListener(ev, closeHandlers[ev]);
+              });
+
+              // 回退：如果 15s 内没有触发任何关闭事件，自动清理
+              const fallbackTimer = setTimeout(() => {
+                cleanTemp();
+              }, 15000);
+          } else {
+            // 如果 ViewImage 未加载，降级为新窗口打开第一张
+            const firstImg = tempContainer.querySelector('img');
+            if (firstImg) window.open(firstImg.src, '_blank');
+            tempContainer.remove();
+          }
+        } else {
+          tempContainer.remove();
         }
-        attachDom.innerHTML = imgHtml;
-        attachDom.classList.remove('d-none');
-        // 初始化 ViewImage（如果需要）
-        if (window.ViewImage) ViewImage.init('.attach-' + memoId + ' img');
-      } else {
-        // 收回所有缩略图
-        attachDom.innerHTML = '';
-        attachDom.classList.add('d-none');
       }
     });
   });
