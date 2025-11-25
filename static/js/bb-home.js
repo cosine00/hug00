@@ -235,6 +235,13 @@ function renderMemosPaged(memos, page) {
         setTimeout(() => {
           const img = attachDom.querySelector('img[data-view-image]');
           if (img) img.click();
+          // 监听图片查看器关闭事件，自动收回图片
+          function viewImageCloseHandler() {
+            attachDom.innerHTML = '';
+            attachDom.classList.add('d-none');
+            window.removeEventListener('view-image-close', viewImageCloseHandler);
+          }
+          window.addEventListener('view-image-close', viewImageCloseHandler);
         }, 100);
       } else {
         // 收回图片
