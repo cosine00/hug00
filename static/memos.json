@@ -1,5 +1,23 @@
 [
   {
+    "id": 879,
+    "content": "调整了一下博客首页，将最近记录和最近哔哔添加进来了。另外哔哔的条目样式把图片默认隐藏了，点击后才显示。",
+    "createdTs": 1764064830,
+    "resourceList": [
+      {
+        "id": 506,
+        "creatorId": 1,
+        "createdTs": 1764064750,
+        "updatedTs": 1764064750,
+        "filename": "首页.png",
+        "externalLink": "https://img.hux.ink/image/2025/11/首页.png",
+        "type": "image/png",
+        "size": 220340
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 878,
     "content": "把活动目标由700千卡调整至800千卡。",
     "createdTs": 1764045947,
