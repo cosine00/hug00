@@ -1,5 +1,23 @@
 [
   {
+    "id": 878,
+    "content": "把活动目标由700千卡调整至800千卡。",
+    "createdTs": 1764045947,
+    "resourceList": [
+      {
+        "id": 505,
+        "creatorId": 1,
+        "createdTs": 1764045970,
+        "updatedTs": 1764045970,
+        "filename": "E76BE9A3-9C98-4348-96E2-B37836199CBE.jpg",
+        "externalLink": "https://img.hux.ink/image/2025/11/E76BE9A3-9C98-4348-96E2-B37836199CBE.jpg",
+        "type": "image/jpeg",
+        "size": 369716
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 877,
     "content": "#workout 难得早起一回，继续爬楼梯。",
     "createdTs": 1764026489,
