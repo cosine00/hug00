@@ -50,9 +50,9 @@ const allCSS = `
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
-.resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:100%;height:0;cursor:zoom-in;}
+.resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:140px;height:96px;cursor:zoom-in;}
 .resimg figure{text-align:left;overflow: hidden;}
-.resimg figure img{max-height:50vh;}
+.resimg figure img{max-width:140px;max-height:96px;width:140px;height:96px;object-fit:cover;border-radius:6px;cursor:pointer;}
 .resimg.grid figure,figcaption{margin:0!important;}
 .resimg.grid figure.gallery-thumbnail>img.thumbnail-image{position:absolute;top:0;left:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;}
 .loader {position: relative;margin:3rem auto;width: 100px;}
@@ -133,6 +133,8 @@ loadCssCode(allCSS);
 let allMemos = [];
 let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 20;
+// 弹窗延迟（毫秒），可在模板中通过 bbMemos.viewImageDelay 覆盖
+bbMemo.viewImageDelay = bbMemo.viewImageDelay || 50;
 
 function renderMemosPaged(memos, page) {
   let start = 0;
@@ -148,27 +150,16 @@ function renderMemosPaged(memos, page) {
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
     let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
-    let resources = '';
+    // 不直接展示图片，改为点击按钮后显示
+    let attachBtn = '';
     if (item.resourceList && item.resourceList.length > 0) {
-      let imgUrl = '';
-      let resImgLength = 0;
-      item.resourceList.forEach(res => {
-        let restype = res.type ? res.type.slice(0,5) : '';
-        let resLink = res.externalLink || res.publicUrl || res.filename || '';
-        if(restype === 'image' || resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
-          imgUrl += `<figure class="gallery-thumbnail"><img class="img thumbnail-image" src="${resLink}" /></figure>`;
-          resImgLength++;
-        }
-      });
-      if(imgUrl){
-        let resImgGrid = "";
-        if(resImgLength === 1){
-        resImgGrid = " grid grid-2";
-      } else {
-        resImgGrid = " grid grid-"+resImgLength;
-      }
-        resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
-      }
+      attachBtn = `
+        <span class="datacount attach-btn" data-id="${item.id}" title="查看附件图片">
+          <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="20" height="20">
+            <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="#42b983"/>
+          </svg> 查看图片
+        </span>
+      `;
     }
     // 去除 content 中的 #标签
     let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
@@ -195,15 +186,12 @@ function renderMemosPaged(memos, page) {
         <div class="bb-item" style="position:relative;">
           <div class="bb-cont">
             ${content}
-            ${resources}
           </div>
           <div class="bb-info" style="position:relative;">
             ${emojiBar}&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
-            ${datacountDOM}
+            ${attachBtn}
           </div>
-          <div class="item-twikoo twikoo-${item.id} d-none">
-            <div id="twikoo-${item.id}"></div>
-          </div>
+          <div class="item-attach attach-${item.id} d-none"></div>
         </div>
       </li>
     `;
@@ -228,28 +216,84 @@ function renderMemosPaged(memos, page) {
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 评论按钮点击后加载 twikoo（不滚动页面）
-  document.querySelectorAll('.datacount').forEach(btn => {
-    btn.addEventListener('click', function() {
+  // 附件图片按钮点击后直接弹出图片查看器（不在条目下展开缩略图）
+  document.querySelectorAll('.attach-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       const memoId = btn.getAttribute('data-id');
-      const twikooDom = document.querySelector('.twikoo-' + memoId);
-      if (twikooDom.classList.contains('d-none')) {
-      // 先收起其它已展开的
-        document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
-        twikooDom.classList.remove('d-none');
-        // 不滚动页面
-        if (!twikooDom.hasAttribute('data-inited')) {
-          if (window.twikoo) {
-            twikoo.init({
-              envId: bbMemo.twiEnv,
-              el: '#twikoo-' + memoId,
-              path: '/m/' + memoId,
-            });
+      const memo = allMemos.find(m => m.id == memoId);
+
+      if (memo && memo.resourceList && memo.resourceList.length > 0) {
+        // 创建临时隐藏容器存放图片
+        let tempContainer = document.createElement('div');
+        tempContainer.id = 'temp-image-viewer-' + memoId;
+        tempContainer.style.display = 'none';
+        document.body.appendChild(tempContainer);
+
+        // 收集图片并加入容器
+        let imageCount = 0;
+        memo.resourceList.forEach(res => {
+          let resLink = res.externalLink || res.publicUrl || res.filename || '';
+          let restype = res.type ? res.type.slice(0,5) : '';
+          if ((restype === 'image' || (resLink && resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i))) && resLink) {
+            let img = document.createElement('img');
+            img.src = resLink;
+            img.setAttribute('data-view-image', '');
+            tempContainer.appendChild(img);
+            imageCount++;
           }
-          twikooDom.setAttribute('data-inited', '1');
+        });
+
+        if (imageCount > 0) {
+          // 初始化 ViewImage（优先）并自动打开第一张
+          if (window.ViewImage) {
+            ViewImage.init('#' + tempContainer.id + ' img');
+              // 延迟触发第一张图片点击，打开弹窗（延迟可配置）
+              const delay = parseInt(bbMemo.viewImageDelay) || 50;
+              setTimeout(() => {
+                const firstImg = tempContainer.querySelector('img');
+                if (firstImg) firstImg.click();
+              }, delay);
+
+              // 更鲁棒的关闭处理：兼容多种事件名，并提供回退超时
+              let cleaned = false;
+              const cleanTemp = () => {
+                if (cleaned) return;
+                cleaned = true;
+                if (tempContainer && tempContainer.parentNode) tempContainer.remove();
+                // 移除所有已绑定的事件
+                closeEventNames.forEach(ev => document.removeEventListener(ev, closeHandlers[ev]));
+                if (fallbackTimer) clearTimeout(fallbackTimer);
+              };
+
+              const closeEventNames = [
+                'view-image-close',
+                'viewimage:close',
+                'view-image:close',
+                'view-image-hide',
+                'view-image:hide',
+                'viewimage-close'
+              ];
+              const closeHandlers = {};
+              closeEventNames.forEach(ev => {
+                closeHandlers[ev] = function() { cleanTemp(); };
+                document.addEventListener(ev, closeHandlers[ev]);
+              });
+
+              // 回退：如果 15s 内没有触发任何关闭事件，自动清理
+              const fallbackTimer = setTimeout(() => {
+                cleanTemp();
+              }, 15000);
+          } else {
+            // 如果 ViewImage 未加载，降级为新窗口打开第一张
+            const firstImg = tempContainer.querySelector('img');
+            if (firstImg) window.open(firstImg.src, '_blank');
+            tempContainer.remove();
+          }
+        } else {
+          tempContainer.remove();
         }
-      } else {
-        twikooDom.classList.add('d-none');
       }
     });
   });

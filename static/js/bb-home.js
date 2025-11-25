@@ -307,8 +307,8 @@ function renderMemosPaged(memos, page) {
   let loadMoreBtn = document.getElementById('bb-load-more');
   if (loadMoreBtn) {
     loadMoreBtn.onclick = function() {
-      currentPage++;
-      renderMemosPaged(allMemos, currentPage);
+      // 原先是加载更多，这里改为跳转到全部哔哔页，样式不变
+      window.location.href = 'https://hux.ink/bb/';
     }
   }
   // 在标签点击事件后加
