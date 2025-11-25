@@ -50,9 +50,9 @@ const allCSS = `
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
-.resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:100%;height:0;cursor:zoom-in;}
+.resimg.grid figure.gallery-thumbnail{position:relative;padding-top:100%;width:140px;height:96px;cursor:zoom-in;}
 .resimg figure{text-align:left;overflow: hidden;}
-.resimg figure img{max-height:50vh;}
+.resimg figure img{max-width:140px;max-height:96px;width:140px;height:96px;object-fit:cover;border-radius:6px;cursor:pointer;}
 .resimg.grid figure,figcaption{margin:0!important;}
 .resimg.grid figure.gallery-thumbnail>img.thumbnail-image{position:absolute;top:0;left:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;}
 .loader {position: relative;margin:3rem auto;width: 100px;}
@@ -214,37 +214,29 @@ function renderMemosPaged(memos, page) {
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 附件图片按钮点击后显示/收回图片
+  // 附件图片按钮点击后显示/收回图片缩略图
   document.querySelectorAll('.attach-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const memoId = btn.getAttribute('data-id');
       const attachDom = document.querySelector('.attach-' + memoId);
       if (attachDom.classList.contains('d-none')) {
-        // 显示图片并弹窗
+        // 显示所有图片缩略图
         let imgHtml = '';
         const memo = allMemos.find(m => m.id == memoId);
         if (memo && memo.resourceList && memo.resourceList.length > 0) {
+          imgHtml += '<div class="resimg grid">';
           memo.resourceList.forEach(res => {
             let resLink = res.externalLink || res.publicUrl || res.filename || '';
-            imgHtml += `<img src="${resLink}" style="max-width:100%;margin:8px 0;border-radius:6px;cursor:pointer;" data-view-image />`;
+            imgHtml += `<figure class="gallery-thumbnail"><img src="${resLink}" class="img thumbnail-image" style="width:140px;height:96px;object-fit:cover;cursor:pointer;border-radius:6px;" data-view-image /></figure>`;
           });
+          imgHtml += '</div>';
         }
         attachDom.innerHTML = imgHtml;
         attachDom.classList.remove('d-none');
-        // 自动弹窗第一个图片
-        setTimeout(() => {
-          const img = attachDom.querySelector('img[data-view-image]');
-          if (img) img.click();
-          // 监听图片查看器关闭事件，自动收回图片
-          function viewImageCloseHandler() {
-            attachDom.innerHTML = '';
-            attachDom.classList.add('d-none');
-            window.removeEventListener('view-image-close', viewImageCloseHandler);
-          }
-          window.addEventListener('view-image-close', viewImageCloseHandler);
-        }, 100);
+        // 初始化 ViewImage（如果需要）
+        if (window.ViewImage) ViewImage.init('.attach-' + memoId + ' img');
       } else {
-        // 收回图片
+        // 收回所有缩略图
         attachDom.innerHTML = '';
         attachDom.classList.add('d-none');
       }
