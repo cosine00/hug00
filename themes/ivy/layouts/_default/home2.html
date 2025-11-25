@@ -1,0 +1,23 @@
+{{ partial "header.html" . }}
+
+{{ $content := .Content }}
+{{ $memoPartial := partial "recent-memo.html" . }}
+{{ $content := replace $content "<!-- INSERT_MEMO_HERE -->" $memoPartial }}
+{{ $content | safeHTML }}
+
+{{ if .IsHome }}
+{{ $.Scratch.Set "pages" .Site.RegularPages }}
+{{ else }}
+{{ $.Scratch.Set "pages" .Pages }}
+{{ end }}
+<ul>
+  {{ $currentYear := now.Year }} <!-- 获取当前年份 -->
+  {{ range where (where ($.Scratch.Get "pages") "Section" "posts") "Date.Year" "eq" $currentYear }}
+  <li>
+    <span class="date">{{ .Date.Format "2006/01/02" }}</span>&nbsp;&nbsp;&nbsp;
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </li>
+  {{ end }}
+</ul>
+
+{{ partial "footer-cus.html" . }}

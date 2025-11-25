@@ -21,7 +21,7 @@
 .timeline ul {margin:0;}
 .timeline ul li {background:#3b3d42;list-style-type:none;position:relative;width:3px;margin-left:1em;padding:0.8em 0 2em;}
 .timeline ul li::after {transform: rotate(45deg);content:'';background-color: #3b3d42;display: block;position: absolute;top: 10px;left: -5px;width: 0.8em;height: 0.8em;outline:15px solid #fff;}
-.timeline ul li .itemdiv {position:relative;top:-13px;left:1em;width:670px;padding:0px 16px 0px;max-height: none;box-sizing: border-box;}
+.timeline ul li .itemdiv {position:relative;top:-13px;left:1em;width:670px;padding:0px 16px 0px;}
 .timeline ul li .datatime,.load button{color: #fafafa;font-size: 0.75em;font-style: italic;background-color: #3b3d42;display: inline-block;padding:4px 12px;}
 .timeline ul li .datacont{margin:0.65em 0 0.3em;}
 .timeline ul li .datacont img[src*="emotion"]{display:inline-block;width:auto;height:auto;}
@@ -37,7 +37,13 @@
   .timeline ul li{margin-left:0;}
   .timeline ul li .itemdiv{width:calc(100vw - 75px);left:20px;}
 }
-.datacont .tag-span{color: #42b983;}
+.datacont .tag-span,
+.tag-span {
+  color: #42b983;
+  font-weight: normal;   /* 不加粗 */
+  background: none;      /* 去掉浅绿色背景 */
+  box-shadow: none;      /* 去掉阴影 */
+}
 .datasource a{font-size: 0.8rem;}
 .datacont .img{cursor:pointer;border:1px solid #3b3d42;}
 .datacont .img.square{height:180px;width:180px;object-fit:cover;}
@@ -67,22 +73,21 @@
 }
 .resimg figure{
   text-align: left;
-  max-height:50%;
+  overflow: hidden;
 }
 .resimg figure img{
   max-height:50vh;
 }
 .resimg.grid figure, figcaption {
-  margin: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 .resimg.grid figure.gallery-thumbnail > img.thumbnail-image {
   position: absolute;
-  left: 0;
   top: 0;
-  display: block;
+  left: 0;
   width: 100%;
-  height: 90%;
+  height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
 }
 </style>
