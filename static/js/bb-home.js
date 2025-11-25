@@ -148,27 +148,16 @@ function renderMemosPaged(memos, page) {
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
     let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
-    let resources = '';
+    // 不直接展示图片，改为点击按钮后显示
+    let attachBtn = '';
     if (item.resourceList && item.resourceList.length > 0) {
-      let imgUrl = '';
-      let resImgLength = 0;
-      item.resourceList.forEach(res => {
-        let restype = res.type ? res.type.slice(0,5) : '';
-        let resLink = res.externalLink || res.publicUrl || res.filename || '';
-        if(restype === 'image' || resLink.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
-          imgUrl += `<figure class="gallery-thumbnail"><img class="img thumbnail-image" src="${resLink}" /></figure>`;
-          resImgLength++;
-        }
-      });
-      if(imgUrl){
-        let resImgGrid = "";
-        if(resImgLength === 1){
-        resImgGrid = " grid grid-2";
-      } else {
-        resImgGrid = " grid grid-"+resImgLength;
-      }
-        resources = `<div class="resimg${resImgGrid}">${imgUrl}</div>`;
-      }
+      attachBtn = `
+        <span class="datacount attach-btn" data-id="${item.id}" title="查看附件图片">
+          <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="20" height="20">
+            <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="#42b983"/>
+          </svg> 查看图片
+        </span>
+      `;
     }
     // 去除 content 中的 #标签
     let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
@@ -195,15 +184,12 @@ function renderMemosPaged(memos, page) {
         <div class="bb-item" style="position:relative;">
           <div class="bb-cont">
             ${content}
-            ${resources}
           </div>
           <div class="bb-info" style="position:relative;">
             ${emojiBar}&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
-            ${datacountDOM}
+            ${attachBtn}
           </div>
-          <div class="item-twikoo twikoo-${item.id} d-none">
-            <div id="twikoo-${item.id}"></div>
-          </div>
+          <div class="item-attach attach-${item.id} d-none"></div>
         </div>
       </li>
     `;
@@ -228,28 +214,27 @@ function renderMemosPaged(memos, page) {
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 评论按钮点击后加载 twikoo（不滚动页面）
-  document.querySelectorAll('.datacount').forEach(btn => {
+  // 附件图片按钮点击后显示/收回图片
+  document.querySelectorAll('.attach-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const memoId = btn.getAttribute('data-id');
-      const twikooDom = document.querySelector('.twikoo-' + memoId);
-      if (twikooDom.classList.contains('d-none')) {
-      // 先收起其它已展开的
-        document.querySelectorAll('.item-twikoo').forEach(item => item.classList.add('d-none'));
-        twikooDom.classList.remove('d-none');
-        // 不滚动页面
-        if (!twikooDom.hasAttribute('data-inited')) {
-          if (window.twikoo) {
-            twikoo.init({
-              envId: bbMemo.twiEnv,
-              el: '#twikoo-' + memoId,
-              path: '/m/' + memoId,
-            });
-          }
-          twikooDom.setAttribute('data-inited', '1');
+      const attachDom = document.querySelector('.attach-' + memoId);
+      if (attachDom.classList.contains('d-none')) {
+        // 显示图片
+        let imgHtml = '';
+        const memo = allMemos.find(m => m.id == memoId);
+        if (memo && memo.resourceList && memo.resourceList.length > 0) {
+          memo.resourceList.forEach(res => {
+            let resLink = res.externalLink || res.publicUrl || res.filename || '';
+            imgHtml += `<img src="${resLink}" style="max-width:100%;margin:8px 0;border-radius:6px;" />`;
+          });
         }
+        attachDom.innerHTML = imgHtml;
+        attachDom.classList.remove('d-none');
       } else {
-        twikooDom.classList.add('d-none');
+        // 收回图片
+        attachDom.innerHTML = '';
+        attachDom.classList.add('d-none');
       }
     });
   });
