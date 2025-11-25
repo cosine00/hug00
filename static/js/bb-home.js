@@ -3,7 +3,7 @@ Last Modified time : 20240704 by Copilot
 */
 let bbMemo = {
   memos: '/memos.json',
-  limit: 20, // 每页条数
+  limit: 10, // 每页条数
   creatorId: '1',
   domId: '#bber',
   twiEnv: ''
