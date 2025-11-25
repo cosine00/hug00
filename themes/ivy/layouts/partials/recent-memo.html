@@ -1,11 +1,11 @@
 <div id="bber"></div>
 <script type="text/javascript">
   var bbMemos = {
-    memos : 'https://i.hux.ink:5233/',//修改为自己的 apiurl，末尾有 / 斜杠
-    limit : '6',//默认每次显示 10条 
-    creatorId:'1' ,//默认为 101用户 https://demo.usememos.com/u/101
-    domId: '',//默认为 <div id="bber"></div>
-    twiEnv:'https://huxin.netlify.app/.netlify/functions/twikoo/',//启开 twikoo 评论，需加载 twikoo.js
+    memos : '/memos.json', // 使用本地json文件
+    limit : '6',            // 默认每次显示 10条
+    creatorId:'1',
+    domId: '#bber',        // 必须指定为 #bber
+    twiEnv:'https://huxin.netlify.app/.netlify/functions/twikoo/', // 如需评论可配置
   }
 </script>
 <script src="/js/bb.js"></script>

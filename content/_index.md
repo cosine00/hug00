@@ -6,4 +6,6 @@ title: Home
 
 ---
 
-## 近期记录
+<!-- INSERT_latest-posts_HERE -->
+
+<!-- INSERT_MEMO_HERE -->
