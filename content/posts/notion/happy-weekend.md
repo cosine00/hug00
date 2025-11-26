@@ -4,7 +4,7 @@ author: 落落vici
 draft: "false"
 tags:
   - 童言无忌
-updated: 2025-11-25T10:54:00+00:00
+updated: 2025-11-26T00:47:00+00:00
 date: 2025-11-17T13:03:00+00:00
 slug: happy-weekend
 title: 周末当然要开心
@@ -24,9 +24,5 @@ id: 2ae71019-ed27-806e-b577-f6b479b1a561
 安安吃完火锅，在吃餐后冰淇淋的时候，突然问：“明天要上学吗？”我们回答 yes。他听后一边用小勺挖着冰淇淋往嘴里送，一边嘀咕：“开心两天，不开心五天。”
 
 我、妈妈、姑姑一听，真是笑出泪来。还没上小学，就已经一语道破一辈子的真相。
-
-![](https://prod-files-secure.s3.us-west-2.amazonaws.com/9f262e53-5120-41f2-befa-55cc011782be/098895f0-3cb4-4e74-81a0-38c4e1e06245/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QNKWVVC5%2F20251125%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20251125T105437Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDBGXp1Gll9Rl0NGSvWN8LfjmGT6rJKzYkexmh%2Fx59jPwIgTq2Zwkb48RaRJiZvr%2Bhc5Ntm6h9W0ZSxa4F62zZdhZEq%2FwMIaxAAGgw2Mzc0MjMxODM4MDUiDNqbwdn9pUfEyG65yCrcA3Tg3qv%2BRkUtQ7RBDEIiP9CkMi2OUlYzLV9w%2Bx%2BSkLSfY3oaW7J7m5TsbxEqQH7Fm%2FAjSn4ogtMHyAtUsUjF7OSWuaYz097zY6GbYfmxY8AZd40Z7gTaJglpe6bM9lSzpYH9CbS%2F4g4vuZouqqHtN0G8%2BfdGcvz4JvsaQZKoscbZx3Nf5zzAn%2BHyLeioOxTkz4uSd9vRlbdyo6jyKSFzs%2FgOxnVfFBorQ3hSpOySnK%2BSRvHdoFJGchQa2bwWuJbRr%2FlBC4zxQpKPYtAjYDHcU7Kia%2B7DBO5nCukjwplBnSJF%2FkvHaXW6oK3AzTnQjsDIeioc9%2BFO6hkIcJF85tMlZA3muMNBcFHvwNa4DutojLPGpCkJXekvann1u62gbw%2BLNmE3RqJXzD%2FfF74Gar3BTlQ9MPdFRNPLySjOHob%2Fh9EBs6Urz%2B8ktGubCmuJZREeKIeVPNzuxc1W%2B3yvjc67L%2BOHJ8kCOCNzGk57xbdC5gqlSkAZumX3WChZFOWsSv3uaIwJPqs1nbhRXcdUoG%2F5NAEmh5uun45lRnVkk4L%2BHzXYUicm62EspMVlC5P822mitnqKo4%2BEAGYoIvLMnjzO3ouJYYiIU9EbTQWHXGoUKMnn9asSwRdSXq2QlK67MKXtlckGOqUBiM%2F72wnan33PMUCze%2B%2BgBBg6MeLGlFDF3VkTHlI88LnbJ6mFarAdajFdOM8jR6dmnNX8I%2FqlPgm7XGzU7AcWekjkTxuZ%2B%2F2bWgEpEvDJR%2FWzfOo0dCSXSYQHqDrrbGuKUTTQx67uirQLunln6nPPqohKhqKH1zfr6RI0eiMA%2BdCaA40Sx%2FwVKjpOUOesThdhP7H%2FFXtAva%2F11Y%2FI3eJ9kwtrSa0Q&X-Amz-Signature=db7867f256fa2da67874b9e9ff0aaa36d800e8a91eff02a276adfd831fd12c7f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
-
-![](https://prod-files-secure.s3.us-west-2.amazonaws.com/9f262e53-5120-41f2-befa-55cc011782be/22b14d22-6a42-460a-a8e9-c49cbbb82010/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QNKWVVC5%2F20251125%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20251125T105437Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDBGXp1Gll9Rl0NGSvWN8LfjmGT6rJKzYkexmh%2Fx59jPwIgTq2Zwkb48RaRJiZvr%2Bhc5Ntm6h9W0ZSxa4F62zZdhZEq%2FwMIaxAAGgw2Mzc0MjMxODM4MDUiDNqbwdn9pUfEyG65yCrcA3Tg3qv%2BRkUtQ7RBDEIiP9CkMi2OUlYzLV9w%2Bx%2BSkLSfY3oaW7J7m5TsbxEqQH7Fm%2FAjSn4ogtMHyAtUsUjF7OSWuaYz097zY6GbYfmxY8AZd40Z7gTaJglpe6bM9lSzpYH9CbS%2F4g4vuZouqqHtN0G8%2BfdGcvz4JvsaQZKoscbZx3Nf5zzAn%2BHyLeioOxTkz4uSd9vRlbdyo6jyKSFzs%2FgOxnVfFBorQ3hSpOySnK%2BSRvHdoFJGchQa2bwWuJbRr%2FlBC4zxQpKPYtAjYDHcU7Kia%2B7DBO5nCukjwplBnSJF%2FkvHaXW6oK3AzTnQjsDIeioc9%2BFO6hkIcJF85tMlZA3muMNBcFHvwNa4DutojLPGpCkJXekvann1u62gbw%2BLNmE3RqJXzD%2FfF74Gar3BTlQ9MPdFRNPLySjOHob%2Fh9EBs6Urz%2B8ktGubCmuJZREeKIeVPNzuxc1W%2B3yvjc67L%2BOHJ8kCOCNzGk57xbdC5gqlSkAZumX3WChZFOWsSv3uaIwJPqs1nbhRXcdUoG%2F5NAEmh5uun45lRnVkk4L%2BHzXYUicm62EspMVlC5P822mitnqKo4%2BEAGYoIvLMnjzO3ouJYYiIU9EbTQWHXGoUKMnn9asSwRdSXq2QlK67MKXtlckGOqUBiM%2F72wnan33PMUCze%2B%2BgBBg6MeLGlFDF3VkTHlI88LnbJ6mFarAdajFdOM8jR6dmnNX8I%2FqlPgm7XGzU7AcWekjkTxuZ%2B%2F2bWgEpEvDJR%2FWzfOo0dCSXSYQHqDrrbGuKUTTQx67uirQLunln6nPPqohKhqKH1zfr6RI0eiMA%2BdCaA40Sx%2FwVKjpOUOesThdhP7H%2FFXtAva%2F11Y%2FI3eJ9kwtrSa0Q&X-Amz-Signature=994f064349574eb2ab42da61be37164ceb76f25fca650e16dfa600f2557d0717&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
 
 ❤
