@@ -1,0 +1,67 @@
+{{/*
+Audio shortcode for Hugo
+Usage examples:
+  Inline by path: {{< audio src="/audio/myfile.mp3" caption="示例音频" >}}
+  Positional:     {{< audio "/audio/myfile.mp3" >}}
+  Page resource:  {{< audio "myfile.mp3" caption="page bundle audio" >}}  (it will try to find page resource by that name)
+Parameters:
+  - src        : required (or first positional parameter)
+  - autoplay   : true/false
+  - loop       : true/false
+  - preload    : auto | metadata | none (default: metadata)
+  - controls   : true|false (default: true)
+  - caption    : optional caption text shown under the player
+  - download   : true/false (show a download link)
+  - class      : css class for the audio element
+*/}}
+{{ $src := .Get "src" }}
+{{ if not $src }}
+  {{ $src = .Get 0 }}
+{{ end }}
+{{ if not $src }}
+  {{ errorf "shortcode 'audio' requires a src parameter" }}
+{{ end }}
+
+{{/* resolve page resource if present */}}
+{{ $.Scratch.Set "audioSrc" "" }}
+{{ $res := .Page.Resources.GetMatch $src }}
+{{ if $res }}
+  {{ $.Scratch.Set "audioSrc" $res.RelPermalink }}
+{{ else }}
+  {{ $.Scratch.Set "audioSrc" ($src | relURL) }}
+{{ end }}
+{{ $url := $.Scratch.Get "audioSrc" }}
+
+{{ $autoplay := eq (lower .Get "autoplay") "true" }}
+{{ $loop := eq (lower .Get "loop") "true" }}
+{{ $preload := .Get "preload" | default "metadata" }}
+{{ $controlsParam := .Get "controls" }}
+{{ $showControls := true }}
+{{ if eq (lower $controlsParam) "false" }}
+  {{ $showControls = false }}
+{{ end }}
+{{ $caption := .Get "caption" }}
+{{ $download := eq (lower .Get "download") "true" }}
+{{ $class := .Get "class" | default "" }}
+
+<div class="hugo-audio-shortcode">
+  <audio {{ if $showControls }}controls{{ end }} {{ if $autoplay }}autoplay{{ end }} {{ if $loop }}loop{{ end }} preload="{{ $preload }}" class="{{ $class }}">
+    <source src="{{ $url }}" type="audio/mpeg" />
+    {{/* Fallback for browsers */}}
+    {{ i18n "audioNotSupported" | default "Your browser does not support the audio element." }}
+    {{ if $download }}
+      &nbsp;<a href="{{ $url }}" download>{{ i18n "downloadAudio" | default "Download audio" }}</a>
+    {{ else }}
+      &nbsp;<a href="{{ $url }}">{{ i18n "openAudio" | default "Open audio" }}</a>
+    {{ end }}
+  </audio>
+  {{ if $caption }}
+    <div class="audio-caption">{{ $caption | markdownify }}</div>
+  {{ end }}
+</div>
+
+<style>
+/* Minimal styling for the audio shortcode - you can override in your site CSS */
+.hugo-audio-shortcode { margin: 0.8rem 0; }
+.hugo-audio-shortcode .audio-caption { font-size: 0.9rem; color: #666; margin-top: .4rem; }
+</style>
