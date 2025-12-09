@@ -32,16 +32,16 @@ Parameters:
 {{ end }}
 {{ $url := $.Scratch.Get "audioSrc" }}
 
-{{ $autoplay := eq (lower .Get "autoplay") "true" }}
-{{ $loop := eq (lower .Get "loop") "true" }}
+{{ $autoplay := eq (lower (.Get "autoplay")) "true" }}
+{{ $loop := eq (lower (.Get "loop")) "true" }}
 {{ $preload := .Get "preload" | default "metadata" }}
 {{ $controlsParam := .Get "controls" }}
 {{ $showControls := true }}
-{{ if eq (lower $controlsParam) "false" }}
+{{ if eq (lower ($controlsParam)) "false" }}
   {{ $showControls = false }}
 {{ end }}
 {{ $caption := .Get "caption" }}
-{{ $download := eq (lower .Get "download") "true" }}
+{{ $download := eq (lower (.Get "download")) "true" }}
 {{ $class := .Get "class" | default "" }}
 
 <div class="hugo-audio-shortcode">
