@@ -4,7 +4,7 @@ author: 落落vici
 draft: "false"
 tags:
   - 无穷事
-updated: 2025-12-15T15:50:00+00:00
+updated: 2026-01-29T08:39:00+00:00
 date: 2025-12-15T15:23:00+00:00
 slug: another-AirPods4
 title: 再入 AirPods 4
@@ -30,5 +30,7 @@ id: 2ca71019-ed27-8097-9c9f-faeaa77068c1
 犹豫了几天，今晚鼓起勇气想去淘宝下单，结果商家说超过时间，没办法通过他们第三方渠道加购注册 Apple Care+ 了，他们只支持激活后两天内的加购。这叫啥，当初爱搭不理，现在高攀不起。
 
 但是官方 349 的 AC+价格，属实难以接受。所以还是尊重每一个 AirPods 生命周期的命运吧，用成啥样算啥样，当成易耗品就不会那么纠结了。
+
+![](https://prod-files-secure.s3.us-west-2.amazonaws.com/9f262e53-5120-41f2-befa-55cc011782be/d244f2b4-7f80-40be-b8d2-1d5ccd1cce37/IMG_6883.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q556OZOR%2F20260129%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260129T084041Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEm%2FGhD40Wu2k1eaw%2BK1cxEUgxZKNGbX4HLBHEhHNakIAiEAlUaVzXjAY%2BNbq6v%2Fx7rMnmrqqB2PmEHHvtDZ7j1vGdcqiAQIgf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDB5221I0W0335lzrnircA4gTFGOA0NO7CvhWQzrKarU%2FPKy%2F2YdQ706b99g0IrWFA%2BgwU2fFif00n7xzSfTGRAgy%2B67AYeagqd9YP4eDp1tMVkNMCqNfdQdsN8BAd8AgyUc%2F7PG3%2BftYEHlIsLNkzdTSW9piAhgUJ8Az7W68D2UvUyt%2FTEekvoYsrPlHpaWyNYs%2BdLxQVk4EAEb4bzfTjzVuZBakrymADRzi6lljOpKVuJdifjQJc1zfAO4qd0TzZScue9wU8a%2BufNdacUQWn6mkEhu17l%2FMcTrnoNbOqh2gYWDdcidyEZHMUjRtAwWgLWd3StrIt9q%2F3dHFyxbyVHPqw6DBxP75E2xhQEvzW2rnNAAhWifvtg75lnkBh5YrgXhZrphlmDUGz5Hqf%2BOsg5LDG8J9j0dHrHVT2a8nCnVGaVWQzUIaOj8tQSkqW8PJJnj0pMNookbqbQhtdVg6Mm7FQif6Vh62TwN6lkpzSlA2eAlSMsGga4kdfOWh0jtdYHs7pBXcoHAdF11w5rlQuuomEizKXVonKQwyjg3yczvt%2B%2FOgQuZHxAejY4H%2F5q23rM8tAa8uMEa5CMxJhP%2BG0bgy0lmWpcA4HDmK0kDHQFfJ7VtS69ZThtCx%2FJXOXMnnG6qFHDBGpu1MxjkZML6k7MsGOqUBnJXbLJb2PSc2kFkFK6otsMYEDxLPV1IiCS38zXvOUK2RbJcYuBUJJ2haPxtwuWZuLLCrg8hSvWGGTZop5lh2h7d2sXX2BktbHetIyqqRDRLPJCDfVQE1gBsk%2FFQZzuo%2BcgBWfH1zFPNAE4ZRbHumKNrHafWwczqtjLQ1LGFG1%2FypsiUDXwrlME0KSKP9xqos2YSgRSFVH8mWlWKRvc6RUZoItBqf&X-Amz-Signature=56d485a6a8e231b623d08b164487f9c94faf3f4cc84d14fbdaa1a20309950271&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
 
 ❤
