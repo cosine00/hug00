@@ -47,7 +47,7 @@ jobs:
           database_id: ${{ secrets.NOTION_DATABASE_ID }}
           pic_migrate: true
           pic_bed_config: ${{ secrets.PICBED_CONFIG }}
-          pic_compress: true
+          pic_compress: false
           output_page_dir: 'content'
           output_post_dir: 'content/posts/notion'
           clean_unpublished_post: true
