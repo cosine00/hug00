@@ -1,5 +1,14 @@
 [
   {
+    "id": 1002,
+    "content": "[利用 HTTP 重写，找回 VVebo 的用户时间线](https://sspai.com/post/83704)\n\n[小火箭模块](https://raw.githubusercontent.com/androidcn/userscripts/main/VVebo.sgmodule)\n\n#Tips ",
+    "createdTs": 1773566751,
+    "resourceList": [],
+    "tags": [
+      "Tips"
+    ]
+  },
+  {
     "id": 1000,
     "content": "使用 Memos 发布第1000条了，家中运行的群晖还是一如既往地稳定。看了一眼，我的 Memos 还是 0.17.0版本，好用，够用，轻易不更新。",
     "createdTs": 1773364159,
