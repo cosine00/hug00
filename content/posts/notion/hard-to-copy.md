@@ -4,14 +4,14 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-03-28T18:16:00+00:00
+updated: 2026-03-28T18:19:00+00:00
 date: 2026-03-28T15:42:00+00:00
 slug: hard-to-copy
 title: 抄都抄不来
 id: 33171019-ed27-809a-8890-d3cc595c1c70
 ---
 
-审美在线、动手能力超强的 [koobai](<[https://koobai.com/](https://koobai.com/)>) 大哥最近折腾了一个运动页面，整合进 Hugo 博客里，完全抛弃了原来的 Running_page 项目。太赞了，我也想抄一个。
+审美在线、动手能力超强的 [koobai](https://koobai.com/)大哥最近折腾了一个运动页面，整合进 Hugo 博客里，完全抛弃了原来的 Running_page 项目。太赞了，我也想抄一个。
 
 我原以为这事挺简单，毕竟我也是 Hugo 框架。于是尝试把相关源码直接搬过来看看效果，结果完全跑不起来：各种报错，我也解决不了，只能无奈暂时作罢。
 
@@ -23,7 +23,7 @@ id: 33171019-ed27-809a-8890-d3cc595c1c70
 
 白天带娃去海边玩，晚上回来后，我直接在海鲜市场买了一个家庭组并接受邀请加入后，打开 Gemini，可以用 Prole 。继续开聊，花了几个小时终于搞定。
 
-最终页面效果在 [悦动](<[https://hux.ink/exercise/](https://hux.ink/exercise/)>)，替换掉了之前跳转的 [Workouts Map](<[https://workout.hux.ink/](https://workout.hux.ink/)>)。虽然有些细节还是不如 koobai 大哥的原版，但能复刻到这一步，我已经很满意了。
+最终页面效果在 [悦动](https://hux.ink/exercise/)，替换掉了之前跳转的 [Workouts Map](https://workout.hux.ink/)。虽然有些细节还是不如 koobai 大哥的原版，但能复刻到这一步，我已经很满意了。
 
 氪金还是很有用的，完结撒花 🎉🎉🎉
 
