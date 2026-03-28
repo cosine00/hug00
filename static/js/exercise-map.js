@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (theme === 'light') {
       isDark = false;
     } else {
-      // 如果是 auto（没设置 data-theme），则听命于系统的暗黑模式
       isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
 
+    // ✨ 核心修复：将私有样式替换为 Mapbox 官方标准样式
     return isDark 
-      ? 'mapbox://styles/koobai/cmma8mwce001v01sge7e0dx1w' // 暗黑版
-      : 'mapbox://styles/koobai/cmma9983i00f101qwezj0f77f'; // 浅色版
+      ? 'mapbox://styles/mapbox/dark-v11'     // 官方基础暗色版
+      : 'mapbox://styles/mapbox/light-v11'; // 官方户外浅色版（比 light 版包含更丰富的地形和绿地细节）
   };
 
   // 2. 初始化地图实例
