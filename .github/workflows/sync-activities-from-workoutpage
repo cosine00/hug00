@@ -1,0 +1,35 @@
+name: Scheduled Data Sync
+
+on:
+  schedule:  
+    - cron: "0 3,4,15,16 * * *"
+  workflow_dispatch: # 允许你随时手动点击按钮立即同步
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Hugo Repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Fetch and Overwrite activities.json
+        run: |
+          mkdir -p assets
+          # 使用 curl 直接抓取目标仓库的 Raw 原始文件内容
+          curl -L https://raw.githubusercontent.com/cosine00/workouts_page/master/src/static/activities.json -o assets/activities.json
+
+      - name: Commit and Push if Changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 检查文件是否有内容变化
+          if git diff --quiet assets/activities.json; then
+            echo "No new data found in workouts_page."
+          else
+            git add assets/activities.json
+            git commit -m "Automated Sync: update activities.json from source"
+            git push
+          fi

@@ -31,7 +31,7 @@ footnotereturnlinkcontents = "↩"
   weight="4"
   [[menu.main]]
   name="悦动"
-  url="https://workout.hux.ink/"
+  url="/exercise/"
   weight="5"
   [[menu.main]]
   name="关于"

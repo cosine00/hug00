@@ -149,7 +149,7 @@ hr {
   height: 1px;
   border: 0;
   border-top: 1px solid;
-  margin: 50px auto;
+  margin: 35px auto;
   padding: 0;
   max-width: 300px;
 }
@@ -251,7 +251,7 @@ body {
 
 .main .title h1 {
   margin-top: 0;
-  margin-bottom: 40px;
+  margin-bottom: -25px;
 }
 
 .title h3 {

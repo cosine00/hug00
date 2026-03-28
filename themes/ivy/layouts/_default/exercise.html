@@ -1,0 +1,383 @@
+{{ define "body_classes" }}page-exercise{{ end }}
+{{ partial "header.html" . }}
+
+<style>
+/* ====================== 1. 第一版原始样式（完全保留） ====================== */
+.exercise-container { max-width: 100%; margin: 0 auto; padding: 20px 15px; }
+.pagetitle { text-align: center; font-size: 1.05rem; color: var(--text-info-color, #666); margin-bottom: 10px; line-height: 1.5; }
+.pagetitle p { margin: 0; padding: 0; } /* 榨干 Markdown 自动生成的段落外边距 */
+.pagetitle:empty { display: none; margin: 0; } /* 如果连空段落都没有，彻底隐藏 */
+
+.buttons {
+  display: flex; width: fit-content; max-width: 100%; margin: 0 auto 25px auto;
+  gap: 8px; list-style: none; padding: 5px;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px; overflow-x: auto; scrollbar-width: none;
+}
+.buttons::-webkit-scrollbar { display: none; }
+.button {
+  font-size: 0.9rem; padding: 10px 24px; border-radius: 9999px;
+  cursor: pointer; color: var(--text-info-color, #666);
+}
+.button.selected {
+  background: var(--exercise-text-highlight-color, #32D74B); color: #111 !important;
+}
+
+.calendarSection, .globalSection, .runCard {
+  background: var(--background-card-color, #fff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 16px; padding: 18px; margin-bottom: 15px;
+}
+
+.cardList { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) { .cardList { grid-template-columns: repeat(2, 1fr); } }
+
+.runCard { display: flex; align-items: center; padding: 16px 20px; position: relative; }
+.iconRing {
+  width: 42px; height: 42px; margin-right: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-info-color, #666);
+}
+
+/* ====================== 2. 悬浮必需的 CSS ====================== */
+.map-placeholder { 
+    width: 100%; 
+    height: 400px; 
+    margin-bottom: 30px; 
+    position: relative; 
+}
+#map-wrapper {
+    width: 100%; height: 100%;
+    border-radius: 24px; overflow: hidden;
+    z-index: 10;
+    transition: all 0.4s ease;
+}
+#map-wrapper.is-floating {
+    position: fixed !important;
+    top: 20px;
+    right: 20px;
+    width: 320px !important;
+    height: 200px !important;
+    z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 2px solid #32D74B;
+}
+
+/* ====================== 3. 气泡弹窗与底部图表必需样式 ====================== */
+.runTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid #eeebe6;
+  border-radius: 12px;
+  padding: 12px 16px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  cursor: default;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  pointer-events: none; 
+}
+
+.runCard:hover .runTooltip,
+.dayCell:hover .runTooltip,
+.barWrapper:hover .runTooltip,
+.zoneCol:hover .runTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.ttList { display: flex; flex-direction: column; gap: 8px; }
+.ttItem { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.ttNameWrap { display: flex; align-items: center; gap: 6px; }
+.ttName { color: #666; font-size: 0.8rem; }
+.ttUnitTag { padding: 2px 6px; background: #f0eee9; border-radius: 4px; font-size: 0.65rem; color: #666; }
+.ttNum { color: #333; font-size: 0.85rem; font-weight: 600; text-align: right; }
+.ttNum small { font-weight: 400; color: #999; margin-left: 2px; }
+
+/* 底部图表骨架：出勤时间打孔图 & 心率柱状图 */
+.punchCard { display: flex; gap: 4px; height: 16px; width: 100%; }
+.barWrapper { flex: 1; position: relative; cursor: pointer; height: 100%; }
+.punchHole { width: 100%; height: 100%; border-radius: 3px; transition: all 0.2s ease; }
+.barWrapper:hover .punchHole { filter: brightness(0.9); }
+
+.zoneChart { display: flex; gap: 8px; height: 16px; align-items: flex-end; width: 100%; }
+.zoneCol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; position: relative; height: 100%; cursor: pointer;}
+.zoneBar { width: 100%; border-radius: 3px; min-height: 3px; transition: all 0.2s ease; }
+.zoneCol:hover .zoneBar { filter: brightness(0.9); }
+
+/* 边缘防溢出 */
+.grid > div:nth-child(7n + 1) .runTooltip, 
+.barWrapper:first-child .runTooltip, 
+.zoneCol:first-child .runTooltip { left: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n + 1):hover .runTooltip, 
+.barWrapper:first-child:hover .runTooltip, 
+.zoneCol:first-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+.grid > div:nth-child(7n) .runTooltip, 
+.barWrapper:last-child .runTooltip, 
+.zoneCol:last-child .runTooltip { left: auto !important; right: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n):hover .runTooltip, 
+.barWrapper:last-child:hover .runTooltip, 
+.zoneCol:last-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+
+/* ====================== 4. 底部列表卡片紧凑排版 ====================== */
+.controlsArea {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 12px 16px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 12px;
+}
+.filterBar { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; align-items: center; min-height: 28px; }
+.filterBar::-webkit-scrollbar { display: none; }
+.filterPill { padding: 4px 10px; color: #999; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; border-radius: 8px; }
+.filterPill.activePill, .filterPill:hover { color: #111; font-weight: 600; background: rgba(0,0,0,0.05); }
+.monthLabel { color: #999; font-size: 0.75rem; margin-left: auto; }
+
+.cardContent { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+.leftInfo { display: flex; flex-direction: column; gap: 2px; }
+.runName { color: #666; font-size: 0.85rem; }
+.runDistance { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.distUnit { font-size: 0.75rem; margin-left: 3px; font-weight: normal; color: #999; }
+.rightInfo { text-align: right; }
+.runDate { color: #999; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+/* ====================== 5. 地图详情面板（海报）样式 ====================== */
+.runDetailCard {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 16px;
+  z-index: 20;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.runDetailCard .detailHeader {
+  font-size: 0.8rem;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.runDetailCard .detailGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.runDetailCard .detailItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.runDetailCard .detailLabel {
+  font-size: 0.7rem;
+  color: #bbb;
+  margin-bottom: 2px;
+}
+
+.runDetailCard .detailValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.runDetailCard .detailValue small {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: #999;
+  margin-left: 2px;
+}
+
+/* 分享按钮样式 */
+.shareBtn {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  cursor: pointer;
+  border: none;
+  color: #666;
+  transition: all 0.2s;
+}
+.shareBtn:hover { transform: scale(1.1); color: #32D74B; }
+</style>
+
+{{ $rawActivities := resources.Get "activities.json" | unmarshal }}
+{{ $activities := slice }}
+{{ $themeMap := dict
+  "Ride"         (dict "color" "#32D74B") 
+  "VirtualRide"  (dict "color" "#32D74B")
+  "EBikeRide"    (dict "color" "#32D74B")
+  "Run"          (dict "color" "#F58200")
+  "TrailRun"     (dict "color" "#F58200")
+  "Treadmill"    (dict "color" "#F58200")
+  "VirtualRun"   (dict "color" "#F58200")  
+  "Walk"         (dict "color" "#DF40C4")
+  "Hike"         (dict "color" "#DF40C4")
+  "Swim"         (dict "color" "#0BAEE6")
+  "WaterSport"   (dict "color" "#0BAEE6")
+  "StairStepper" (dict "color" "#AF52DE")
+  "Stair"        (dict "color" "#007AFF")
+}}
+{{ $defaultTheme := dict "color" "#32D74B" }}
+
+{{ range $rawActivities }}
+  {{ $activities = $activities | append . }}
+{{ end }}
+{{ $sortedActivities := sort $activities "start_date_local" "desc" }}
+{{ $years := slice }}
+{{ range $sortedActivities }}{{ $years = $years | append (substr .start_date_local 0 4) }}{{ end }}
+{{ $years = sort ($years | uniq) "value" "desc" }}
+
+<div class="exercise-container">
+  <div class="pagetitle">{{ .Content }}</div>
+
+  <ul class="buttons" id="year-nav">
+    {{ range $index, $year := $years }}
+      <li class="button {{ if eq $index 0 }}selected{{ end }}" data-year="{{ . }}" onclick="window.KoobaiRun.ui.setYear('{{ . }}')">{{ . }}</li>
+    {{ end }}
+  </ul>
+
+  <div class="globalSection" id="global-stats"></div>
+  <div class="calendarSection">
+    <div id="calendar-board-container"></div>
+  </div>
+
+  <div class="map-placeholder" id="map-trigger">
+    <div id="map-wrapper">
+      <div id="mapbox-container" style="width: 100%; height: 100%;"></div>
+    </div>
+  </div>
+
+  <div class="shuju-list">
+    <div class="controlsArea">
+      <div class="filterBar" id="month-filter-bar"></div>
+    </div>
+
+    <div class="cardList" id="run-list">
+      {{ range $sortedActivities }}
+        {{ $y := substr .start_date_local 0 4 }}
+        {{ $m := substr .start_date_local 5 2 }}
+        {{ $theme := default $defaultTheme (index $themeMap .type) }}
+        
+        <div class="runCard item-year-{{ $y }} item-month-{{ $m }}" 
+             data-run-id="{{ .run_id }}" 
+             onclick="window.KoobaiRun.map.flyTo('{{ .run_id }}')" 
+             style="cursor: pointer; {{ if ne $y (index $years 0) }}display: none;{{ end }}">
+          
+          <div class="iconRing" data-polyline="{{ .summary_polyline }}"></div>
+          
+          <div class="cardContent">
+            <div class="leftInfo">
+              <div class="runName">{{ .name }}</div>
+              <div class="runDistance" style="color: {{ $theme.color }}">
+                {{ printf "%.2f" (div .distance 1000.0) }}<span class="distUnit">km</span>
+              </div>
+            </div>
+            <div class="rightInfo">
+              <time class="runDate">{{ substr .start_date_local 5 5 }} {{ substr .start_date_local 11 5 }}</time>
+            </div>
+          </div>
+
+          <div class="runTooltip">
+            <div class="ttList">
+              <div class="ttItem">
+                <div class="ttNameWrap"><span class="ttName">用时</span></div>
+                <span class="ttNum">{{ default "--" .moving_time }}</span>
+              </div>
+              
+              {{ if and .average_speed (gt .average_speed 0) }}
+                {{ $speedLabel := "配速" }}
+                {{ $speedVal := "--" }}
+                {{ $speedUnit := "min/km" }} {{ if in (slice "Ride" "VirtualRide" "EBikeRide") .type }}
+                  {{ $speedLabel = "均速" }}
+                  {{ $speedVal = printf "%.1f" (mul .average_speed 3.6) }}
+                  {{ $speedUnit = "km/h" }} {{ else }}
+                  {{ $speedLabel = "配速" }}
+                  {{ $totalSecs := cast.ToInt (math.Round (div 1000.0 .average_speed)) }}
+                  {{ $paceMin := div $totalSecs 60 }}
+                  {{ $paceSec := mod $totalSecs 60 }}
+                  {{ $speedVal = printf "%d'%02d\"" $paceMin $paceSec }}
+                {{ end }}
+                
+                <div class="ttItem">
+                  <div class="ttNameWrap">
+                    <span class="ttName">{{ $speedLabel }}</span>
+                  </div>
+                  <span class="ttNum">{{ $speedVal }} <small>{{ $speedUnit }}</small></span>
+                </div>
+              {{ end }}
+
+              {{ if .average_heartrate }}
+                <div class="ttItem">
+                  <div class="ttNameWrap"><span class="ttName">心率</span></div>
+                  <span class="ttNum">{{ .average_heartrate }} <small>BPM</small></span>
+                </div>
+              {{ end }}
+            </div>
+          </div>
+
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+
+<script>
+  window.KoobaiRun = {
+    data: {{ $sortedActivities | jsonify | safeJS }},
+    config: { MAPBOX_TOKEN: "pk.eyJ1Ijoia29vYmFpIiwiYSI6ImNsZzYybDcwajA5ZXYzc3A4ZnJvcW0wMHcifQ._bpJ1Gmu8hZsfxuoimTAcw" },
+    ui: null,
+    map: null
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.getElementById('map-wrapper');
+    const trigger = document.getElementById('map-trigger');
+
+    window.addEventListener('scroll', () => {
+      if (!wrapper || !trigger) return;
+      const triggerBottom = trigger.offsetTop + trigger.offsetHeight;
+      if (window.scrollY > triggerBottom - 50) {
+        wrapper.classList.add('is-floating');
+      } else {
+        wrapper.classList.remove('is-floating');
+      }
+    }, { passive: true });
+  });
+</script>
+
+<script defer src="/js/exercise-ui.js"></script>
+<script defer src="/js/exercise-map.js"></script>
