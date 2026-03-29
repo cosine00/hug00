@@ -1,11 +1,8 @@
-# .github/workflows/douban.yml
 name: douban
 on: 
   schedule:
-  - cron: "0 0,0,12,23 * * *"
+    - cron: "0 0,12 * * *" 
   workflow_dispatch:
-  watch:
-    types: [started]
 
 jobs:
   douban:
@@ -18,6 +15,7 @@ jobs:
     - name: delete old file
       run: |
         rm -rf ./assets/data/douban
+        
     - name: movie
       uses: lizheming/doumark-action@master
       with:
@@ -33,10 +31,24 @@ jobs:
         type: book
         format: csv
         dir: ./assets/data/douban
-  
+
+    # --- 这里是关键：在数据生成后，提交之前进行加工 ---
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install pandas requests
+
+    - name: Fix Poster Links via NeoDB
+      run: |
+        python update_poster.py
+
+    # --- 最后一步：提交包含新链接的 CSV ---
     - name: Commit
       uses: EndBug/add-and-commit@v9
       with:
-        message: 'chore: update douban data'
+        message: 'chore: sync douban data and fix posters'
         add: './assets/data/douban'
-
