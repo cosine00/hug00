@@ -42,9 +42,11 @@ jobs:
       run: |
         pip install pandas requests
     
-    # 新增：显式赋予读写权限
-    - name: Set file permissions
-      run: chmod -R 777 assets/data/douban
+    # 核心解决：使用 sudo 强行获取文件所有权并开放权限
+    - name: Take ownership and set permissions
+      run: |
+        sudo chown -R runner:docker assets/data/douban
+        chmod -R 777 assets/data/douban
 
     - name: Fix Poster Links via NeoDB
       run: |
