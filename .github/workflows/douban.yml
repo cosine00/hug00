@@ -41,6 +41,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pandas requests
+    
+    # 新增：显式赋予读写权限
+    - name: Set file permissions
+      run: chmod -R 777 assets/data/douban
 
     - name: Fix Poster Links via NeoDB
       run: |
