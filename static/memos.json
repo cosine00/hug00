@@ -1,5 +1,23 @@
 [
   {
+    "id": 1028,
+    "content": "说是国行 Apple intelligence 半夜悄咪咪上线，然后又传未获监管审批紧急撤回了，真是 Only Apple can do。我一早升级到 iOS26.4，后台显示在下载支持的内容，进度条还在往前跑。",
+    "createdTs": 1774912209,
+    "resourceList": [
+      {
+        "id": 539,
+        "creatorId": 1,
+        "createdTs": 1774912070,
+        "updatedTs": 1774912070,
+        "filename": "A4164443-DE86-427F-BD78-50B19920A2ED.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/03/A4164443-DE86-427F-BD78-50B19920A2ED.jpg",
+        "type": "image/jpeg",
+        "size": 283229
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 1027,
     "content": "Apple Watch 骑行记录，时间在走，心率也是实时，但不记录里程距离。这是第二次出现这个 bug，今天连续终止几次重开都是一样，不得已重启手表才好，不知道是不是 26.3 系统版本的专属。",
     "createdTs": 1774790700,
