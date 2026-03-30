@@ -4,10 +4,10 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-03-30T16:31:00+00:00
-date: 2026-03-30T16:12:00+00:00
+updated: 2026-03-30T16:33:00+00:00
+date: 2026-03-31T00:12:00+00:00
 slug: add-exercise-feature
-title: 悦动增加点特性
+title: 悦动增加点新特性
 id: 33371019-ed27-80de-8ee7-c6f242085822
 ---
 
