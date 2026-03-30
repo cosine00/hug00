@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (!map.getSource('mapbox-dem')) {
         map.addSource('mapbox-dem', { 'type': 'raster-dem', 'url': 'mapbox://mapbox.mapbox-terrain-dem-v1', 'tileSize': 512, 'maxzoom': 14 });
-        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 3 }); 
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1 }); 
       }
       if (!map.getLayer('3d-buildings')) {
         map.addLayer({
@@ -203,8 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
           'minzoom': 14,
           'paint': { 
             'fill-extrusion-color': isDark ? '#1C1C1E' : '#eaeaf1', 
-            'fill-extrusion-height': ['*', ['get', 'height'], 4], 
-            'fill-extrusion-base': ['*', ['get', 'min_height'], 4], 
+            'fill-extrusion-height': ['get', 'height'], 
+            'fill-extrusion-base': ['get', 'min_height'],
             'fill-extrusion-opacity': 0.6 
           }
         }); 
