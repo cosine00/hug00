@@ -5,7 +5,7 @@ draft: "false"
 tags:
   - 折腾
 updated: 2026-03-30T16:33:00+08:00
-date: 2026-03-30T16:12:00+08:00
+date: 2026-03-31T00:30:00+08:00
 slug: add-exercise-feature
 title: 悦动增加点新特性
 id: 33371019-ed27-80de-8ee7-c6f242085822
