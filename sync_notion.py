@@ -95,14 +95,23 @@ def main():
     os.makedirs(PAGES_DIR, exist_ok=True)
 
     print("开始查询 Notion 数据库...")
-    # 只拉取状态为“已发布”的文章
-    results = notion.databases.query(
-        database_id=NOTION_DATABASE_ID,
-        filter={
-            "property": "pstatus",
-            "select": { "equals": "已发布" } # 若你在 Notion 中使用的是 Status 类型属性，请改为 "status": { "equals": "已发布" }
-        }
-    ).get("results", [])
+    
+    # 【核心修复区】：绕过 notion.databases.query，直接使用底层 request 发起 POST 请求
+    try:
+        response = notion.request(
+            path=f"databases/{NOTION_DATABASE_ID}/query",
+            method="POST",
+            body={
+                "filter": {
+                    "property": "pstatus",
+                    "select": { "equals": "已发布" }
+                }
+            }
+        )
+        results = response.get("results", [])
+    except Exception as e:
+        print(f"查询 Notion 数据库失败，错误信息: {e}")
+        return
 
     print(f"找到 {len(results)} 篇已发布文章。")
 
@@ -149,7 +158,7 @@ def main():
         save_dir = PAGES_DIR if ptype == 'page' else POSTS_DIR
         filepath = os.path.join(save_dir, f"{slug}.md")
 
-        # 写入文件：如果本地存在同名文件（修改更新），会直接覆盖；如果不存在（新发布），则创建
+        # 写入文件
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(final_content)
         
