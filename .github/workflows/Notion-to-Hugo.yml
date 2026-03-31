@@ -26,7 +26,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install notion-client notion2md boto3 pyyaml requests
+          pip install "notion-client<2.7.0" notion2md boto3 pyyaml requests
 
       - name: Run Sync Script
         env:
