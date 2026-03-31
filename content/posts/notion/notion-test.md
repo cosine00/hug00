@@ -31,7 +31,7 @@ title: Notion同步测试
 
 <br/>
 
-![我是测试图.png](https://img.hux.ink/notion/2a958203f7.png)
+![我是测试图.png](https://img.hux.ink/notion/a28a437324.png)
 
 <br/>
 
