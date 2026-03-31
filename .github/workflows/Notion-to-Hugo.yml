@@ -1,63 +1,53 @@
-name: Notion2Hugo
+name: Pure Notion to Hugo Sync
 
 on:
   schedule:
-    - cron: "0 16,12 * * *"
-  workflow_dispatch:
+    - cron: "0 */4 * * *" # 每 4 小时执行一次，可自行调整
+  workflow_dispatch:      # 允许手动触发
   repository_dispatch:
     types: 
       - notion_sync
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  notionSyncTask:
-    name: Sync Notion to Hugo
+  build_and_sync:
     runs-on: ubuntu-latest
-    outputs:
-      HAS_CHANGES: ${{ steps.NotionSync.outputs.updated_count != '0' }}
     steps:
-      - name: Checkout blog and theme
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          submodules: 'recursive'
-          fetch-depth: 0
+          python-version: '3.10'
+          cache: 'pip' # 缓存依赖，加快运行速度
 
-      - name: Check the NOTION_SYNC_DATETIME
-        id: GetNotionSyncDatetime
+      - name: Install Dependencies
         run: |
-          NOTION_SYNC_DATETIME=$(git log -n 1 --grep="NotionSync" --format="%aI")
-          echo "NOTION_SYNC_DATETIME=$NOTION_SYNC_DATETIME" >> "$GITHUB_OUTPUT"
-          echo -e "Latest notion sync datetime:\n$NOTION_SYNC_DATETIME"
+          # notion-client: 官方 API
+          # notion2md: 高效的 Markdown 转换器
+          # boto3: AWS S3 兼容库 (用于 Cloudflare R2)
+          # pyyaml: 生成 Frontmatter
+          pip install notion-client notion2md boto3 pyyaml requests
 
-      - name: Debug PICBED_CONFIG keys (safe)
+      - name: Run Sync Script
         env:
-          PICBED_CONFIG: ${{ secrets.PICBED_CONFIG }}
+          NOTION_TOKEN: ${{ secrets.NOTION_SECRET }} # 注意这里对应你原有的 Secret 名称
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET}}
+          R2_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN}}
         run: |
-          node -e "try{const cfg = JSON.parse(process.env.PICBED_CONFIG || '{}'); const pb = cfg.picBed || {}; console.log('picBed.uploader =', pb.uploader || '<not set>'); console.log('picBed keys =', Object.keys(pb));}catch(e){ console.error('PICBED_CONFIG not valid JSON:', e.message); process.exit(1);}"
+          python sync_notion.py
 
-      - name: Convert Notion to Markdown
-        id: NotionSync
-        uses: Doradx/notion2markdown-action@v1
-        with:
-          notion_secret: ${{ secrets.NOTION_SECRET }}
-          database_id: ${{ secrets.NOTION_DATABASE_ID }}
-          pic_migrate: true
-          pic_bed_config: ${{ secrets.PICBED_CONFIG }}
-          pic_compress: false
-          output_page_dir: 'content'
-          output_post_dir: 'content/posts/notion'
-          clean_unpublished_post: true
-          metas_keeped: slug
-          metas_excluded: pstatus, ptype
-          last_sync_datetime: ${{ steps.GetNotionSyncDatetime.outputs.NOTION_SYNC_DATETIME }}
-
-      - name: Commit & Push
-        if: steps.NotionSync.outputs.updated_count != '0'
-        uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: 'content/'
-          commit_message: Automatic NotionSync.
+          commit_message: "Auto Sync: Update posts from Notion and sync images to R2"
+          commit_user_name: "GitHub Action"
+          commit_user_email: "action@github.com"

@@ -1,8 +1,6 @@
 name: Scheduled Data Sync
 
-on:
-  schedule:  
-    - cron: "0 3,4,15,16 * * *"
+on:  
   workflow_dispatch: # 允许你随时手动点击按钮立即同步
 
 jobs:
