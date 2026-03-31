@@ -18,29 +18,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 第一步：让 Action 输出到“空的临时目录”，彻底避开它的本地对比 Bug
+      # 1. 将 Notion 转为 Markdown，输出到独立隔离的临时目录
       - name: Convert Notion to Markdown (to Temp Dir)
         uses: Doradx/notion2markdown-action@v1
         with:
           notion_secret: ${{ secrets.NOTION_SECRET }}
           database_id: ${{ secrets.NOTION_DATABASE_ID }}
           pic_migrate: false
-          # 【核心修改】：输出到临时文件夹 temp_content
           output_page_dir: 'temp_content'
           output_post_dir: 'temp_content/posts/notion'
-          clean_unpublished_post: true # 这里开启无所谓，因为临时文件夹原本就是空的
+          clean_unpublished_post: true
           metas_keeped: slug, date, author, tags, draft, created, updated, ptype
 
-      # 第二步：将临时目录的新文章，覆盖合并到正式目录（实现只更新不删除）
-      - name: Merge Updates to Content
-        run: |
-          mkdir -p content/posts/notion
-          if [ -d "temp_content" ]; then
-            # 把新文章复制过去覆盖，本地原有的旧文章毫发无损
-            cp -rf temp_content/* content/
-          fi
-
-      # 第三步：准备 Python 环境
+      # 2. 准备 Python 环境
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -50,7 +40,7 @@ jobs:
         run: |
           pip install boto3 requests
 
-      # 第四步：扫描正式目录，提取图片上传 R2
+      # 3. 核心变动：在临时目录里处理图片。安全隔离，不会误伤其他本地文件！
       - name: Process Images to R2
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -61,11 +51,19 @@ jobs:
         run: |
           python upload_r2.py
 
-      # 第五步：推送到仓库
+      # 4. 把处理好的、含有 R2 链接的文章，安全地合并到正式目录
+      - name: Merge Updates to Content
+        run: |
+          mkdir -p content/posts/notion
+          if [ -d "temp_content" ]; then
+            cp -rf temp_content/* content/
+          fi
+
+      # 5. 推送到仓库
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: 'content/'
-          commit_message: "Auto Sync: Update posts and sync images to R2"
+          commit_message: "Sync posts from Notion and upload images to R2"
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
