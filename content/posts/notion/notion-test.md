@@ -1,11 +1,14 @@
 ---
+created: 2026-03-31T06:27:00+00:00
 author: 落落vici
-date: '2026-03-31T14:27:00.000+08:00'
-draft: 'false'
-slug: notion-test
+draft: "false"
 tags:
-- 折腾
+  - 折腾
+updated: 2026-03-31T06:34:00+00:00
+date: 2026-03-31T06:27:00+00:00
+slug: notion-test
 title: Notion同步测试
+id: 33471019-ed27-804c-9783-e83648705101
 ---
 
 # 我是一级标题
@@ -14,24 +17,25 @@ title: Notion同步测试
 
 ### 我是三级标题
 
-[//]: # (heading_4 is not supported)
+我是四级标题
 
+**我是粗体**
+
+_我是斜体_
+
+`我是行内代码`
 
 ```javascript
-我是代码块
+我是代码块;
 ```
 
-- 我是列表1
-
-- 我是列表2
+- 我是列表 1
+- 我是列表 2
 
 > 我是引用
 
 ---
 
-<br/>
+![](https://img.hux.ink/notion/2efa033578.png)
 
-![我是测试图.png](https://img.hux.ink/notion/a28a437324.png)
-
-<br/>
-
+❤

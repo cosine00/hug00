@@ -16,11 +16,11 @@ feature:
 
 简单再回顾一下过程，Fork 仓库后，先修改.github/workflow目录下的run_data_sync.yml文件，下图这部分内容按需修改，RUN_TYPE 字段对应你想同步的数据跑步应用来源。
 
-![](https://raw.githubusercontent.com/cosine00/Image/main/202311011711316.png)
+![](https://img.hux.ink/notion/91fac6cdf7.png)
 
 我选择的应用来源是  Strava ，按照[获取 Strava 数据](https://github.com/yihong0618/running_page/blob/master/README-CN.md#strava)的操作步骤，依次获取「STRAVA_CLIENT_ID」、「STRAVA_CLIENT_SECRET」和「STRAVA_CLIENT_REFRESH_TOKEN」三项内容，然后进入仓库的「Settings」>「Security」>「Secrets and variables」>「Actions」，选择顶部的「New repository secret」，将上述三项字段和已获取的值分别填写在此处。
 
-![](https://raw.githubusercontent.com/cosine00/Image/main/202311011730574.png)
+![](https://img.hux.ink/notion/b58f2c093f.png)
 
 下一步需要将仓库中Yihong大神的已有跑步数据文件删除，分别删除以下路径文件：\assets(里面带年份的文件)、\run_page\data.db 、\src\static\activities.json。删除完毕后进入仓库的「Actions」>「Run Data Sync」>「Run workflow」执行数据同步。
 
@@ -30,8 +30,8 @@ feature:
 
 比较遗憾的是以前的跑步数据都是 Nike run club 里面，Nike 的refresh_token 获取不到，没办法同步过来，目前只有从开启 Nike 连接 Strava 之后的已经存储在 Strava 里面的数据。那就慢慢跑下去吧，会积少成多的。
 
-![](https://raw.githubusercontent.com/cosine00/Image/main/202311011757011.png)
+![](https://img.hux.ink/notion/02ef7f976a.png)
 
-![](https://raw.githubusercontent.com/cosine00/Image/main/202311011803148.jpg)
+![](https://img.hux.ink/notion/1fa02ff03c.jpg)
 
 ❤
