@@ -11,7 +11,7 @@ from notion2md.exporter.block import StringExporter
 NOTION_TOKEN = os.environ.get('NOTION_SECRET')
 raw_db_id = os.environ.get('NOTION_DATABASE_ID', '')
 
-# 【核心防呆设计】：自动从任何乱七八糟的链接中提取 32 位纯净 Database ID
+# 自动从链接中提取 32 位纯净 Database ID
 db_match = re.search(r'([a-fA-F0-9]{32})', raw_db_id.replace('-', ''))
 NOTION_DATABASE_ID = db_match.group(1) if db_match else raw_db_id.strip()
 
@@ -55,7 +55,6 @@ def get_prop_value(prop):
     return ""
 
 def process_images_in_markdown(content):
-    """提取 Markdown 中的图片，上传 R2 并替换链接"""
     pattern = re.compile(r'!\[([^\]]*)\]\((https?://[^\)]+)\)')
     matches = pattern.findall(content)
 
@@ -101,7 +100,8 @@ def main():
     
     try:
         response = notion.request(
-            path=f"databases/{NOTION_DATABASE_ID}/query",
+            # 【修复点】：加上了 v1/ 前缀
+            path=f"v1/databases/{NOTION_DATABASE_ID}/query",
             method="POST",
             body={
                 "filter": {
