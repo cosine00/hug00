@@ -9,7 +9,11 @@ from notion2md.exporter.block import StringExporter
 
 # 1. 环境变量读取
 NOTION_TOKEN = os.environ.get('NOTION_SECRET')
-NOTION_DATABASE_ID = os.environ.get('NOTION_DATABASE_ID')
+raw_db_id = os.environ.get('NOTION_DATABASE_ID', '')
+
+# 【核心防呆设计】：自动从任何乱七八糟的链接中提取 32 位纯净 Database ID
+db_match = re.search(r'([a-fA-F0-9]{32})', raw_db_id.replace('-', ''))
+NOTION_DATABASE_ID = db_match.group(1) if db_match else raw_db_id.strip()
 
 R2_ACCESS_KEY = os.environ.get('R2_ACCESS_KEY_ID')
 R2_SECRET_KEY = os.environ.get('R2_SECRET_ACCESS_KEY')
@@ -56,7 +60,6 @@ def process_images_in_markdown(content):
     matches = pattern.findall(content)
 
     for alt_text, img_url in matches:
-        # 如果已经是 R2 的链接，说明这篇文章只是更新了文字，图片不用重复传
         if R2_DOMAIN in img_url:
             continue
 
@@ -90,13 +93,12 @@ def process_images_in_markdown(content):
     return content
 
 def main():
-    # 确保输出目录存在
     os.makedirs(POSTS_DIR, exist_ok=True)
     os.makedirs(PAGES_DIR, exist_ok=True)
 
+    print(f"解析后的 Database ID: {NOTION_DATABASE_ID}")
     print("开始查询 Notion 数据库...")
     
-    # 【核心修复区】：绕过 notion.databases.query，直接使用底层 request 发起 POST 请求
     try:
         response = notion.request(
             path=f"databases/{NOTION_DATABASE_ID}/query",
@@ -110,7 +112,7 @@ def main():
         )
         results = response.get("results", [])
     except Exception as e:
-        print(f"查询 Notion 数据库失败，错误信息: {e}")
+        print(f"❌ 查询 Notion 数据库失败，错误信息: {e}")
         return
 
     print(f"找到 {len(results)} 篇已发布文章。")
@@ -118,18 +120,16 @@ def main():
     for page in results:
         props = page["properties"]
         
-        # 提取属性
         title = get_prop_value(props.get("Name") or props.get("title"))
         slug = get_prop_value(props.get("slug"))
         ptype = get_prop_value(props.get("ptype")) or "post"
         
         if not slug:
-            print(f"警告: 文章《{title}》缺少 slug，已跳过。")
+            print(f"⚠️ 警告: 文章《{title}》缺少 slug，已跳过。")
             continue
 
         print(f"处理文章: {title} ({slug})")
 
-        # 构造 Frontmatter
         frontmatter = {
             "title": title,
             "date": get_prop_value(props.get("date")) or get_prop_value(props.get("created")),
@@ -140,31 +140,23 @@ def main():
             "slug": slug
         }
         
-        # 过滤空值
         frontmatter = {k: v for k, v in frontmatter.items() if v != "" and v != []}
-
-        # 转换为 Markdown
         md_exporter = StringExporter(block_id=page["id"])
         md_content = md_exporter.export()
-
-        # 处理图片并替换链接
         md_content = process_images_in_markdown(md_content)
 
-        # 组合最终文本
         yaml_frontmatter = yaml.dump(frontmatter, allow_unicode=True, default_flow_style=False)
         final_content = f"---\n{yaml_frontmatter}---\n\n{md_content}"
 
-        # 确定保存路径
         save_dir = PAGES_DIR if ptype == 'page' else POSTS_DIR
         filepath = os.path.join(save_dir, f"{slug}.md")
 
-        # 写入文件
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(final_content)
         
         print(f"✅ 成功生成/更新: {filepath}")
         
-    print("\n同步完成！本次操作只进行新增和更新，未执行任何删除操作。")
+    print("\n🎉 同步完成！")
 
 if __name__ == '__main__':
     main()
