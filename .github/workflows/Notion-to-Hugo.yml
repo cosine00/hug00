@@ -18,19 +18,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 第一步：用强大的开源工具做正文转换
-      - name: Convert Notion to Markdown
+      # 第一步：让 Action 输出到“空的临时目录”，彻底避开它的本地对比 Bug
+      - name: Convert Notion to Markdown (to Temp Dir)
         uses: Doradx/notion2markdown-action@v1
         with:
           notion_secret: ${{ secrets.NOTION_SECRET }}
           database_id: ${{ secrets.NOTION_DATABASE_ID }}
-          pic_migrate: false # 核心：坚决关闭它自带的图床迁移，保留原始链接
-          output_page_dir: 'content'
-          output_post_dir: 'content/posts/notion'
-          clean_unpublished_post: false # 核心：满足你“只更新，不删除”的需求
+          pic_migrate: false
+          # 【核心修改】：输出到临时文件夹 temp_content
+          output_page_dir: 'temp_content'
+          output_post_dir: 'temp_content/posts/notion'
+          clean_unpublished_post: true # 这里开启无所谓，因为临时文件夹原本就是空的
           metas_keeped: slug, date, author, tags, draft, created, updated, ptype
 
-      # 第二步：准备 Python 环境
+      # 第二步：将临时目录的新文章，覆盖合并到正式目录（实现只更新不删除）
+      - name: Merge Updates to Content
+        run: |
+          mkdir -p content/posts/notion
+          if [ -d "temp_content" ]; then
+            # 把新文章复制过去覆盖，本地原有的旧文章毫发无损
+            cp -rf temp_content/* content/
+          fi
+
+      # 第三步：准备 Python 环境
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -40,7 +50,7 @@ jobs:
         run: |
           pip install boto3 requests
 
-      # 第三步：运行我们的极简图床脚本
+      # 第四步：扫描正式目录，提取图片上传 R2
       - name: Process Images to R2
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -51,7 +61,7 @@ jobs:
         run: |
           python upload_r2.py
 
-      # 第四步：推送到仓库
+      # 第五步：推送到仓库
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
