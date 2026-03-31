@@ -46,13 +46,12 @@ def process_markdown_file(filepath):
         if R2_DOMAIN in img_url:
             continue  
 
-        # 因为我们要统一转为 webp，所以后缀固定为 .webp
         img_hash = get_stable_hash(img_url)
-        filename = f"notion/{img_hash}.webp"
-        expected_r2_url = f"{R2_DOMAIN}/{filename}"
 
-        # 检查是否命中缓存（之前是否已经传过这张图）
-        if expected_r2_url in old_content:
+        # 匹配可能存在的任何后缀的缓存
+        cache_match = re.search(f"{R2_DOMAIN}/notion/{img_hash}\\.[a-zA-Z0-9]+", old_content)
+        if cache_match:
+            expected_r2_url = cache_match.group(0)
             print(f"  ⚡ 缓存命中，跳过处理: {expected_r2_url}")
             content = content.replace(img_url, expected_r2_url)
             changed = True
@@ -62,35 +61,65 @@ def process_markdown_file(filepath):
         try:
             response = requests.get(img_url, timeout=15)
             if response.status_code == 200:
-                # ==========================================
-                # 核心处理区：格式转换与压缩
-                # ==========================================
-                # 1. 将下载的字节流读入 Image 对象
+                # 获取原图的 Content-Type 以备回退使用
+                ctype = response.headers.get('Content-Type', '')
+                orig_ext = 'png'
+                if 'jpeg' in ctype or 'jpg' in ctype: orig_ext = 'jpg'
+                elif 'gif' in ctype: orig_ext = 'gif'
+                elif 'webp' in ctype: orig_ext = 'webp'
+
+                # 尝试打开图片
                 img = Image.open(BytesIO(response.content))
                 
-                # 2. 如果图片是调色板模式(P)或带透明度的(RGBA)，为了兼容性确保转换为 RGBA
-                if img.mode not in ("RGB", "RGBA"):
-                    img = img.convert("RGBA")
-                
-                output_buffer = BytesIO()
-                
-                # 3. 检查是否是动态 GIF 图
+                # 如果真的是动图 GIF，直接放行
                 if getattr(img, "is_animated", False):
-                    # 动态图转为动态 WebP，保留所有帧
-                    img.save(output_buffer, format="WEBP", quality=80, save_all=True)
+                    print(f"  🎞️ 检测到动图，跳过 WebP 转换，保留原格式...")
+                    final_bytes = response.content
+                    final_ext = 'gif'
+                    final_ctype = 'image/gif'
                 else:
-                    # 静态图转为 WebP，quality=80 压缩画质 (范围 1-100)
-                    img.save(output_buffer, format="WEBP", quality=80, method=4)
-                
-                compressed_bytes = output_buffer.getvalue()
-                # ==========================================
+                    try:
+                        # ====================================================
+                        # 【核心修复】：纯净画布法 (消除 Invalid frame dimensions)
+                        # ====================================================
+                        # 1. 强制统一颜色模式
+                        if img.mode in ("RGBA", "P", "LA", "PA"):
+                            img = img.convert("RGBA")
+                            # 2. 创建一个大小完全相同的纯净透明画布
+                            clean_img = Image.new("RGBA", img.size)
+                        else:
+                            img = img.convert("RGB")
+                            # 2. 创建一个大小完全相同的纯净不透明画布
+                            clean_img = Image.new("RGB", img.size)
+                        
+                        # 3. 把原图的像素“粘贴”到干净画布上，彻底丢弃原图的 offset 和 metadata
+                        clean_img.paste(img)
+                        
+                        # 4. 用干净的画布进行 WebP 压缩
+                        output_buffer = BytesIO()
+                        clean_img.save(output_buffer, format="WEBP", quality=80, method=4)
+                        
+                        final_bytes = output_buffer.getvalue()
+                        final_ext = 'webp'
+                        final_ctype = 'image/webp'
+                        # ====================================================
 
-                print(f"  ⬆️ 上传 R2: {filename} (压缩后大小: {len(compressed_bytes)//1024} KB)")
+                    except Exception as e_conv:
+                        # 【安全网】：就算天塌下来，也能把原图传上去，保证不断更
+                        print(f"  ⚠️ WebP 压缩失败 ({e_conv})，安全回退到原图格式...")
+                        final_bytes = response.content
+                        final_ext = orig_ext
+                        final_ctype = ctype or 'image/png'
+
+                filename = f"notion/{img_hash}.{final_ext}"
+                expected_r2_url = f"{R2_DOMAIN}/{filename}"
+
+                print(f"  ⬆️ 上传 R2: {filename} (处理后大小: {len(final_bytes)//1024} KB)")
                 s3_client.put_object(
                     Bucket=R2_BUCKET_NAME,
                     Key=filename,
-                    Body=compressed_bytes,
-                    ContentType='image/webp'
+                    Body=final_bytes,
+                    ContentType=final_ctype
                 )
                 
                 content = content.replace(img_url, expected_r2_url)
