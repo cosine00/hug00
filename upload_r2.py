@@ -3,6 +3,8 @@ import re
 import requests
 import boto3
 import hashlib
+from io import BytesIO
+from PIL import Image
 
 # 从环境变量精准读取 Secrets
 R2_ACCESS_KEY = os.environ.get('R2_ACCESS_KEY_ID')
@@ -21,7 +23,7 @@ s3_client = boto3.client(
 )
 
 def get_stable_hash(url):
-    """提取 Notion 图片 URL 的固定部分（去除会变的签名参数），生成固定哈希值"""
+    """提取 Notion 图片 URL 的固定部分生成哈希值"""
     stable_url = url.split('?')[0]
     return hashlib.md5(stable_url.encode('utf-8')).hexdigest()[:12]
 
@@ -44,41 +46,51 @@ def process_markdown_file(filepath):
         if R2_DOMAIN in img_url:
             continue  
 
-        # 1. 生成基于图片的固定文件名
-        ext = img_url.split('?')[0].split('.')[-1].lower()
-        if ext not in ['png', 'jpg', 'jpeg', 'gif', 'webp']:
-            ext = 'png'
-            
+        # 因为我们要统一转为 webp，所以后缀固定为 .webp
         img_hash = get_stable_hash(img_url)
-        filename = f"notion/{img_hash}.{ext}"
+        filename = f"notion/{img_hash}.webp"
         expected_r2_url = f"{R2_DOMAIN}/{filename}"
 
-        # 2. 【核心优化】：如果正式目录的旧文章里已经有这个 R2 链接，说明传过了，直接秒替换！
+        # 检查是否命中缓存（之前是否已经传过这张图）
         if expected_r2_url in old_content:
-            print(f"  ⚡ 图片已在 R2 (命中缓存)，跳过下载与上传: {expected_r2_url}")
+            print(f"  ⚡ 缓存命中，跳过处理: {expected_r2_url}")
             content = content.replace(img_url, expected_r2_url)
             changed = True
             continue
 
-        # 3. 如果没命中缓存，说明是新图，正常下载上传
-        print(f"  ☁️ 正在下载新图片: {img_url[:50]}...")
+        print(f"  ☁️ 下载并处理新图片: {img_url[:50]}...")
         try:
             response = requests.get(img_url, timeout=15)
             if response.status_code == 200:
-                ctype = response.headers.get('Content-Type', '')
-                if 'jpeg' in ctype or 'jpg' in ctype: ext = 'jpg'
-                elif 'gif' in ctype: ext = 'gif'
-                elif 'webp' in ctype: ext = 'webp'
+                # ==========================================
+                # 核心处理区：格式转换与压缩
+                # ==========================================
+                # 1. 将下载的字节流读入 Image 对象
+                img = Image.open(BytesIO(response.content))
                 
-                filename = f"notion/{img_hash}.{ext}"
-                expected_r2_url = f"{R2_DOMAIN}/{filename}"
+                # 2. 如果图片是调色板模式(P)或带透明度的(RGBA)，为了兼容性确保转换为 RGBA
+                if img.mode not in ("RGB", "RGBA"):
+                    img = img.convert("RGBA")
+                
+                output_buffer = BytesIO()
+                
+                # 3. 检查是否是动态 GIF 图
+                if getattr(img, "is_animated", False):
+                    # 动态图转为动态 WebP，保留所有帧
+                    img.save(output_buffer, format="WEBP", quality=80, save_all=True)
+                else:
+                    # 静态图转为 WebP，quality=80 压缩画质 (范围 1-100)
+                    img.save(output_buffer, format="WEBP", quality=80, method=4)
+                
+                compressed_bytes = output_buffer.getvalue()
+                # ==========================================
 
-                print(f"  ⬆️ 上传至 R2: {filename}")
+                print(f"  ⬆️ 上传 R2: {filename} (压缩后大小: {len(compressed_bytes)//1024} KB)")
                 s3_client.put_object(
                     Bucket=R2_BUCKET_NAME,
                     Key=filename,
-                    Body=response.content,
-                    ContentType=ctype or 'image/png'
+                    Body=compressed_bytes,
+                    ContentType='image/webp'
                 )
                 
                 content = content.replace(img_url, expected_r2_url)
@@ -94,7 +106,6 @@ def process_markdown_file(filepath):
         print(f"✅ 处理完成: {filepath}")
 
 def main():
-    # 【核心优化】：只扫描刚刚由 Action 生成的临时文件夹，绝不触碰你的老文件！
     dirs_to_scan = ['temp_content']
     for d in dirs_to_scan:
         if not os.path.exists(d):
@@ -105,6 +116,6 @@ def main():
                     process_markdown_file(os.path.join(root, file))
 
 if __name__ == '__main__':
-    print("开始扫描临时文件夹中的 Markdown 图片...")
+    print("开始扫描并进行 WebP 压缩处理...")
     main()
-    print("图片处理完毕！")
+    print("图片压缩与上传完毕！")

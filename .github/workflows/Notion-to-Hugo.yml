@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install boto3 requests
+          pip install boto3 requests Pillow
 
       # 3. 核心变动：在临时目录里处理图片。安全隔离，不会误伤其他本地文件！
       - name: Process Images to R2
