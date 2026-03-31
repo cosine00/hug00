@@ -36,10 +36,10 @@ _我是斜体_
 
 ---
 
-![](https://img.hux.ink/notion/1a23842539.png)
+![](https://img.hux.ink/notion/88baf45c90.png)
 
 将 Notion 作为管理 hugo 博客的 CMS,测试看是否跑通。
 
-![](https://img.hux.ink/notion/52cc7297cc.jpg)
+![](https://img.hux.ink/notion/2e7e696a93.jpg)
 
 ❤
