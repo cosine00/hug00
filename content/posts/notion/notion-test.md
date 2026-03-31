@@ -4,7 +4,7 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-03-31T10:28:00+00:00
+updated: 2026-03-31T10:46:00+00:00
 date: 2026-03-31T06:27:00+00:00
 slug: notion-test
 title: Notion同步测试
@@ -36,9 +36,9 @@ _我是斜体_
 
 ---
 
-![](https://img.hux.ink/notion/5898a9f4835f.gif)
+![](https://img.hux.ink/notion/efc8feb95939.webp)
 
-![](https://img.hux.ink/notion/0d5f91ae3af6.gif)
+![](https://img.hux.ink/notion/b14b131f9eec.webp)
 
 将 Notion 作为管理 hugo 博客的 CMS,测试看是否跑通。
 
