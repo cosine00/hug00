@@ -22,25 +22,22 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          cache: 'pip' # 缓存依赖，加快运行速度
+          # 已删除 cache: 'pip'，解决无 requirements.txt 报错的问题
 
       - name: Install Dependencies
         run: |
-          # notion-client: 官方 API
-          # notion2md: 高效的 Markdown 转换器
-          # boto3: AWS S3 兼容库 (用于 Cloudflare R2)
-          # pyyaml: 生成 Frontmatter
           pip install notion-client notion2md boto3 pyyaml requests
 
       - name: Run Sync Script
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_SECRET }} # 注意这里对应你原有的 Secret 名称
+          # 修复点：这里的环境变量名称必须与 sync_notion.py 中的 os.environ.get() 完全一致
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET}}
-          R2_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN}}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
         run: |
           python sync_notion.py
 
