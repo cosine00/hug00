@@ -4,14 +4,15 @@ import requests
 import boto3
 import uuid
 import yaml
-from notion_client import Client
-from notion2md.exporter.block import StringExporter
 
-# 1. 环境变量读取
-NOTION_TOKEN = os.environ.get('NOTION_SECRET')
+# 1. 环境变量读取与终极修正
+# 将 GitHub Secret 中的 NOTION_SECRET 提取出来，并强行注入为 NOTION_TOKEN
+# 这是因为格式转换库 notion2md 在底层是个死脑筋，只认 NOTION_TOKEN 这个名字
+NOTION_TOKEN = os.environ.get('NOTION_SECRET', '')
+os.environ['NOTION_TOKEN'] = NOTION_TOKEN  
+
 raw_db_id = os.environ.get('NOTION_DATABASE_ID', '')
-
-# 自动从链接中提取 32 位纯净 Database ID
+# 自动清洗 ID
 db_match = re.search(r'([a-fA-F0-9]{32})', raw_db_id.replace('-', ''))
 NOTION_DATABASE_ID = db_match.group(1) if db_match else raw_db_id.strip()
 
@@ -25,8 +26,10 @@ R2_DOMAIN = os.environ.get('R2_PUBLIC_DOMAIN')
 POSTS_DIR = 'content/posts/notion'
 PAGES_DIR = 'content'
 
-# 2. 初始化客户端
-notion = Client(auth=NOTION_TOKEN)
+# 必须在环境变量注入后导入，否则它会报错找不到 Token
+from notion2md.exporter.block import StringExporter
+
+# 初始化 R2(S3) 客户端
 s3_client = boto3.client(
     's3',
     endpoint_url=R2_ENDPOINT,
@@ -96,23 +99,33 @@ def main():
     os.makedirs(PAGES_DIR, exist_ok=True)
 
     print(f"解析后的 Database ID: {NOTION_DATABASE_ID}")
-    print("开始查询 Notion 数据库...")
+    print("开始使用原生 requests 查询 Notion 数据库...")
+    
+    # ---------------------------------------------------------
+    # 【终极修复区】：自己掌控命运，写死绝对正确的完整官方 URL！
+    # ---------------------------------------------------------
+    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
+    headers = {
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Notion-Version": "2022-06-28", # 锁死官方版本，防止它瞎更新
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "filter": {
+            "property": "pstatus",
+            "select": { "equals": "已发布" }
+        }
+    }
     
     try:
-        response = notion.request(
-            # 【修复点】：加上了 v1/ 前缀
-            path=f"v1/databases/{NOTION_DATABASE_ID}/query",
-            method="POST",
-            body={
-                "filter": {
-                    "property": "pstatus",
-                    "select": { "equals": "已发布" }
-                }
-            }
-        )
-        results = response.get("results", [])
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code != 200:
+            print(f"❌ 查询失败，HTTP 状态码: {response.status_code}")
+            print(f"❌ 官方完整报错详情: {response.text}")
+            return
+        results = response.json().get("results", [])
     except Exception as e:
-        print(f"❌ 查询 Notion 数据库失败，错误信息: {e}")
+        print(f"❌ 网络请求异常: {e}")
         return
 
     print(f"找到 {len(results)} 篇已发布文章。")
@@ -141,8 +154,11 @@ def main():
         }
         
         frontmatter = {k: v for k, v in frontmatter.items() if v != "" and v != []}
+        
+        # 导出 markdown
         md_exporter = StringExporter(block_id=page["id"])
         md_content = md_exporter.export()
+        
         md_content = process_images_in_markdown(md_content)
 
         yaml_frontmatter = yaml.dump(frontmatter, allow_unicode=True, default_flow_style=False)
