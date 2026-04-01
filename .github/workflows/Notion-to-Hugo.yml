@@ -49,7 +49,7 @@ jobs:
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
         run: |
-          python scripts/upload_r2.py
+          python .github/scripts/upload_r2.py
 
       # 4. 把处理好的、含有 R2 链接的文章，安全地合并到正式目录
       - name: Merge Updates to Content
