@@ -50,7 +50,7 @@ jobs:
 
     - name: Fix Poster Links via NeoDB
       run: |
-        python update_poster.py
+        python scripts/update_poster.py
 
     # --- 最后一步：提交包含新链接的 CSV ---
     - name: Commit
