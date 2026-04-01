@@ -4,7 +4,7 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-04-01T02:10:00+00:00
+updated: 2026-04-01T04:02:00+00:00
 date: 2026-03-31T06:27:00+00:00
 slug: notion-test
 title: Notion同步测试
@@ -41,6 +41,8 @@ _我是斜体_
 ![](https://img.hux.ink/notion/efc8feb95939.webp)
 
 ![](https://img.hux.ink/notion/b14b131f9eec.webp)
+
+![](https://img.hux.ink/notion/37bfab201445.webp)
 
 好像跑通了，图片成功自动上传到 Cloudflare R2 图床，后续在 Notion 中对已同步文章的修改也能同步更新。🙃🙃🙃
 
