@@ -4,12 +4,14 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-03-31T10:46:00+00:00
+updated: 2026-04-01T02:10:00+00:00
 date: 2026-03-31T06:27:00+00:00
 slug: notion-test
 title: Notion同步测试
 id: 33471019-ed27-804c-9783-e83648705101
 ---
+
+将 Notion 作为管理 Hugo 博客的 CMS，在 Notion 中写，通过 Github action 同步到博客仓库中，测试看是否跑通。
 
 # 我是一级标题
 
@@ -40,9 +42,7 @@ _我是斜体_
 
 ![](https://img.hux.ink/notion/b14b131f9eec.webp)
 
-将 Notion 作为管理 hugo 博客的 CMS,测试看是否跑通。
-
-好像跑通了 🙃🙃🙃
+好像跑通了，图片成功自动上传到 Cloudflare R2 图床，后续在 Notion 中对已同步文章的修改也能同步更新。🙃🙃🙃
 
 ![](https://img.hux.ink/notion/957274b47b0d.webp)
 
