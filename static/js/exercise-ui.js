@@ -528,7 +528,7 @@
             const isStair = STAIR_TYPES.has(r.type);
             const numDisplay = isStair 
               ? `${r.moving_time}`
-              : (distNum > 0 ? `${distNum.toFixed(2)} <small class="ttUnit">km</small>` : `${r.moving_time || '--'} <small class="ttUnit">用时</small>`);
+              : (distNum > 0 ? `${(Math.floor(distNum * 100) / 100).toFixed(2)} <small class="ttUnit">km</small>` : `${r.moving_time || '--'} <small class="ttUnit">用时</small>`);
               
             return `
               <div class="ttItem" style="margin-bottom:8px;">
