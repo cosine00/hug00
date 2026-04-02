@@ -378,6 +378,7 @@
         },
         monthly: { 
           total: mTotal, rideDist: mRide, runDist: mRun, walkDist: mWalk, stairDuration: mStairDur, runsByDate: currentMonthData.runsByDate,
+          totalRunsCount: currentMonthData.runs.length, // <--- 新增这一句：获取本月实际活动总数
           insights: { 
             hasActivities: currentMonthData.runs.length > 0, timeBlocks, maxTimeBlockCount: Math.max(maxTimeBlockCount, 1), peakPersona: maxTimeBlockCount > 0 ? personas[timeBlocks.indexOf(maxTimeBlockCount)].name : '等待记录', 
             personas, validHrRuns, hrCounts, hrZonesInfo, hrMaxZone: hrZonesInfo[hrCounts.indexOf(Math.max(...hrCounts))] || hrZonesInfo[0] 
@@ -606,7 +607,7 @@
             ${gridHtml}
           </div>
           <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #eee; text-align: center; font-size: 11px; color: #999; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-            <span>本月运动<strong style="color: #333;">${engine.monthly.runsByDate.size}</strong>次，总里程 <strong style="color: #333;">${engine.monthly.total.toFixed(2)}</strong> km</span>
+            <span>本月运动<strong style="color: #333;">${engine.monthly.totalRunsCount}</strong>次，总里程 <strong style="color: #333;">${engine.monthly.total.toFixed(2)}</strong> km</span>
             <span>跑步 <strong style="color: #333;">${engine.monthly.runDist.toFixed(2)}</strong> km</span>
             <span>健走 <strong style="color: #333;">${engine.monthly.walkDist.toFixed(2)}</strong> km</span>
             <span>骑行 <strong style="color: #333;">${engine.monthly.rideDist.toFixed(2)}</strong> km</span>
