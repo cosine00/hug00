@@ -9774,5 +9774,21 @@
 "elevation_gain": 57.8,
 "source": "strava",
 "streak": 2
+},
+{
+"run_id": 17944626426,
+"name": "\u901a\u52e4\u9a91\u884c",
+"distance": 7642.0,
+"moving_time": "0:29:56",
+"type": "Ride",
+"start_date": "2026-04-02 00:17:09+00:00",
+"start_date_local": "2026-04-02 08:17:09",
+"location_country": "\u5b9d\u5b89\u5357\u8def, \u7ea2\u6751\u793e\u533a, \u6842\u56ed\u8857\u9053, \u7f57\u6e56\u533a, \u6df1\u5733\u5e02, \u5e7f\u4e1c\u7701, 518000, \u4e2d\u56fd",
+"summary_polyline": "snrhC_bmwTXt@r@xAnBpDj@|@vAvCb@pAD`@?XCROf@Gb@EzCIz@AFEDSB}EAsBFkF@CBEX@ZBHDDXBbCEdNGP@THNNFLFj@@bDFtAAhFBrEJdAG|@Aj@@dAFx@BpAAx@E|ABtDA\\GZILSPUFW@cFBiKN}ECy@@cADgCEsCF}C@_ACWGIIMUGQE]AeMIiHCmS@aABODMJGNEh@A`FAlLKzVGt@DPDLHR^Dl@?tJ@nDFfCFbAE|@@lBJlBCdD@|DCp@IXKLMHUFs@BmE@cABED@LFJRNNFzAJjBC~ADVFLHHLBPDhABfJAp@Gv@d@zDDh@D`B?nBMlKD~CElCBv@Ab@Hx@B|DD|@",
+"average_heartrate": 121.1,
+"average_speed": 4.255,
+"elevation_gain": 42.2,
+"source": "strava",
+"streak": 3
 }
 ]
