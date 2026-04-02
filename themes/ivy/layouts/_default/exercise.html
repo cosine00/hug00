@@ -311,12 +311,12 @@
             <div class="leftInfo">
               <div class="runName">{{ .name }}</div>
               <div class="runDistance" style="color: {{ $theme.color }}">
-                {{ if in (slice "StairStepper" "Stair") .type }}
-                  <span style="font-size: 1.1rem;">{{ .moving_time }}</span>
-                {{ else }}
-                  {{ printf "%.2f" (div .distance 1000.0) }}<span class="distUnit">km</span>
-                {{ end }}
-              </div>
+               {{ if in (slice "StairStepper" "Stair") .type }}
+                 <span style="font-size: 1.1rem;">{{ .moving_time }}</span>
+               {{ else }}
+                {{ printf "%.2f" (div (math.Floor (div .distance 10.0)) 100.0) }}<span class="distUnit">km</span>
+              {{ end }}
+             </div>
             </div>
             <div class="rightInfo">
               <time class="runDate">{{ substr .start_date_local 5 5 }} {{ substr .start_date_local 11 5 }}</time>
