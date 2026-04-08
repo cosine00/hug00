@@ -1,5 +1,30 @@
 [
   {
+    "id": 1041,
+    "content": "今天收盘把场内融资给清了，有赚就好，夫复何求呢。上个月经历了那么多次「身后有余忘缩手，眼前无路想回头」，挨打的时候要长记忆，A 股隔三差五倒车接人。",
+    "createdTs": 1775659743,
+    "resourceList": [
+      {
+        "id": 548,
+        "creatorId": 1,
+        "createdTs": 1775659586,
+        "updatedTs": 1775659586,
+        "filename": "9BE3FE7D-A335-48CC-A34D-BFCD62A22CB0.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/04/9BE3FE7D-A335-48CC-A34D-BFCD62A22CB0.jpg",
+        "type": "image/jpeg",
+        "size": 372622
+      }
+    ],
+    "tags": []
+  },
+  {
+    "id": 1040,
+    "content": "「ETF 的作用就是拿一块布把散户不敢买的个股裹起来，重新叫个名字，然后散户就不怕了。」",
+    "createdTs": 1775658827,
+    "resourceList": [],
+    "tags": []
+  },
+  {
     "id": 1039,
     "content": "跑步五公里，听了一期高司令盘点播客。昨晚看了高司令主演的《银翼杀手 2049》，后劲很大。",
     "createdTs": 1775557986,
