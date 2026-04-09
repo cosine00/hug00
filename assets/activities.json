@@ -9886,5 +9886,21 @@
 "elevation_gain": 42.8,
 "source": "strava",
 "streak": 2
+},
+{
+"run_id": 18040377430,
+"name": "\u767b\u6708\u8ba1\u5212",
+"distance": 5611.1,
+"moving_time": "0:42:05",
+"type": "Stair",
+"start_date": "2026-04-09 11:58:36+00:00",
+"start_date_local": "2026-04-09 19:58:36",
+"location_country": null,
+"summary_polyline": "",
+"average_heartrate": 128.7,
+"average_speed": 2.2222178217821784,
+"elevation_gain": 0.0,
+"source": "strava",
+"streak": 1
 }
 ]
