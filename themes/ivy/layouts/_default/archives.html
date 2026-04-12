@@ -1,5 +1,30 @@
 {{ partial "header.html" . }}
 
+<style>
+/* 复用运动页面的胶囊按钮样式 */
+.year-nav-wrapper {
+  margin: 30px 0 20px 0;
+}
+.buttons {
+  display: flex; width: fit-content; max-width: 100%; margin: 0 auto;
+  gap: 8px; list-style: none; padding: 5px;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px; overflow-x: auto; scrollbar-width: none;
+}
+.buttons::-webkit-scrollbar { display: none; }
+.button {
+  font-size: 0.9rem; padding: 10px 24px; border-radius: 9999px;
+  cursor: pointer; color: var(--text-info-color, #666);
+  transition: all 0.2s ease;
+}
+/* 选中状态的颜色可以根据你的主题调整，这里默认使用了你运动页面的绿色 */
+.button.selected {
+  background: var(--exercise-text-highlight-color, #32D74B); 
+  color: #111 !important;
+}
+</style>
+
 {{$scratch := newScratch}}
 {{$totalWord := 0}}
 {{ range (where .Site.Pages "Kind" "page" )}}
@@ -21,30 +46,65 @@
 {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
 
 {{- if .Site.Params.ShowAllPagesInArchive }}
-{{- $pages = site.RegularPages }}
+  {{- $pages = site.RegularPages }}
 {{- end }}
 
-{{- range $pages.GroupByPublishDate "2006" }}
-{{- if ne .Key "0001" }}
-<div class="archive-year">
-  <h3 class="archive-year-header">
-    {{- replace .Key "0001" "" }}年<sup class="archive-count">&nbsp;&nbsp;{{ len .Pages }}</sup>
-  </h3>
-  <div class="archive-posts">
-      {{- range .Pages }}
-      {{- if eq .Kind "page" }}
-      <div class="archive-entry">
-        <li class="archive-entry-title">
-          <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;<a href="{{.Permalink}}">{{.Title}}</a>
-         </li>        
+{{- $groupedPages := $pages.GroupByPublishDate "2006" }}
+{{- $firstYear := "" }}
+
+<div class="year-nav-wrapper">
+  <ul class="buttons" id="archive-year-nav">
+    {{- range $groupedPages }}
+      {{- if ne .Key "0001" }}
+        {{- if eq $firstYear "" }}{{ $firstYear = .Key }}{{ end }}
+        <li class="button {{ if eq $firstYear .Key }}selected{{ end }}" data-year="{{ .Key }}" onclick="filterArchiveYear('{{ .Key }}', this)">
+          {{ .Key }}
+        </li>
+      {{- end }}
+    {{- end }}
+  </ul>
+</div>
+
+<div id="archive-list-container">
+  {{- range $groupedPages }}
+    {{- if ne .Key "0001" }}
+    <div class="archive-year" data-year="{{ .Key }}" style="{{ if ne .Key $firstYear }}display: none;{{ end }}">
+      <h3 class="archive-year-header">
+        {{- replace .Key "0001" "" }}年<sup class="archive-count">&nbsp;&nbsp;{{ len .Pages }}</sup>
+      </h3>
+      <div class="archive-posts">
+          {{- range .Pages }}
+          {{- if eq .Kind "page" }}
+          <div class="archive-entry">
+            <li class="archive-entry-title">
+              <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;<a href="{{.Permalink}}">{{.Title}}</a>
+             </li>        
+          </div>
+          {{- end }}
+          {{- end }}
       </div>
-      {{- end }}
-      {{- end }}
     </div>
-  </div>
+    {{- end }}
   {{- end }}
 </div>
-{{- end }}
 
+<script>
+function filterArchiveYear(year, btn) {
+  // 切换按钮的选中状态
+  const buttons = document.querySelectorAll('#archive-year-nav .button');
+  buttons.forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  // 切换对应年份的文章列表显示状态
+  const yearSections = document.querySelectorAll('.archive-year');
+  yearSections.forEach(el => {
+    if (el.getAttribute('data-year') === year) {
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+}
+</script>
 
 {{ partial "footer-cus.html" . }}

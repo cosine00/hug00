@@ -1,16 +1,32 @@
 {{ partial "header.html" . }}
 
+<div id="memos-filter">
+  <ul class="buttons" id="memos-year-nav"></ul>
+  
+  <div id="month-nav-container">
+    <div class="scroll-btn" onclick="scrollMonthNav('left')">
+       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </div>
+    
+    <ul class="month-list" id="memos-month-nav"></ul>
+    
+    <div class="scroll-btn" onclick="scrollMonthNav('right')">
+       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </div>
+  </div>
+</div>
+
 <div id="bber"></div>
+
 <script type="text/javascript">
   var bbMemos = {
-    memos : '/memos.json', // 使用本地json文件
-    limit : '',            // 默认每次显示 10条
+    memos : '/memos.json', 
+    limit : '',            
     creatorId:'1',
-    domId: '#bber',        // 必须指定为 #bber
-    twiEnv:'https://huxin.netlify.app/.netlify/functions/twikoo/', // 如需评论可配置
+    domId: '#bber',        
+    twiEnv:'https://huxin.netlify.app/.netlify/functions/twikoo/', 
   }
 </script>
-<!-- 加载依赖：先加载解析器和查看器，再加载页面逻辑 -->
 <script src="/js/marked.min.js"></script>
 <script src="/js/view-image.min.js"></script>
 <script src="/js/lately.min.js"></script>
@@ -18,8 +34,100 @@
 <script type="module" src="/js/emaction.js"></script>
 <script src="/js/bb.js"></script>
 
+<script>
+  function scrollMonthNav(dir) {
+    const nav = document.getElementById('memos-month-nav');
+    // 每次点击滑动 180px（大约3个月份的宽度），你可以根据手感自己调整数值
+    if (dir === 'left') nav.scrollBy({ left: -180, behavior: 'smooth' });
+    if (dir === 'right') nav.scrollBy({ left: 180, behavior: 'smooth' });
+  }
+</script>
+
 <style>
-#bber{margin-top:2em;width:580px;}
+/* --- 筛选器居中与滚动样式 --- */
+#memos-filter {
+  margin: 1.5em auto 2em auto; 
+  width: 580px; 
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+/* 年份胶囊 */
+.buttons {
+  display: flex; width: fit-content; max-width: 100%; margin: 0 auto;
+  gap: 8px; list-style: none; padding: 5px;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px; overflow-x: auto; scrollbar-width: none;
+  scroll-behavior: smooth; 
+}
+.buttons::-webkit-scrollbar { display: none; }
+
+.button {
+  font-size: 0.9rem; padding: 8px 20px; border-radius: 9999px;
+  cursor: pointer; color: var(--text-info-color, #666);
+  transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
+}
+.button.selected {
+  background: #42b983; 
+  color: #fff !important;
+}
+
+/* 月份外层大胶囊 */
+#month-nav-container {
+  display: none; 
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 12px;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px;
+  padding: 2px 4px; 
+  box-sizing: border-box;
+}
+
+/* --- 核心修改1：限制月份列表宽度，最多显示约5个 --- */
+.month-list {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  max-width: 330px; /* 这个宽度刚好能放下 全年 + 4个月份 */
+}
+.month-list::-webkit-scrollbar { display: none; }
+
+.month-list .button {
+  font-size: 0.8rem; padding: 6px 16px; 
+}
+
+/* --- 核心修改2：醒目的左右翻页按钮 --- */
+.scroll-btn {
+  cursor: pointer;
+  color: #555; /* 加深基础颜色 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px; /* 加大点击热区 */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: transparent;
+  border: none;
+  flex-shrink: 0; 
+}
+.scroll-btn:hover {
+  color: #42b983; /* 悬停亮起主题绿 */
+  transform: scale(1.15); /* 悬停时微微放大，交互感更强 */
+}
+
+/* --- 原有样式保留 --- */
+#bber{margin-top:0;width:580px; margin-left: auto; margin-right: auto;} 
 #bber pre{color: #fff;}
 .timeline ul {margin:0;}
 .timeline ul li {background:#3b3d42;list-style-type:none;position:relative;width:3px;margin-left:1em;padding:0.8em 0 2em;}
@@ -39,59 +147,19 @@
 @media (max-width:860px) {
   .timeline ul li{margin-left:0;}
   .timeline ul li .itemdiv{width:calc(100vw - 75px);left:20px;}
+  #memos-filter {width: 100% !important;}
 }
 .datacont .tag-span,
-.tag-span {
-  color: #42b983;
-  font-weight: normal;   /* 不加粗 */
-  background: none;      /* 去掉浅绿色背景 */
-  box-shadow: none;      /* 去掉阴影 */
-}
+.tag-span { color: #42b983; font-weight: normal; background: none; box-shadow: none; }
 .datasource a{font-size: 0.8rem;}
 .datacont .img{cursor:pointer;border:1px solid #3b3d42;}
 .datacont .img.square{height:180px;width:180px;object-fit:cover;}
-.resimg.grid{
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    grid-template-rows:auto;
-    gap: 4px;
-    width: calc(100%* 2 / 3);
-    box-sizing: border-box;
-    margin: 4px 0 0;
-}
-.resimg.grid-2{
-  grid-template-columns: repeat(2, 1fr);
-  width: 80%;
-}
-.resimg.grid-4{
-  grid-template-columns: repeat(2, 1fr);
-  width: calc(80% * 2 / 3);
-}
-.resimg.grid figure.gallery-thumbnail {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-top: 100%;
-  cursor: zoom-in;
-}
-.resimg figure{
-  text-align: left;
-  overflow: hidden;
-}
-.resimg figure img{
-  max-height:50vh;
-}
-.resimg.grid figure, figcaption {
-  margin: 0;
-  padding: 0;
-}
-.resimg.grid figure.gallery-thumbnail > img.thumbnail-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+.resimg.grid{ display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows:auto; gap: 4px; width: calc(100%* 2 / 3); box-sizing: border-box; margin: 4px 0 0; }
+.resimg.grid-2{ grid-template-columns: repeat(2, 1fr); width: 80%; }
+.resimg.grid-4{ grid-template-columns: repeat(2, 1fr); width: calc(80% * 2 / 3); }
+.resimg.grid figure.gallery-thumbnail { position: relative; width: 100%; height: 0; padding-top: 100%; cursor: zoom-in; }
+.resimg figure{ text-align: left; overflow: hidden; }
+.resimg figure img{ max-height:50vh; }
+.resimg.grid figure, figcaption { margin: 0; padding: 0; }
+.resimg.grid figure.gallery-thumbnail > img.thumbnail-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 </style>

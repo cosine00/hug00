@@ -1,9 +1,9 @@
 /*
-Last Modified time : 20240704 by Copilot
+Last Modified time : 20240704 by Copilot / Updated for Filter 2026 v2
 */
 let bbMemo = {
   memos: '/memos.json',
-  limit: 20, // 每页条数
+  limit: 20, 
   creatorId: '1',
   domId: '#bber',
   twiEnv: ''
@@ -43,10 +43,7 @@ const allCSS = `
 .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem;}
 .tag-span{color:#42b983;font-weight:bold;background:#e6f9f0;border-radius:4px;padding:2px 6px;margin-right:4px;display:inline-block;}
-.tag-span.tag-filter {
-  cursor: pointer;
-  text-decoration: underline;
-}
+.tag-span.tag-filter {cursor: pointer;text-decoration: underline;}
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
 .resimg.grid-4{width:calc(80% * 2 / 3);grid-template-columns:repeat(2,1fr);}
@@ -68,89 +65,126 @@ const allCSS = `
 @keyframes color {
   100%,0% {stroke: #d62d20;}40% {stroke: #0057e7;}66% {stroke: #008744;}80%,90% {stroke: #ffa700;}
 }
-.item-twikoo {
-  margin: 2rem 0 0 0;
-}
-.d-none {
-  display: none !important;
-}
-.emoji-reaction-bar {
-  margin-bottom: 0.5em;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.bb-load {
-  text-align: center;
-  margin: 2em 0 1em 0;
-}
-.bb-load button {
-  background: #fff;
-  color: #42b983;
-  border: 1px solid #42b983;
-  border-radius: 4px;
-  padding: 8px 24px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background .2s;
-}
-.bb-load button:hover {
-  background: #42b983;
-  color: #fff;
-}
-.bb-cont img,
-.resimg img,
-.gallery-thumbnail img,
-.thumbnail-image {
-  max-width: 100%;
-  max-height: 320px; /* 可根据需要调整 */
-  height: auto;
-  width: auto;
-  display: block;
-  margin: 0.5em 0;
-  object-fit: contain;
-}
-.datacount {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-}
-.comment-count {
-  margin-left: 4px;
-  font-size: 12px;
-  color: #800080; /* 紫色文字 */
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  padding: 0 4px;
-}
-.datacount:hover svg path {
-  fill: #a040a0; /* 悬停时加深紫色 */
-}
+.item-twikoo {margin: 2rem 0 0 0;}
+.d-none {display: none !important;}
+.emoji-reaction-bar {margin-bottom: 0.5em;display: flex;align-items: center;gap: 8px;}
+.bb-load {text-align: center;margin: 2em 0 1em 0;}
+.bb-load button {background: #fff;color: #42b983;border: 1px solid #42b983;border-radius: 4px;padding: 8px 24px;font-size: 1em;cursor: pointer;transition: background .2s;}
+.bb-load button:hover {background: #42b983;color: #fff;}
+.bb-cont img,.resimg img,.gallery-thumbnail img,.thumbnail-image {max-width: 100%;max-height: 320px;height: auto;width: auto;display: block;margin: 0.5em 0;object-fit: contain;}
+.datacount {position: relative;display: inline-flex;align-items: center;cursor: pointer;}
+.comment-count {margin-left: 4px;font-size: 12px;color: #800080;background: rgba(255, 255, 255, 0.8);border-radius: 8px;padding: 0 4px;}
+.datacount:hover svg path {fill: #a040a0;}
 `
 loadCssCode(allCSS);
 
 let allMemos = [];
+let currentFilteredMemos = []; 
 let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 20;
-// 弹窗延迟（毫秒），可在模板中通过 bbMemos.viewImageDelay 覆盖
 bbMemo.viewImageDelay = bbMemo.viewImageDelay || 50;
+
+let parsedDates = {}; 
+let currentYear = 'all';
+let currentMonth = 'all';
+
+function initFiltersData() {
+  parsedDates = {};
+  allMemos.forEach(m => {
+    let d = new Date(m.createdTs * 1000);
+    let y = d.getFullYear().toString();
+    let mo = (d.getMonth() + 1).toString().padStart(2, '0');
+    if (!parsedDates[y]) parsedDates[y] = new Set();
+    parsedDates[y].add(mo);
+  });
+}
+
+function renderYearFilter() {
+  let filterDiv = document.getElementById('memos-filter');
+  if (!filterDiv) return;
+  filterDiv.style.display = 'flex'; // 已在CSS中定义，此处确保显示
+  
+  let yearNav = document.getElementById('memos-year-nav');
+  yearNav.innerHTML = '';
+  
+  let years = Object.keys(parsedDates).sort((a, b) => b - a);
+
+  let allYBtn = document.createElement('li');
+  allYBtn.className = 'button ' + (currentYear === 'all' ? 'selected' : '');
+  allYBtn.textContent = '全部';
+  allYBtn.onclick = () => { currentYear = 'all'; currentMonth = 'all'; renderYearFilter(); applyFilters(); };
+  yearNav.appendChild(allYBtn);
+
+  years.forEach(y => {
+    let btn = document.createElement('li');
+    btn.className = 'button ' + (currentYear === y ? 'selected' : '');
+    btn.textContent = y;
+    btn.onclick = () => { currentYear = y; currentMonth = 'all'; renderYearFilter(); applyFilters(); };
+    yearNav.appendChild(btn);
+  });
+
+  renderMonthFilter();
+}
+
+function renderMonthFilter() {
+  let monthContainer = document.getElementById('month-nav-container');
+  let monthNav = document.getElementById('memos-month-nav');
+  if (!monthContainer || !monthNav) return;
+
+  monthNav.innerHTML = '';
+  
+  if (currentYear === 'all') {
+    monthContainer.style.display = 'none';
+    return; 
+  }
+  
+  monthContainer.style.display = 'flex';
+  let months = Array.from(parsedDates[currentYear]).sort((a, b) => b - a);
+
+  let allMBtn = document.createElement('li');
+  allMBtn.className = 'button ' + (currentMonth === 'all' ? 'selected' : '');
+  allMBtn.textContent = '全年'; // 修改2：月份的第一项改为全年
+  allMBtn.onclick = () => { currentMonth = 'all'; renderMonthFilter(); applyFilters(); };
+  monthNav.appendChild(allMBtn);
+
+  months.forEach(m => {
+    let btn = document.createElement('li');
+    btn.className = 'button ' + (currentMonth === m ? 'selected' : '');
+    btn.textContent = m + '月';
+    btn.onclick = () => { currentMonth = m; renderMonthFilter(); applyFilters(); };
+    monthNav.appendChild(btn);
+  });
+}
+
+function applyFilters() {
+  currentFilteredMemos = allMemos.filter(m => {
+    let d = new Date(m.createdTs * 1000);
+    let y = d.getFullYear().toString();
+    let mo = (d.getMonth() + 1).toString().padStart(2, '0');
+
+    if (currentYear !== 'all' && y !== currentYear) return false;
+    if (currentMonth !== 'all' && mo !== currentMonth) return false;
+    return true;
+  });
+
+  currentPage = 0;
+  renderMemosPaged(currentFilteredMemos, currentPage);
+}
 
 function renderMemosPaged(memos, page) {
   let start = 0;
   let end = (page + 1) * pageSize;
   let showMemos = memos.slice(0, end);
   let result = "";
-  // 在 renderMemosPaged 里 result 之前加
-  if (memos.length !== allMemos.length) {
-    result += `<div class="bb-load"><button id="bb-show-all">显示全部</button></div>`;
-  }
+  
+  // 修改：彻底去除了之前判断条件下的 “显示全部哔哔” 按钮
+  
   showMemos.forEach(item => {
     if (!item || !item.content || !item.createdTs) return;
     let date = new Date(item.createdTs * 1000);
     let dateStr = date.toLocaleString();
     let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
-    // 不直接展示图片，改为点击按钮后显示
+    
     let attachBtn = '';
     if (item.resourceList && item.resourceList.length > 0) {
       attachBtn = `
@@ -161,18 +195,12 @@ function renderMemosPaged(memos, page) {
         </span>
       `;
     }
-    // 去除 content 中的 #标签
     let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
-    // 把标签HTML插入到正文最前面
-    let contentWithTags = `${tags} ${contentText.replace(/\n/g, '  \n')}`; // 注意这里
+    let contentWithTags = `${tags} ${contentText.replace(/\n/g, '  \n')}`;
     let content = window.marked ? marked.parse(contentWithTags) : contentWithTags;
 
-    // 标签和正文同一行
-    let tagsAndContent = `${tags} ${content}`;
-
-    // emaction表情条
     let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
-    // 评论按钮和评论框
+    
     let datacountDOM = `
       <span class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${item.id}" title="评论">
         <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="20" height="20">
@@ -196,27 +224,31 @@ function renderMemosPaged(memos, page) {
       </li>
     `;
   });
+  
   let html = `<section class="bb-timeline"><ul>${result}</ul></section>`;
-  // 加载更多按钮
+  
   if (end < memos.length) {
     html += `<div class="bb-load"><button id="bb-load-more">加载更多</button></div>`;
   }
   document.querySelector(bbMemo.domId).innerHTML = html;
 
-  // 标签筛选功能
   document.querySelectorAll('.tag-span.tag-filter').forEach(span => {
     span.onclick = function() {
       const tag = this.getAttribute('data-tag');
-      const filtered = allMemos.filter(m => (m.tags || []).includes(tag));
+      currentFilteredMemos = allMemos.filter(m => (m.tags || []).includes(tag));
       currentPage = 0;
-      renderMemosPaged(filtered, currentPage);
+      
+      currentYear = 'all';
+      currentMonth = 'all';
+      renderYearFilter();
+      
+      renderMemosPaged(currentFilteredMemos, currentPage);
     }
   });
 
   if (window.ViewImage) ViewImage.init('.bb-cont img');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
-  // 附件图片按钮点击后直接弹出图片查看器（不在条目下展开缩略图）
   document.querySelectorAll('.attach-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -225,13 +257,11 @@ function renderMemosPaged(memos, page) {
       const memo = allMemos.find(m => m.id == memoId);
 
       if (memo && memo.resourceList && memo.resourceList.length > 0) {
-        // 创建临时隐藏容器存放图片
         let tempContainer = document.createElement('div');
         tempContainer.id = 'temp-image-viewer-' + memoId;
         tempContainer.style.display = 'none';
         document.body.appendChild(tempContainer);
 
-        // 收集图片并加入容器
         let imageCount = 0;
         memo.resourceList.forEach(res => {
           let resLink = res.externalLink || res.publicUrl || res.filename || '';
@@ -246,34 +276,26 @@ function renderMemosPaged(memos, page) {
         });
 
         if (imageCount > 0) {
-          // 初始化 ViewImage（优先）并自动打开第一张
           if (window.ViewImage) {
             ViewImage.init('#' + tempContainer.id + ' img');
-              // 延迟触发第一张图片点击，打开弹窗（延迟可配置）
               const delay = parseInt(bbMemo.viewImageDelay) || 50;
               setTimeout(() => {
                 const firstImg = tempContainer.querySelector('img');
                 if (firstImg) firstImg.click();
               }, delay);
 
-              // 更鲁棒的关闭处理：兼容多种事件名，并提供回退超时
               let cleaned = false;
               const cleanTemp = () => {
                 if (cleaned) return;
                 cleaned = true;
                 if (tempContainer && tempContainer.parentNode) tempContainer.remove();
-                // 移除所有已绑定的事件
                 closeEventNames.forEach(ev => document.removeEventListener(ev, closeHandlers[ev]));
                 if (fallbackTimer) clearTimeout(fallbackTimer);
               };
 
               const closeEventNames = [
-                'view-image-close',
-                'viewimage:close',
-                'view-image:close',
-                'view-image-hide',
-                'view-image:hide',
-                'viewimage-close'
+                'view-image-close','viewimage:close','view-image:close',
+                'view-image-hide','view-image:hide','viewimage-close'
               ];
               const closeHandlers = {};
               closeEventNames.forEach(ev => {
@@ -281,12 +303,10 @@ function renderMemosPaged(memos, page) {
                 document.addEventListener(ev, closeHandlers[ev]);
               });
 
-              // 回退：如果 15s 内没有触发任何关闭事件，自动清理
               const fallbackTimer = setTimeout(() => {
                 cleanTemp();
               }, 15000);
           } else {
-            // 如果 ViewImage 未加载，降级为新窗口打开第一张
             const firstImg = tempContainer.querySelector('img');
             if (firstImg) window.open(firstImg.src, '_blank');
             tempContainer.remove();
@@ -298,25 +318,15 @@ function renderMemosPaged(memos, page) {
     });
   });
 
-  // 初始化 emaction（表情）组件
   if (window.emactionInit) {
     emactionInit();
   }
 
-  // 加载更多按钮事件
   let loadMoreBtn = document.getElementById('bb-load-more');
   if (loadMoreBtn) {
     loadMoreBtn.onclick = function() {
       currentPage++;
-      renderMemosPaged(allMemos, currentPage);
-    }
-  }
-  // 在标签点击事件后加
-  let showAllBtn = document.getElementById('bb-show-all');
-  if (showAllBtn) {
-    showAllBtn.onclick = function() {
-      currentPage = 0;
-      renderMemosPaged(allMemos, currentPage);
+      renderMemosPaged(currentFilteredMemos, currentPage);
     }
   }
 }
@@ -329,8 +339,13 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(res => res.json())
       .then(data => {
         allMemos = data;
+        currentFilteredMemos = [...allMemos]; 
+        
+        initFiltersData(); 
+        renderYearFilter(); 
+        
         currentPage = 0;
-        renderMemosPaged(allMemos, currentPage);
+        renderMemosPaged(currentFilteredMemos, currentPage); 
       });
   }
 });
