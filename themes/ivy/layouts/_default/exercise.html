@@ -2,28 +2,67 @@
 {{ partial "header.html" . }}
 
 <style>
-/* ====================== 1. 第一版原始样式（完全保留） ====================== */
+/* ====================== 1. 顶部年份导航胶囊与动态箭头 ====================== */
 .exercise-container { max-width: 100%; margin: 0 auto; padding: 20px 15px; }
 .pagetitle { text-align: center; font-size: 1.05rem; color: var(--text-info-color, #666); margin-bottom: 10px; line-height: 1.5; }
-.pagetitle p { margin: 0; padding: 0; } /* 榨干 Markdown 自动生成的段落外边距 */
-.pagetitle:empty { display: none; margin: 0; } /* 如果连空段落都没有，彻底隐藏 */
+.pagetitle p { margin: 0; padding: 0; } 
+.pagetitle:empty { display: none; margin: 0; } 
 
-.buttons {
-  display: flex; width: fit-content; max-width: 100%; margin: 0 auto 25px auto;
-  gap: 8px; list-style: none; padding: 5px;
+#year-nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 25px auto;
   background: var(--background-card-color, #ffffff);
   border: 1px solid var(--background-card-border-color, #e5e5e5);
-  border-radius: 9999px; overflow-x: auto; scrollbar-width: none;
+  border-radius: 9999px;
+  padding: 2px 4px; 
+  box-sizing: border-box;
 }
-.buttons::-webkit-scrollbar { display: none; }
+
+.year-list {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  max-width: 310px; 
+}
+.year-list::-webkit-scrollbar { display: none; }
+
 .button {
-  font-size: 0.9rem; padding: 10px 24px; border-radius: 9999px;
+  font-size: 0.9rem; padding: 8px 20px; border-radius: 9999px;
   cursor: pointer; color: var(--text-info-color, #666);
+  transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
 }
 .button.selected {
   background: var(--exercise-text-highlight-color, #32D74B); color: #111 !important;
 }
 
+.scroll-btn {
+  cursor: pointer;
+  color: #dcdcdc; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px; 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: transparent;
+  border: none;
+  flex-shrink: 0; 
+}
+
+.scroll-btn.active-left { color: #9b59b6; }
+.scroll-btn.active-right { color: #3498db; }
+.scroll-btn.active-left:hover { color: #8e44ad; transform: scale(1.2); }
+.scroll-btn.active-right:hover { color: #2980b9; transform: scale(1.2); }
+
+/* ====================== 2. 数据卡片基础样式 ====================== */
 .calendarSection, .globalSection, .runCard {
   background: var(--background-card-color, #fff);
   border: 1px solid var(--background-card-border-color, #e5e5e5);
@@ -40,59 +79,23 @@
   color: var(--text-info-color, #666);
 }
 
-/* ====================== 2. 悬浮必需的 CSS ====================== */
-.map-placeholder { 
-    width: 100%; 
-    height: 400px; 
-    margin-bottom: 30px; 
-    position: relative; 
-}
-#map-wrapper {
-    width: 100%; height: 100%;
-    border-radius: 24px; overflow: hidden;
-    z-index: 10;
-    transition: all 0.4s ease;
-}
+/* ====================== 3. 悬浮必需的 CSS ====================== */
+.map-placeholder { width: 100%; height: 400px; margin-bottom: 30px; position: relative; }
+#map-wrapper { width: 100%; height: 100%; border-radius: 24px; overflow: hidden; z-index: 10; transition: all 0.4s ease; }
 #map-wrapper.is-floating {
-    position: fixed !important;
-    top: 20px;
-    right: 20px;
-    width: 320px !important;
-    height: 200px !important;
-    z-index: 9999;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    border: 2px solid #32D74B;
+    position: fixed !important; top: 20px; right: 20px; width: 320px !important; height: 200px !important;
+    z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid #32D74B;
 }
 
-/* ====================== 3. 气泡弹窗与底部图表必需样式 ====================== */
+/* ====================== 4. 气泡弹窗与底部图表必需样式 ====================== */
 .runTooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid #eeebe6;
-  border-radius: 12px;
-  padding: 12px 16px;
-  z-index: 100;
-  opacity: 0;
-  visibility: hidden;
-  white-space: nowrap;
-  cursor: default;
-  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  pointer-events: none; 
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(10px);
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid #eeebe6;
+  border-radius: 12px; padding: 12px 16px; z-index: 100; opacity: 0; visibility: hidden; white-space: nowrap;
+  cursor: default; transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 8px 24px rgba(0,0,0,0.08); pointer-events: none; 
 }
 
-.runCard:hover .runTooltip,
-.dayCell:hover .runTooltip,
-.barWrapper:hover .runTooltip,
-.zoneCol:hover .runTooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
+.runCard:hover .runTooltip, .dayCell:hover .runTooltip, .barWrapper:hover .runTooltip, .zoneCol:hover .runTooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
 .ttList { display: flex; flex-direction: column; gap: 8px; }
 .ttItem { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
@@ -102,7 +105,6 @@
 .ttNum { color: #333; font-size: 0.85rem; font-weight: 600; text-align: right; }
 .ttNum small { font-weight: 400; color: #999; margin-left: 2px; }
 
-/* 底部图表骨架：出勤时间打孔图 & 心率柱状图 */
 .punchCard { display: flex; gap: 4px; height: 16px; width: 100%; }
 .barWrapper { flex: 1; position: relative; cursor: pointer; height: 100%; }
 .punchHole { width: 100%; height: 100%; border-radius: 3px; transition: all 0.2s ease; }
@@ -113,33 +115,48 @@
 .zoneBar { width: 100%; border-radius: 3px; min-height: 3px; transition: all 0.2s ease; }
 .zoneCol:hover .zoneBar { filter: brightness(0.9); }
 
-/* 边缘防溢出 */
-.grid > div:nth-child(7n + 1) .runTooltip, 
-.barWrapper:first-child .runTooltip, 
-.zoneCol:first-child .runTooltip { left: 0 !important; transform: translateX(0) translateY(10px); }
-.grid > div:nth-child(7n + 1):hover .runTooltip, 
-.barWrapper:first-child:hover .runTooltip, 
-.zoneCol:first-child:hover .runTooltip { transform: translateX(0) translateY(0); }
-.grid > div:nth-child(7n) .runTooltip, 
-.barWrapper:last-child .runTooltip, 
-.zoneCol:last-child .runTooltip { left: auto !important; right: 0 !important; transform: translateX(0) translateY(10px); }
-.grid > div:nth-child(7n):hover .runTooltip, 
-.barWrapper:last-child:hover .runTooltip, 
-.zoneCol:last-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+.grid > div:nth-child(7n + 1) .runTooltip, .barWrapper:first-child .runTooltip, .zoneCol:first-child .runTooltip { left: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n + 1):hover .runTooltip, .barWrapper:first-child:hover .runTooltip, .zoneCol:first-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+.grid > div:nth-child(7n) .runTooltip, .barWrapper:last-child .runTooltip, .zoneCol:last-child .runTooltip { left: auto !important; right: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n):hover .runTooltip, .barWrapper:last-child:hover .runTooltip, .zoneCol:last-child:hover .runTooltip { transform: translateX(0) translateY(0); }
 
-/* ====================== 4. 底部列表卡片紧凑排版 ====================== */
+/* ====================== 5. 底部列表卡片紧凑排版 (全新胶囊样式) ====================== */
 .controlsArea {
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  padding: 12px 16px;
-  border: 1px solid #e5e5e5;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 15px auto;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px;
+  padding: 2px 4px; 
+  box-sizing: border-box;
 }
-.filterBar { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; align-items: center; min-height: 28px; }
+
+.filterBar { 
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; align-items: center; 
+  margin: 0; padding: 3px; max-width: 310px; scroll-behavior: smooth;
+}
 .filterBar::-webkit-scrollbar { display: none; }
-.filterPill { padding: 4px 10px; color: #999; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; border-radius: 8px; }
-.filterPill.activePill, .filterPill:hover { color: #111; font-weight: 600; background: rgba(0,0,0,0.05); }
-.monthLabel { color: #999; font-size: 0.75rem; margin-left: auto; }
+
+/* 深度定制 js 生成的 filterPill 样式 */
+.filterPill { 
+  font-size: 0.8rem; padding: 6px 16px; border-radius: 9999px; 
+  cursor: pointer; color: var(--text-info-color, #666); 
+  transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
+  border: none; background: transparent;
+}
+.filterPill.activePill { 
+  background: var(--exercise-text-highlight-color, #32D74B) !important; 
+  color: #111 !important; 
+  font-weight: normal; 
+}
+.filterPill:hover:not(.activePill) {
+  color: var(--exercise-text-highlight-color, #32D74B);
+}
+.monthLabel { display: none !important; } /* 隐藏内部原有的说明文字，保持纯净胶囊 */
 
 .cardContent { flex: 1; display: flex; justify-content: space-between; align-items: center; }
 .leftInfo { display: flex; flex-direction: column; gap: 2px; }
@@ -149,94 +166,34 @@
 .rightInfo { text-align: right; }
 .runDate { color: #999; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
 
-/* ====================== 5. 地图详情面板（海报）样式 ====================== */
+/* ====================== 6. 地图详情面板（海报）样式 ====================== */
 .runDetailCard {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 16px;
-  z-index: 20;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: slideInUp 0.3s ease-out;
+  position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px); border-radius: 16px; padding: 16px; z-index: 20; box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  display: flex; flex-direction: column; gap: 12px; animation: slideInUp 0.3s ease-out;
 }
 
-@keyframes slideInUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+@keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.runDetailCard .detailHeader {
-  font-size: 0.8rem;
-  color: #999;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.runDetailCard .detailHeader { font-size: 0.8rem; color: #999; display: flex; justify-content: space-between; align-items: center; }
+.runDetailCard .detailGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.runDetailCard .detailItem { display: flex; flex-direction: column; }
+.runDetailCard .detailLabel { font-size: 0.7rem; color: #bbb; margin-bottom: 2px; }
+.runDetailCard .detailValue { font-size: 1rem; font-weight: 600; color: #333; }
+.runDetailCard .detailValue small { font-size: 0.6rem; font-weight: 400; color: #999; margin-left: 2px; }
 
-.runDetailCard .detailGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.runDetailCard .detailItem {
-  display: flex;
-  flex-direction: column;
-}
-
-.runDetailCard .detailLabel {
-  font-size: 0.7rem;
-  color: #bbb;
-  margin-bottom: 2px;
-}
-
-.runDetailCard .detailValue {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.runDetailCard .detailValue small {
-  font-size: 0.6rem;
-  font-weight: 400;
-  color: #999;
-  margin-left: 2px;
-}
-
-/* 分享按钮样式 */
 .shareBtn {
-  position: absolute;
-  top: -50px;
-  left: 0;
-  width: 36px;
-  height: 36px;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  cursor: pointer;
-  border: none;
-  color: #666;
-  transition: all 0.2s;
+  position: absolute; top: -50px; left: 0; width: 36px; height: 36px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; border: none; color: #666; transition: all 0.2s;
 }
 .shareBtn:hover { transform: scale(1.1); color: #32D74B; }
 
-/* ====================== 6. 新增特性样式（成就徽章与动态图标） ====================== */
+/* ====================== 7. 新增特性样式（成就徽章与动态图标） ====================== */
 .card-achievement-pill { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 500; vertical-align: middle; }
 .gold-pill { background: rgba(255, 193, 7, 0.15); color: #D48806; border: 1px solid rgba(255, 193, 7, 0.3); }
 .silver-pill { background: rgba(158, 158, 158, 0.1); color: #666; border: 1px solid rgba(158, 158, 158, 0.2); }
 .ttAchieveRow { display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 0.75rem; color: #D48806; margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(212, 136, 6, 0.2); }
 .titleTag { background: rgba(212, 136, 6, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.65rem; }
-/* 选中状态联动变色 */
 .runCard.is-active .iconRing { color: var(--active-icon-color) !important; }
 .dayCell.is-active .calIconRing { color: var(--active-icon-color) !important; }
 .custom-sport-icon { width: 100%; height: 100%; opacity: 0.9; }
@@ -272,11 +229,27 @@
 <div class="exercise-container">
   <div class="pagetitle">{{ .Content }}</div>
 
-  <ul class="buttons" id="year-nav">
-    {{ range $index, $year := $years }}
-      <li class="button {{ if eq $index 0 }}selected{{ end }}" data-year="{{ . }}" onclick="window.KoobaiRun.ui.setYear('{{ . }}')">{{ . }}</li>
-    {{ end }}
-  </ul>
+  <div id="year-nav-container">
+    <div class="scroll-btn" id="scroll-left-btn" onclick="scrollYearNav('left')">
+       <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="11 17 6 12 11 7"></polyline>
+         <polyline points="18 17 13 12 18 7"></polyline>
+       </svg>
+    </div>
+    
+    <ul class="year-list" id="year-nav">
+      {{ range $index, $year := $years }}
+        <li class="button {{ if eq $index 0 }}selected{{ end }}" data-year="{{ . }}" onclick="window.KoobaiRun.ui.setYear('{{ . }}')">{{ . }}</li>
+      {{ end }}
+    </ul>
+    
+    <div class="scroll-btn" id="scroll-right-btn" onclick="scrollYearNav('right')">
+       <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="13 17 18 12 13 7"></polyline>
+         <polyline points="6 17 11 12 6 7"></polyline>
+       </svg>
+    </div>
+  </div>
 
   <div class="globalSection" id="global-stats"></div>
   <div class="calendarSection">
@@ -290,8 +263,23 @@
   </div>
 
   <div class="shuju-list">
-    <div class="controlsArea">
+    
+    <div class="controlsArea" id="month-nav-container">
+      <div class="scroll-btn" id="scroll-left-month-btn" onclick="scrollMonthNav('left')">
+         <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <polyline points="11 17 6 12 11 7"></polyline>
+           <polyline points="18 17 13 12 18 7"></polyline>
+         </svg>
+      </div>
+      
       <div class="filterBar" id="month-filter-bar"></div>
+      
+      <div class="scroll-btn" id="scroll-right-month-btn" onclick="scrollMonthNav('right')">
+         <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <polyline points="13 17 18 12 13 7"></polyline>
+           <polyline points="6 17 11 12 6 7"></polyline>
+         </svg>
+      </div>
     </div>
 
     <div class="cardList" id="run-list">
@@ -369,6 +357,76 @@
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+
+<script>
+  // 1. 年份导航箭头更新逻辑
+  function updateYearScrollArrows() {
+    const nav = document.getElementById('year-nav');
+    const leftBtn = document.getElementById('scroll-left-btn');
+    const rightBtn = document.getElementById('scroll-right-btn');
+    if (!nav || !leftBtn || !rightBtn) return;
+
+    if (nav.scrollLeft > 2) leftBtn.classList.add('active-left');
+    else leftBtn.classList.remove('active-left');
+
+    if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) rightBtn.classList.add('active-right');
+    else rightBtn.classList.remove('active-right');
+  }
+
+  function scrollYearNav(dir) {
+    const nav = document.getElementById('year-nav');
+    if (dir === 'left') nav.scrollBy({ left: -160, behavior: 'smooth' });
+    if (dir === 'right') nav.scrollBy({ left: 160, behavior: 'smooth' });
+  }
+
+  // 2. 月份导航箭头更新逻辑
+  function updateMonthScrollArrows() {
+    const nav = document.getElementById('month-filter-bar');
+    const leftBtn = document.getElementById('scroll-left-month-btn');
+    const rightBtn = document.getElementById('scroll-right-month-btn');
+    if (!nav || !leftBtn || !rightBtn) return;
+
+    if (nav.scrollWidth <= nav.clientWidth) {
+      leftBtn.classList.remove('active-left');
+      rightBtn.classList.remove('active-right');
+      return;
+    }
+
+    if (nav.scrollLeft > 2) leftBtn.classList.add('active-left');
+    else leftBtn.classList.remove('active-left');
+
+    if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) rightBtn.classList.add('active-right');
+    else rightBtn.classList.remove('active-right');
+  }
+
+  function scrollMonthNav(dir) {
+    const nav = document.getElementById('month-filter-bar');
+    if (dir === 'left') nav.scrollBy({ left: -160, behavior: 'smooth' });
+    if (dir === 'right') nav.scrollBy({ left: 160, behavior: 'smooth' });
+  }
+
+  // 3. 注册事件监听器
+  document.addEventListener('DOMContentLoaded', () => {
+    // 绑定年份监听
+    const yearNav = document.getElementById('year-nav');
+    if (yearNav) {
+      yearNav.addEventListener('scroll', updateYearScrollArrows);
+      setTimeout(updateYearScrollArrows, 150);
+      window.addEventListener('resize', updateYearScrollArrows);
+    }
+
+    // 绑定月份监听（结合 MutationObserver，因为它是 JS 动态生成的）
+    const monthNav = document.getElementById('month-filter-bar');
+    if (monthNav) {
+      monthNav.addEventListener('scroll', updateMonthScrollArrows);
+      const observer = new MutationObserver(() => {
+        setTimeout(updateMonthScrollArrows, 50);
+      });
+      observer.observe(monthNav, { childList: true, subtree: true });
+      window.addEventListener('resize', updateMonthScrollArrows);
+    }
+  });
+</script>
 
 <script>
   window.KoobaiRun = {

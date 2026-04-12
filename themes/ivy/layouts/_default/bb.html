@@ -4,14 +4,20 @@
   <ul class="buttons" id="memos-year-nav"></ul>
   
   <div id="month-nav-container">
-    <div class="scroll-btn" onclick="scrollMonthNav('left')">
-       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    <div class="scroll-btn" id="scroll-left-btn" onclick="scrollMonthNav('left')">
+       <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="11 17 6 12 11 7"></polyline>
+         <polyline points="18 17 13 12 18 7"></polyline>
+       </svg>
     </div>
     
     <ul class="month-list" id="memos-month-nav"></ul>
     
-    <div class="scroll-btn" onclick="scrollMonthNav('right')">
-       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    <div class="scroll-btn" id="scroll-right-btn" onclick="scrollMonthNav('right')">
+       <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="13 17 18 12 13 7"></polyline>
+         <polyline points="6 17 11 12 6 7"></polyline>
+       </svg>
     </div>
   </div>
 </div>
@@ -35,12 +41,57 @@
 <script src="/js/bb.js"></script>
 
 <script>
+  function updateScrollArrows() {
+    const nav = document.getElementById('memos-month-nav');
+    const leftBtn = document.getElementById('scroll-left-btn');
+    const rightBtn = document.getElementById('scroll-right-btn');
+    if (!nav || !leftBtn || !rightBtn) return;
+
+    // 如果列表不可见，或者内部项不足以触发滚动，则全部置灰
+    if (nav.offsetParent === null || nav.scrollWidth <= nav.clientWidth) {
+      leftBtn.classList.remove('active-left');
+      rightBtn.classList.remove('active-right');
+      return;
+    }
+
+    // 1. 判断左边是否可以滚动
+    if (nav.scrollLeft > 2) {
+      leftBtn.classList.add('active-left');
+    } else {
+      leftBtn.classList.remove('active-left');
+    }
+
+    // 2. 判断右边是否可以滚动
+    if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) {
+      rightBtn.classList.add('active-right');
+    } else {
+      rightBtn.classList.remove('active-right');
+    }
+  }
+
   function scrollMonthNav(dir) {
     const nav = document.getElementById('memos-month-nav');
-    // 每次点击滑动 180px（大约3个月份的宽度），你可以根据手感自己调整数值
     if (dir === 'left') nav.scrollBy({ left: -180, behavior: 'smooth' });
     if (dir === 'right') nav.scrollBy({ left: 180, behavior: 'smooth' });
   }
+
+  // 页面加载完成后，监听列表滚动以及动态渲染事件
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.getElementById('memos-month-nav');
+    if (nav) {
+      // 监听用户的滑动
+      nav.addEventListener('scroll', updateScrollArrows);
+      
+      // 因为 bb.js 会动态往 ul 里塞入新的月份 li，使用观察者模式监听元素变化
+      const observer = new MutationObserver(() => {
+        // 给浏览器一点点时间渲染出真实宽度后再计算
+        setTimeout(updateScrollArrows, 50); 
+      });
+      observer.observe(nav, { childList: true, subtree: true });
+      
+      window.addEventListener('resize', updateScrollArrows);
+    }
+  });
 </script>
 
 <style>
@@ -90,7 +141,7 @@
   box-sizing: border-box;
 }
 
-/* --- 核心修改1：限制月份列表宽度，最多显示约5个 --- */
+/* 限制月份列表宽度，最多显示约5个 */
 .month-list {
   display: flex;
   gap: 6px;
@@ -100,7 +151,7 @@
   overflow-x: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  max-width: 330px; /* 这个宽度刚好能放下 全年 + 4个月份 */
+  max-width: 330px; 
 }
 .month-list::-webkit-scrollbar { display: none; }
 
@@ -108,22 +159,36 @@
   font-size: 0.8rem; padding: 6px 16px; 
 }
 
-/* --- 核心修改2：醒目的左右翻页按钮 --- */
+/* --- 翻页双箭头基础样式（默认灰色，表示不可点击） --- */
 .scroll-btn {
   cursor: pointer;
-  color: #555; /* 加深基础颜色 */
+  color: #dcdcdc; 
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 8px; /* 加大点击热区 */
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  padding: 6px 8px; 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   background: transparent;
   border: none;
   flex-shrink: 0; 
 }
-.scroll-btn:hover {
-  color: #42b983; /* 悬停亮起主题绿 */
-  transform: scale(1.15); /* 悬停时微微放大，交互感更强 */
+
+/* 动态添加的颜色状态 */
+.scroll-btn.active-left {
+  color: #9b59b6; /* 紫色 */
+}
+.scroll-btn.active-right {
+  color: #3498db; /* 蓝色 */
+}
+
+/* 悬停时的放大与颜色加深效果 */
+.scroll-btn.active-left:hover {
+  color: #8e44ad; 
+  transform: scale(1.2); 
+}
+.scroll-btn.active-right:hover {
+  color: #2980b9; 
+  transform: scale(1.2); 
 }
 
 /* --- 原有样式保留 --- */
