@@ -2,8 +2,8 @@
 
 {{ if .Params.show_toc }} {{ .TableOfContents }} {{ end }}
 <div class="post">
-  <h2 class="post-title">{{.Title}}</h2>
   <style>
+    /* 保持你原来的基础 CSS 样式不变 */
     .gFnzgG,.gFnzgG *{box-sizing:border-box}
     .fIuTG{display:flex;flex-wrap:wrap;margin:0 -2%;background:0 0;line-height:100%}
     .dfdORB{width:16%;margin:0 2% 30px;padding:0;font-size:15px}
@@ -17,14 +17,7 @@
     .gaztka{margin-right:1px;width:12px;height:12px;color:#eee}
     .iibjPt{margin-left:5px;color:#555;font-size:14px}
     .jvCTkj{margin-bottom:10px}
-    .kEoOHR{display:inline-block;margin-right:15px;text-decoration:none;color:#157efb}
-    .dvtjjf{display:inline-block;color:#555;text-decoration:none;padding:0 5px}
-    .dvtjjf.active{background:rgba(85,85,85,.1)}
     .hide{display:none}
-    .sort-by{text-align:right;margin-top:-15px}
-    .sort-by-item{margin-left:10px;padding:0 5px;line-height:20px}
-    .sort-by-item.active{background:rgba(85,85,85,.1)}
-    .sort-by-item svg{margin-right:5px}
     .sc-hKFxyN img{max-width:100%!important;height:auto!important;display:block!important;vertical-align:middle!important}
     @media(min-width:1024px){
       .lg\:col-span-6{grid-column:span 6/span 6!important}
@@ -33,16 +26,96 @@
     @media (max-width:550px){
       .jcTaHb,.sc-bdnxRM{display:none}
     }
+
+    /* ====================== 100% 对齐哔哔/观影页面的纯净胶囊样式 ====================== */
+    #year-nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto 25px auto;
+      background: var(--background-card-color, #ffffff);
+      border: 1px solid var(--background-card-border-color, #e5e5e5);
+      border-radius: 9999px;
+      padding: 5px; /* 与 bb.html 外层容器内边距完全一致 */
+      box-sizing: border-box;
+    }
+    
+    .year-list {
+      display: flex;
+      gap: 6px;
+      margin: 0 !important;
+      padding: 0 4px !important; /* 与 bb.html 列表内边距完全一致 */
+      overflow-x: auto;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+      max-width: 330px;
+      align-items: center;
+    }
+    .year-list::-webkit-scrollbar { display: none; }
+    
+    /* 使用 div，斩断一切来自主题的 a/li 标签全局样式污染 */
+    .year-list .button {
+      font-size: 0.9rem;
+      padding: 8px 20px;
+      border-radius: 9999px;
+      cursor: pointer;
+      color: var(--text-info-color, #666);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      /* 清空所有边框、底边虚线、背景和阴影 */
+      border: none !important;
+      border-bottom: none !important; 
+      outline: none !important;
+      background-image: none !important;
+      background-color: transparent;
+      box-shadow: none !important;
+      text-decoration: none !important;
+      margin: 0 !important;
+      display: block;
+      line-height: 1.5 !important; /* 恢复自然的饱满高度 */
+    }
+    
+    .year-list .button.selected {
+      background: #42b983 !important; 
+      color: #fff !important; 
+      font-weight: normal !important;
+    }
+    .year-list .button:hover:not(.selected) {
+      color: #42b983;
+    }
+
+    /* 双向箭头样式 */
+    .scroll-btn {
+      cursor: pointer; color: #dcdcdc; display: flex; align-items: center;
+      justify-content: center; padding: 8px 10px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      background: transparent; border: none; flex-shrink: 0; 
+    }
+    .scroll-btn.active-left { color: #9b59b6; }
+    .scroll-btn.active-right { color: #3498db; }
+    .scroll-btn.active-left:hover { color: #8e44ad; transform: scale(1.2); }
+    .scroll-btn.active-right:hover { color: #2980b9; transform: scale(1.2); }
   </style>
+  
   <script type="text/javascript">
     function search(e) {
       document.querySelectorAll('.dfdORB').forEach(item => item.classList.add('hide'));
-      document.querySelector(`.dvtjjf.active[data-search="${e.target.dataset.search}"]`)?.classList.remove('active');
-      if(e.target.dataset.value) {
-        e.target.classList.add('active');
+      
+      // 移除原有的 selected 状态
+      document.querySelector(`.button.selected[data-search="${e.target.dataset.search}"]`)?.classList.remove('selected');
+      
+      // 添加 selected 状态
+      if(e.target.dataset.value !== undefined) {
+        e.target.classList.add('selected');
       }
-      const searchItems = document.querySelectorAll('.dvtjjf.active');
+      
+      const searchItems = document.querySelectorAll('.button.selected');
       const attributes = Array.from(searchItems, searchItem => {
+        // 如果点的是"全部"(value为空)，就不加入过滤属性中
+        if (!searchItem.dataset.value) return ''; 
+        
         const property = `data-${searchItem.dataset.search}`;
         const logic = searchItem.dataset.method === 'contain' ? '*' : '^';
         const value = searchItem.dataset.method === 'contain' ? `${searchItem.dataset.value}` : searchItem.dataset.value;
@@ -51,43 +124,55 @@
       const selector = `.dfdORB${attributes.join('')}`;
       document.querySelectorAll(selector).forEach(item => item.classList.remove('hide'));
     }
+
     window.addEventListener('click', function(e) {
       if(e.target.classList.contains('sc-gtsrHT')) {
         e.preventDefault();
         search(e);
       }
     });
-    function sort(e) {
-      const sortBy = e.target.dataset.order;
-      const style = document.createElement('style');
-      style.classList.add('sort-order-style');
-      document.querySelector('style.sort-order-style')?.remove();
-      document.querySelector('.sort-by-item.active')?.classList.remove('active');
-      e.target.classList.add('active');
-      if(sortBy === 'rating') {
-        const books = Array.from(document.querySelectorAll('.dfdORB'));
-        books.sort((bookA, bookB) => {
-          const ratingA = parseFloat(bookA.dataset.rating) || 0;
-          const ratingB = parseFloat(bookB.dataset.rating) || 0;
-          if(ratingA === ratingB) {
-            return 0;
-          }
-          return ratingA > ratingB ? -1 : 1;
-        });
-        const stylesheet = books.map((book, idx) => `.dfdORB[data-rating="${book.dataset.rating}"] { order: ${idx}; }`).join('\r\n');
-        style.innerHTML = stylesheet;
-        document.body.appendChild(style);
+
+    /* ====================== 胶囊双箭头的滚动与变色逻辑 ====================== */
+    function updateScrollArrows(navId) {
+      const nav = document.getElementById(navId);
+      const leftBtn = document.getElementById(`scroll-left-${navId}-btn`);
+      const rightBtn = document.getElementById(`scroll-right-${navId}-btn`);
+      if (!nav || !leftBtn || !rightBtn) return;
+
+      if (nav.scrollWidth <= nav.clientWidth) {
+        leftBtn.classList.remove('active-left');
+        rightBtn.classList.remove('active-right');
+        return;
       }
+
+      if (nav.scrollLeft > 2) leftBtn.classList.add('active-left');
+      else leftBtn.classList.remove('active-left');
+
+      if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) rightBtn.classList.add('active-right');
+      else rightBtn.classList.remove('active-right');
     }
-    window.addEventListener('click', function(e) {
-      if(e.target.classList.contains('sort-by-item')) {
-        e.preventDefault();
-        sort(e);
-      }
+
+    function scrollNav(navId, dir) {
+      const nav = document.getElementById(navId);
+      if (dir === 'left') nav.scrollBy({ left: -180, behavior: 'smooth' });
+      if (dir === 'right') nav.scrollBy({ left: 180, behavior: 'smooth' });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 绑定年份的滚动监听
+      ['year-nav'].forEach(navId => {
+        const nav = document.getElementById(navId);
+        if (nav) {
+          nav.addEventListener('scroll', () => updateScrollArrows(navId));
+          setTimeout(() => updateScrollArrows(navId), 150);
+          window.addEventListener('resize', () => updateScrollArrows(navId));
+        }
+      });
     });
   </script>
+
 <div class="lg:col-start-2 lg:col-span-6">
-  {{/* 修改点：使用 resources.Get 从 assets 读取 */}}
+  {{/* 从 assets 读取 CSV 数据 */}}
   {{ $csvResource := resources.Get "data/douban/book.csv" }}
   
   {{ if $csvResource }}
@@ -99,26 +184,32 @@
         {{$scratch.Set "genres" (union ($scratch.Get "genres") (split (index $book 7) ","))}}
       {{end}}
     {{end}}
+    
     <div class="sc-ksluID gFnzgG">
-      <div class="sc-bdnxRM">
-        <a href="javascript:void 0;" class="sc-gtsrHT kEoOHR" data-search="year" data-method="equal" data-value="">全部</a>
-        {{range $year := (seq 2026 -1 2011)}}
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="year" data-method="equal" data-value="{{$year}}">{{$year}}</a>
-        {{end}}
+      
+      <div id="year-nav-container">
+        <div class="scroll-btn" id="scroll-left-year-nav-btn" onclick="scrollNav('year-nav', 'left')">
+           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+             <polyline points="11 17 6 12 11 7"></polyline>
+             <polyline points="18 17 13 12 18 7"></polyline>
+           </svg>
+        </div>
+        
+        <div class="year-list" id="year-nav">
+          <div class="sc-gtsrHT button selected" data-search="year" data-method="equal" data-value="">全部</div>
+          {{range $year := (seq 2026 -1 2011)}}
+          <div class="sc-gtsrHT button" data-search="year" data-method="equal" data-value="{{$year}}">{{$year}}</div>
+          {{end}}
+        </div>
+        
+        <div class="scroll-btn" id="scroll-right-year-nav-btn" onclick="scrollNav('year-nav', 'right')">
+           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+             <polyline points="13 17 18 12 13 7"></polyline>
+             <polyline points="6 17 11 12 6 7"></polyline>
+           </svg>
+        </div>
       </div>
-      <div class="sc-bdnxRM">
-        <a href="javascript:void 0;" class="sc-gtsrHT kEoOHR" data-search="star" data-method="equal" data-value="">全部</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="5">五星</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="4">四星</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="3">三星</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="2">二星</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="1">一星</a>
-        <a href="javascript:void 0;" class="sc-gtsrHT dvtjjf" data-search="star" data-method="equal" data-value="0">零星</a>
-      </div>
-      <div class="jvCTkj sort-by">
-        <a href="javascript:void 0;" class="sort-by-item active" data-order="time">时间排序</a>
-        <a href="javascript:void 0;" class="sort-by-item" data-order="rating">评分排序</a>
-      </div>
+
       <div class="sc-dIsUp fIuTG">
         {{range $idx, $book := $books}}
         {{if ne $idx 0 }}
