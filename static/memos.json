@@ -1,5 +1,23 @@
 [
   {
+    "id": 1051,
+    "content": "解锁一个新实践，走路上班路上和豆包打电话。对话过程中，感觉自己的提示词和想法比较贫穷，不然会更有意思。",
+    "createdTs": 1776214106,
+    "resourceList": [
+      {
+        "id": 555,
+        "creatorId": 1,
+        "createdTs": 1776213988,
+        "updatedTs": 1776213988,
+        "filename": "DF8508E2-1024-4328-88F9-0F7D69D94BC5.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/04/DF8508E2-1024-4328-88F9-0F7D69D94BC5.jpg",
+        "type": "image/jpeg",
+        "size": 487810
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 1050,
     "content": "赌狗的话别信，又满仓满融开超市了。",
     "createdTs": 1776133969,
