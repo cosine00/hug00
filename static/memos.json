@@ -1,5 +1,23 @@
 [
   {
+    "id": 1055,
+    "content": "最近在看押沙龙的《乱世人心》一书，今早和豆包的电话聊天围绕着书中作者的观点展开。",
+    "createdTs": 1776300253,
+    "resourceList": [
+      {
+        "id": 556,
+        "creatorId": 1,
+        "createdTs": 1776300248,
+        "updatedTs": 1776300248,
+        "filename": "3CFE5E08-41ED-4659-AD72-2BDDF4B2416B.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/04/3CFE5E08-41ED-4659-AD72-2BDDF4B2416B.jpg",
+        "type": "image/jpeg",
+        "size": 566797
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 1054,
     "content": "都怪我看了直播，下半场没能见到皇马再进球，最后十分钟还崩了。皇马又一个四大皆空的赛季。 #看个球",
     "createdTs": 1776286718,
