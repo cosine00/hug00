@@ -429,6 +429,17 @@
 </script>
 
 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const links = document.querySelectorAll('a');
+  links.forEach(link => {
+    // 如果链接是绝对路径（包含 http）且不是当前域名，则在新窗口打开
+    if (link.hostname && link.hostname !== window.location.hostname) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer'; // 提升安全性
+    }
+  });
+});
+
   window.KoobaiRun = {
     data: {{ $sortedActivities | jsonify | safeJS }},
     config: { MAPBOX_TOKEN: "pk.eyJ1IjoiYmVuLTI5IiwiYSI6ImNrZ3Q4Ym9mMDBqMGYyeXFvODV2dWl6YzQifQ.gSKoWF-fMjhzU67TuDezJQ" },
