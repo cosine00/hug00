@@ -4,10 +4,10 @@ author: 落落vici
 draft: "false"
 tags:
   - 折腾
-updated: 2026-05-01T03:33:00+00:00
+updated: 2026-05-01T03:34:00+00:00
 date: 2026-05-01T03:05:00+00:00
 slug: obsidian-sync
-title: 美好假期从折腾Obsidian开始
+title: 假期从折腾Obsidian开始
 id: 35371019-ed27-80fc-a5a1-cceadbe1856e
 ---
 
