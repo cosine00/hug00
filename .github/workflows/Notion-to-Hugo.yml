@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. 将 Notion 转为 Markdown，输出到独立隔离的临时目录[cite: 1]
+      # 1. 将 Notion 转为 Markdown，输出到临时目录
       - name: Convert Notion to Markdown (to Temp Dir)
         uses: cosine00/notion2markdown-action@v1
         with:
@@ -30,17 +30,18 @@ jobs:
           clean_unpublished_post: true
           metas_keeped: slug, date, author, tags, draft, created, updated, ptype
 
-      # 2. 准备 Python 环境[cite: 1]
+      # 2. 准备 Python 环境
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Python Dependencies[cite: 1]
+      # 3. 安装依赖
+      - name: Install Python Dependencies
         run: |
           pip install boto3 requests Pillow
 
-      # 3. 执行脚本：图片 WebP 转换、R2 上传、时间格式化、文件名重命名[cite: 1, 2]
+      # 4. 执行脚本：处理图片、时间格式化、重命名
       - name: Process Images and Format Posts
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -51,7 +52,7 @@ jobs:
         run: |
           python .github/scripts/upload_r2.py
 
-      # 4. 把处理好的文章合并到正式目录[cite: 1]
+      # 5. 合并处理好的文章到正式目录
       - name: Merge Updates to Content
         run: |
           mkdir -p content/posts/notion
@@ -59,7 +60,7 @@ jobs:
             cp -rf temp_content/posts/notion/* content/posts/notion/
           fi
 
-      # 5. 推送到仓库[cite: 1]
+      # 6. 推送更新
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
