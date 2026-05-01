@@ -65,6 +65,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: 'content/'
-          commit_message: "Sync posts from Notion (Time & Filename formatted)"
+          commit_message: "Sync posts from Notion and upload images to R2"
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
