@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. 将 Notion 转为 Markdown，输出到独立隔离的临时目录
+      # 1. 将 Notion 转为 Markdown，输出到独立隔离的临时目录[cite: 1]
       - name: Convert Notion to Markdown (to Temp Dir)
         uses: cosine00/notion2markdown-action@v1
         with:
@@ -30,18 +30,18 @@ jobs:
           clean_unpublished_post: true
           metas_keeped: slug, date, author, tags, draft, created, updated, ptype
 
-      # 2. 准备 Python 环境
+      # 2. 准备 Python 环境[cite: 1]
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Python Dependencies
+      - name: Install Python Dependencies[cite: 1]
         run: |
           pip install boto3 requests Pillow
 
-      # 3. 核心变动：在临时目录里处理图片。安全隔离，不会误伤其他本地文件！
-      - name: Process Images to R2
+      # 3. 执行脚本：图片 WebP 转换、R2 上传、时间格式化、文件名重命名[cite: 1, 2]
+      - name: Process Images and Format Posts
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -51,19 +51,19 @@ jobs:
         run: |
           python .github/scripts/upload_r2.py
 
-      # 4. 把处理好的、含有 R2 链接的文章，安全地合并到正式目录
+      # 4. 把处理好的文章合并到正式目录[cite: 1]
       - name: Merge Updates to Content
         run: |
           mkdir -p content/posts/notion
-          if [ -d "temp_content" ]; then
-            cp -rf temp_content/* content/
+          if [ -d "temp_content/posts/notion" ]; then
+            cp -rf temp_content/posts/notion/* content/posts/notion/
           fi
 
-      # 5. 推送到仓库
+      # 5. 推送到仓库[cite: 1]
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: 'content/'
-          commit_message: "Sync posts from Notion and upload images to R2"
+          commit_message: "Sync posts from Notion (Time & Filename formatted)"
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
