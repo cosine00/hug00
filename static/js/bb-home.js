@@ -189,6 +189,7 @@ function renderMemosPaged(memos, page) {
           </div>
           <div class="bb-info" style="position:relative;">
             ${emojiBar}&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
+            ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box; margin-left:8px;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
             ${attachBtn}
           </div>
           <div class="item-attach attach-${item.id} d-none"></div>
@@ -321,16 +322,29 @@ function renderMemosPaged(memos, page) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
   let bbDom = document.querySelector(bbMemo.domId);
   if (bbDom) {
     bbDom.innerHTML = `<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div>`;
-    fetch(bbMemo.memos)
-      .then(res => res.json())
-      .then(data => {
-        allMemos = data;
-        currentPage = 0;
-        renderMemosPaged(allMemos, currentPage);
-      });
+    fetch(bbMemo.memos).then(res => res.json()).then(data => {
+      
+      // --- 置顶逻辑开始 ---
+      // 查找第一条包含 'Now' 或 'now' 标签的 memo 索引（因为本身是倒序，第一条即最近一条）
+      let pinIndex = data.findIndex(item => item.tags && (item.tags.includes('Now') || item.tags.includes('now')));
+      
+      // 如果找到了，并且它不是原本的第一条，就把它移到数组最前面
+      if (pinIndex > 0) {
+        let pinMemo = data.splice(pinIndex, 1)[0];
+        pinMemo.isPinned = true; // 增加一个置顶的标识，方便我们在渲染时加个UI提示
+        data.unshift(pinMemo);
+      } else if (pinIndex === 0) {
+        // 如果它本来就是第一条，只需要加上标识即可
+        data[0].isPinned = true; 
+      }
+      // --- 置顶逻辑结束 ---
+
+      allMemos = data; 
+      renderMemosPaged(allMemos, 0); 
+    });
   }
 });
