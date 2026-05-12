@@ -198,6 +198,9 @@ function renderMemosPaged(memos, page) {
               numSpan.style.display = 'inline-block';
               numSpan.innerText = i.count; 
             }
+            // --- 新增：当已有评论时，将药丸渲染为紫色 ---
+            pill.style.color = '#9c27b0';
+            pill.style.borderColor = 'rgba(156, 39, 176, 0.3)';
           }
         }
       });
