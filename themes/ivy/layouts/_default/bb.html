@@ -215,7 +215,20 @@
   #memos-filter {width: 100% !important;}
 }
 .datacont .tag-span,
-.tag-span { color: #42b983; font-weight: normal; background: none; box-shadow: none; }
+.tag-span {
+  color: #42b983;
+  font-weight: normal;
+  background: transparent; /* 背景透明 */
+  border: 1px solid rgba(66, 185, 131, 0.4); /* 半透明的绿色边框 */
+  border-radius: 9999px;
+  padding: 0 10px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px; /* 统一高度 */
+  box-sizing: border-box;
+}
 .datasource a{font-size: 0.8rem;}
 .datacont .img{cursor:pointer;border:1px solid #3b3d42;}
 .datacont .img.square{height:180px;width:180px;object-fit:cover;}

@@ -42,7 +42,7 @@ const allCSS = `
 .bb-timeline pre p:empty{display:none;}
 .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem;}
-.tag-span{color:#42b983;font-weight:bold;background:#e6f9f0;border-radius:4px;padding:2px 6px;margin-right:4px;display:inline-block;}
+.tag-span{color:#42b983;font-weight:normal;background:transparent;border:1px solid rgba(66,185,131,0.4);border-radius:9999px;padding:0 10px;font-size:13px;display:inline-flex;align-items:center;justify-content:center;height:26px;box-sizing:border-box;margin-right:4px;}
 .tag-span.tag-filter {cursor: pointer;text-decoration: underline;}
 .resimg.grid{display:grid;box-sizing:border-box;margin:4px 0 0;width:calc(100%* 2 / 3);grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:4px;}
 .resimg.grid-2{width:80%;grid-template-columns:repeat(2,1fr);}
@@ -196,8 +196,8 @@ function renderMemosPaged(memos, page) {
       `;
     }
     let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
-    let contentWithTags = `${tags} ${contentText.replace(/\n/g, '  \n')}`;
-    let content = window.marked ? marked.parse(contentWithTags) : contentWithTags;
+    // 直接解析去除了标签的纯文本
+    let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
 
     let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
     
@@ -215,8 +215,8 @@ function renderMemosPaged(memos, page) {
           <div class="bb-cont">
             ${content}
           </div>
-          <div class="bb-info" style="position:relative;">
-            ${emojiBar}&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
+          <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+            ${emojiBar}<span class="datatime" title="${dateStr}">${dateStr}</span>${tags}
             ${attachBtn}
           </div>
           <div class="item-attach attach-${item.id} d-none"></div>

@@ -34,7 +34,7 @@ const allCSS = `
 .bb-timeline .datacount{position:absolute;right:0;bottom:0;cursor:pointer;display:flex;align-items:center;color:#42b983;font-size:1em;background:none;border:none;outline:none;padding:0 6px;}
 .bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto;}
 .bb-timeline p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
-.tag-span{color:#42b983;font-weight:bold;background:#e6f9f0;border-radius:4px;padding:2px 6px;margin-right:4px;display:inline-block;}
+.tag-span{color:#42b983;font-weight:normal;background:transparent;border:1px solid rgba(66,185,131,0.4);border-radius:9999px;padding:0 10px;font-size:13px;display:inline-flex;align-items:center;justify-content:center;height:26px;box-sizing:border-box;margin-right:4px;}
 .tag-span.tag-filter {cursor: pointer;text-decoration: underline;}
 .loader {position: relative;margin:3rem auto;width: 100px;}
 .circular {animation: rotate 2s linear infinite;height: 100%;transform-origin: center center;width: 100%;position: absolute;top: 0;bottom: 0;left: 0;right: 0;margin: auto;}
@@ -79,14 +79,14 @@ function renderMemosPaged(memos, page) {
     }
 
     let contentText = item.content.replace(/#[^\s#]+/g, '').trim();
-    let contentWithTags = `${tags} ${contentText.replace(/\n/g, '  \n')}`;
-    let content = window.marked ? marked.parse(contentWithTags) : contentWithTags;
+    // 1. 直接解析去除了标签的纯文本
+    let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
 
     result += `
       <li>
         <div class="bb-item" style="position:relative;">
           <div class="bb-cont">${content}</div>
-          <div class="bb-info" style="position:relative;">
+          <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:inline-flex; align-items:center; gap:12px;">
               <div class="comment-pill-btn twikoo-badge-${item.id}" data-id="${item.id}" data-twienv="${bbMemo.twiEnv}" title="点击评论">
                 <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
@@ -97,8 +97,10 @@ function renderMemosPaged(memos, page) {
                 <emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;"></emoji-reaction>
               </div>
             </div>
-            &nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>
-            ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box; margin-left:8px;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
+            
+            <span class="datatime" title="${dateStr}">${dateStr}</span>
+            ${tags}
+            ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
             ${attachBtn}
           </div>
           
