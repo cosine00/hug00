@@ -75,6 +75,87 @@ const allCSS = `
 .datacount {position: relative;display: inline-flex;align-items: center;cursor: pointer;}
 .comment-count {margin-left: 4px;font-size: 12px;color: #800080;background: rgba(255, 255, 255, 0.8);border-radius: 8px;padding: 0 4px;}
 .datacount:hover svg path {fill: #a040a0;}
+/* 💬 极简气泡药丸胶囊 */
+.comment-pill-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 2px 8px; /* display: none !important;修改为隐藏，!important 确保强制生效 不隐藏的时候改回 display: inline-flex;*/ 
+  background: #ffffff; color: #555; border-radius: 14px; 
+  font-size: 13px; cursor: pointer; transition: all 0.2s;
+  border: 1px solid #e1e4e8; height: 26px; box-sizing: border-box; 
+  line-height: 1; vertical-align: middle; min-width: 26px;
+}
+.comment-pill-btn:hover { background: #f6f8fa; border-color: #d1d5da; color: #42b983; }
+.dark-theme .comment-pill-btn { background: #2d333b; color: #adbac7; border-color: #444c56; }
+/* --- 恢复正文内部 Markdown 列表的默认样式 --- */
+.bb-timeline .bb-cont ul {
+  list-style-type: disc; /* 恢复无序列表的圆点 */
+  margin: 1em 0;         /* 恢复上下边距 */
+  padding-left: 2em;     /* 恢复左侧缩进，让圆点显示出来 */
+}
+
+.bb-timeline .bb-cont ol {
+  list-style-type: decimal; /* 恢复有序列表的数字 */
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+/* 覆盖掉外层 li 设定的 3rem 巨大下边距和无样式 */
+.bb-timeline .bb-cont ul li,
+.bb-timeline .bb-cont ol li {
+  list-style-type: inherit; /* 继承父级的圆点或数字 */
+  margin-bottom: 0.5em;     /* 把 3rem 改回正常的行距 */
+}
+  
+/* --- 查看图片按钮：定制深蓝色 rgb(16, 66, 132) 药丸样式 --- */
+.bb-timeline .attach-btn.comment-pill-btn {
+  color: rgb(16, 66, 132); 
+  border-color: rgba(16, 66, 132, 0.4); /* 半透明边框 */
+}
+
+.bb-timeline .attach-btn.comment-pill-btn:hover {
+  background-color: rgba(16, 66, 132, 0.08); /* 悬停时显示极浅的深蓝色背景，不刺眼 */
+  border-color: rgb(16, 66, 132);            /* 悬停时边框颜色加深 */
+  color: rgb(16, 66, 132);            
+}
+
+/* ⚠️ 注意：暗色模式适配 
+ * 因为 rgb(16, 66, 132) 在纯黑背景下会非常暗淡看不清。
+ * 所以如果是暗色模式，建议依然保留之前那种高亮度的浅蓝色。
+ */
+.dark-theme .bb-timeline .attach-btn.comment-pill-btn {
+  color: #58a6ff;
+  border-color: rgba(88, 166, 255, 0.4);
+}
+
+/* --- 优化标签药丸：去掉下划线并增加悬停动效 --- */
+.tag-span {
+  transition: all 0.2s ease; /* 增加平滑过渡动画 */
+}
+
+/* 针对可点击的筛选标签 */
+.tag-span.tag-filter {
+  text-decoration: none; /* 去掉原本略显生硬的下划线 */
+}
+
+/* 标签悬停时的状态 */
+.tag-span.tag-filter:hover {
+  background-color: rgba(66, 185, 131, 0.1); /* 浮现极浅的主题绿色背景 */
+  border-color: #42b983;                     /* 边框颜色加深为纯绿色 */
+  color: #42b983;
+}
+
+/* --- 统一底部“加载更多”按钮：药丸形状与悬停动效 --- */
+.bb-load button {
+  border-radius: 9999px; /* 从原本的 4px 方角变成完全的圆角药丸 */
+  border: 1px solid rgba(66, 185, 131, 0.4); /* 边框改成半透明的绿色，和标签统一 */
+  background: transparent; /* 背景透明 */
+  transition: all 0.2s ease; /* 增加平滑过渡动画 */
+}
+
+.bb-load button:hover {
+  background-color: rgba(66, 185, 131, 0.1); /* 悬停时浮现浅绿色背景 */
+  border-color: #42b983;                     /* 悬停时边框高亮成纯绿色 */
+  color: #42b983;
+}
 `
 loadCssCode(allCSS);
 
@@ -188,9 +269,9 @@ function renderMemosPaged(memos, page) {
     let attachBtn = '';
     if (item.resourceList && item.resourceList.length > 0) {
       attachBtn = `
-        <span class="datacount attach-btn" data-id="${item.id}" title="查看附件图片">
-          <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="20" height="20">
-            <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="#42b983"/>
+        <span class="attach-btn comment-pill-btn" style="position: absolute; right: 0; bottom: 0;" data-id="${item.id}" title="查看附件图片">
+          <svg t="1717750000000" class="icon" viewBox="0 0 1024 1024" width="14" height="14">
+            <path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="currentColor"/>
           </svg> 查看图片
         </span>
       `;
@@ -257,6 +338,10 @@ function renderMemosPaged(memos, page) {
       const memo = allMemos.find(m => m.id == memoId);
 
       if (memo && memo.resourceList && memo.resourceList.length > 0) {
+        
+        // 🐛 核心修复：斩草除根！在创建新的图片容器前，先把之前残留的所有隐藏容器全部删掉
+        document.querySelectorAll('div[id^="temp-image-viewer-"]').forEach(el => el.remove());
+
         let tempContainer = document.createElement('div');
         tempContainer.id = 'temp-image-viewer-' + memoId;
         tempContainer.style.display = 'none';
