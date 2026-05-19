@@ -126,6 +126,20 @@ const allCSS = `
   border-color: #42b983;                     /* 悬停时边框高亮成纯绿色 */
   color: #42b983;
 }
+
+/* --- 置顶卡片专属外框样式 (回归极简) --- */
+.bb-timeline .bb-item.pinned-bg {
+  border: 1px solid rgba(156, 39, 176, 0.2) !important; /* 仅保留极淡的紫色边线，起微微勾勒作用 */
+  box-shadow: none !important; /* 彻底去掉阴影，不让它浮起来 */
+  background-color: transparent !important; /* 绝对透明，完美融入你的深灰/纯白底色 */
+  transition: all 0.3s ease;
+}
+
+/* 暗色模式适配 */
+.dark-theme .bb-timeline .bb-item.pinned-bg {
+  border: 1px solid rgba(156, 39, 176, 0.3) !important; /* 暗色模式下稍微提亮一点点边框，但依然保持极细 */
+  background-color: transparent !important; /* 坚决不要背景色 */
+}
 `
 loadCssCode(allCSS);
 
@@ -158,7 +172,7 @@ function renderMemosPaged(memos, page) {
 
     result += `
       <li>
-        <div class="bb-item" style="position:relative;">
+       <div class="bb-item" style="position:relative; ${item.isPinned ? 'border: 1px solid rgba(156, 39, 176, 0.3) !important;' : ''}">
           <div class="bb-cont">${content}</div>
           <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:inline-flex; align-items:center; gap:12px;">
@@ -172,7 +186,7 @@ function renderMemosPaged(memos, page) {
               </div>
             </div>
             
-            <span class="datatime" title="${dateStr}">${dateStr}</span>
+            ${item.isPinned ? '' : `&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>`}
             ${tags}
             ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
             ${attachBtn}
