@@ -9,6 +9,24 @@
     ]
   },
   {
+    "id": 1081,
+    "content": "今天不开心，翻开了《罗素论幸福》来读。“人类太痛苦了，以至于他们觉得平淡度日比相互残杀更加可怕。”",
+    "createdTs": 1779371586,
+    "resourceList": [
+      {
+        "id": 573,
+        "creatorId": 1,
+        "createdTs": 1779371302,
+        "updatedTs": 1779371302,
+        "filename": "CF4F620F-EF98-47A5-9350-83A066DE0B8B.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/05/CF4F620F-EF98-47A5-9350-83A066DE0B8B.jpg",
+        "type": "image/jpeg",
+        "size": 278302
+      }
+    ],
+    "tags": []
+  },
+  {
     "id": 1080,
     "content": "胜宏科技的 A/H 溢价，终于凭 A 股的下跌实力给抹平了。不久的将来，可能又新增一只 H 股较 A 股溢价的两地上市股。",
     "createdTs": 1779158308,
