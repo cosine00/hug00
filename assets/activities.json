@@ -10400,22 +10400,6 @@
 "streak": 2
 },
 {
-"run_id": 18617110724,
-"name": "\u5348\u540e\u9a91\u884c",
-"distance": 365.6,
-"moving_time": "0:01:54",
-"type": "Ride",
-"start_date": "2026-05-23 07:37:41+00:00",
-"start_date_local": "2026-05-23 15:37:41",
-"location_country": null,
-"summary_polyline": "",
-"average_heartrate": 106.1,
-"average_speed": 3.207,
-"elevation_gain": 0.0,
-"source": "strava",
-"streak": 2
-},
-{
 "run_id": 18618703094,
 "name": "\u68a7\u6850\u7eff\u9053\u2014\u6dd8\u91d1\u5c71\u7eff\u9053",
 "distance": 28589.9,
@@ -10432,22 +10416,6 @@
 "streak": 2
 },
 {
-"run_id": 18660199548,
-"name": "\u953b\u70bc\uff08\u665a\u4e0a\uff09",
-"distance": 0.0,
-"moving_time": "0:45:07",
-"type": "Workout",
-"start_date": "2026-05-26 11:06:44+00:00",
-"start_date_local": "2026-05-26 19:06:44",
-"location_country": null,
-"summary_polyline": "",
-"average_heartrate": 91.7,
-"average_speed": 0.0,
-"elevation_gain": 0.0,
-"source": "strava",
-"streak": 1
-},
-{
 "run_id": 18668724183,
 "name": "\u901a\u52e4\u9a91\u884c",
 "distance": 8007.6,
@@ -10461,6 +10429,6 @@
 "average_speed": 4.738,
 "elevation_gain": 21.6,
 "source": "strava",
-"streak": 2
+"streak": 1
 }
 ]
