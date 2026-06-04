@@ -72,7 +72,9 @@
     </header>
 
     <article class="main">
+      {{ if and (ne .Layout "bb") (ne .Layout "exercise") (ne .Layout "album") (ne .Layout "books") (ne .Layout "archives") (ne .Layout "movies") (ne .RelPermalink "/about/") }}
       <header class="title">
       {{ partial "meta.html" . }}
       </header>
+      {{ end }}
       

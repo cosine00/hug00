@@ -2,9 +2,34 @@
 {{ partial "header.html" . }}
 
 <style>
+/* 美化顶部口号文字为按钮形状 */
+.pagetitle a {
+  display: inline-block;
+  padding: 5px 16px;              /* 按钮内边距，上下 5px，左右 16px */
+  font-size: 1.0rem;              /* 稍微缩小字号，让它看起来更像一个精致的标签/按钮 */
+  color: #090c23 !important;         /* 按钮文字颜色 */
+  background-color: var(--background-card-color, #ffffff); /* 按钮背景色，跟随你的卡片白 */
+  border: 2px solid var(--background-card-border-color, #42b983); /* 边框线 */
+  text-decoration: none !important;/* 去掉默认的下划线 */
+  border-radius: 9999px;          /* 完美的跑道圆/胶囊形状 */  
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02); /* 微弱的投影，增加立体感 */
+  transition: all 0.2s ease;
+  
+  /* 关键：拉开与下方年份导航的距离，保持和下方一样的视觉呼吸感 */
+  margin-bottom: 20px;            
+}
+
+/* 鼠标悬停时的动态效果 */
+.pagetitle a:hover {
+  background-color: #42b983;
+  border-color: #dcdcdc;
+  color: #fff !important;
+  transform: translateY(-1px);    /* 微微悬浮效果 */
+}
+
 /* ====================== 1. 顶部年份导航胶囊与动态箭头 ====================== */
 .exercise-container { max-width: 100%; margin: 0 auto; padding: 20px 15px; }
-.pagetitle { text-align: center; font-size: 1.05rem; color: var(--text-info-color, #666); margin-bottom: 10px; line-height: 1.5; }
+.pagetitle { text-align: center; font-size: 1.05rem; color: var(--text-info-color, #666); margin-bottom: 5px; line-height: 1.5; }
 .pagetitle p { margin: 0; padding: 0; } 
 .pagetitle:empty { display: none; margin: 0; } 
 
@@ -41,7 +66,7 @@
   transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
 }
 .button.selected {
-  background: var(--exercise-text-highlight-color, #32D74B); color: #111 !important;
+  background: var(--exercise-text-highlight-color, #42b983); color: #fff !important;
 }
 
 .scroll-btn {
@@ -149,18 +174,18 @@
   border: none; background: transparent;
 }
 .filterPill.activePill { 
-  background: var(--exercise-text-highlight-color, #32D74B) !important; 
-  color: #111 !important; 
+  background: var(--exercise-text-highlight-color, #42b983) !important; 
+  color: #fff !important; 
   font-weight: normal; 
 }
 .filterPill:hover:not(.activePill) {
-  color: var(--exercise-text-highlight-color, #32D74B);
+  color: var(--exercise-text-highlight-color, #42b983);
 }
 .monthLabel { display: none !important; } /* 隐藏内部原有的说明文字，保持纯净胶囊 */
 
 .cardContent { flex: 1; display: flex; justify-content: space-between; align-items: center; }
 .leftInfo { display: flex; flex-direction: column; gap: 2px; }
-.runName { color: #666; font-size: 0.85rem; }
+.runName { color: #666; font-size: 0.85rem; display: flex; flex-wrap: wrap; align-items: center; row-gap: 2px; }
 .runDistance { font-size: 1.4rem; font-weight: 700; line-height: 1; }
 .distUnit { font-size: 0.75rem; margin-left: 3px; font-weight: normal; color: #999; }
 .rightInfo { text-align: right; }
@@ -189,7 +214,7 @@
 .shareBtn:hover { transform: scale(1.1); color: #32D74B; }
 
 /* ====================== 7. 新增特性样式（成就徽章与动态图标） ====================== */
-.card-achievement-pill { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 500; vertical-align: middle; }
+.card-achievement-pill { font-size: 0.65rem; padding: 1px 5px; border-radius: 9999px; margin-left: 6px; font-weight: 500; vertical-align: middle; display: inline-block; white-space: nowrap;}
 .gold-pill { background: rgba(255, 193, 7, 0.15); color: #D48806; border: 1px solid rgba(255, 193, 7, 0.3); }
 .silver-pill { background: rgba(158, 158, 158, 0.1); color: #666; border: 1px solid rgba(158, 158, 158, 0.2); }
 .ttAchieveRow { display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 0.75rem; color: #D48806; margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(212, 136, 6, 0.2); }

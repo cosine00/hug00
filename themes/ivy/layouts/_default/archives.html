@@ -20,8 +20,8 @@
 }
 /* 选中状态的颜色可以根据你的主题调整，这里默认使用了你运动页面的绿色 */
 .button.selected {
-  background: var(--exercise-text-highlight-color, #32D74B); 
-  color: #111 !important;
+  background: var(--exercise-text-highlight-color, #42b983); 
+  color: #fff !important;
 }
 </style>
 
@@ -37,7 +37,7 @@
 
 <div id="all-tags">
   {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
-  <a href="/tags/{{ $name | urlize }}">#{{ $name }}<small>({{ .Count }})</small></a>&nbsp;&nbsp;&nbsp;
+  <a href="/tags/{{ $name | urlize }}" style="white-space: nowrap; display: inline-block;">#{{ $name }}<small>({{ .Count }})</small></a>&nbsp;&nbsp;&nbsp;
   {{- end -}}
 </div>
 
