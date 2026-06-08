@@ -1,5 +1,25 @@
 [
   {
+    "id": 1095,
+    "content": "公司发布了一个有关 AI 工具的使用情况调研问卷，还要求全员填写。里面除了选择题，还有文字简单题，我毫不犹豫地选择了截图甩给 AI，然后将 AI 的回答复制填写到问卷中。#亦可赛艇 ",
+    "createdTs": 1780904978,
+    "resourceList": [
+      {
+        "id": 587,
+        "creatorId": 1,
+        "createdTs": 1780904888,
+        "updatedTs": 1780904888,
+        "filename": "ScreenShot_2026-06-08_151246_917.png",
+        "externalLink": "https://img.hux.ink/image/2026/06/ScreenShot_2026-06-08_151246_917.png",
+        "type": "image/png",
+        "size": 152488
+      }
+    ],
+    "tags": [
+      "亦可赛艇"
+    ]
+  },
+  {
     "id": 1094,
     "content": "美加墨世界杯还有一周就要开打了，然而这届的主题曲我都还没听过，好像没动静。特意去搜了一下，没听过是有原因的。",
     "createdTs": 1780668480,
