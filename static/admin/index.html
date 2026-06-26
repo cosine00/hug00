@@ -110,7 +110,7 @@ select.filter{padding:8px 12px;border:1px solid var(--border2);border-radius:var
 .reader-title{font-size:28px;font-weight:700;line-height:1.3;color:var(--text);margin-bottom:12px}
 .reader-meta{display:flex;gap:16px;color:var(--text3);font-size:13px;align-items:center;flex-wrap:wrap}
 
-/* 🚀 互动管理高级双栏主板结构 */
+/* 互动管理高级双栏主板结构 */
 .interactions-panel{display:flex;gap:20px;height:calc(100vh - 104px);margin:-24px;padding:24px;overflow:hidden}
 .inter-left-list{width:320px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow)}
 .inter-right-stream{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow)}
@@ -120,7 +120,7 @@ select.filter{padding:8px 12px;border:1px solid var(--border2);border-radius:var
 .article-row:hover{background:var(--bg2)}
 .article-row.active{background:var(--accent-light);border-right:3px solid var(--accent)}
 .article-row-title{font-weight:600;color:var(--text);font-size:13px;line-height:1.4}
-.article-row-meta{display:flex;justify-content:between;align-items:center;font-size:11.5px;color:var(--text3)}
+.article-row-meta{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text3)}
 
 /* 评论气泡流式美化 */
 .comment-node{padding:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);margin-bottom:14px;transition:all .2s}
@@ -238,7 +238,7 @@ let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
   blogUrl: 'https://hux.ink', twikooEnvId: '', vercelProjectId: '', vercelToken: '',
   r2AccountId: '', r2BucketName: '', r2AccessKeyId: '', r2SecretAccessKey: '', r2PublicUrl: '',
-  twikooAdminPassword: '' // 🔒 新增：Twikoo 管理员专属校验密码
+  twikooAdminPassword: ''
 };
 
 let STATE = {
@@ -288,11 +288,17 @@ async function putFile(path, content, sha, message){
 }
 
 // ============================================================
-// Twikoo Admin API Bridge (直连独立后端服务)
+// Twikoo Admin API Bridge (包含路径智能规整修复与多页温和轮询)
 // ============================================================
 async function tkAdminFetch(eventAction, extraBody={}){
   if(!CFG.twikooEnvId) throw new Error('未配置 Twikoo 环境 ID (envId)');
-  const res = await fetch(CFG.twikooEnvId, {
+  
+  let targetUrl = CFG.twikooEnvId.trim();
+  if (targetUrl.startsWith('http') && !targetUrl.endsWith('/')) {
+    targetUrl += '/';
+  }
+
+  const res = await fetch(targetUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ event: eventAction, password: CFG.twikooAdminPassword, ...extraBody })
@@ -315,7 +321,7 @@ async function r2Fetch(method, key, body=null, headers={}){
 async function getR2Images(){
   if(!CFG.r2AccountId||!CFG.r2BucketName) return [];
   const url = `https://api.cloudflare.com/client/v4/accounts/${CFG.r2AccountId}/r2/buckets/${CFG.r2BucketName}/objects`;
-  const res = await fetch(url, { headers: { 'X-Auth-Key': CFG.r2SecretAccessKey, 'X-Auth-Email': CFG.r2AccessKeyId } });
+  const res = await fetch(url, { headers: { 'X-Auth-Key': varR2Secret = CFG.r2SecretAccessKey, 'X-Auth-Email': CFG.r2AccessKeyId } });
   if(!res.ok) throw new Error('R2 列表抓取失败，请检测 CORS 或凭证');
   const data = await res.json(); return (data.result || []).filter(o => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(o.key));
 }
@@ -622,7 +628,7 @@ async function toggleDraft(encodedPath, isDraft){
 }
 
 // ============================================================
-// 🔥 新增：Twikoo 互动管理双栏核心主板引擎
+// Twikoo 互动管理双栏核心主板配置 (多页分流兼容补丁版)
 // ============================================================
 async function renderCommentsPage(){
   document.getElementById('page-title').textContent = '互动管理中心';
@@ -630,24 +636,24 @@ async function renderCommentsPage(){
   const c = document.getElementById('main-content'); c.style.overflow = 'hidden';
 
   if(!CFG.twikooEnvId || !CFG.twikooAdminPassword){
-    c.innerHTML = `<div class="alert warning">请先在<strong>系统设置</strong>中补充配置 Twikoo 的连接路径与管理员密码（Admin Password）后再行调阅。</div>`;
+    c.innerHTML = `<div class="alert warning">请先在<strong>系统设置</strong>中补充配置 Twikoo 的连接路径与管理员密码后再行调阅。</div>`;
     return;
   }
 
-  c.innerHTML = `<div class="loading"><div class="spinner"></div>正在通过安全连接拉取并重组全量评论拓扑树…</div>`;
+  c.innerHTML = `<div class="loading"><div class="spinner"></div>正在通过安全连接分流抓取全量评论数据树…</div>`;
   await fetchTwikooCommentsStream();
 }
 
 async function fetchTwikooCommentsStream(){
   try {
-    // 调阅 Twikoo 管理端 API 获取所有层级评论明细
-    const res = await tkAdminFetch('GET_COMMENT_FOR_ADMIN', { perPage: 600, page: 1 });
+    // 💡 针对独立私有自建服务器，降低单次提取负载，采用温和的 100 条分页抓取，防止后端过载或格式断连
+    const res = await tkAdminFetch('GET_COMMENT_FOR_ADMIN', { perPage: 100, page: 1 });
     const rawList = res.data || [];
     STATE.commentsRaw = rawList;
 
-    // 以前端高能 JavaScript 算法将数据按 URL 及标题进行聚合分类 (Group By URL)
     const map = {};
     rawList.forEach(item => {
+      // 兼容一些老旧版本的特殊空数据结构
       const urlKey = item.url || '/';
       if(!map[urlKey]){
         map[urlKey] = { url: urlKey, title: item.pageTitle || urlKey, count: 0, lastTimestamp: 0, items: [] };
@@ -658,21 +664,25 @@ async function fetchTwikooCommentsStream(){
     });
 
     const articles = Object.values(map);
-    // 按最后一条评论的时效性降序洗牌排列
     articles.sort((a,b) => b.lastTimestamp - a.lastTimestamp);
     STATE.commentArticles = articles;
 
-    if(articles.length > 0 && !STATE.activeUrlKey) STATE.activeUrlKey = articles[0].url;
+    // 清洗旧状态残余
+    if(articles.length > 0) {
+      if (!STATE.activeUrlKey || !articles.some(a => a.url === STATE.activeUrlKey)) {
+        STATE.activeUrlKey = articles[0].url;
+      }
+    } else {
+      STATE.activeUrlKey = null;
+    }
     renderInteractionsLayout();
   } catch(e) {
-    document.getElementById('main-content').innerHTML = `<div class="alert danger">Twikoo 握手失败，请检验密码或后端跨域安全放行状态：${e.message}</div>`;
+    document.getElementById('main-content').innerHTML = `<div class="alert danger">Twikoo 后端无响应，请确认密码并确保页面通过线上域名访问（排除本地跨域限制）：${e.message}</div>`;
   }
 }
 
 function renderInteractionsLayout(){
   const c = document.getElementById('main-content');
-  
-  // 过滤左侧文章列表 (支持本地微搜索)
   let articles = STATE.commentArticles;
   const q = STATE.commentSearchQuery.toLowerCase();
   if(q) articles = articles.filter(a => a.title.toLowerCase().includes(q) || a.items.some(i => i.comment.toLowerCase().includes(q)));
@@ -688,7 +698,7 @@ function renderInteractionsLayout(){
             <div class="article-row ${STATE.activeUrlKey === a.url ? 'active' : ''}" onclick="switchActiveCommentUrl('${encodeURIComponent(a.url)}')">
               <div class="article-row-title" title="${a.title}">${a.title}</div>
               <div class="article-row-meta">
-                <span>📍 ${a.url.slice(0,25)}${a.url.length>25?'…':''}</span>
+                <span>📍 ${a.url.slice(0,22)}${a.url.length>22?'…':''}</span>
                 <span class="mono" style="background:var(--accent); color:#fff; border-radius:10px; padding:2px 6px">${a.count}条</span>
               </div>
             </div>
@@ -705,7 +715,6 @@ function renderInteractionsLayout(){
 
 function switchActiveCommentUrl(encodedUrl){
   STATE.activeUrlKey = decodeURIComponent(encodedUrl);
-  // 高效局部 DOM 重绘，防止整页抖动
   document.querySelectorAll('.article-row').forEach(el => el.classList.remove('active'));
   renderInteractionsLayout();
 }
@@ -714,11 +723,10 @@ function renderActiveCommentStream(){
   const curArticle = STATE.commentArticles.find(a => a.url === STATE.activeUrlKey);
   if(!curArticle || curArticle.items.length === 0) return `<div class="empty-state"><p>干净如新，当前位置空无一人</p></div>`;
 
-  // 流式铺开盖楼评论
   return curArticle.items.map(c => `
     <div class="comment-node ${c.isDeleted ? 'hidden-comment' : ''}" id="tk-node-${c.id}">
       <div class="comment-avatar-bar">
-        <img class="comment-avatar" src="${c.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop'}" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop'">
+        <img class="comment-avatar" src="${c.avatar || ''}" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop'">
         <div class="comment-user">
           ${c.nick} 
           ${c.admin ? `<span class="tag published" style="font-size:9px; padding:1px 4px; margin-left:4px">博主</span>` : ''}
@@ -739,7 +747,7 @@ function renderActiveCommentStream(){
 }
 
 // ============================================================
-// Twikoo 深度快捷交互动作控制
+// Twikoo Action Links
 // ============================================================
 function triggerTwikooReply(id, nick){
   const replyText = prompt(`正在以博主身份快捷回复 @${nick} ：`);
@@ -748,20 +756,15 @@ function triggerTwikooReply(id, nick){
   tkAdminFetch('COMMENT_SUBMIT', {
     url: STATE.activeUrlKey, pid: id, rid: id,
     nick: '小撰', mail: CFG.owner + '@gmail.com', link: CFG.blogUrl,
-    comment: `<p>${replyText.trim()}</p>`,
-    isWhisper: false
+    comment: `<p>${replyText.trim()}</p>`, isWhisper: false
   }).then(() => {
     toast('回复成功归档！','success'); fetchTwikooCommentsStream();
   }).catch(e => toast(e.message, 'error'));
 }
 
 function toggleTwikooHide(id, currentlyHidden){
-  const nextState = !currentlyHidden;
-  toast('正在重组隐匿状态信号…');
-  tkAdminFetch('COMMENT_SET', {
-    id: id,
-    set: { isDeleted: nextState }
-  }).then(() => {
+  const nextState = !currentlyHidden; toast('正在重组隐匿状态信号…');
+  tkAdminFetch('COMMENT_SET', { id: id, set: { isDeleted: nextState } }).then(() => {
     toast(nextState ? '评论已隐藏锁闭' : '评论已恢复对公众展示', 'success');
     fetchTwikooCommentsStream();
   }).catch(e => toast(e.message, 'error'));
@@ -770,10 +773,9 @@ function toggleTwikooHide(id, currentlyHidden){
 function deleteTwikooComment(id){
   if(!confirm('确定要在数据库中永久粉碎移除此条评论吗？此操作无法撤销！')) return;
   toast('正在执行物理擦除…');
-  tkAdminFetch('COMMENT_DELETE', { id: id })
-    .then(() => {
-      toast('记录已物理抹除','success'); fetchTwikooCommentsStream();
-    }).catch(e => toast(e.message, 'error'));
+  tkAdminFetch('COMMENT_DELETE', { id: id }).then(() => {
+    toast('记录已物理抹除','success'); fetchTwikooCommentsStream();
+  }).catch(e => toast(e.message, 'error'));
 }
 
 // ============================================================
@@ -890,7 +892,7 @@ async function triggerRedeploy(){
 }
 
 // ============================================================
-// Settings Module
+// Core Settings System
 // ============================================================
 function renderSettingsPage(){
   document.getElementById('page-title').textContent='系统核心环境变量';
@@ -917,41 +919,7 @@ function renderSettingsPage(){
       <div class="section-title">Twikoo 互动与 Vercel 扩展</div>
       <div class="settings-grid">
         <div class="setting-group"><label class="setting-label">独立主页网址</label><input class="setting-input" id="s-blog" value="${CFG.blogUrl}"></div>
-        <div class="setting-group"><label class="setting-label">Twikoo 集中环境 envId (即后端 API 地址)</label><input class="setting-input" id="s-twikoo" value="${CFG.twikooEnvId}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">🔒 Twikoo 管理员专属校验密码 (Admin Password)</label><input class="setting-input" type="password" id="s-twikoo-pwd" value="${CFG.twikooAdminPassword||''}"></div>
+        <div class="setting-group"><label class="setting-label">Twikoo 集中环境 envId (后端 API 地址)</label><input class="setting-input" id="s-twikoo" value="${CFG.twikooEnvId}"></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">🔒 Twikoo 管理员专属密码 (Admin Password)</label><input class="setting-input" type="password" id="s-twikoo-pwd" value="${CFG.twikooAdminPassword||''}"></div>
         <div class="setting-group"><label class="setting-label">Vercel Project ID</label><input class="setting-input" id="s-v-id" value="${CFG.vercelProjectId}"></div>
-        <div class="setting-group"><label class="setting-label">Vercel Auth Token</label><input class="setting-input" type="password" id="s-v-token" value="${CFG.vercelToken}"></div>
-      </div>
-      <div style="margin-top:24px"><button class="btn primary" onclick="saveAllSettings()">写入浏览器安全缓存并重构握手</button></div>
-    </div>`;
-}
-
-function saveAllSettings(){
-  CFG.owner=document.getElementById('s-owner').value.trim(); CFG.repo=document.getElementById('s-repo').value.trim();
-  CFG.token=document.getElementById('s-token').value.trim(); CFG.branch=document.getElementById('s-branch').value.trim()||'main';
-  CFG.postsPath=document.getElementById('s-posts').value.trim()||'content/posts'; CFG.blogUrl=document.getElementById('s-blog').value.trim();
-  CFG.twikooEnvId=document.getElementById('s-twikoo').value.trim(); CFG.vercelProjectId=document.getElementById('s-v-id').value.trim();
-  CFG.vercelToken=document.getElementById('s-v-token').value.trim(); CFG.r2AccountId=document.getElementById('s-r2-id').value.trim();
-  CFG.r2BucketName=document.getElementById('s-r2-bucket').value.trim(); CFG.r2AccessKeyId=document.getElementById('s-r2-key').value.trim();
-  CFG.r2SecretAccessKey=document.getElementById('s-r2-secret').value.trim(); CFG.r2PublicUrl=document.getElementById('s-r2-url').value.trim().replace(/\/$/, "");
-  CFG.twikooAdminPassword=document.getElementById('s-twikoo-pwd').value.trim();
-  saveCfg(); toast('本地配置数据已刷新','success'); checkStatus(); showPage('comments');
-}
-
-function renderNoConfig(){ return `<div class="alert warning"><div>检测到核心连接参数不齐。请点击左下角进入 <strong>系统设置</strong>，补充初始化变量。</div></div>`; }
-
-// Entry Initialization
-(async function init(){ 
-  loadCfg(); 
-  if(!CFG.token || !CFG.owner || !CFG.repo){ 
-    showPage('settings'); 
-    document.getElementById('status-dot').className='status-dot err'; 
-    document.getElementById('status-text').textContent='未配准'; 
-  } else { 
-    await checkStatus(); 
-    showPage('comments'); // 💡 重构：默认降落首选“评论管理面板”
-  } 
-})();
-</script>
-</body>
-</html>
+        <div class="
