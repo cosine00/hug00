@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博客管理后台 · Counting Stars</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#f7f7f7;--bg3:#f0f0f0;
+  --text:#1a1a1a;--text2:#555;--text3:#999;
+  --border:#e0e0e0;--border2:#ccc;
+  --accent:#4a6fa5;--accent-light:#eaf1fb;--accent-dark:#2d4a7a;
+  --danger:#c0392b;--danger-light:#fdf0ef;
+  --success:#27ae60;--success-light:#edfaf3;
+  --warning:#e67e22;--warning-light:#fef5ec;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--text);background:var(--bg2);min-height:100vh}
+
+/* Layout */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.main{flex:1;overflow:auto;display:flex;flex-direction:column}
+.topbar{height:52px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.content{flex:1;padding:24px;overflow:auto}
+
+/* Sidebar */
+.sidebar-logo{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-logo .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600}
+.sidebar-logo .logo-title{font-weight:600;font-size:14px;color:var(--text)}
+.sidebar-logo .logo-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-section{padding:8px 16px 4px;font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);transition:all .15s;border-left:3px solid transparent;font-size:13.5px}
+.nav-item:hover{background:var(--bg2);color:var(--text)}
+.nav-item.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);font-weight:500}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active svg{opacity:1}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.sidebar-status{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
+.status-dot.ok{background:var(--success)}
+.status-dot.err{background:var(--danger)}
+
+/* Topbar */
+.page-title{font-size:16px;font-weight:600;color:var(--text)}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;color:var(--text);transition:all .15s;font-family:inherit;line-height:1}
+.btn:hover{background:var(--bg2);border-color:var(--text3)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-dark)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.danger:hover{background:var(--danger-light)}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn svg{width:14px;height:14px}
+
+/* Cards */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.stat-label{font-size:12px;color:var(--text3);margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:600;color:var(--text);line-height:1}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;font-weight:500;color:var(--text3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg2)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.tag.draft{background:#fef5ec;color:#b7600a}
+.tag.published{background:var(--success-light);color:#1a7a40}
+
+/* Search & filters */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:.15s}
+.search-input:focus{border-color:var(--accent)}
+select.filter{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13px;color:var(--text);font-family:inherit;cursor:pointer;outline:none}
+select.filter:focus{border-color:var(--accent)}
+
+/* Editor */
+.editor-wrap{display:flex;gap:20px;height:calc(100vh - 140px)}
+.editor-left{flex:1;display:flex;flex-direction:column;min-width:0}
+.editor-right{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.fm-group{display:flex;flex-direction:column;gap:5px}
+.fm-label{font-size:12px;font-weight:500;color:var(--text2)}
+.fm-input{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:.15s;background:var(--bg);width:100%}
+.fm-input:focus{border-color:var(--accent)}
+textarea.fm-input{resize:vertical;min-height:60px}
+.tags-input-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:6px 8px;border:1px solid var(--border2);border-radius:var(--radius);min-height:36px;cursor:text;align-items:center}
+.tags-input-wrap:focus-within{border-color:var(--accent)}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-light);color:var(--accent-dark);padding:2px 8px;border-radius:20px;font-size:12px}
+.tag-chip .remove{cursor:pointer;opacity:.6;font-size:14px;line-height:1;padding:0 2px}
+.tag-chip .remove:hover{opacity:1}
+.tags-input{border:none;outline:none;font-size:12px;color:var(--text);min-width:80px;flex:1;font-family:inherit;padding:2px 4px;background:transparent}
+.switch-wrap{display:flex;align-items:center;gap:8px;padding:6px 0}
+.switch{position:relative;display:inline-block;width:36px;height:20px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:20px;transition:.2s}
+.slider:before{position:absolute;content:"";width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+input:checked+.slider{background:var(--accent)}
+input:checked+.slider:before{transform:translateX(16px)}
+.switch-label{font-size:13px;color:var(--text2)}
+.EasyMDEContainer{flex:1;display:flex;flex-direction:column}
+.EasyMDEContainer .CodeMirror{flex:1;height:auto!important;min-height:300px;font-size:13px;font-family:'Fira Code','Cascadia Code',monospace;line-height:1.6}
+
+/* Image gallery */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.img-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:all .15s;position:relative}
+.img-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(74,111,165,.12)}
+.img-card img{width:100%;height:100px;object-fit:cover;display:block;background:var(--bg3)}
+.img-card-body{padding:8px 10px}
+.img-card-name{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:40px 24px;text-align:center;cursor:pointer;transition:.15s;margin-bottom:20px}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:var(--accent-light)}
+.upload-zone svg{color:var(--text3);margin-bottom:10px}
+.upload-zone p{color:var(--text3);font-size:13px}
+.upload-zone strong{color:var(--accent)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+
+/* Settings */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.settings-grid{grid-template-columns:1fr}}
+.setting-group{display:flex;flex-direction:column;gap:5px}
+.setting-label{font-size:12px;font-weight:500;color:var(--text2)}
+.setting-input{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:.15s;width:100%;background:var(--bg)}
+.setting-input:focus{border-color:var(--accent)}
+.setting-hint{font-size:11px;color:var(--text3);margin-top:3px}
+.section-title{font-size:13px;font-weight:600;color:var(--text);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* Alert / Toast / Misc */
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
+.alert.info{background:var(--accent-light);color:var(--accent-dark)}
+.alert.success{background:var(--success-light);color:#1a7a40}
+.alert.danger{background:var(--danger-light);color:var(--danger)}
+.alert.warning{background:var(--warning-light);color:#a05800}
+.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--text);color:#fff;padding:10px 16px;border-radius:var(--radius-lg);font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s;pointer-events:auto;max-width:280px}
+.toast.show{opacity:1;transform:translateX(0)}
+.toast.success{background:#1a7a40}
+.toast.error{background:var(--danger)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty-state svg{margin-bottom:12px;opacity:.4}
+.text-sm{font-size:12px;color:var(--text3)}
+.flex{display:flex}.gap-2{gap:8px}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mb-2{margin-bottom:8px}
+.truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+.mono{font-family:'Fira Code',monospace;font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:4px}
+.hidden{display:none}
+.loading{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--text3);font-size:13px;gap:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">★</div>
+      <div>
+        <div class="logo-title">博客后台</div>
+        <div class="logo-sub">Counting Stars</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">内容</div>
+      <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        文章管理
+      </div>
+      <div class="nav-item" onclick="showPage('images')" id="nav-images">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        R2 图床管理
+      </div>
+      <div class="nav-section">互动</div>
+      <div class="nav-item" onclick="showPage('comments')" id="nav-comments">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        评论管理
+      </div>
+      <div class="nav-section">系统</div>
+      <div class="nav-item" onclick="showPage('deploy')" id="nav-deploy">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+        部署状态
+      </div>
+      <div class="nav-item" onclick="showPage('settings')" id="nav-settings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+        系统设置
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status" id="sidebar-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">未连接</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="page-title">文章管理</div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+    <div class="content" id="main-content">
+      <div class="loading"><div class="spinner"></div>正在加载…</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
+
+<script>
+// ============================================================
+// Config & State
+// ============================================================
+let CFG = {
+  token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
+  blogUrl: 'https://hux.ink', twikooEnvId: '', vercelProjectId: '', vercelToken: '',
+  r2AccountId: '', r2BucketName: '', r2AccessKeyId: '', r2SecretAccessKey: '', r2PublicUrl: ''
+};
+
+let STATE = {
+  page: 'posts', posts: [], images: [], postsLoaded: false, imagesLoaded: false,
+  editingPost: null, mde: null, searchQuery: '', filterStatus: 'all', activeTags: []
+};
+
+function saveCfg(){localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG))}
+function loadCfg(){
+  try{
+    const s=localStorage.getItem('hugo_admin_cfg');
+    if(s){Object.assign(CFG, JSON.parse(s))}
+  }catch(e){}
+}
+
+// ============================================================
+// API Fetchers
+// ============================================================
+async function ghFetch(path, opts={}){
+  if(!CFG.token||!CFG.owner||!CFG.repo){throw new Error('请先完成系统设置中 GitHub 的配置')}
+  const base = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
+  const res = await fetch(base+path, {
+    ...opts,
+    headers:{
+      'Authorization': `Bearer ${CFG.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers||{})
+    }
+  });
+  if(!res.ok) { const err = await res.json().catch(()=>({})); throw new Error(err.message||`GitHub 错误 ${res.status}`); }
+  return res.json();
+}
+
+// GraphQL 优化：一键获取所有文章头部数据，完美避开频率限制
+async function ghGraphQL(query, variables={}){
+  if(!CFG.token){throw new Error('未配置 Token')}
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${CFG.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables })
+  });
+  if(!res.ok) throw new Error(`GraphQL 请求失败: ${res.status}`);
+  const data = await res.json();
+  if(data.errors) throw new Error(data.errors[0].message);
+  return data.data;
+}
+
+async function getFileContent(path){
+  const data = await ghFetch(`/contents/${path}?ref=${CFG.branch}`);
+  const content = atob(data.content.replace(/\n/g,''));
+  return {content: new TextDecoder().decode(new Uint8Array([...content].map(c=>c.charCodeAt(0)))), sha: data.sha, path: data.path};
+}
+
+async function putFile(path, content, sha, message){
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  const body = {message, content: encoded, branch: CFG.branch};
+  if(sha) body.sha = sha;
+  return ghFetch(`/contents/${path}`, {method:'PUT', body: JSON.stringify(body)});
+}
+
+// ============================================================
+// Cloudflare R2 S3-API Handler (纯前端直连免服务端)
+// ============================================================
+async function r2Fetch(method, key, body=null, headers={}){
+  if(!CFG.r2AccountId||!CFG.r2BucketName||!CFG.r2AccessKeyId||!CFG.r2SecretAccessKey){
+    throw new Error('请先在系统设置中配置完整的 Cloudflare R2 信息');
+  }
+  const url = `https://api.cloudflare.com/client/v4/accounts/${CFG.r2AccountId}/r2/buckets/${CFG.r2BucketName}/objects/${key}`;
+  // 提示：前端直连 R2 存储桶管理 API，通常受限于 Cloudflare Global API 的跨域权限。
+  // 此处采用标准的 R2 Storage Worker 代理或直连规范，如遇到原生 CORS 阻挡，可在 R2 存储桶的 Settings -> CORS Policy 中开启全面放行。
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'X-Auth-Key': CFG.r2SecretAccessKey,
+      'X-Auth-Email': CFG.r2AccessKeyId,
+      ...headers
+    },
+    body
+  });
+  if(!res.ok) throw new Error(`R2 操作失败: ${res.statusText}`);
+  return method === 'GET' ? res.blob() : res.json();
+}
+
+async function getR2Images(){
+  if(!CFG.r2AccountId||!CFG.r2BucketName) return [];
+  // 获取列表
+  const url = `https://api.cloudflare.com/client/v4/accounts/${CFG.r2AccountId}/r2/buckets/${CFG.r2BucketName}/objects`;
+  const res = await fetch(url, {
+    headers: { 'X-Auth-Key': CFG.r2SecretAccessKey, 'X-Auth-Email': CFG.r2AccessKeyId }
+  });
+  if(!res.ok) throw new Error('读取 R2 存储桶列表失败，请检查密钥与桶跨域配置');
+  const data = await res.json();
+  return (data.result || []).filter(o => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(o.key));
+}
+
+// ============================================================
+// Markdown Front Matter Parser
+// ============================================================
+function parseFrontMatter(raw){
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if(!match) return {fm:{}, body: raw};
+  const fmStr = match[1], body = match[2], fm = {};
+  const lines = fmStr.split('\n');
+  let currentKey = null, inList = false, listItems = [];
+  for(let line of lines){
+    if(/^\s+-\s+/.test(line)){
+      if(inList) listItems.push(line.replace(/^\s+-\s+/,'').trim());
+      continue;
+    }
+    if(inList){fm[currentKey]=listItems;inList=false;listItems=[];}
+    const kv = line.match(/^(\w+):\s*(.*)/);
+    if(kv){
+      const k=kv[1], v=kv[2].trim();
+      if(v===''){currentKey=k;inList=true;listItems=[];} 
+      else{fm[k]=v.replace(/^["']|["']$/g,'');}
+    }
+  }
+  if(inList) fm[currentKey]=listItems;
+  return {fm, body};
+}
+
+function buildFrontMatter(fm, body){
+  let out='---\n';
+  const order=['title','author','date','tags','slug','draft','description'];
+  const done=new Set();
+  for(const k of order){
+    if(fm[k]===undefined||fm[k]==='') continue;
+    done.add(k);
+    if(Array.isArray(fm[k])){
+      out+=`${k}:\n`; fm[k].forEach(t=>{out+=`  - ${t}\n`});
+    } else {
+      const v = String(fm[k]);
+      out+=`${k}: ${/[:#\[\]{}|>&!,]/.test(v)?'"'+v+'"':v}\n`;
+    }
+  }
+  for(const [k,v] of Object.entries(fm)){
+    if(done.has(k)) continue;
+    if(Array.isArray(v)){out+=`${k}:\n`;v.forEach(t=>{out+=`  - ${t}\n`});}
+    else{out+=`${k}: ${v}\n`;}
+  }
+  out+='---\n';
+  if(body && !body.startsWith('\n')) out+='\n';
+  out+=body;
+  return out;
+}
+
+function toast(msg, type='info'){
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast show ${type==='error'?'error':type==='success'?'success':''}`;
+  t.textContent=msg; c.appendChild(t);
+  setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),300)}, 3000);
+}
+
+// ============================================================
+// Navigation & Status
+// ============================================================
+function showPage(page){
+  STATE.page=page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const nav=document.getElementById('nav-'+page); if(nav) nav.classList.add('active');
+  const c=document.getElementById('main-content'); c.style.overflow='auto';
+  switch(page){
+    case 'posts': renderPostsPage(); break;
+    case 'images': renderImagesPage(); break;
+    case 'comments': renderCommentsPage(); break;
+    case 'deploy': renderDeployPage(); break;
+    case 'settings': renderSettingsPage(); break;
+  }
+}
+
+async function checkStatus(){
+  if(!CFG.token||!CFG.owner||!CFG.repo){
+    document.getElementById('status-dot').className='status-dot err';
+    document.getElementById('status-text').textContent='未配置'; return false;
+  }
+  try{
+    await ghFetch(`/git/refs/heads/${CFG.branch}`);
+    document.getElementById('status-dot').className='status-dot ok';
+    document.getElementById('status-text').textContent=`${CFG.owner}/${CFG.repo}`;
+    return true;
+  }catch(e){
+    document.getElementById('status-dot').className='status-dot err';
+    document.getElementById('status-text').textContent='连接失败'; return false;
+  }
+}
+
+// ============================================================
+// Posts Page (GraphQL 极速加载)
+// ============================================================
+async function renderPostsPage(){
+  document.getElementById('page-title').textContent='文章管理';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="openNewPost()">新建文章</button>`;
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在通过 GraphQL 检索文章目录…</div>`;
+  if(!CFG.token){c.innerHTML=renderNoConfig();return;}
+  
+  try{
+    // 一次请求拿到目录下所有文件的头部 Front Matter 信息，极其优雅高效
+    const q = `query($owner:String!,$repo:String!,$expression:String!) {
+      repository(owner:$owner,name:$repo) {
+        object(expression:$expression) {
+          ... on Tree {
+            entries {
+              name type path
+              object {
+                ... on Blob {
+                  text
+                }
+              }
+            }
+          }
+        }
+      }
+    }`;
+    const vars = { owner: CFG.owner, repo: CFG.repo, expression: `${CFG.branch}:${CFG.postsPath}` };
+    const res = await ghGraphQL(q, vars);
+    const entries = res.repository?.object?.entries || [];
+    
+    const posts = [];
+    for(let entry of entries){
+      if(entry.type !== 'blob' || !entry.name.endsWith('.md') || entry.name === '_index.md') continue;
+      const rawText = entry.object?.text || '';
+      const {fm} = parseFrontMatter(rawText);
+      posts.push({
+        fileName: entry.name, path: entry.path, title: fm.title || entry.name,
+        date: fm.date || '', tags: Array.isArray(fm.tags)?fm.tags:(fm.tags?[fm.tags]:[]),
+        draft: fm.draft === 'true' || fm.draft === true, slug: fm.slug || ''
+      });
+    }
+    posts.sort((a,b)=>b.date.localeCompare(a.date));
+    STATE.posts = posts; STATE.postsLoaded = true;
+    renderPostsTable();
+  }catch(e){
+    c.innerHTML=`<div class="alert danger">目录读取失败（请检查文章路径配置）：${e.message}</div>`;
+  }
+}
+
+function renderPostsTable(){
+  const c=document.getElementById('main-content');
+  let posts=STATE.posts;
+  const q=STATE.searchQuery.toLowerCase();
+  if(q) posts=posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q)));
+  if(STATE.filterStatus==='draft') posts=posts.filter(p=>p.draft);
+  if(STATE.filterStatus==='published') posts=posts.filter(p=>!p.draft);
+  const total=STATE.posts.length, drafts=STATE.posts.filter(p=>p.draft).length;
+  
+  c.innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">文章总数</div><div class="stat-value">${total}</div></div>
+      <div class="stat-card"><div class="stat-label">已发布</div><div class="stat-value" style="color:var(--success)">${total-drafts}</div></div>
+      <div class="stat-card"><div class="stat-label">草稿</div><div class="stat-value" style="color:var(--warning)">${drafts}</div></div>
+    </div>
+    <div class="card">
+      <div class="toolbar">
+        <input type="text" class="search-input" placeholder="搜索文章标题、标签…" value="${STATE.searchQuery}" oninput="STATE.searchQuery=this.value;renderPostsTable()">
+        <select class="filter" onchange="STATE.filterStatus=this.value;renderPostsTable()">
+          <option value="all" ${STATE.filterStatus==='all'?'selected':''}>全部状态</option>
+          <option value="published" ${STATE.filterStatus==='published'?'selected':''}>已发布</option>
+          <option value="draft" ${STATE.filterStatus==='draft'?'selected':''}>草稿</option>
+        </select>
+      </div>
+      ${posts.length===0?`<div class="empty-state"><p>没有找到符合条件的文章</p></div>`:`
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>标题</th><th>日期</th><th>标签</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            ${posts.map(p=>`<tr>
+              <td><span class="truncate" title="${p.title}">${p.title}</span></td>
+              <td class="text-sm">${p.date?p.date.slice(0,10):''}</td>
+              <td>${p.tags.map(t=>`<span class="tag published" style="margin-right:3px;background:#f0h;color:var(--accent-dark)">${t}</span>`).join('')}</td>
+              <td><span class="tag ${p.draft?'draft':'published'}">${p.draft?'草稿':'已发布'}</span></td>
+              <td>
+                <div class="flex gap-2">
+                  <button class="btn sm" onclick="openEditPost('${encodeURIComponent(p.path)}')">编辑</button>
+                  <button class="btn sm" onclick="toggleDraft('${encodeURIComponent(p.path)}',${p.draft})">${p.draft?'发布':'下架'}</button>
+                  <button class="btn sm danger" onclick="confirmDeletePost('${encodeURIComponent(p.path)}','${p.title.replace(/'/g,'\\\'')}')">删除</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`}
+    </div>`;
+}
+
+async function toggleDraft(encodedPath, isDraft){
+  const path=decodeURIComponent(encodedPath);
+  try{
+    const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content);
+    fm.draft=(!isDraft).toString(); const newContent=buildFrontMatter(fm,body);
+    await putFile(path,newContent,file.sha,`chore: toggle draft for ${fm.title}`);
+    toast('状态更新成功','success'); renderPostsPage();
+  }catch(e){toast(e.message,'error')}
+}
+
+function confirmDeletePost(encodedPath, title){
+  const modal=document.createElement('div');modal.className='modal-overlay';
+  modal.innerHTML=`<div class="modal">
+    <div class="modal-title">删除文章</div>
+    <p class="text-sm">确认删除文章 <strong>"${title}"</strong> 吗？删除后不可恢复。</p>
+    <div class="modal-footer">
+      <button class="btn" onclick="this.closest('.modal-overlay').remove()">取消</button>
+      <button class="btn danger" onclick="doDeletePost('${encodedPath}',this)">确认删除</button>
+    </div>
+  </div>`; document.body.appendChild(modal);
+}
+
+async function doDeletePost(encodedPath, btn){
+  const path=decodeURIComponent(encodedPath); btn.textContent='删除中…'; btn.disabled=true;
+  try{
+    const file=await getFileContent(path); await ghFetch(`/contents/${path}`, {method:'DELETE', body: JSON.stringify({message:`delete: ${path}`, sha:file.sha, branch:CFG.branch})});
+    btn.closest('.modal-overlay').remove(); toast('文章已永久删除','success'); renderPostsPage();
+  }catch(e){toast(e.message,'error'); btn.disabled=false;}
+}
+
+// ============================================================
+// Editor System (响应式数据标签绑定)
+// ============================================================
+function openNewPost(){
+  const today=new Date(); const dStr=today.toISOString().slice(0,10); const tStr=today.toTimeString().slice(0,8);
+  STATE.editingPost={fm:{title:'',author:'',date:`${dStr} ${tStr}`,tags:[],slug:'',draft:'true'},body:'',path:null,isNew:true};
+  STATE.activeTags = []; renderEditor();
+}
+
+async function openEditPost(encodedPath){
+  const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>载入内容中…</div>`;
+  try{
+    const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content);
+    fm.tags = Array.isArray(fm.tags)?fm.tags:(fm.tags?[fm.tags]:[]);
+    STATE.editingPost={fm,body,path,sha:file.sha,isNew:false};
+    STATE.activeTags = [...fm.tags]; renderEditor();
+  }catch(e){toast(e.message,'error'); renderPostsPage();}
+}
+
+function renderEditor(){
+  const post=STATE.editingPost; document.getElementById('page-title').textContent=post.isNew?'新建文章':'编辑文章';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="renderPostsPage()">← 返回</button>
+    <button class="btn primary" onclick="savePost(false)" id="btn-save">保存草稿</button>
+    <button class="btn primary" onclick="savePost(true)" id="btn-publish">直接发布</button>`;
+  const c=document.getElementById('main-content'); c.style.overflow='hidden';
+  c.innerHTML=`
+    <div class="editor-wrap">
+      <div class="editor-left"><textarea id="mde-area"></textarea></div>
+      <div class="editor-right">
+        <div class="card">
+          <div class="card-title mb-2">文章属性</div>
+          <div class="fm-group"><label class="fm-label">文章标题</label><input class="fm-input" id="fm-title" value="${post.fm.title||''}"></div>
+          <div class="fm-group mt-2"><label class="fm-label">发布时间</label><input class="fm-input" id="fm-date" value="${post.fm.date||''}"></div>
+          <div class="fm-group mt-2"><label class="fm-label">自定义路径 (Slug)</label><input class="fm-input" id="fm-slug" value="${post.fm.slug||''}"></div>
+          <div class="fm-group mt-2"><label class="fm-label">标签属性 (回车确认)</label>
+            <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
+              ${STATE.activeTags.map(t=>`<span class="tag-chip">${t}<span class="remove" onclick="removeTagNode(this,'${t}')">×</span></span>`).join('')}
+              <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)">
+            </div>
+          </div>
+          <div class="switch-wrap mt-2">
+            <label class="switch"><input type="checkbox" id="fm-draft" ${post.fm.draft==='true'||post.fm.draft===true?'checked':''}><span class="slider"></span></label>
+            <span class="switch-label">存为草稿</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title mb-2">R2 快捷插图</div>
+          <button class="btn sm" onclick="loadR2ImagesForInsert()" style="width:100%">调取图床历史</button>
+          <div id="quick-images" class="mt-2" style="max-height:220px;overflow-y:auto"></div>
+        </div>
+      </div>
+    </div>`;
+    
+  if(STATE.mde){try{STATE.mde.toTextArea()}catch(e){}}
+  STATE.mde = new EasyMDE({
+    element: document.getElementById('mde-area'), initialValue: post.body, spellChecker: false, autofocus: true,
+    toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','|','preview','side-by-side','fullscreen']
+  });
+}
+
+function handleTagPush(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault(); const val=e.target.value.trim();
+    if(val && !STATE.activeTags.includes(val)){
+      STATE.activeTags.push(val);
+      const chip=document.createElement('span'); chip.className='tag-chip';
+      chip.innerHTML=`${val}<span class="remove" onclick="removeTagNode(this,'${val}')">×</span>`;
+      document.getElementById('tags-wrap').insertBefore(chip, e.target);
+    } e.target.value='';
+  } else if(e.key==='Backspace' && e.target.value===''){
+    STATE.activeTags.pop(); const chips=document.querySelectorAll('.tag-chip'); if(chips.length>0) chips[chips.length-1].remove();
+  }
+}
+function removeTagNode(el, val){ STATE.activeTags = STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); }
+
+async function savePost(publish){
+  const title=document.getElementById('fm-title').value.trim(); if(!title) return toast('标题不可为空','error');
+  const btn=document.getElementById(publish?'btn-publish':'btn-save'); btn.disabled=true; btn.textContent='处理中…';
+  try{
+    const fm={
+      title, date:document.getElementById('fm-date').value.trim(),
+      tags: STATE.activeTags, slug:document.getElementById('fm-slug').value.trim(),
+      draft: (!publish).toString()
+    };
+    const body=STATE.mde.value(); const content=buildFrontMatter(fm,body);
+    let path=STATE.editingPost.path || `${CFG.postsPath}/${fm.slug||Date.now()}.md`;
+    await putFile(path, content, STATE.editingPost.sha, `content update: ${title}`);
+    toast('文章归档成功','success'); setTimeout(renderPostsPage, 500);
+  }catch(e){toast(e.message,'error'); btn.disabled=false;}
+}
+
+// ============================================================
+// Cloudflare R2 图床管理面 (完美重构 + 智能 WebP 压制)
+// ============================================================
+async function renderImagesPage(){
+  document.getElementById('page-title').textContent='R2 图床管理';
+  document.getElementById('topbar-actions').innerHTML=`<label class="btn primary">上传文件到 R2<input type="file" accept="image/*" multiple style="display:none" onchange="uploadImagesToR2(event)"></label>`;
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在连通 Cloudflare R2 存储桶…</div>`;
+  if(!CFG.r2AccountId){c.innerHTML=`<div class="alert warning">请先在系统设置中补齐 Cloudflare R2 的凭证信息</div>`; return;}
+  
+  try{
+    const imgs = await getR2Images(); STATE.images = imgs;
+    c.innerHTML=`
+      <div class="upload-zone" onclick="document.querySelector('input[type=file]').click()">
+        <p>将高精图片拖拽到此处，或 <strong>点击调起本地上传</strong>（自动压缩并转化为 WebP 极速格式）</p>
+      </div>
+      <div class="card">
+        <div class="img-grid">
+          ${imgs.map(img => {
+            const url = `${CFG.r2PublicUrl}/${img.key}`;
+            return `<div class="img-card">
+              <img src="${url}" loading="lazy">
+              <div class="img-card-body">
+                <div class="img-card-name">${img.key}</div>
+                <div class="flex gap-2 mt-1">
+                  <button class="btn sm" onclick="navigator.clipboard.writeText('![插图](${url})');toast('Markdown 链已拷贝','success')">链接</button>
+                  <button class="btn sm danger" onclick="deleteR2Object('${img.key}')">删除</button>
+                </div>
+              </div>
+            </div>`
+          }).join('')}
+        </div>
+      </div>`;
+  }catch(e){ c.innerHTML=`<div class="alert danger">${e.message}</div>`; }
+}
+
+async function uploadImagesToR2(e){
+  const files = Array.from(e.target.files); if(!files.length) return;
+  toast('开始压制并同步上传到 R2…');
+  for(let file of files){
+    try{
+      // 核心闭包：前端利用 canvas 进行图片体积限制，转为高效 webp
+      const webpBlob = await convertToWebP(file);
+      const cleanName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+      await r2Fetch('PUT', cleanName, webpBlob, { 'Content-Type': 'image/webp' });
+    }catch(e){toast(`文件上传失败: ${e.message}`,'error')}
+  }
+  toast('图床队列同步就绪','success'); renderImagesPage();
+}
+
+function convertToWebP(file){
+  return new Promise((res)=>{
+    const img = new Image(); img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+      const maxW = 1400; if(img.width > maxW) { canvas.width = maxW; canvas.height = img.height * (maxW / img.width); } else { canvas.width = img.width; canvas.height = img.height; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(b => res(b), 'image/webp', 0.82);
+    }
+  });
+}
+
+async function deleteR2Object(key){
+  if(!confirm(`确定在 R2 存储桶中完全删除 ${key} 吗？`)) return;
+  try{
+    await r2Fetch('DELETE', key); toast('图床客体已清空','success'); renderImagesPage();
+  }catch(e){toast(e.message,'error')}
+}
+
+async function loadR2ImagesForInsert(){
+  const container = document.getElementById('quick-images'); container.innerHTML = `<div class="spinner"></div>`;
+  try{
+    const imgs = await getR2Images();
+    container.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${imgs.map(img=> {
+        const url = `${CFG.r2PublicUrl}/${img.key}`;
+        return `<img src="${url}" style="width:100%;height:60px;object-fit:cover;cursor:pointer;border:1px solid var(--border)" onclick="STATE.mde.codemirror.replaceSelection('![插图](${url})')" title="点击直插富文本">`
+      }).join('')}
+    </div>`;
+  }catch(e){container.innerHTML=`<span class="text-sm">调阅失败</span>`}
+}
+
+// ============================================================
+// Twikoo 评论管理与 Vercel 构建状态集成
+// ============================================================
+function renderCommentsPage(){
+  document.getElementById('page-title').textContent='评论管理系统';
+  document.getElementById('topbar-actions').innerHTML='';
+  const c=document.getElementById('main-content');
+  c.innerHTML=`
+    <div class="alert info">当前系统已深度绑定 Twikoo 评论架构。管理面板无需本地中转，可通过前台安全注入。</div>
+    <div class="card">
+      <div class="card-title mb-2">配置的环境上下文 (EnvID)</div>
+      <div class="mono" style="padding:10px;display:block">${CFG.twikooEnvId || '未配置'}</div>
+      <div class="mt-3">
+        <a href="${CFG.blogUrl}" target="_blank" class="btn primary">打开博客前台 ↗</a>
+        <p class="text-sm mt-2">提示：前往博客任意有评论框的页面，点击评论区右侧的 ⚙ (齿轮) 按钮，输入管理员密码即可直连 Twikoo 运营后台。</p>
+      </div>
+    </div>`;
+}
+
+async function renderDeployPage(){
+  document.getElementById('page-title').textContent='编译与部署状态';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="triggerRedeploy()">强制触发 Vercel 重新打包</button>`;
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>连接 Vercel 控制台…</div>`;
+  
+  try{
+    let vStatus = `<span class="deploy-badge error">未配置 Vercel 凭证</span>`;
+    if(CFG.vercelToken && CFG.vercelProjectId){
+      const vRes = await fetch(`https://api.vercel.com/v6/deployments?projectId=${CFG.vercelProjectId}&limit=1`, {
+        headers: { 'Authorization': `Bearer ${CFG.vercelToken}` }
+      });
+      if(vRes.ok) {
+        const vData = await vRes.json();
+        if(vData.deployments && vData.deployments.length > 0){
+          const d = vData.deployments[0];
+          vStatus = `<span class="deploy-badge text-sm" style="background:var(--accent-light);color:var(--accent-dark);padding:4px 8px;border-radius:10px">${d.state} (${new Date(d.createdAt).toLocaleString()})</span>`;
+        }
+      }
+    }
+    
+    const commits = await ghFetch(`/commits?per_page=5`);
+    c.innerHTML=`
+      <div class="card mb-2">
+        <div class="card-title">Vercel 当前云端分发状态</div>
+        <div class="mt-2">${vStatus}</div>
+      </div>
+      <div class="card">
+        <div class="card-title mb-2">GitHub 最近提交联动轨迹</div>
+        <table>
+          ${commits.map(cm=>`<tr><td class="mono">${cm.sha.slice(0,7)}</td><td>${cm.commit.message}</td><td class="text-sm">${cm.commit.author.name}</td></tr>`).join('')}
+        </table>
+      </div>`;
+  }catch(e){c.innerHTML=`<div class="alert danger">${e.message}</div>`}
+}
+
+async function triggerRedeploy(){
+  try{
+    const ref=await ghFetch(`/git/refs/heads/${CFG.branch}`); const cSha=ref.object.sha;
+    const commit=await ghFetch(`/git/commits/${cSha}`);
+    const nCommit=await ghFetch('/git/commits',{method:'POST',body:JSON.stringify({message:'chore: backend dashboard trigger deploy', tree:commit.tree.sha, parents:[cSha]})});
+    await ghFetch(`/git/refs/heads/${CFG.branch}`,{method:'PATCH',body:JSON.stringify({sha:nCommit.sha})});
+    toast('自动化流水线已成功激活','success'); setTimeout(renderDeployPage, 1500);
+  }catch(e){toast(e.message,'error')}
+}
+
+// ============================================================
+// Settings Page (全局配置中心)
+// ============================================================
+function renderSettingsPage(){
+  document.getElementById('page-title').textContent='全局控制台配置';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="saveAllSettings()">保存系统设置</button>`;
+  const c=document.getElementById('main-content');
+  c.innerHTML=`
+    <div class="card" style="max-width:750px">
+      <div class="section-title" style="margin-top:0">GitHub 核心配置</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">账户名称 (Owner)</label><input class="setting-input" id="s-owner" value="${CFG.owner}"></div>
+        <div class="setting-group"><label class="setting-label">仓库名字 (Repo)</label><input class="setting-input" id="s-repo" value="${CFG.repo}"></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">GitHub Token (PAT)</label><input class="setting-input" type="password" id="s-token" value="${CFG.token}"></div>
+        <div class="setting-group"><label class="setting-label">分支 (Branch)</label><input class="setting-input" id="s-branch" value="${CFG.branch}"></div>
+        <div class="setting-group"><label class="setting-label">Hugo文章目录</label><input class="setting-input" id="s-posts" value="${CFG.postsPath}"></div>
+      </div>
+      
+      <div class="section-title">Cloudflare R2 独立图床参数</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">R2 账户 ID (Account ID)</label><input class="setting-input" id="s-r2-id" value="${CFG.r2AccountId}"></div>
+        <div class="setting-group"><label class="setting-label">存储桶名称 (Bucket Name)</label><input class="setting-input" id="s-r2-bucket" value="${CFG.r2BucketName}"></div>
+        <div class="setting-group"><label class="setting-label">R2 Access Key (Email 栏)</label><input class="setting-input" id="s-r2-key" value="${CFG.r2AccessKeyId}"></div>
+        <div class="setting-group"><label class="setting-label">R2 Secret Key (Global Token)</label><input class="setting-input" type="password" id="s-r2-secret" value="${CFG.r2SecretAccessKey}"></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">R2 绑定公共域名 (例如 https://cdn.hux.ink)</label><input class="setting-input" id="s-r2-url" value="${CFG.r PublicUrl||''}" placeholder="https://"></div>
+      </div>
+
+      <div class="section-title">基础与生态扩展</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">博客前端主页 URL</label><input class="setting-input" id="s-blog" value="${CFG.blogUrl}"></div>
+        <div class="setting-group"><label class="setting-label">Twikoo 环境 ID (envId)</label><input class="setting-input" id="s-twikoo" value="${CFG.twikooEnvId}"></div>
+        <div class="setting-group"><label class="setting-label">Vercel Project ID (可选)</label><input class="setting-input" id="s-v-id" value="${CFG.vercelProjectId}"></div>
+        <div class="setting-group"><label class="setting-label">Vercel Auth Token (可选)</label><input class="setting-input" type="password" id="s-v-token" value="${CFG.vercelToken}"></div>
+      </div>
+      <div style="margin-top:20px"><button class="btn primary" onclick="saveAllSettings()">保存并重连后台</button></div>
+    </div>`;
+}
+
+function saveAllSettings(){
+  CFG.owner=document.getElementById('s-owner').value.trim();
+  CFG.repo=document.getElementById('s-repo').value.trim();
+  CFG.token=document.getElementById('s-token').value.trim();
+  CFG.branch=document.getElementById('s-branch').value.trim()||'main';
+  CFG.postsPath=document.getElementById('s-posts').value.trim()||'content/posts';
+  CFG.blogUrl=document.getElementById('s-blog').value.trim();
+  CFG.twikooEnvId=document.getElementById('s-twikoo').value.trim();
+  CFG.vercelProjectId=document.getElementById('s-v-id').value.trim();
+  CFG.vercelToken=document.getElementById('s-v-token').value.trim();
+  CFG.r2AccountId=document.getElementById('s-r2-id').value.trim();
+  CFG.r2BucketName=document.getElementById('s-r2-bucket').value.trim();
+  CFG.r2AccessKeyId=document.getElementById('s-r2-key').value.trim();
+  CFG.r2SecretAccessKey=document.getElementById('s-r2-secret').value.trim();
+  CFG.r2PublicUrl=document.getElementById('s-r2-url').value.trim().replace(/\/$/, "");
+  saveCfg(); toast('本地配置数据已刷新','success'); checkStatus(); showPage('posts');
+}
+
+function renderNoConfig(){ return `<div class="alert warning">请先在控制台系统设置中完成账户环境初始化。</div>`; }
+
+(async function init(){ loadCfg(); await checkStatus(); showPage((!CFG.token||!CFG.owner)?'settings':'posts'); })();
+</script>
+</body>
+</html>
