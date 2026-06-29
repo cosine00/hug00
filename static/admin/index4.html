@@ -1482,10 +1482,7 @@ async function triggerRedeploy(){
 // ============================================================
 function renderSettingsPage(){
   document.getElementById('page-title').innerHTML='系统设置 <small>本地浏览器保存</small>';
-  document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="exportSettings()">导出设置</button>
-    <button class="btn" onclick="importSettings()">导入设置</button>
-    <button class="btn primary" onclick="saveAllSettings()">保存设置</button>`;
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="saveAllSettings()">保存设置</button>`;
   const c=document.getElementById('main-content');
   c.innerHTML=`
     <div class="alert info" style="max-width:880px">Token 会保存在当前浏览器 localStorage 中。建议使用权限最小化的 GitHub Fine-grained Token，仅授予目标仓库 Contents 读写权限。</div>
@@ -1516,100 +1513,22 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">最大边长 <span class="muted">px</span></label><input class="setting-input" id="s-r2-max-side" placeholder="1920" value="${escapeAttr(CFG.r2ImageMaxSide || 1920)}"></div>
         <div class="setting-group" style="grid-column:span 2"><label class="switch-wrap"><span class="switch"><input type="checkbox" id="s-r2-webp-enabled" ${CFG.r2WebpEnabled === false ? '' : 'checked'}><span class="slider"></span></span><span>上传图片前自动压缩并转换成 WebP；SVG / GIF 会保留原格式。</span></label></div>
       </div>
-      <div class="section-title">设置备份与迁移</div>
-      <div class="alert info">导出文件会包含 GitHub Token、Vercel Token、R2 Access Key 和 Secret。请只保存在自己的安全设备中，不要发给他人。</div>
-      <div class="toolbar" style="margin-bottom:0">
-        <button class="btn" onclick="exportSettings()">导出当前设置</button>
-        <button class="btn" onclick="importSettings()">从 JSON 导入设置</button>
-      </div>
-      <div class="alert warning" style="margin-top:16px">R2 密钥会和 GitHub Token 一样保存在浏览器 localStorage。仅建议自用后台使用；若后台要多人使用，建议改为 Cloudflare Worker 生成临时上传签名。</div>
+      <div class="alert warning">R2 密钥会和 GitHub Token 一样保存在浏览器 localStorage。仅建议自用后台使用；若后台要多人使用，建议改为 Cloudflare Worker 生成临时上传签名。</div>
     </div>`;
 }
 
-const SETTINGS_EXPORT_VERSION=1;
-const CFG_EXPORT_KEYS=[
-  'token','owner','repo','branch','postsPath','blogUrl','vercelProjectId','vercelToken',
-  'r2AccountId','r2Bucket','r2AccessKeyId','r2SecretAccessKey','r2PublicUrl','r2Prefix',
-  'r2WebpEnabled','r2WebpQuality','r2ImageMaxSide'
-];
-
-function readSettingsFormIntoConfig(){
-  const byId=id=>document.getElementById(id);
-  if(!byId('s-owner')) return false;
-  CFG.owner=byId('s-owner').value.trim(); CFG.repo=byId('s-repo').value.trim();
-  CFG.token=byId('s-token').value.trim(); CFG.branch=byId('s-branch').value.trim()||'main';
-  CFG.postsPath=cleanPath(byId('s-posts').value.trim()||'content/posts'); CFG.blogUrl=byId('s-blog').value.trim();
-  CFG.vercelProjectId=byId('s-v-id').value.trim(); CFG.vercelToken=byId('s-v-token').value.trim();
-  CFG.r2AccountId=byId('s-r2-account').value.trim(); CFG.r2Bucket=byId('s-r2-bucket').value.trim();
-  CFG.r2AccessKeyId=byId('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=byId('s-r2-sk').value.trim();
-  CFG.r2PublicUrl=byId('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(byId('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');
-  CFG.r2WebpEnabled=byId('s-r2-webp-enabled')?.checked !== false;
-  CFG.r2WebpQuality=Math.min(0.95, Math.max(0.5, Number(byId('s-r2-webp-quality')?.value || 0.82)));
-  CFG.r2ImageMaxSide=Math.min(6000, Math.max(800, parseInt(byId('s-r2-max-side')?.value || 1920, 10)));
-  return true;
-}
-
 function saveAllSettings(){
-  readSettingsFormIntoConfig();
+  CFG.owner=document.getElementById('s-owner').value.trim(); CFG.repo=document.getElementById('s-repo').value.trim();
+  CFG.token=document.getElementById('s-token').value.trim(); CFG.branch=document.getElementById('s-branch').value.trim()||'main';
+  CFG.postsPath=cleanPath(document.getElementById('s-posts').value.trim()||'content/posts'); CFG.blogUrl=document.getElementById('s-blog').value.trim();
+  CFG.vercelProjectId=document.getElementById('s-v-id').value.trim(); CFG.vercelToken=document.getElementById('s-v-token').value.trim();
+  CFG.r2AccountId=document.getElementById('s-r2-account').value.trim(); CFG.r2Bucket=document.getElementById('s-r2-bucket').value.trim();
+  CFG.r2AccessKeyId=document.getElementById('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=document.getElementById('s-r2-sk').value.trim();
+  CFG.r2PublicUrl=document.getElementById('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(document.getElementById('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');
+  CFG.r2WebpEnabled=document.getElementById('s-r2-webp-enabled')?.checked !== false;
+  CFG.r2WebpQuality=Math.min(0.95, Math.max(0.5, Number(document.getElementById('s-r2-webp-quality')?.value || 0.82)));
+  CFG.r2ImageMaxSide=Math.min(6000, Math.max(800, parseInt(document.getElementById('s-r2-max-side')?.value || 1920, 10)));
   saveCfg(); toast('设置已保存到当前浏览器','success'); checkStatus();
-}
-
-function exportSettings(){
-  readSettingsFormIntoConfig();
-  saveCfg();
-  const exportedCfg={};
-  CFG_EXPORT_KEYS.forEach(key=>{ exportedCfg[key]=CFG[key] ?? ''; });
-  const payload={
-    app:'Counting Stars Hugo Admin',
-    type:'hugo-admin-settings',
-    version:SETTINGS_EXPORT_VERSION,
-    exportedAt:new Date().toISOString(),
-    cfg:exportedCfg
-  };
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const stamp=new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
-  a.href=url; a.download=`counting-stars-admin-settings-${stamp}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1200);
-  toast('设置已导出。请妥善保管，文件内包含密钥。','success');
-}
-
-function importSettings(){
-  const input=document.createElement('input');
-  input.type='file'; input.accept='application/json,.json';
-  input.addEventListener('change',()=>{
-    const file=input.files && input.files[0];
-    if(file) importSettingsFile(file);
-  });
-  input.click();
-}
-
-async function importSettingsFile(file){
-  try{
-    const text=await file.text();
-    const parsed=JSON.parse(text);
-    const incoming=parsed && typeof parsed==='object' && parsed.cfg && typeof parsed.cfg==='object' ? parsed.cfg : parsed;
-    if(!incoming || typeof incoming!=='object') throw new Error('设置文件格式不正确');
-    const hitKeys=CFG_EXPORT_KEYS.filter(key=>Object.prototype.hasOwnProperty.call(incoming,key));
-    if(hitKeys.length===0) throw new Error('没有识别到可导入的设置字段');
-    const ok=confirm(`即将导入 ${hitKeys.length} 个设置字段，并覆盖当前浏览器中的后台配置。导入文件可能包含 GitHub / R2 / Vercel 密钥，请确认文件来源可信。是否继续？`);
-    if(!ok) return;
-    hitKeys.forEach(key=>{ CFG[key]=incoming[key]; });
-    CFG.branch=String(CFG.branch||'main').trim() || 'main';
-    CFG.postsPath=cleanPath(CFG.postsPath||'content/posts');
-    CFG.r2Prefix=cleanPath(CFG.r2Prefix||'images/{yyyy}/{mm}');
-    CFG.r2WebpEnabled=CFG.r2WebpEnabled === false ? false : true;
-    CFG.r2WebpQuality=Math.min(0.95, Math.max(0.5, Number(CFG.r2WebpQuality || 0.82)));
-    CFG.r2ImageMaxSide=Math.min(6000, Math.max(800, parseInt(CFG.r2ImageMaxSide || 1920, 10)));
-    saveCfg();
-    toast('设置导入成功，已保存到当前浏览器。','success');
-    renderSettingsPage();
-    checkStatus();
-  }catch(e){
-    toast(`导入失败：${e.message}`,'error');
-  }
 }
 
 // ============================================================
