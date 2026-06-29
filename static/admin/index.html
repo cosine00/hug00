@@ -9,167 +9,241 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#fff;--bg2:#f8f9fa;--bg3:#f1f3f5;
-  --text:#212529;--text2:#495057;--text3:#adb5bd;
-  --border:#dee2e6;--border2:#ced4da;
-  --accent:#3b5bdb;--accent-light:#edf2ff;--accent-dark:#2b43b0;
-  --danger:#fa5252;--danger-light:#fff5f5;
-  --success:#40c057;--success-light:#ebfbee;
-  --warning:#fab005;--warning-light:#fff9db;
-  --radius:6px;--radius-lg:10px;
-  --shadow:0 2px 4px rgba(0,0,0,0.04), 0 1px 0 rgba(0,0,0,0.02);
+  --bg:#fff;--bg2:#f7f8fa;--bg3:#f1f3f5;--bg4:#eef1f6;
+  --text:#1f2329;--text2:#4e5969;--text3:#86909c;--text4:#c9cdd4;
+  --border:#e5e6eb;--border2:#d8dce4;
+  --accent:#1f7a4d;--accent-light:#eaf7ef;--accent-dark:#14633c;
+  --blue:#3b5bdb;--blue-light:#edf2ff;
+  --danger:#e03131;--danger-light:#fff1f0;
+  --success:#2f9e44;--success-light:#ebfbee;
+  --warning:#f08c00;--warning-light:#fff7e6;
+  --purple:#7048e8;--purple-light:#f3f0ff;
+  --radius:8px;--radius-lg:12px;--radius-xl:18px;
+  --shadow:0 8px 24px rgba(29,33,41,.05),0 1px 2px rgba(29,33,41,.04);
+  --shadow-soft:0 1px 3px rgba(29,33,41,.08);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:var(--text);background:var(--bg2);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-size:14px;color:var(--text);background:var(--bg2);min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+a{color:inherit;text-decoration:none}
 
 /* Layout */
-.app{display:flex;height:100vh;overflow:hidden}
-.sidebar{width:230px;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:2px 0 8px rgba(0,0,0,0.01)}
-.main{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--bg2)}
-.topbar{height:56px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;z-index:10}
-.content{flex:1;padding:24px;overflow-y:auto;height:calc(100vh - 56px)}
+.app{display:flex;height:100vh;overflow:hidden;background:var(--bg2)}
+.sidebar{width:236px;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:2px 0 12px rgba(29,33,41,.02);z-index:20}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.topbar{height:60px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;backdrop-filter:saturate(160%) blur(10px);z-index:15}
+.content{flex:1;padding:24px;overflow-y:auto;height:calc(100vh - 60px)}
 
 /* Sidebar */
-.sidebar-logo{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.sidebar-logo .logo-icon{width:32px;height:32px;background:linear-gradient(135deg, var(--accent), var(--accent-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600}
-.sidebar-logo .logo-title{font-weight:600;font-size:14px;color:var(--text);letter-spacing:0.5px}
-.sidebar-logo .logo-sub{font-size:11px;color:var(--text3);margin-top:2px}
-.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
-.nav-section{padding:8px 20px 6px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:var(--text2);transition:all .2s;border-left:3px solid transparent;font-size:13.5px}
+.sidebar-logo{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;min-height:60px}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#20c997,var(--accent-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;box-shadow:0 8px 18px rgba(31,122,77,.18)}
+.logo-title{font-weight:700;font-size:15px;color:var(--text);letter-spacing:.2px}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.sidebar-nav{flex:1;padding:18px 0;overflow-y:auto}
+.nav-section{padding:10px 20px 8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;cursor:pointer;color:var(--text2);transition:all .18s;border-left:3px solid transparent;font-size:13.5px;user-select:none}
 .nav-item:hover{background:var(--bg2);color:var(--text)}
-.nav-item.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);font-weight:600}
-.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.8}
-.nav-item.active svg{opacity:1}
-.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border);background:var(--bg2)}
-.sidebar-status{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--text3)}
-.status-dot.ok{background:var(--success);box-shadow:0 0 6px var(--success)}
-.status-dot.err{background:var(--danger);box-shadow:0 0 6px var(--danger)}
+.nav-item.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.85}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border);background:linear-gradient(180deg,#fff,var(--bg2))}
+.sidebar-status{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;line-height:1.35}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--text4);flex-shrink:0}
+.status-dot.ok{background:var(--success);box-shadow:0 0 8px rgba(47,158,68,.45)}
+.status-dot.err{background:var(--danger);box-shadow:0 0 8px rgba(224,49,49,.35)}
 
 /* Topbar */
-.page-title{font-size:16px;font-weight:600;color:var(--text)}
-.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;font-family:inherit;line-height:1}
-.btn:hover{background:var(--bg2);color:var(--text);border-color:var(--text2)}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
-.btn.danger{color:var(--danger);border-color:var(--border)}
-.btn.danger:hover{background:var(--danger-light);border-color:var(--danger)}
-.btn.sm{padding:6px 10px;font-size:12px;border-radius:4px}
+.page-title{font-size:17px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;min-width:0}
+.page-title small{font-size:12px;font-weight:500;color:var(--text3)}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);transition:all .15s;line-height:1;white-space:nowrap;box-shadow:0 1px 0 rgba(29,33,41,.02)}
+.btn:hover{background:var(--bg2);color:var(--text);border-color:#bfc5d1}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 12px rgba(31,122,77,.18)}
+.btn.primary:hover{background:var(--accent-dark);border-color:var(--accent-dark);color:#fff}
+.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.danger{color:var(--danger);border-color:#f0b7b7;background:#fff}
+.btn.danger:hover{background:var(--danger-light);border-color:var(--danger);color:var(--danger)}
+.btn.ghost{border-color:transparent;background:transparent;box-shadow:none}
+.btn.sm{padding:6px 9px;font-size:12px;border-radius:6px}
+.btn.icon{width:34px;height:34px;padding:0}
 
-/* Cards & Dashboard */
-.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
-.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.stat-card.all::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
-.stat-card.pub::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--success)}
-.stat-card.dra::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--warning)}
-.stat-label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
-.stat-value{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+/* Cards */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.card-title{font-weight:700;font-size:15px;color:var(--text)}
+.card-desc{font-size:12.5px;color:var(--text3);margin-top:4px;line-height:1.5}
 
-/* Table Design */
-.table-wrap{overflow-x:auto;margin:0 -24px}
-table{width:100%;border-collapse:collapse;text-align:left}
-th{font-size:12px;font-weight:600;color:var(--text2);padding:12px 24px;border-bottom:1px solid var(--border);background:var(--bg2);text-transform:uppercase;letter-spacing:0.5px}
-td{padding:14px 24px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text);vertical-align:middle}
+/* Dashboard */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:18px}
+.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden;cursor:pointer;transition:.16s}
+.stat-card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.stat-card.active{border-color:rgba(31,122,77,.45);box-shadow:0 0 0 3px rgba(31,122,77,.08)}
+.stat-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.stat-card.pub::after{background:var(--success)}
+.stat-card.dra::after{background:var(--warning)}
+.stat-card.trash::after{background:var(--text3)}
+.stat-card.tagstat::after{background:var(--purple)}
+.stat-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:8px;letter-spacing:.04em}
+.stat-value{font-size:28px;font-weight:800;color:var(--text);line-height:1}
+.stat-note{font-size:12px;color:var(--text3);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Article management */
+.management-shell{display:grid;grid-template-columns:1fr;gap:16px}
+.segmented{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.seg-btn{border:1px solid var(--border);background:var(--bg);border-radius:999px;padding:7px 12px;font-size:13px;color:var(--text2);cursor:pointer;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.seg-btn:hover{border-color:var(--accent);color:var(--accent)}
+.seg-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 10px rgba(31,122,77,.18)}
+.seg-count{font-size:11px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.24)}
+.seg-btn:not(.active) .seg-count{background:var(--bg3);color:var(--text3)}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:260px}
+.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3)}
+.search-input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13.5px;outline:none;transition:.15s;color:var(--text)}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.12)}
+select.filter,.form-select{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13.5px;cursor:pointer;outline:none;color:var(--text2);min-height:36px}
+select.filter:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
+.batch-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(180deg,#fff,var(--bg2));border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:14px;color:var(--text2);font-size:13px}
+.batch-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* Table */
+.table-wrap{overflow-x:auto;margin:0 -20px}
+table{width:100%;border-collapse:collapse;text-align:center;min-width:780px}
+th{font-size:12px;font-weight:700;color:var(--text2);padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;text-align:center}
+td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text);vertical-align:middle;text-align:center}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg2)}
-.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;line-height:1}
-.tag.draft{background:var(--warning-light);color:#855c00}
+tbody tr:hover td{background:#fbfcfd}
+.check-cell{width:44px;text-align:center}
+.row-check{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.article-title-cell{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:220px;max-width:520px;margin:0 auto;text-align:left}
+.article-title-main{font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0;text-align:left}
+.article-title-main span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:420px}
+.article-title-link{border:none;background:transparent;color:var(--text);font:inherit;font-weight:800;cursor:pointer;max-width:460px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;padding:0;line-height:1.35}
+.article-title-link:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.article-excerpt{font-size:12.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px;line-height:1.4}
+.article-path{display:flex;align-items:center;justify-content:flex-start;gap:6px;color:var(--text3);font-size:12px;max-width:520px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.path-dot{width:5px;height:5px;border-radius:50%;background:var(--text4);flex-shrink:0}
+.tag-list{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;max-width:260px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;line-height:1;white-space:nowrap}
+.tag.draft{background:var(--warning-light);color:#ad6800}
 .tag.published{background:var(--success-light);color:#1b6e30}
+.tag.trash{background:var(--bg3);color:var(--text2)}
+.tag.meta{background:var(--blue-light);color:#2b43b0}
+.tag.soft{background:var(--bg3);color:var(--text2)}
+.tag.purple{background:var(--purple-light);color:var(--purple)}
+.action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:5px;color:var(--text2)}
+.muted{color:var(--text3)}
+.nowrap{white-space:nowrap}
 
-/* Toolbar Controls */
-.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-.search-input{flex:1;min-width:260px;padding:9px 14px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13.5px;outline:none;transition:.15s}
-.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,91,219,0.15)}
-select.filter{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13.5px;cursor:pointer;outline:none}
-
-/* Advanced Editor & Preview Workspace */
-.editor-wrap{display:flex;gap:24px;height:calc(100vh - 104px);overflow:hidden;margin:-24px;padding:24px}
-.editor-left{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
-.editor-right{width:320px;flex-shrink:0;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-right:4px}
-.fm-group{display:flex;flex-direction:column;gap:6px}
-.fm-label{font-size:12px;font-weight:600;color:var(--text2)}
-.fm-input{padding:9px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg);width:100%}
-.fm-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(59,91,219,0.1)}
-.tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 10px;border:1px solid var(--border2);border-radius:var(--radius);min-height:38px;background:var(--bg)}
-.tag-chip{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);color:var(--text2);padding:3px 8px;border-radius:4px;font-size:12px;font-weight:500}
-.tag-chip .remove{cursor:pointer;opacity:.5;font-weight:bold}
-.tag-chip .remove:hover{opacity:1;color:var(--danger)}
-.tags-input{border:none;outline:none;font-size:13px;min-width:60px;flex:1;background:transparent}
-
-/* EasyMDE 深度客制化 */
-.EasyMDEContainer{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.editor-toolbar{border-top:none!important;border-left:none!important;border-right:none!important;border-bottom:1px solid var(--border)!important;background:var(--bg2);border-radius:0!important;padding:6px 12px!important}
-.CodeMirror{flex:1;height:100%!important;border:none!important;font-size:14px;font-family:'Fira Code', Consolas, Monaco, monospace;line-height:1.7;padding:12px 20px}
+/* Editor */
+.editor-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;height:calc(100vh - 108px);overflow:hidden;margin:-24px;padding:20px 24px 24px;background:var(--bg2)}
+.editor-left{display:flex;flex-direction:column;min-width:0;height:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.editor-right{height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-right:4px}
+.editor-title-panel{padding:18px 20px 14px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff,#fbfcfd)}
+.title-input{border:none;outline:none;width:100%;font-size:25px;line-height:1.25;font-weight:800;color:var(--text);background:transparent;margin-bottom:10px}
+.title-input::placeholder{color:var(--text4)}
+.desc-input{border:none;outline:none;width:100%;font-size:14px;color:var(--text2);background:transparent;resize:none;min-height:34px;line-height:1.55}
+.desc-input::placeholder{color:var(--text4)}
+.editor-meta-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--text3);margin-top:10px}
+.editor-left .EasyMDEContainer{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.editor-toolbar{border-top:none!important;border-left:none!important;border-right:none!important;border-bottom:1px solid var(--border)!important;background:var(--bg2)!important;border-radius:0!important;padding:7px 10px!important;opacity:1!important}
+.CodeMirror{flex:1;height:100%!important;border:none!important;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Monaco,monospace;line-height:1.72;padding:10px 18px;color:var(--text)}
 .CodeMirror-scroll{min-height:100%}
-
-/* View & Reader Mode */
-.reader-wrap{max-width:820px;margin:0 auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;box-shadow:var(--shadow)}
-.reader-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.reader-title{font-size:28px;font-weight:700;line-height:1.3;color:var(--text);margin-bottom:12px}
-.reader-meta{display:flex;gap:16px;color:var(--text3);font-size:13px;align-items:center;flex-wrap:wrap}
-
-/* 互动管理高级双栏主板结构 */
-.interactions-panel{display:flex;gap:20px;height:calc(100vh - 104px);margin:-24px;padding:24px;overflow:hidden}
-.inter-left-list{width:320px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow)}
-.inter-right-stream{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow)}
-.inter-list-scroll{flex:1;overflow-y:auto}
-.inter-stream-scroll{flex:1;overflow-y:auto;padding:20px}
-.article-row{padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:6px}
-.article-row:hover{background:var(--bg2)}
-.article-row.active{background:var(--accent-light);border-right:3px solid var(--accent)}
-.article-row-title{font-weight:600;color:var(--text);font-size:13px;line-height:1.4}
-.article-row-meta{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text3)}
-
-/* 评论气泡流式美化 */
-.comment-node{padding:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);margin-bottom:14px;transition:all .2s}
-.comment-node:hover{box-shadow:var(--shadow);border-color:var(--border2)}
-.comment-node.hidden-comment{background:var(--bg2);opacity:0.65}
-.comment-avatar-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--bg3);object-fit:cover}
-.comment-user{font-weight:600;font-size:13px;color:var(--text)}
-.comment-time{font-size:11.5px;color:var(--text3);margin-left:auto}
-.comment-body{font-size:13px;color:var(--text2);line-height:1.6;padding-left:38px;word-break:break-all}
-.comment-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;font-size:12px}
-.action-link{cursor:pointer;color:var(--text2);display:inline-flex;align-items:center;gap:4px;user-select:none}
-.action-link:hover{color:var(--accent)}
-.action-link.delete:hover{color:var(--danger)}
-
-/* Image gallery */
-.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
-.img-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .2s;position:relative;box-shadow:var(--shadow)}
-.img-card:hover{transform:translateY(-2px);border-color:var(--accent)}
-.img-card img{width:100%;height:110px;object-fit:cover;display:block;background:var(--bg3)}
-.img-card-body{padding:10px 12px}
-.img-card-name{font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:48px 24px;text-align:center;cursor:pointer;transition:.15s;background:var(--bg);box-shadow:var(--shadow);margin-bottom:24px}
-.upload-zone:hover{border-color:var(--accent);background:var(--accent-light)}
-
-/* Global Components */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-.modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:480px;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
-.modal-title{font-size:16px;font-weight:600;margin-bottom:12px}
-.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
-.toast-container{position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px}
-.toast{background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:13.5px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);opacity:0;transform:translateY(-10px);transition:all .3s}
-.toast.show{opacity:1;transform:translateX(0)}
-.toast.success{background:var(--success)}
-.toast.error{background:var(--danger)}
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.setting-group{display:flex;flex-direction:column;gap:6px}
-.switch-wrap{display:flex;align-items:center;gap:10px;padding:8px 0}
-.switch{position:relative;display:inline-block;width:40px;height:22px}
+.editor-preview,.editor-preview-side{background:#fff;color:var(--text)}
+.fm-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-soft)}
+.fm-card-title{font-weight:800;font-size:13px;color:var(--text);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fm-group{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.fm-label{font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;justify-content:space-between;gap:6px}
+.fm-input,.fm-textarea{padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg);width:100%}
+.fm-textarea{min-height:76px;resize:vertical;line-height:1.55}
+.fm-input:focus,.fm-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
+.tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:7px 9px;border:1px solid var(--border2);border-radius:var(--radius);min-height:40px;background:var(--bg);cursor:text}
+.tags-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
+.tag-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-light);color:var(--accent-dark);padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.tag-chip .remove{cursor:pointer;opacity:.65;font-weight:900;line-height:1}
+.tag-chip .remove:hover{opacity:1;color:var(--danger)}
+.tags-input{border:none;outline:none;font-size:13px;min-width:70px;flex:1;background:transparent;height:24px;color:var(--text)}
+.switch-wrap{display:flex;align-items:center;gap:10px;padding:4px 0;font-size:13px;color:var(--text2)}
+.switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;inset:0;background:var(--border2);border-radius:22px;transition:.2s}
-.slider:before{position:absolute;content:"";width:16px;height:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.slider{position:absolute;cursor:pointer;inset:0;background:var(--border2);border-radius:24px;transition:.2s}
+.slider:before{position:absolute;content:"";width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(29,33,41,.25)}
 input:checked+.slider{background:var(--accent)}
 input:checked+.slider:before{transform:translateX(18px)}
-.loading{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--text3);font-size:14px;gap:12px}
+.helper-list{display:grid;gap:8px;font-size:12.5px;color:var(--text2);line-height:1.55}
+.helper-list div{display:flex;gap:7px;align-items:flex-start}
+.autosave-box{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--text3);border-top:1px dashed var(--border);padding-top:12px;margin-top:4px}
+
+/* Reader */
+.reader-wrap{max-width:920px;margin:0 auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:42px;box-shadow:var(--shadow)}
+.reader-header{margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.reader-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}
+.reader-title{font-size:32px;font-weight:850;line-height:1.25;color:var(--text);margin:0;letter-spacing:-.02em;min-width:0}
+.reader-title-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;padding-top:2px}
+.reader-desc{font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:16px}
+.reader-meta{display:flex;gap:12px;color:var(--text3);font-size:13px;align-items:center;flex-wrap:wrap}
+.markdown-body{font-size:15px;line-height:1.78}
+.markdown-body img{border-radius:8px}
+
+/* Settings */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.setting-group{display:flex;flex-direction:column;gap:7px}
+.setting-label{font-size:12px;font-weight:700;color:var(--text2)}
+.setting-input{padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg)}
+.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
+.section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:9px}
+
+/* Global Components */
+.toast-container{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast{background:#1f2329;color:#fff;padding:12px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:600;box-shadow:0 10px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(-10px);transition:all .24s;line-height:1.45}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warning{background:var(--warning)}
+.loading{display:flex;align-items:center;justify-content:center;padding:70px 20px;color:var(--text3);font-size:14px;gap:12px;text-align:center}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-.truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px;display:inline-block;vertical-align:middle}
-.mono{font-family:monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+.alert{padding:13px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:16px;line-height:1.55}
+.alert.warning{background:var(--warning-light);color:#ad6800;border:1px solid #ffd591}
+.alert.danger{background:var(--danger-light);color:var(--danger);border:1px solid #ffa39e}
+.alert.info{background:var(--blue-light);color:#2b43b0;border:1px solid #bac8ff}
+.empty-state{text-align:center;padding:54px 20px;color:var(--text3);font-size:13.5px;line-height:1.7}
+.empty-state .empty-icon{font-size:34px;margin-bottom:10px;opacity:.75}
+.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid var(--border2);border-bottom-width:2px;background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--text2)}
+
+@media (max-width:1080px){
+  .editor-wrap{grid-template-columns:1fr;height:auto;overflow:auto}
+  .editor-left{min-height:680px}
+  .editor-right{height:auto;overflow:visible;padding-right:0}
+}
+@media (max-width:860px){
+  .app{display:block;height:auto;min-height:100vh;overflow:auto}
+  .sidebar{width:100%;height:auto;position:sticky;top:0;z-index:30;border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-logo{padding:12px 16px;min-height:52px}
+  .sidebar-nav{display:flex;align-items:center;padding:0 8px 10px;overflow-x:auto;gap:4px}
+  .nav-section{display:none}
+  .nav-item{border-left:none;border-bottom:2px solid transparent;padding:9px 12px;border-radius:8px;white-space:nowrap}
+  .nav-item.active{border-left:none;border-bottom-color:var(--accent)}
+  .sidebar-footer{display:none}
+  .main{min-height:calc(100vh - 100px)}
+  .topbar{height:auto;min-height:58px;padding:12px 16px;align-items:flex-start;flex-direction:column}
+  .topbar-actions{margin-left:0;width:100%;justify-content:flex-start}
+  .content{height:auto;min-height:calc(100vh - 120px);padding:16px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .settings-grid{grid-template-columns:1fr}
+  .setting-group[style*="span 2"]{grid-column:auto!important}
+  .editor-wrap{margin:-16px;padding:16px;height:auto}
+  .reader-wrap{padding:24px}
+  .reader-title{font-size:26px}
+  .reader-title-row{flex-direction:column;align-items:stretch}
+  .reader-title-actions{justify-content:flex-start;padding-top:0}
+}
+@media (max-width:560px){
+  .stats-grid{grid-template-columns:1fr}
+  .toolbar{align-items:stretch}
+  .search-box,select.filter,.btn{width:100%}
+  .batch-bar{align-items:flex-start;flex-direction:column}
+}
 </style>
 </head>
 <body>
@@ -183,21 +257,12 @@ input:checked+.slider:before{transform:translateX(18px)}
       </div>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-section">内容</div>
-      <div class="nav-item" onclick="showPage('posts')" id="nav-posts">
+      <div class="nav-section">内容管理</div>
+      <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
       </div>
-      <div class="nav-item" onclick="showPage('images')" id="nav-images">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        R2 图床管理
-      </div>
-      <div class="nav-section">互动</div>
-      <div class="nav-item active" onclick="showPage('comments')" id="nav-comments">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        评论管理
-      </div>
-      <div class="nav-section">系统</div>
+      <div class="nav-section">系统设置</div>
       <div class="nav-item" onclick="showPage('deploy')" id="nav-deploy">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
         部署状态
@@ -210,7 +275,7 @@ input:checked+.slider:before{transform:translateX(18px)}
     <div class="sidebar-footer">
       <div class="sidebar-status" id="sidebar-status">
         <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">连接中…</span>
+        <span id="status-text">正在连接仓库...</span>
       </div>
     </div>
   </aside>
@@ -221,7 +286,7 @@ input:checked+.slider:before{transform:translateX(18px)}
       <div class="topbar-actions" id="topbar-actions"></div>
     </div>
     <div class="content" id="main-content">
-      <div class="loading"><div class="spinner"></div>基础引擎加载中…</div>
+      <div class="loading"><div class="spinner"></div>正在读取数据，请稍候...</div>
     </div>
   </div>
 </div>
@@ -232,694 +297,803 @@ input:checked+.slider:before{transform:translateX(18px)}
 
 <script>
 // ============================================================
-// Data Config Matrix
+// Counting Stars Hugo Admin
+// 单文件后台：GitHub 内容管理 + Hugo Front Matter + Vercel 状态查看
 // ============================================================
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
-  blogUrl: 'https://hux.ink', twikooEnvId: '', vercelProjectId: '', vercelToken: '',
-  r2AccountId: '', r2BucketName: '', r2AccessKeyId: '', r2SecretAccessKey: '', r2PublicUrl: '',
-  twikooAdminPassword: ''
+  blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: ''
 };
 
 let STATE = {
-  page: 'comments', posts: [], images: [], searchQuery: '', filterStatus: 'all', activeTags: [], editingPost: null, mde: null,
-  commentsRaw: [], commentArticles: [], activeUrlKey: null, commentSearchQuery: ''
+  page: 'posts', posts: [], searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
+  selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null
 };
 
-function saveCfg(){localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG))}
-function loadCfg(){
-  try{ const s=localStorage.getItem('hugo_admin_cfg'); if(s){Object.assign(CFG, JSON.parse(s))} }catch(e){}
-}
+const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
 
-// ============================================================
-// Base API Engine
-// ============================================================
-async function ghFetch(path, opts={}){
-  if(!CFG.token||!CFG.owner||!CFG.repo) throw new Error('请先在系统设置中补齐 GitHub 的核心授信');
-  const base = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
-  const res = await fetch(base+path, {
-    ...opts, headers:{ 'Authorization': `Bearer ${CFG.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', ...(opts.headers||{}) }
-  });
-  if(!res.ok) { const err = await res.json().catch(()=>({})); throw new Error(err.message||`错误代码 ${res.status}`); }
-  return res.json();
-}
+function saveCfg(){ localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG)); }
+function loadCfg(){ try{ const s=localStorage.getItem('hugo_admin_cfg'); if(s) Object.assign(CFG, JSON.parse(s)); }catch(e){} }
+function cleanPath(p){ return String(p||'').replace(/^\/+|\/+$/g,''); }
+function normalizePostsPath(){ return cleanPath(CFG.postsPath || 'content/posts'); }
+function escapeHTML(v){ return String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function escapeAttr(v){ return escapeHTML(v).replace(/'/g,'&#39;'); }
+function encodePath(path){ return encodeURIComponent(path); }
+function formatDate(v){ if(!v) return '未设置'; return String(v).replace('T',' ').slice(0,16); }
+function formatDateShort(v){ if(!v) return '未设置'; return String(v).slice(0,10); }
+function nowLocalString(){ const d=new Date(); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function slugify(str){ return String(str||'post').trim().toLowerCase().replace(/[\s_]+/g,'-').replace(/[^\w\-\u4e00-\u9fa5]+/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'') || `post-${Date.now()}`; }
+function countWords(text){ const t=String(text||'').replace(/```[\s\S]*?```/g,'').replace(/[#>*_`\-\[\]()!]/g,' '); const cn=(t.match(/[\u4e00-\u9fa5]/g)||[]).length; const en=(t.replace(/[\u4e00-\u9fa5]/g,' ').match(/[A-Za-z0-9]+/g)||[]).length; return cn + en; }
+function readMinutes(text){ return Math.max(1, Math.ceil(countWords(text)/400)); }
+function getExcerpt(body, desc){ if(desc) return String(desc).trim(); return String(body||'').replace(/```[\s\S]*?```/g,'').replace(/[#>*_`\[\]()!]/g,'').replace(/\s+/g,' ').trim().slice(0,120); }
+function normalizeTags(tags){ if(Array.isArray(tags)) return tags.map(t=>String(t).trim()).filter(Boolean); if(!tags) return []; return String(tags).split(',').map(t=>t.trim()).filter(Boolean); }
+function isDraftValue(v){ return v === true || String(v).toLowerCase() === 'true' || String(v).toLowerCase() === 'yes'; }
 
-async function ghGraphQL(query, variables={}){
-  if(!CFG.token) throw new Error('授信 Token 缺失');
-  const res = await fetch('https://api.github.com/graphql', {
-    method: 'POST', headers: { 'Authorization': `Bearer ${CFG.token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, variables })
-  });
-  if(!res.ok) throw new Error(`GraphQL 通讯中断: ${res.status}`);
-  const data = await res.json(); if(data.errors) throw new Error(data.errors[0].message);
-  return data.data;
-}
-
-async function getFileContent(path){
-  const data = await ghFetch(`/contents/${path}?ref=${CFG.branch}`);
-  const content = atob(data.content.replace(/\n/g,''));
-  return {content: new TextDecoder().decode(new Uint8Array([...content].map(c=>c.charCodeAt(0)))), sha: data.sha, path: data.path};
-}
-
-async function putFile(path, content, sha, message){
-  const encoded = btoa(unescape(encodeURIComponent(content)));
-  const body = {message, content: encoded, branch: CFG.branch}; if(sha) body.sha = sha;
-  return ghFetch(`/contents/${path}`, {method:'PUT', body: JSON.stringify(body)});
-}
-
-// ============================================================
-// Twikoo Admin API Bridge (包含路径智能规整修复与多页温和轮询)
-// ============================================================
-async function tkAdminFetch(eventAction, extraBody={}){
-  if(!CFG.twikooEnvId) throw new Error('未配置 Twikoo 环境 ID (envId)');
-  
-  let targetUrl = CFG.twikooEnvId.trim();
-  if (targetUrl.startsWith('http') && !targetUrl.endsWith('/')) {
-    targetUrl += '/';
-  }
-
-  const res = await fetch(targetUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event: eventAction, password: CFG.twikooAdminPassword, ...extraBody })
-  });
-  const data = await res.json();
-  if(data.err) throw new Error(data.err);
-  return data;
-}
-
-// ============================================================
-// Cloudflare R2 Operations
-// ============================================================
-async function r2Fetch(method, key, body=null, headers={}){
-  const url = `https://api.cloudflare.com/client/v4/accounts/${CFG.r2AccountId}/r2/buckets/${CFG.r2BucketName}/objects/${key}`;
-  const res = await fetch(url, { method, headers: { 'X-Auth-Key': CFG.r2SecretAccessKey, 'X-Auth-Email': CFG.r2AccessKeyId, ...headers }, body });
-  if(!res.ok) throw new Error(`图床 R2 通讯异常: ${res.statusText}`);
-  return method === 'GET' ? res.blob() : res.json();
-}
-
-async function getR2Images(){
-  if(!CFG.r2AccountId||!CFG.r2BucketName) return [];
-  const url = `https://api.cloudflare.com/client/v4/accounts/${CFG.r2AccountId}/r2/buckets/${CFG.r2BucketName}/objects`;
-  const res = await fetch(url, { headers: { 'X-Auth-Key': varR2Secret = CFG.r2SecretAccessKey, 'X-Auth-Email': CFG.r2AccessKeyId } });
-  if(!res.ok) throw new Error('R2 列表抓取失败，请检测 CORS 或凭证');
-  const data = await res.json(); return (data.result || []).filter(o => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(o.key));
-}
-
-// ============================================================
-// Robust YAML Front Matter Parser & Builder
-// ============================================================
-function parseFrontMatter(raw){
-  const normalized = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const match = normalized.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-  if(!match) return {fm:{}, body: normalized};
-  const fmStr = match[1], body = match[2], fm = {};
-  const lines = fmStr.split('\n');
-  let currentKey = null, inList = false, listItems = [];
-  
-  for(let line of lines){
-    if(/^[ \t]+-[ \t]+/.test(line)){
-      if(inList) listItems.push(line.replace(/^[ \t]+-[ \t]+/, '').trim()); continue;
-    }
-    if(inList){ fm[currentKey] = listItems; inList = false; listItems = []; }
-    const kv = line.match(/^([\w-]+):\s*(.*)/);
-    if(kv){
-      const k = kv[1], v = kv[2].trim();
-      if(v === '' || v === null){ currentKey = k; inList = true; listItems = []; } 
-      else { fm[k] = v.replace(/^(["'])([\s\S]*)\1$/, '$2'); }
-    }
-  }
-  if(inList) fm[currentKey] = listItems;
-  return {fm, body};
-}
-
-function buildFrontMatter(fm, body){
-  let out='---\n'; const order=['title','author','date','tags','slug','draft','description']; const done=new Set();
-  for(const k of order){
-    if(fm[k]===undefined||fm[k]==='') continue; done.add(k);
-    if(Array.isArray(fm[k])){ out+=`${k}:\n`; fm[k].forEach(t=>{out+=`  - ${t}\n`}); } 
-    else { const v = String(fm[k]); out+=`${k}: ${/[:#\[\]{}|>&!,]/.test(v)?'"'+v+'"':v}\n`; }
-  }
-  for(const [k,v] of Object.entries(fm)){
-    if(done.has(k)) continue;
-    if(Array.isArray(v)){out+=`${k}:\n`;v.forEach(t=>{out+=`  - ${t}\n`});} else{out+=`${k}: ${v}\n`;}
-  }
-  out+='---\n'; if(body && !body.startsWith('\n')) out+='\n'; out+=body; return out;
+function renderNoConfig(){
+  return `<div class="alert warning">未检测到核心变量配置。请先前往 <strong>系统设置</strong> 页面配置 GitHub Token、Owner、Repo 和文章目录。</div>`;
 }
 
 function toast(msg, type='info'){
   const c=document.getElementById('toast-container'); const t=document.createElement('div');
-  t.className=`toast show ${type==='error'?'error':type==='success'?'success':''}`; t.textContent=msg; c.appendChild(t);
-  setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),300)}, 3000);
+  t.className=`toast show ${type==='error'?'error':type==='success'?'success':type==='warning'?'warning':''}`;
+  t.textContent=msg; c.appendChild(t);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),260); }, type==='error'?4600:3000);
 }
 
 // ============================================================
-// Workspace Routing Hub
+// GitHub API
 // ============================================================
-function showPage(page){
-  STATE.page=page; document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  const nav=document.getElementById('nav-'+page); if(nav) nav.classList.add('active');
-  const c=document.getElementById('main-content'); c.style.overflow='auto';
-  switch(page){
-    case 'posts': renderPostsPage(); break;
-    case 'images': renderImagesPage(); break;
-    case 'comments': renderCommentsPage(); break;
-    case 'deploy': renderDeployPage(); break;
-    case 'settings': renderSettingsPage(); break;
-  }
-}
-
-async function checkStatus(){
-  if(!CFG.token||!CFG.owner||!CFG.repo){
-    document.getElementById('status-dot').className='status-dot err'; document.getElementById('status-text').textContent='未配置'; return false;
-  }
-  try{
-    await ghFetch(`/git/refs/heads/${CFG.branch}`);
-    document.getElementById('status-dot').className='status-dot ok'; document.getElementById('status-text').textContent=`${CFG.owner}/${CFG.repo}`; return true;
-  }catch(e){
-    document.getElementById('status-dot').className='status-dot err'; document.getElementById('status-text').textContent='鉴权阻断'; return false;
-  }
-}
-
-// ============================================================
-// Article Panel
-// ============================================================
-async function renderPostsPage(){
-  document.getElementById('page-title').textContent='文章管理';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="openNewPost()">新建文章</button>`;
-  const c=document.getElementById('main-content'); if(!CFG.token){c.innerHTML=renderNoConfig(); return;}
-  
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在并发遍历结构目录（GraphQL 极速云端扫描）…</div>`;
-  try{
-    const q = `query($owner:String!,$repo:String!,$expression:String!) {
-      repository(owner:$owner,name:$repo) {
-        object(expression:$expression) {
-          ... on Tree {
-            entries {
-              name type path
-              object {
-                ... on Blob { text }
-                ... on Tree { entries { name type path object { ... on Blob { text } } } }
-              }
-            }
-          }
-        }
-      }
-    }`;
-    const vars = { owner: CFG.owner, repo: CFG.repo, expression: `${CFG.branch}:${CFG.postsPath}` };
-    const res = await ghGraphQL(q, vars); const topEntries = res.repository?.object?.entries || [];
-
-    function collectMdEntries(entries){
-      const result = [];
-      for(const entry of entries){
-        if(entry.type === 'blob' && entry.name.endsWith('.md') && entry.name !== '_index.md') result.push(entry);
-        else if(entry.type === 'tree' && entry.object?.entries) result.push(...collectMdEntries(entry.object.entries));
-      }
-      return result;
+async function ghFetch(path, opts={}){
+  if(!CFG.token||!CFG.owner||!CFG.repo) throw new Error('请先在系统设置中保存 GitHub 配置及有效凭证');
+  const base = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
+  const res = await fetch(base+path, {
+    ...opts,
+    headers:{
+      'Authorization': `Bearer ${CFG.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers||{})
     }
-    
-    const mdEntries = collectMdEntries(topEntries); const posts = [];
-    for(let entry of mdEntries){
-      const rawText = entry.object?.text || ''; const {fm} = parseFrontMatter(rawText);
-      const isDraft = fm.draft === true || fm.draft === 'true';
-      posts.push({
-        fileName: entry.name, path: entry.path, title: fm.title || entry.name, date: fm.date || '',
-        tags: Array.isArray(fm.tags)?fm.tags:(fm.tags?[fm.tags]:[]), draft: isDraft, slug: fm.slug || '',
-        subdir: entry.path.replace(/^[^/]+\/[^/]+\//, '').includes('/') ? entry.path.split('/').slice(0,-1).pop() : ''
-      });
-    }
-    posts.sort((a,b)=>b.date.localeCompare(a.date)); STATE.posts = posts; renderPostsTable();
-  }catch(e){ c.innerHTML=`<div class="alert danger">数据读取断连，请检验路径架构：${e.message}</div>`; }
+  });
+  if(!res.ok){ const err=await res.json().catch(()=>({})); throw new Error(err.message||`GitHub API 错误：${res.status}`); }
+  return res.json();
 }
 
-function renderPostsTable(){
-  const c=document.getElementById('main-content'); let posts=STATE.posts; const q=STATE.searchQuery.toLowerCase();
-  if(q) posts=posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q)));
-  if(STATE.filterStatus==='draft') posts=posts.filter(p=>p.draft); if(STATE.filterStatus==='published') posts=posts.filter(p=>!p.draft);
-  const total=STATE.posts.length, drafts=STATE.posts.filter(p=>p.draft).length;
-  
-  c.innerHTML=`
-    <div class="stats-grid">
-      <div class="stat-card all"><div class="stat-label">全部归档</div><div class="stat-value">${total}</div></div>
-      <div class="stat-card pub"><div class="stat-label">在线发布</div><div class="stat-value" style="color:var(--success)">${total-drafts}</div></div>
-      <div class="stat-card dra"><div class="stat-label">草稿随笔</div><div class="stat-value" style="color:var(--warning)">${drafts}</div></div>
-    </div>
-    <div class="card">
-      <div class="toolbar">
-        <input type="text" class="search-input" placeholder="输入文章标题、标签过滤定位…" value="${STATE.searchQuery}" oninput="STATE.searchQuery=this.value;renderPostsTable()">
-        <select class="filter" onchange="STATE.filterStatus=this.value;renderPostsTable()">
-          <option value="all" ${STATE.filterStatus==='all'?'selected':''}>全量视角</option>
-          <option value="published" ${STATE.filterStatus==='published'?'selected':''}>已上线</option>
-          <option value="draft" ${STATE.filterStatus==='draft'?'selected':''}>草稿箱</option>
-        </select>
-      </div>
-      ${posts.length===0?`<div class="empty-state"><p>未检索到匹配的叶片文件</p></div>`:`
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>文章标题</th><th>发布日期</th><th>核心标签</th><th>状态</th><th>操作</th></tr></thead>
-          <tbody>
-            ${posts.map(p=>`<tr>
-              <td><span class="truncate" style="font-weight:500;color:var(--text)" title="${p.title}">${p.title}</span></td>
-              <td class="text-sm" style="color:var(--text2);white-space:nowrap">${p.date?p.date.slice(0,10):'未定义'}</td>
-              <td>${p.tags.slice(0,2).map(t=>`<span class="tag" style="margin-right:4px;background:var(--accent-light);color:var(--accent-dark)">${t}</span>`).join('')}${p.tags.length>2?`<span class="mono" style="font-size:10px">+${p.tags.length-2}</span>`:''}</td>
-              <td><span class="tag ${p.draft?'draft':'published'}">${p.draft?'草稿':'活跃'}</span></td>
-              <td>
-                <div class="flex gap-2">
-                  <button class="btn sm" onclick="viewPost('${encodeURIComponent(p.path)}')">查看</button>
-                  <button class="btn sm" onclick="openEditPost('${encodeURIComponent(p.path)}')">编辑</button>
-                  <button class="btn sm" onclick="toggleDraft('${encodeURIComponent(p.path)}',${p.draft})">${p.draft?'发布':'下架'}</button>
-                  <button class="btn sm danger" onclick="confirmDeletePost('${encodeURIComponent(p.path)}','${p.title.replace(/'/g,'\\\'')}')">删除</button>
-                </div>
-              </td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>`}
-    </div>`;
+async function ghGraphQL(query, variables={}){
+  if(!CFG.token) throw new Error('Token 凭证缺失');
+  const res = await fetch('https://api.github.com/graphql', {
+    method:'POST',
+    headers:{'Authorization':`Bearer ${CFG.token}`,'Content-Type':'application/json'},
+    body:JSON.stringify({query,variables})
+  });
+  if(!res.ok) throw new Error(`GraphQL 通讯异常：${res.status}`);
+  const data=await res.json(); if(data.errors) throw new Error(data.errors[0].message);
+  return data.data;
 }
 
-// ============================================================
-// Immersion Reader Module
-// ============================================================
-async function viewPost(encodedPath){
-  const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content');
-  document.getElementById('page-title').textContent='文章内容视窗';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="renderPostsPage()">← 返回列表</button>
-    <button class="btn primary" onclick="openEditPost('${encodedPath}')">进入编辑模式</button>`;
-  
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在组织排版快照…</div>`;
-  try{
-    const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content);
-    const htmlContent = marked.parse(body||'*此文章无正文内容*');
-    c.innerHTML=`
-      <div class="reader-wrap">
-        <div class="reader-header">
-          <h1 class="reader-title">${fm.title||path.split('/').pop()}</h1>
-          <div class="reader-meta">
-            <span>📅 日期：${fm.date||'未知'}</span>
-            <span>📂 路径：<span class="mono">${path}</span></span>
-            ${fm.tags?`<span>🏷️ 标签：${(Array.isArray(fm.tags)?fm.tags:[fm.tags]).map(t=>`<span class="tag" style="background:var(--bg3);color:var(--text2);margin-right:4px">${t}</span>`).join('')}</span>`:''}
-          </div>
-        </div>
-        <div class="markdown-body">${htmlContent}</div>
-      </div>`;
-  }catch(e){toast(e.message,'error'); renderPostsPage();}
+async function getFileContent(path){
+  const data=await ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${encodeURIComponent(CFG.branch)}`);
+  const binary=atob(String(data.content||'').replace(/\n/g,''));
+  const bytes=Uint8Array.from(binary, c=>c.charCodeAt(0));
+  return {content:new TextDecoder().decode(bytes), sha:data.sha, path:data.path};
 }
 
-// ============================================================
-// Editor Workspace
-// ============================================================
-function renderEditor(){
-  const post=STATE.editingPost; document.getElementById('page-title').textContent=post.isNew?'新建云端文档':'内容编辑面板';
-  document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="renderPostsPage()">放弃并返回</button>
-    <button class="btn" onclick="savePost(false)" id="btn-save">挂起为草稿</button>
-    <button class="btn primary" onclick="savePost(true)" id="btn-publish">推送公开发布</button>`;
-    
-  const c=document.getElementById('main-content'); c.style.overflow='hidden';
-  c.innerHTML=`
-    <div class="editor-wrap">
-      <div class="editor-left"><textarea id="mde-area"></textarea></div>
-      <div class="editor-right">
-        <div class="card" style="padding:16px;">
-          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:6px">元数据 Front Matter</div>
-          <div class="fm-group"><label class="fm-label">文章标题 (Title)</label><input class="fm-input" id="fm-title" value="${post.fm.title||''}"></div>
-          <div class="fm-group mt-2"><label class="fm-label">发布时间 (Date)</label><input class="fm-input" id="fm-date" value="${post.fm.date||''}"></div>
-          <div class="fm-group mt-2"><label class="fm-label">路由别名 (Slug)</label><input class="fm-input" id="fm-slug" value="${post.fm.slug||''}"></div>
-          <div class="fm-group mt-2"><label class="fm-label">标签组 (回车/逗号分组)</label>
-            <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
-              ${STATE.activeTags.map(t=>`<span class="tag-chip">${t}<span class="remove" onclick="removeTagNode(this,'${t}')">×</span></span>`).join('')}
-              <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)">
-            </div>
-          </div>
-          <div class="switch-wrap mt-2">
-            <label class="switch"><input type="checkbox" id="fm-draft" ${post.fm.draft==='true'||post.fm.draft===true?'checked':''}><span class="slider"></span></label>
-            <span class="switch-label">将此文章锁在草稿箱 (Draft)</span>
-          </div>
-        </div>
-        <div class="card" style="padding:16px;">
-          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:8px">R2 快捷动态图床</div>
-          <button class="btn sm" onclick="loadR2ImagesForInsert()" style="width:100%;margin-bottom:10px">召唤云存储库历史</button>
-          <div id="quick-images" style="max-height:260px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>
-        </div>
-      </div>
-    </div>`;
-    
-  if(STATE.mde){try{STATE.mde.toTextArea()}catch(e){}}
-  STATE.mde = new EasyMDE({
-    element: document.getElementById('mde-area'), initialValue: post.body, spellChecker: false, autofocus: true,
-    toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','|','preview','side-by-side','fullscreen']
+async function putFile(path, content, sha, message){
+  const encoded=btoa(unescape(encodeURIComponent(content)));
+  const body={message, content:encoded, branch:CFG.branch}; if(sha) body.sha=sha;
+  return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {method:'PUT', body:JSON.stringify(body)});
+}
+
+async function deleteFile(path, sha, message){
+  return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {
+    method:'DELETE', body:JSON.stringify({message, sha, branch:CFG.branch})
   });
 }
 
 // ============================================================
-// Core Module Logic Sync
+// Front Matter Parser / Builder
 // ============================================================
-async function openEditPost(encodedPath){
-  const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content');
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>核心源块流解析提取中…</div>`;
-  try{
-    const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content);
-    fm.tags = Array.isArray(fm.tags)?fm.tags:(fm.tags?[fm.tags]:[]);
-    STATE.editingPost={fm,body,path,sha:file.sha,isNew:false}; STATE.activeTags = [...fm.tags]; renderEditor();
-  }catch(e){toast(e.message,'error'); renderPostsPage();}
+function parseScalar(v){
+  const s=String(v??'').trim();
+  if(s === 'true') return true; if(s === 'false') return false;
+  if((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) return s.slice(1,-1);
+  if(s.startsWith('[') && s.endsWith(']')) return s.slice(1,-1).split(',').map(x=>x.trim().replace(/^("|')|("|')$/g,'')).filter(Boolean);
+  return s;
 }
 
-function openNewPost(){
-  const today=new Date(); const dStr=today.toISOString().slice(0,10); const tStr=today.toTimeString().slice(0,8);
-  STATE.editingPost={fm:{title:'',author:'',date:`${dStr} ${tStr}`,tags:[],slug:'',draft:'true'},body:'',path:null,isNew:true};
-  STATE.activeTags = []; renderEditor();
-}
-
-function handleTagPush(e){
-  if(e.key==='Enter'||e.key===','){
-    e.preventDefault(); const val=e.target.value.trim();
-    if(val && !STATE.activeTags.includes(val)){
-      STATE.activeTags.push(val); const chip=document.createElement('span'); chip.className='tag-chip';
-      chip.innerHTML=`${val}<span class="remove" onclick="removeTagNode(this,'${val}')">×</span>`;
-      document.getElementById('tags-wrap').insertBefore(chip, e.target);
-    } e.target.value='';
-  } else if(e.key==='Backspace' && e.target.value===''){
-    STATE.activeTags.pop(); const chips=document.querySelectorAll('.tag-chip'); if(chips.length>0) chips[chips.length-1].remove();
+function parseFrontMatter(raw){
+  const normalized=String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  const match=normalized.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if(!match) return {fm:{}, body:normalized};
+  const fmStr=match[1], body=match[2], fm={};
+  const lines=fmStr.split('\n'); let currentKey=null; let listItems=null;
+  for(const line of lines){
+    if(/^\s*#/.test(line) || !line.trim()) continue;
+    const listMatch=line.match(/^\s+-\s*(.*)$/);
+    if(listMatch && currentKey){ listItems=listItems||[]; listItems.push(parseScalar(listMatch[1])); fm[currentKey]=listItems; continue; }
+    const kv=line.match(/^([\w-]+):\s*(.*)$/);
+    if(kv){ currentKey=kv[1]; const val=kv[2]; if(val.trim()===''){ listItems=[]; fm[currentKey]=listItems; } else { listItems=null; fm[currentKey]=parseScalar(val); } }
   }
+  return {fm, body};
 }
-function removeTagNode(el, val){ STATE.activeTags = STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); }
 
-async function savePost(publish){
-  const title=document.getElementById('fm-title').value.trim(); if(!title) return toast('文章标题属于核心要素，不可为空','error');
-  const btn=document.getElementById(publish?'btn-publish':'btn-save'); btn.disabled=true; btn.textContent='块封装中…';
+function quoteYaml(v){
+  if(typeof v === 'boolean') return v ? 'true' : 'false';
+  const s=String(v??'');
+  if(s === '') return '""';
+  if(/[\n:#\[\]{}|>&*!%@`,]/.test(s) || /^[-?]/.test(s) || /\s$|^\s/.test(s)) return '"'+s.replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"';
+  return s;
+}
+
+function buildFrontMatter(fm, body){
+  const order=['title','author','date','lastmod','description','tags','categories','slug','draft','cover','trashOriginalPath','deletedAt'];
+  const done=new Set(); let out='---\n';
+  function writeKey(k,v){
+    if(v===undefined || v===null || v==='') return;
+    done.add(k);
+    if(Array.isArray(v)){
+      out+=`${k}:\n`;
+      v.filter(x=>String(x).trim()).forEach(item=>{ out+=`  - ${quoteYaml(item)}\n`; });
+    }else out+=`${k}: ${quoteYaml(v)}\n`;
+  }
+  order.forEach(k=>writeKey(k,fm[k]));
+  Object.entries(fm).forEach(([k,v])=>{ if(!done.has(k)) writeKey(k,v); });
+  out+='---\n'; if(body && !String(body).startsWith('\n')) out+='\n'; return out + (body||'');
+}
+
+// ============================================================
+// Router / Status
+// ============================================================
+function showPage(page){
+  if(STATE.page === 'editor' && STATE.dirty && !confirm('当前文章有未保存修改，确定离开编辑器吗？')) return;
+  STATE.page=page; STATE.dirty=false;
+  if(STATE.mde){ try{ STATE.mde.toTextArea(); }catch(e){} STATE.mde=null; }
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const nav=document.getElementById('nav-'+page); if(nav) nav.classList.add('active');
+  const c=document.getElementById('main-content'); c.style.overflow='auto';
+  switch(page){ case 'posts': renderPostsPage(); break; case 'deploy': renderDeployPage(); break; case 'settings': renderSettingsPage(); break; }
+}
+
+async function checkStatus(){
+  const dot=document.getElementById('status-dot'), txt=document.getElementById('status-text');
+  if(!CFG.token||!CFG.owner||!CFG.repo){ dot.className='status-dot err'; txt.textContent='未连接仓库'; return false; }
   try{
-    const fm={ title, date:document.getElementById('fm-date').value.trim(), tags: STATE.activeTags, slug:document.getElementById('fm-slug').value.trim(), draft: (!publish).toString() };
-    const body=STATE.mde.value(); const content=buildFrontMatter(fm,body);
-    let path=STATE.editingPost.path || `${CFG.postsPath}/${fm.slug||Date.now()}.md`;
-    await putFile(path, content, STATE.editingPost.sha, `content update: ${title}`);
-    toast('底层 Git 同步成功，正在触发 Vercel 构建流水线','success'); setTimeout(renderPostsPage, 500);
-  }catch(e){toast(e.message,'error'); btn.disabled=false; btn.textContent=publish?'推送公开发布':'挂起为草稿';}
+    await ghFetch(`/git/ref/heads/${encodeURIComponent(CFG.branch).replace(/%2F/g,'/')}`);
+    dot.className='status-dot ok'; txt.textContent=`正常：${CFG.owner}/${CFG.repo}`; return true;
+  }catch(e){ dot.className='status-dot err'; txt.textContent='连接或鉴权失败'; return false; }
+}
+
+// ============================================================
+// Article Management
+// ============================================================
+async function renderPostsPage(){
+  STATE.page='posts'; STATE.selected.clear();
+  document.getElementById('page-title').innerHTML='文章管理 <small>公众号后台式内容工作台</small>';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="refreshPosts()">刷新同步</button>
+    <button class="btn primary" onclick="openNewPost()">新建文章</button>`;
+  const c=document.getElementById('main-content'); c.style.overflow='auto';
+  if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 同步文章树和 Front Matter…</div>`;
+  try{
+    await loadPosts();
+    c.innerHTML=`
+      <div class="management-shell">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">文章列表</div>
+            </div>
+            <div class="segmented" id="status-tabs"></div>
+          </div>
+          <div class="toolbar">
+            <div class="search-box">${ICON_SEARCH}<input type="text" class="search-input" id="table-search" placeholder="搜索标题、摘要、标签或文件路径…" value="${escapeAttr(STATE.searchQuery)}"></div>
+            <select class="filter" id="year-filter"></select>
+            <select class="filter" id="tag-filter"></select>
+            <select class="filter" id="sort-filter">
+              <option value="date_desc">按日期倒序</option>
+              <option value="date_asc">按日期正序</option>
+              <option value="title_asc">按标题 A-Z</option>
+              <option value="words_desc">按字数最多</option>
+            </select>
+          </div>
+          <div id="table-render-box"></div>
+        </div>
+      </div>`;
+    document.getElementById('table-search').addEventListener('input', e=>{ STATE.searchQuery=e.target.value; renderPostsTableBody(); });
+    document.getElementById('year-filter').addEventListener('change', e=>{ STATE.yearFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
+    document.getElementById('tag-filter').addEventListener('change', e=>{ STATE.tagFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
+    document.getElementById('sort-filter').value=STATE.sortBy;
+    document.getElementById('sort-filter').addEventListener('change', e=>{ STATE.sortBy=e.target.value; renderPostsTableBody(); });
+    renderPostsTableBody();
+  }catch(e){ c.innerHTML=`<div class="alert danger">数据读取失败：${escapeHTML(e.message)}<br>请检查仓库、分支、Token 权限和文章扫描根路径。</div>`; }
+}
+
+async function refreshPosts(){ toast('正在重新同步远程仓库…'); await renderPostsPage(); }
+
+async function loadPosts(){
+  const branchRef=encodeURIComponent(CFG.branch).replace(/%2F/g,'/');
+  const treeRes=await ghFetch(`/git/trees/${branchRef}?recursive=1`);
+  const tree=treeRes.tree || [];
+  const base=normalizePostsPath();
+  const normal=tree.filter(item=>item.type==='blob' && item.path.startsWith(base+'/') && item.path.endsWith('.md') && !item.path.endsWith('_index.md') && !item.path.startsWith('content/trash/'));
+  const trash=tree.filter(item=>item.type==='blob' && item.path.startsWith('content/trash/') && item.path.endsWith('.md'));
+  const posts=[...(await readPostMetas(normal,false)), ...(await readPostMetas(trash,true))];
+  posts.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  STATE.posts=posts;
+}
+
+async function readPostMetas(items, isTrash){
+  const out=[]; const chunkSize=28;
+  for(let i=0;i<items.length;i+=chunkSize){
+    const chunk=items.slice(i,i+chunkSize);
+    try{
+      const fields=chunk.map((p,idx)=>`f${idx}: object(expression: ${JSON.stringify(`${CFG.branch}:${p.path}`)}) { ... on Blob { text } }`).join('\n');
+      const query=`query($owner:String!,$repo:String!){ repository(owner:$owner,name:$repo){ ${fields} } }`;
+      const data=await ghGraphQL(query,{owner:CFG.owner,repo:CFG.repo});
+      chunk.forEach((item,idx)=>{
+        const raw=data.repository?.[`f${idx}`]?.text || '';
+        out.push(buildPostMeta(item, raw, isTrash));
+      });
+    }catch(e){
+      for(const item of chunk){
+        try{ const file=await getFileContent(item.path); out.push(buildPostMeta({...item, sha:file.sha}, file.content, isTrash)); }
+        catch(inner){ console.warn('文章读取失败', item.path, inner); }
+      }
+    }
+  }
+  return out;
+}
+
+function buildPostMeta(item, raw, isTrash){
+  const parsed=parseFrontMatter(raw); const fm=parsed.fm || {}; const body=parsed.body || '';
+  const tags=normalizeTags(fm.tags); const fileName=item.path.split('/').pop();
+  return {
+    fileName, path:item.path, sha:item.sha, title:fm.title || fileName, date:fm.date || '', lastmod:fm.lastmod || '',
+    tags, draft:isTrash ? false : isDraftValue(fm.draft), isTrash, description:fm.description || '', slug:fm.slug || '',
+    excerpt:getExcerpt(body, fm.description), words:countWords(body), minutes:readMinutes(body), originalPath:fm.trashOriginalPath || ''
+  };
+}
+
+function postCounts(){
+  const total=STATE.posts.filter(p=>!p.isTrash).length;
+  const drafts=STATE.posts.filter(p=>!p.isTrash && p.draft).length;
+  const trash=STATE.posts.filter(p=>p.isTrash).length;
+  const published=total-drafts;
+  const tags=new Set(); STATE.posts.filter(p=>!p.isTrash).forEach(p=>p.tags.forEach(t=>tags.add(t)));
+  return {total,published,drafts,trash,tags:tags.size};
+}
+
+function setStatusTab(tab){ STATE.statusTab=tab; STATE.selected.clear(); renderPostsTableBody(); }
+
+function renderStatusTabs(counts){
+  const tabs=[['all','全部',counts.total],['published','已发布',counts.published],['draft','草稿',counts.drafts],['trash','回收站',counts.trash]];
+  document.getElementById('status-tabs').innerHTML=tabs.map(([key,label,count])=>
+    `<button class="seg-btn ${STATE.statusTab===key?'active':''}" onclick="setStatusTab('${key}')">${label}<span class="seg-count">${count}</span></button>`
+  ).join('');
+}
+
+function renderStats(counts){
+  // 顶部统计卡片已移除；保留空函数，避免后续调用报错。
+}
+
+function basePostsForFilters(){
+  let posts=STATE.posts.slice();
+  if(STATE.statusTab==='trash') return posts.filter(p=>p.isTrash);
+  posts=posts.filter(p=>!p.isTrash);
+  if(STATE.statusTab==='draft') posts=posts.filter(p=>p.draft);
+  if(STATE.statusTab==='published') posts=posts.filter(p=>!p.draft);
+  return posts;
+}
+
+function renderTagFilter(){
+  const select=document.getElementById('tag-filter'); if(!select) return;
+  const base=basePostsForFilters().filter(p=>STATE.yearFilter==='all' || getPostYear(p)===STATE.yearFilter);
+  const tagCounts=new Map();
+  base.forEach(p=>p.tags.forEach(t=>tagCounts.set(t,(tagCounts.get(t)||0)+1)));
+  const tags=[...tagCounts.keys()].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const current=STATE.tagFilter;
+  select.innerHTML=`<option value="all">全部标签（${base.length}）</option>` +
+    tags.map(t=>`<option value="${escapeAttr(t)}"># ${escapeHTML(t)}（${tagCounts.get(t)}）</option>`).join('');
+  select.value=tags.includes(current) ? current : 'all'; STATE.tagFilter=select.value;
+}
+
+function getPostYear(post){
+  const fromDate=String(post?.date || '').match(/^(\d{4})/);
+  if(fromDate) return fromDate[1];
+
+  const fromPath=String(post?.path || '').match(/(20\d{2}|19\d{2})/);
+  return fromPath ? fromPath[1] : '';
+}
+
+function renderYearFilter(){
+  const select=document.getElementById('year-filter'); if(!select) return;
+
+  const base=basePostsForFilters().filter(p=>STATE.tagFilter==='all' || p.tags.includes(STATE.tagFilter));
+  const yearCounts=new Map();
+  base.forEach(p=>{
+    const y=getPostYear(p);
+    if(y) yearCounts.set(y,(yearCounts.get(y)||0)+1);
+  });
+  const years=[...yearCounts.keys()].sort((a,b)=>b.localeCompare(a));
+  const current=STATE.yearFilter;
+
+  select.innerHTML=`<option value="all">全部年份（${base.length}）</option>` +
+    years.map(y=>`<option value="${escapeAttr(y)}">${escapeHTML(y)} 年（${yearCounts.get(y)}）</option>`).join('');
+
+  select.value=years.includes(current) ? current : 'all';
+  STATE.yearFilter=select.value;
+}
+
+function getFilteredPosts(){
+  let posts=STATE.posts.slice();
+  if(STATE.statusTab==='trash') posts=posts.filter(p=>p.isTrash);
+  else{
+    posts=posts.filter(p=>!p.isTrash);
+    if(STATE.statusTab==='draft') posts=posts.filter(p=>p.draft);
+    if(STATE.statusTab==='published') posts=posts.filter(p=>!p.draft);
+  }
+  if(STATE.yearFilter !== 'all') posts=posts.filter(p=>getPostYear(p) === STATE.yearFilter);
+  if(STATE.tagFilter !== 'all') posts=posts.filter(p=>p.tags.includes(STATE.tagFilter));
+  const q=STATE.searchQuery.trim().toLowerCase();
+  if(q){
+    posts=posts.filter(p=>[p.title,p.description,p.excerpt,p.path,p.slug,...p.tags].some(v=>String(v||'').toLowerCase().includes(q)));
+  }
+  posts.sort((a,b)=>{
+    if(STATE.sortBy==='date_asc') return String(a.date||'').localeCompare(String(b.date||''));
+    if(STATE.sortBy==='title_asc') return String(a.title||'').localeCompare(String(b.title||''),'zh-CN');
+    if(STATE.sortBy==='words_desc') return (b.words||0)-(a.words||0);
+    return String(b.date||'').localeCompare(String(a.date||''));
+  });
+  return posts;
+}
+
+function renderBatchBar(visiblePosts){
+  const selected=[...STATE.selected].filter(p=>visiblePosts.some(v=>v.path===p)); STATE.selected=new Set(selected);
+  const count=selected.length; const isTrash=STATE.statusTab==='trash';
+  const batch=document.getElementById('batch-bar');
+  batch.innerHTML=`
+    <div><strong>${count}</strong> 篇已选 <span class="muted">/ 当前筛选 ${visiblePosts.length} 篇</span></div>
+    <div class="batch-actions">
+      ${count?`<button class="btn sm" onclick="clearSelection()">取消选择</button>`:''}
+      ${!isTrash?`
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('publish')">批量发布</button>
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('draft')">设为草稿</button>
+        <button class="btn sm danger" ${count?'':'disabled'} onclick="batchAction('trash')">移入回收站</button>`:`
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('restore')">批量还原</button>
+        <button class="btn sm danger" ${count?'':'disabled'} onclick="batchAction('delete')">永久删除</button>`}
+    </div>`;
+}
+
+function renderPostsTableBody(){
+  const counts=postCounts(); renderStats(counts); renderStatusTabs(counts); renderYearFilter(); renderTagFilter();
+  const posts=getFilteredPosts();
+  const box=document.getElementById('table-render-box');
+  if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的文章</p><p>可以清空搜索条件，或新建一篇文章。</p></div>`; return; }
+  box.innerHTML=`
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>文章</th><th>标签</th><th>日期 / 字数</th><th>状态</th>
+        </tr></thead>
+        <tbody>${posts.map(renderPostRow).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function renderPostRow(p){
+  const enc=encodePath(p.path); const status=p.isTrash?'回收站':(p.draft?'草稿':'已发布'); const statusClass=p.isTrash?'trash':(p.draft?'draft':'published');
+  const title=escapeHTML(p.title);
+  const tagHtml=p.tags.length?p.tags.slice(0,3).map(t=>`<span class="tag meta">${escapeHTML(t)}</span>`).join('')+(p.tags.length>3?`<span class="tag soft">+${p.tags.length-3}</span>`:''):'<span class="muted">无标签</span>';
+  return `<tr>
+    <td>
+      <div class="article-title-cell">
+        <div class="article-title-main">
+          <button type="button" class="article-title-link" title="${escapeAttr(p.title)}" onclick="viewPost('${enc}')">${title}</button>
+          ${p.slug?`<span class="tag purple">/${escapeHTML(p.slug)}</span>`:''}
+        </div>
+        <div class="article-path"><span class="path-dot"></span><span title="${escapeAttr(p.path)}">${escapeHTML(p.path)}</span></div>
+      </div>
+    </td>
+    <td><div class="tag-list">${tagHtml}</div></td>
+    <td class="nowrap"><div>${escapeHTML(formatDateShort(p.date))}</div><div class="muted" style="font-size:12px;margin-top:4px">${p.words} 字 · ${p.minutes} 分钟</div></td>
+    <td><span class="tag ${statusClass}">${status}</span></td>
+  </tr>`;
+}
+function toggleSelectAll(checked){ getFilteredPosts().forEach(p=>checked?STATE.selected.add(p.path):STATE.selected.delete(p.path)); renderPostsTableBody(); }
+function toggleSelectPath(encodedPath, checked){ const path=decodeURIComponent(encodedPath); checked?STATE.selected.add(path):STATE.selected.delete(path); renderPostsTableBody(); }
+function clearSelection(){ STATE.selected.clear(); renderPostsTableBody(); }
+
+async function batchAction(action){
+  const paths=[...STATE.selected]; if(!paths.length) return;
+  const names={publish:'批量发布',draft:'设为草稿',trash:'移入回收站',restore:'批量还原',delete:'永久删除'};
+  if(!confirm(`确定对 ${paths.length} 篇文章执行「${names[action]}」吗？`)) return;
+  toast(`正在执行：${names[action]}…`);
+  try{
+    for(const path of paths){
+      if(action==='publish') await setDraftByPath(path,false);
+      if(action==='draft') await setDraftByPath(path,true);
+      if(action==='trash') await movePathToTrash(path,false);
+      if(action==='restore') await restorePathFromTrash(path,false);
+      if(action==='delete') await deletePathPermanently(path,false);
+    }
+    STATE.selected.clear(); toast('批量操作完成','success'); renderPostsPage();
+  }catch(e){ toast(e.message,'error'); }
+}
+
+// ============================================================
+// Trash / Status Actions
+// ============================================================
+function trashPathFor(oldPath){
+  const baseName=oldPath.replace(/^content\//,'').replace(/\//g,'--').replace(/[^\w\-.\u4e00-\u9fa5]+/g,'-');
+  const stamp=new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
+  return `content/trash/${stamp}-${baseName}`;
+}
+
+async function moveToTrash(encodedPath){ const path=decodeURIComponent(encodedPath); if(!confirm('确定将此文章移入回收站吗？移入后前台将不再展示。')) return; await movePathToTrash(path,true); }
+async function movePathToTrash(oldPath, rerender=true){
+  const file=await getFileContent(oldPath); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  fm.trashOriginalPath=oldPath; fm.deletedAt=new Date().toISOString(); fm.draft=true;
+  const newPath=trashPathFor(oldPath); const title=fm.title || oldPath.split('/').pop();
+  await putFile(newPath, buildFrontMatter(fm, parsed.body), null, `trash: move ${title} to recycle bin`);
+  await deleteFile(oldPath, file.sha, `trash: remove source ${title}`);
+  if(rerender){ toast('文章已移入回收站','success'); renderPostsPage(); }
+}
+
+async function restoreFromTrash(encodedPath){ const path=decodeURIComponent(encodedPath); await restorePathFromTrash(path,true); }
+async function restorePathFromTrash(oldPath, rerender=true){
+  const file=await getFileContent(oldPath); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  const fallbackName=oldPath.split('/').pop().replace(/^\d{14}-/,'');
+  const newPath=fm.trashOriginalPath || `${normalizePostsPath()}/${fallbackName}`;
+  const title=fm.title || fallbackName;
+  delete fm.trashOriginalPath; delete fm.deletedAt;
+  await putFile(newPath, buildFrontMatter(fm, parsed.body), null, `trash: restore ${title}`);
+  await deleteFile(oldPath, file.sha, `trash: clear trash snapshot ${title}`);
+  if(rerender){ toast('文章已还原','success'); renderPostsPage(); }
+}
+
+async function physicsDeletePost(encodedPath){ const path=decodeURIComponent(encodedPath); if(!confirm('确定永久删除这篇文章吗？该操作无法恢复。')) return; await deletePathPermanently(path,true); }
+async function deletePathPermanently(path, rerender=true){
+  const file=await getFileContent(path); const title=(STATE.posts.find(p=>p.path===path)?.title) || path.split('/').pop();
+  await deleteFile(path, file.sha, `delete post permanently: ${title}`);
+  if(rerender){ toast('文章已永久删除','success'); renderPostsPage(); }
 }
 
 async function toggleDraft(encodedPath, isDraft){
   const path=decodeURIComponent(encodedPath);
+  try{ await setDraftByPath(path, !isDraft); toast(isDraft?'文章已发布':'文章已下架为草稿','success'); renderPostsPage(); }
+  catch(e){ toast(e.message,'error'); }
+}
+
+async function toggleDraftFromReader(encodedPath, isDraft){
+  const path=decodeURIComponent(encodedPath);
+  try{
+    await setDraftByPath(path, !isDraft);
+    toast(isDraft?'文章已发布':'文章已下架为草稿','success');
+    await loadPosts();
+    viewPost(encodedPath);
+  }catch(e){ toast(e.message,'error'); }
+}
+
+async function setDraftByPath(path, draft){
+  const file=await getFileContent(path); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  fm.draft=!!draft; fm.lastmod=nowLocalString();
+  await putFile(path, buildFrontMatter(fm, parsed.body), file.sha, `${draft?'draft':'publish'}: ${fm.title || path}`);
+}
+
+// ============================================================
+// Reader
+// ============================================================
+async function viewPost(encodedPath){
+  const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content'); STATE.page='reader';
+  document.getElementById('page-title').innerHTML='文章预览 <small>Markdown 渲染快照</small>';
+  document.getElementById('topbar-actions').innerHTML='';
+  c.style.overflow='auto'; c.innerHTML=`<div class="loading"><div class="spinner"></div>正在生成文章预览…</div>`;
   try{
     const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content);
-    fm.draft=(!isDraft).toString(); const newContent=buildFrontMatter(fm,body);
-    await putFile(path,newContent,file.sha,`chore: change status for ${fm.title}`);
-    toast('上/下架变更单已下达','success'); renderPostsPage();
-  }catch(e){toast(e.message,'error')}
-}
-
-// ============================================================
-// Twikoo 互动管理双栏核心主板配置 (多页分流兼容补丁版)
-// ============================================================
-async function renderCommentsPage(){
-  document.getElementById('page-title').textContent = '互动管理中心';
-  document.getElementById('topbar-actions').innerHTML = `<button class="btn" onclick="fetchTwikooCommentsStream()">🔄 刷新数据流</button>`;
-  const c = document.getElementById('main-content'); c.style.overflow = 'hidden';
-
-  if(!CFG.twikooEnvId || !CFG.twikooAdminPassword){
-    c.innerHTML = `<div class="alert warning">请先在<strong>系统设置</strong>中补充配置 Twikoo 的连接路径与管理员密码后再行调阅。</div>`;
-    return;
-  }
-
-  c.innerHTML = `<div class="loading"><div class="spinner"></div>正在通过安全连接分流抓取全量评论数据树…</div>`;
-  await fetchTwikooCommentsStream();
-}
-
-async function fetchTwikooCommentsStream(){
-  try {
-    // 💡 针对独立私有自建服务器，降低单次提取负载，采用温和的 100 条分页抓取，防止后端过载或格式断连
-    const res = await tkAdminFetch('GET_COMMENT_FOR_ADMIN', { perPage: 100, page: 1 });
-    const rawList = res.data || [];
-    STATE.commentsRaw = rawList;
-
-    const map = {};
-    rawList.forEach(item => {
-      // 兼容一些老旧版本的特殊空数据结构
-      const urlKey = item.url || '/';
-      if(!map[urlKey]){
-        map[urlKey] = { url: urlKey, title: item.pageTitle || urlKey, count: 0, lastTimestamp: 0, items: [] };
-      }
-      map[urlKey].items.push(item);
-      map[urlKey].count++;
-      if(item.created > map[urlKey].lastTimestamp) map[urlKey].lastTimestamp = item.created;
-    });
-
-    const articles = Object.values(map);
-    articles.sort((a,b) => b.lastTimestamp - a.lastTimestamp);
-    STATE.commentArticles = articles;
-
-    // 清洗旧状态残余
-    if(articles.length > 0) {
-      if (!STATE.activeUrlKey || !articles.some(a => a.url === STATE.activeUrlKey)) {
-        STATE.activeUrlKey = articles[0].url;
-      }
-    } else {
-      STATE.activeUrlKey = null;
-    }
-    renderInteractionsLayout();
-  } catch(e) {
-    document.getElementById('main-content').innerHTML = `<div class="alert danger">Twikoo 后端无响应，请确认密码并确保页面通过线上域名访问（排除本地跨域限制）：${e.message}</div>`;
-  }
-}
-
-function renderInteractionsLayout(){
-  const c = document.getElementById('main-content');
-  let articles = STATE.commentArticles;
-  const q = STATE.commentSearchQuery.toLowerCase();
-  if(q) articles = articles.filter(a => a.title.toLowerCase().includes(q) || a.items.some(i => i.comment.toLowerCase().includes(q)));
-
-  c.innerHTML = `
-    <div class="interactions-panel">
-      <div class="inter-left-list">
-        <div style="padding:12px; border-bottom:1px solid var(--border)">
-          <input type="text" class="search-input" style="width:100%; min-width:0" placeholder="搜索文章标题、留言人…" value="${STATE.commentSearchQuery}" oninput="STATE.commentSearchQuery=this.value; renderInteractionsLayout()">
+    const tags=normalizeTags(fm.tags); const htmlContent=marked.parse(body||'*当前文章无正文内容*');
+    const publicLink=CFG.blogUrl && (fm.slug || path) ? buildPublicUrl(fm, path) : '';
+    const isTrashPost=path.startsWith('content/trash/');
+    const isDraftPost=isDraftValue(fm.draft);
+    const actionButtons=isTrashPost ? `
+      <button class="btn" onclick="restoreFromTrash('${encodedPath}')">还原文章</button>
+      <button class="btn primary" onclick="showPage('posts')">返回列表</button>
+      <button class="btn danger" onclick="physicsDeletePost('${encodedPath}')">永久删除</button>` : `
+      <button class="btn primary" onclick="openEditPost('${encodedPath}')">编辑文章</button>
+      <button class="btn primary" onclick="showPage('posts')">返回列表</button>`;
+    c.innerHTML=`
+      <div class="reader-wrap">
+        <div class="reader-header">
+          <div class="reader-title-row">
+            <h1 class="reader-title">${escapeHTML(fm.title || path.split('/').pop())}</h1>
+            <div class="reader-title-actions">${actionButtons}</div>
+          </div>
+          ${fm.description?`<div class="reader-desc">${escapeHTML(fm.description)}</div>`:''}
+          <div class="reader-meta">
+            <span>📅 ${escapeHTML(formatDate(fm.date))}</span>
+            <span>📂 <span class="mono">${escapeHTML(path)}</span></span>
+            <span>✍️ ${countWords(body)} 字 · ${readMinutes(body)} 分钟</span>
+            <span><span class="tag ${isTrashPost?'trash':(isDraftPost?'draft':'published')}">${isTrashPost?'回收站':(isDraftPost?'草稿':'已发布')}</span></span>
+            ${tags.length?`<span>🏷️ ${tags.map(t=>`<span class="tag soft">${escapeHTML(t)}</span>`).join(' ')}</span>`:''}
+            ${publicLink&&!isTrashPost?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">跳转前台</a>`:''}
+          </div>
         </div>
-        <div class="inter-list-scroll">
-          ${articles.map(a => `
-            <div class="article-row ${STATE.activeUrlKey === a.url ? 'active' : ''}" onclick="switchActiveCommentUrl('${encodeURIComponent(a.url)}')">
-              <div class="article-row-title" title="${a.title}">${a.title}</div>
-              <div class="article-row-meta">
-                <span>📍 ${a.url.slice(0,22)}${a.url.length>22?'…':''}</span>
-                <span class="mono" style="background:var(--accent); color:#fff; border-radius:10px; padding:2px 6px">${a.count}条</span>
-              </div>
+        <div class="markdown-body">${htmlContent}</div>
+      </div>`;
+  }catch(e){ toast(e.message,'error'); renderPostsPage(); }
+}
+function buildPublicUrl(fm, path){
+  const base=String(CFG.blogUrl||'').replace(/\/$/,'');
+  const slug=fm.slug || path.split('/').pop().replace(/\.md$/,'');
+  return `${base}/posts/${encodeURIComponent(slug).replace(/%2F/g,'/')}/`;
+}
+
+// ============================================================
+// Editor
+// ============================================================
+function openNewPost(){
+  const draft=readLocalDraft('__new__');
+  const useDraft=draft && confirm('检测到一份未提交的新文章本地草稿，是否恢复？');
+  STATE.editingPost=useDraft?draft:{fm:{title:'',author:'',date:nowLocalString(),description:'',tags:[],slug:'',draft:true},body:'\n\n❤',path:null,sha:null,isNew:true};
+  STATE.activeTags=normalizeTags(STATE.editingPost.fm.tags); renderEditor();
+}
+
+async function openEditPost(encodedPath){
+  const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content'); c.style.overflow='auto';
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 读取源文件…</div>`;
+  try{
+    const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content); fm.tags=normalizeTags(fm.tags);
+    const local=readLocalDraft(path); let post={fm,body,path,sha:file.sha,isNew:false};
+    if(local && confirm('检测到此文章有未提交的本地草稿，是否恢复本地草稿？')) post={...local, sha:file.sha, isNew:false};
+    STATE.editingPost=post; STATE.activeTags=normalizeTags(post.fm.tags); renderEditor();
+  }catch(e){ toast(e.message,'error'); renderPostsPage(); }
+}
+
+function renderEditor(){
+  STATE.page='editor'; STATE.dirty=false;
+  const post=STATE.editingPost; const fm=post.fm || {};
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="showPage('posts')">返回列表</button>
+    ${post.path?`<button class="btn" onclick="viewPost('${encodePath(post.path)}')">预览</button>`:''}
+    <button class="btn" onclick="savePost('draft')" id="btn-save-draft">保存草稿</button>
+    <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
+  const c=document.getElementById('main-content'); c.style.overflow='hidden';
+  const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
+  c.innerHTML=`
+    <div class="editor-wrap">
+      <div class="editor-left">
+        <div class="editor-title-panel">
+          <input class="title-input" id="fm-title" placeholder="请输入文章标题" value="${escapeAttr(fm.title||'')}">
+          <div class="editor-meta-line">
+            <span id="word-counter">0 字 · 1 分钟</span>
+            <span>路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
+            <span id="autosave-text">本地草稿未变更</span>
+          </div>
+        </div>
+        <textarea id="mde-area"></textarea>
+      </div>
+      <div class="editor-right">
+        <div class="fm-card">
+          <div class="fm-card-title">发布设置 <span class="tag ${isDraftValue(fm.draft)?'draft':'published'}" id="draft-tag">${isDraftValue(fm.draft)?'草稿':'发布'}</span></div>
+          <div class="fm-group"><label class="fm-label">作者</label><input class="fm-input" id="fm-author" value="${escapeAttr(fm.author||'落落vici')}"></div>
+          <div class="fm-group"><label class="fm-label">发布日期</label><input class="fm-input" id="fm-date" value="${escapeAttr(fm.date||nowLocalString())}"></div>
+          <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
+          <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label><div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
+              ${STATE.activeTags.map(t=>tagChip(t)).join('')}
+              <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)" placeholder="添加标签">
             </div>
-          `).join('')}
+          <div class="fm-group"><label class="fm-label">文件路径 <span class="muted">可改目录</span></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
+          <div class="switch-wrap">
+            <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
+            <span>保存为草稿，不公开渲染</span>
+          </div>
+        </div>       
+        <div class="fm-card">
+          <div class="fm-card-title">先完成，再完美</div>
+          <div class="helper-list">
+            <div>⌘ <span>使用 <span class="kbd">Ctrl</span> + <span class="kbd">S</span> 快速保存草稿。</span></div>
+            <div>🖼️ <span>图片建议继续使用 PicGo 或图床外链，直接粘贴 Markdown 图片语法。</span></div>
+            <div>🚀 <span>发布会写入 GitHub，Vercel 会按你的项目配置自动构建。</span></div>
+          </div>
+          <div class="autosave-box"><span id="autosave-card-text">本地自动保存已开启</span><button class="btn sm" onclick="clearCurrentLocalDraft()">清除本地草稿</button></div>
         </div>
       </div>
-      <div class="inter-right-stream">
-        <div class="inter-stream-scroll" id="comment-stream-box">
-          ${renderActiveCommentStream()}
-        </div>
+    </div>`;
+  if(STATE.mde){ try{STATE.mde.toTextArea();}catch(e){} }
+  STATE.mde=new EasyMDE({
+  element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
+  placeholder:'从这里开始写正文，支持 Markdown…', status:false,
+  toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
+});
+
+if(post.isNew && (post.body || '').trim() === '❤'){
+  setTimeout(()=>STATE.mde.codemirror.setCursor({line:0,ch:0}), 0);
+}
+  ['fm-title','fm-description','fm-author','fm-date','fm-slug','fm-path'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
+});
+  STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
+  document.addEventListener('keydown', editorShortcut, {once:false});
+  refreshEditorMeta();
+}
+
+function editorShortcut(e){ if(STATE.page==='editor' && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); savePost('draft'); } }
+function tagChip(t){ return `<span class="tag-chip">${escapeHTML(t)}<span class="remove" onclick="removeTagNode(this,'${escapeAttr(t)}')">×</span></span>`; }
+function markDirty(){ STATE.dirty=true; const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未保存修改'; scheduleLocalDraft(); }
+function updateDraftTag(){ const el=document.getElementById('draft-tag'); const checked=document.getElementById('fm-draft')?.checked; if(el){ el.className=`tag ${checked?'draft':'published'}`; el.textContent=checked?'草稿':'发布'; } }
+function refreshEditorMeta(){
+  const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
+  const word=document.getElementById('word-counter'); if(word) word.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
+  const pp=document.getElementById('path-preview'); if(pp) pp.textContent=path;
+}
+function getFormValue(id, fallback=''){
+  const el=document.getElementById(id);
+  return el && 'value' in el ? String(el.value).trim() : fallback;
+}
+
+function collectEditorData(mode='draft'){
+  const title=getFormValue('fm-title');
+  if(!title) throw new Error('文章标题不可为空');
+
+  const slug=getFormValue('fm-slug') || slugify(title);
+  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${slug}.md`;
+
+  let path=cleanPath(getFormValue('fm-path', defaultPath));
+  if(!path) path=`${normalizePostsPath()}/${slug}.md`;
+  if(!path.endsWith('.md')) path += '.md';
+
+  const draft = mode==='publish' ? false : true;
+
+  const fm={
+    ...(STATE.editingPost.fm||{}),
+    title,
+    author:getFormValue('fm-author'),
+    date:getFormValue('fm-date', nowLocalString()) || nowLocalString(),
+    lastmod:nowLocalString(),
+    description:getFormValue('fm-description'),
+    tags:STATE.activeTags,
+    slug,
+    draft
+  };
+
+  delete fm.trashOriginalPath;
+  delete fm.deletedAt;
+
+  return {
+    fm,
+    body:STATE.mde ? STATE.mde.value() : '',
+    path
+  };
+}
+async function savePost(mode){
+  const btn=document.getElementById(mode==='publish'?'btn-publish':'btn-save-draft');
+  try{
+    const data=collectEditorData(mode); btn.disabled=true; btn.textContent=mode==='publish'?'正在发布…':'正在保存…';
+    const oldPath=STATE.editingPost.path; const content=buildFrontMatter(data.fm, data.body);
+    if(oldPath && oldPath !== data.path){
+      await putFile(data.path, content, null, `content: move and update ${data.fm.title}`);
+      await deleteFile(oldPath, STATE.editingPost.sha, `content: remove old path ${oldPath}`);
+    }else{
+      await putFile(data.path, content, STATE.editingPost.sha, `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`);
+    }
+    clearLocalDraftByKey(localDraftKey(oldPath || '__new__'));
+    STATE.dirty=false; toast(mode==='publish'?'文章已发布/更新，等待 Vercel 构建':'草稿已保存到 GitHub','success'); setTimeout(()=>showPage('posts'),500);
+  }catch(e){ toast(e.message,'error'); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent=mode==='publish'?'发布/更新':'保存草稿'; } }
+}
+
+function handleTagPush(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault(); const val=e.target.value.trim().replace(/^#/,'');
+    if(val && !STATE.activeTags.includes(val)){ STATE.activeTags.push(val); document.getElementById('tags-wrap').insertAdjacentHTML('afterbegin', tagChip(val)); markDirty(); }
+    e.target.value='';
+  }else if(e.key==='Backspace' && e.target.value===''){
+    STATE.activeTags.pop(); const chips=document.querySelectorAll('.tag-chip'); if(chips.length) chips[chips.length-1].remove(); markDirty();
+  }
+}
+function removeTagNode(el,val){ STATE.activeTags=STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); markDirty(); }
+
+function localDraftKey(path){ return `hugo_admin_local_draft:${CFG.owner}/${CFG.repo}:${path}`; }
+function readLocalDraft(path){ try{ const s=localStorage.getItem(localDraftKey(path)); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function scheduleLocalDraft(){
+  clearTimeout(STATE.autosaveTimer);
+  STATE.autosaveTimer=setTimeout(()=>{
+    if(STATE.page!=='editor') return;
+    try{
+      const data=collectEditorData(document.getElementById('fm-draft')?.checked?'draft':'publish');
+      const key=localDraftKey(STATE.editingPost.path || '__new__');
+      localStorage.setItem(key, JSON.stringify({...STATE.editingPost, ...data, fm:data.fm, body:data.body, path:STATE.editingPost.path, isNew:STATE.editingPost.isNew}));
+      STATE.lastAutosaveAt=new Date();
+      const txt=`本地草稿 ${STATE.lastAutosaveAt.toLocaleTimeString()} 已保存`;
+      const a=document.getElementById('autosave-text'); if(a) a.textContent=txt;
+      const b=document.getElementById('autosave-card-text'); if(b) b.textContent=txt;
+    }catch(e){}
+  },700);
+}
+function clearLocalDraftByKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
+function clearCurrentLocalDraft(){ clearLocalDraftByKey(localDraftKey(STATE.editingPost?.path || '__new__')); toast('当前本地草稿已清除','success'); }
+
+// ============================================================
+// Deploy
+// ============================================================
+async function renderDeployPage(){
+  document.getElementById('page-title').innerHTML='部署状态 <small>GitHub / Vercel</small>';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="triggerRedeploy()">强制触发重新构建</button>`;
+  const c=document.getElementById('main-content'); if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在调取部署状态和最近提交…</div>`;
+  try{
+    let vStatus=`<span class="tag draft">未配置 Vercel Token / Project ID</span>`;
+    if(CFG.vercelToken && CFG.vercelProjectId){
+      const vRes=await fetch(`https://api.vercel.com/v6/deployments?projectId=${encodeURIComponent(CFG.vercelProjectId)}&limit=1`, {headers:{'Authorization':`Bearer ${CFG.vercelToken}`}});
+      if(vRes.ok){ const vData=await vRes.json(); const d=vData.deployments?.[0]; if(d) vStatus=`<span class="tag ${d.state==='READY'?'published':'draft'}" style="font-size:13px;padding:7px 12px">${escapeHTML(d.state)} · ${new Date(d.createdAt).toLocaleString()}</span>`; }
+      else vStatus=`<span class="tag draft">Vercel 鉴权或项目 ID 异常</span>`;
+    }
+    const commits=await ghFetch('/commits?per_page=8');
+    c.innerHTML=`
+      <div class="card"><div class="card-header"><div><div class="card-title">Vercel 云端构建状态</div><div class="card-desc">保存文章后，Vercel 通常会按 GitHub 集成自动构建。</div></div>${vStatus}</div></div>
+      <div class="card"><div class="card-header"><div><div class="card-title">最近提交记录</div><div class="card-desc">用于确认文章保存是否已经落到 GitHub。</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>SHA</th><th>提交信息</th><th>作者</th><th>时间</th></tr></thead><tbody>
+      ${commits.map(cm=>`<tr><td><span class="mono">${cm.sha.slice(0,7)}</span></td><td>${escapeHTML(cm.commit.message)}</td><td>${escapeHTML(cm.commit.author.name)}</td><td class="muted nowrap">${new Date(cm.commit.author.date).toLocaleString()}</td></tr>`).join('')}
+      </tbody></table></div></div>`;
+  }catch(e){ c.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; }
+}
+
+async function triggerRedeploy(){
+  if(!confirm('确定创建一个空提交以触发 Vercel 重新构建吗？')) return;
+  try{
+    const ref=await ghFetch(`/git/ref/heads/${encodeURIComponent(CFG.branch).replace(/%2F/g,'/')}`); const cSha=ref.object.sha;
+    const commit=await ghFetch(`/git/commits/${cSha}`);
+    const nCommit=await ghFetch('/git/commits',{method:'POST',body:JSON.stringify({message:'chore: force vercel redeploy from blog admin',tree:commit.tree.sha,parents:[cSha]})});
+    await ghFetch(`/git/refs/heads/${encodeURIComponent(CFG.branch).replace(/%2F/g,'/')}`,{method:'PATCH',body:JSON.stringify({sha:nCommit.sha})});
+    toast('重新构建已触发','success'); setTimeout(renderDeployPage,900);
+  }catch(e){ toast(e.message,'error'); }
+}
+
+// ============================================================
+// Settings
+// ============================================================
+function renderSettingsPage(){
+  document.getElementById('page-title').innerHTML='系统设置 <small>本地浏览器保存</small>';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="saveAllSettings()">保存设置</button>`;
+  const c=document.getElementById('main-content');
+  c.innerHTML=`
+    <div class="alert info" style="max-width:880px">Token 会保存在当前浏览器 localStorage 中。建议使用权限最小化的 GitHub Fine-grained Token，仅授予目标仓库 Contents 读写权限。</div>
+    <div class="card" style="max-width:880px">
+      <div class="section-title" style="margin-top:0">GitHub 仓库参数</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">Owner / 账户或组织</label><input class="setting-input" id="s-owner" value="${escapeAttr(CFG.owner||'')}"></div>
+        <div class="setting-group"><label class="setting-label">Repo / 仓库名</label><input class="setting-input" id="s-repo" value="${escapeAttr(CFG.repo||'')}"></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">GitHub Token / PAT</label><input class="setting-input" type="password" id="s-token" value="${escapeAttr(CFG.token||'')}"></div>
+        <div class="setting-group"><label class="setting-label">Branch / 默认分支</label><input class="setting-input" id="s-branch" value="${escapeAttr(CFG.branch||'main')}"></div>
+        <div class="setting-group"><label class="setting-label">Posts Path / 文章根目录</label><input class="setting-input" id="s-posts" value="${escapeAttr(CFG.postsPath||'content/posts')}"></div>
+      </div>
+      <div class="section-title">站点与部署扩展</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">博客前台网址</label><input class="setting-input" id="s-blog" value="${escapeAttr(CFG.blogUrl||'')}"></div>
+        <div class="setting-group"><label class="setting-label">Vercel Project ID</label><input class="setting-input" id="s-v-id" value="${escapeAttr(CFG.vercelProjectId||'')}"></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">Vercel Token</label><input class="setting-input" type="password" id="s-v-token" value="${escapeAttr(CFG.vercelToken||'')}"></div>
       </div>
     </div>`;
 }
 
-function switchActiveCommentUrl(encodedUrl){
-  STATE.activeUrlKey = decodeURIComponent(encodedUrl);
-  document.querySelectorAll('.article-row').forEach(el => el.classList.remove('active'));
-  renderInteractionsLayout();
-}
-
-function renderActiveCommentStream(){
-  const curArticle = STATE.commentArticles.find(a => a.url === STATE.activeUrlKey);
-  if(!curArticle || curArticle.items.length === 0) return `<div class="empty-state"><p>干净如新，当前位置空无一人</p></div>`;
-
-  return curArticle.items.map(c => `
-    <div class="comment-node ${c.isDeleted ? 'hidden-comment' : ''}" id="tk-node-${c.id}">
-      <div class="comment-avatar-bar">
-        <img class="comment-avatar" src="${c.avatar || ''}" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop'">
-        <div class="comment-user">
-          ${c.nick} 
-          ${c.admin ? `<span class="tag published" style="font-size:9px; padding:1px 4px; margin-left:4px">博主</span>` : ''}
-          <span style="font-size:11px; font-weight:normal; color:var(--text3); margin-left:6px">${c.ip || ''} · ${c.mail || ''}</span>
-        </div>
-        <div class="comment-time">${new Date(c.created).toLocaleString()}</div>
-      </div>
-      <div class="comment-body">
-        ${c.comment}
-      </div>
-      <div class="comment-actions">
-        <span class="action-link" onclick="triggerTwikooReply('${c.id}','${c.nick}')">💬 回复</span>
-        <span class="action-link" onclick="toggleTwikooHide('${c.id}', ${c.isDeleted})">👁️ ${c.isDeleted ? '取消隐藏' : '隐藏'}</span>
-        <span class="action-link delete" onclick="deleteTwikooComment('${c.id}')">🗑️ 删除</span>
-      </div>
-    </div>
-  `).join('');
+function saveAllSettings(){
+  CFG.owner=document.getElementById('s-owner').value.trim(); CFG.repo=document.getElementById('s-repo').value.trim();
+  CFG.token=document.getElementById('s-token').value.trim(); CFG.branch=document.getElementById('s-branch').value.trim()||'main';
+  CFG.postsPath=cleanPath(document.getElementById('s-posts').value.trim()||'content/posts'); CFG.blogUrl=document.getElementById('s-blog').value.trim();
+  CFG.vercelProjectId=document.getElementById('s-v-id').value.trim(); CFG.vercelToken=document.getElementById('s-v-token').value.trim();
+  saveCfg(); toast('设置已保存到当前浏览器','success'); checkStatus();
 }
 
 // ============================================================
-// Twikoo Action Links
+// Lifecycle
 // ============================================================
-function triggerTwikooReply(id, nick){
-  const replyText = prompt(`正在以博主身份快捷回复 @${nick} ：`);
-  if(!replyText || !replyText.trim()) return;
-  toast('正在向边缘服务器递交回复链…');
-  tkAdminFetch('COMMENT_SUBMIT', {
-    url: STATE.activeUrlKey, pid: id, rid: id,
-    nick: '小撰', mail: CFG.owner + '@gmail.com', link: CFG.blogUrl,
-    comment: `<p>${replyText.trim()}</p>`, isWhisper: false
-  }).then(() => {
-    toast('回复成功归档！','success'); fetchTwikooCommentsStream();
-  }).catch(e => toast(e.message, 'error'));
-}
-
-function toggleTwikooHide(id, currentlyHidden){
-  const nextState = !currentlyHidden; toast('正在重组隐匿状态信号…');
-  tkAdminFetch('COMMENT_SET', { id: id, set: { isDeleted: nextState } }).then(() => {
-    toast(nextState ? '评论已隐藏锁闭' : '评论已恢复对公众展示', 'success');
-    fetchTwikooCommentsStream();
-  }).catch(e => toast(e.message, 'error'));
-}
-
-function deleteTwikooComment(id){
-  if(!confirm('确定要在数据库中永久粉碎移除此条评论吗？此操作无法撤销！')) return;
-  toast('正在执行物理擦除…');
-  tkAdminFetch('COMMENT_DELETE', { id: id }).then(() => {
-    toast('记录已物理抹除','success'); fetchTwikooCommentsStream();
-  }).catch(e => toast(e.message, 'error'));
-}
-
-// ============================================================
-// Cloudflare R2 View Engine
-// ============================================================
-async function renderImagesPage(){
-  document.getElementById('page-title').textContent='R2 分布式图床';
-  document.getElementById('topbar-actions').innerHTML=`<label class="btn primary">双击并发上传到 R2<input type="file" accept="image/*" multiple style="display:none" onchange="uploadImagesToR2(event)"></label>`;
-  const c=document.getElementById('main-content'); if(!CFG.r2AccountId||!CFG.r2BucketName){c.innerHTML=`<div class="alert warning">请先在系统设置中补齐 Cloudflare R2 的凭证信息</div>`; return;}
-  
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>连通 Cloudflare 骨干网络中…</div>`;
-  try{
-    const imgs = await getR2Images(); STATE.images = imgs;
-    c.innerHTML=`
-      <div class="upload-zone" onclick="document.querySelector('input[type=file]').click()">
-        <p>将媒体文件拖拽至此区域，或 <strong>点击调起本地视窗</strong>（自动启用高级 WebP 85% 压缩算法）</p>
-      </div>
-      <div class="card"><div class="img-grid">
-          ${imgs.map(img => {
-            const url = `${CFG.r2PublicUrl}/${img.key}`;
-            return `<div class="img-card">
-              <img src="${url}" loading="lazy">
-              <div class="img-card-body">
-                <div class="img-card-name" title="${img.key}">${img.key}</div>
-                <div class="flex gap-2 mt-1">
-                  <button class="btn sm" style="flex:1" onclick="navigator.clipboard.writeText('![插图](${url})');toast('Markdown 链已拷贝','success')">复制</button>
-                  <button class="btn sm danger" onclick="deleteR2Object('${img.key}')">删</button>
-                </div>
-              </div>
-            </div>`
-          }).join('')}
-      </div></div>`;
-  }catch(e){ c.innerHTML=`<div class="alert danger">${e.message}</div>`; }
-}
-
-async function uploadImagesToR2(e){
-  const files = Array.from(e.target.files); if(!files.length) return; toast('图像有损算法压缩压制中…');
-  for(let file of files){
-    try{
-      const webpBlob = await convertToWebP(file); const cleanName = file.name.replace(/\.[^/.]+$/, "") + "_" + Date.now() + ".webp";
-      await r2Fetch('PUT', cleanName, webpBlob, { 'Content-Type': 'image/webp' });
-    }catch(e){toast(`上传断连: ${e.message}`,'error')}
-  }
-  toast('网络客体就绪','success'); renderImagesPage();
-}
-
-function convertToWebP(file){
-  return new Promise((res)=>{
-    const img = new Image(); img.src = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-      const maxW = 1400; if(img.width > maxW) { canvas.width = maxW; canvas.height = img.height * (maxW / img.width); } else { canvas.width = img.width; canvas.height = img.height; }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height); canvas.toBlob(b => res(b), 'image/webp', 0.85);
-    }
-  });
-}
-
-async function deleteR2Object(key){
-  if(!confirm(`确定销毁 R2 客体 ${key} 吗？不可逆！`)) return;
-  try{ await r2Fetch('DELETE', key); toast('客体移除','success'); renderImagesPage(); }catch(e){toast(e.message,'error')}
-}
-
-async function loadR2ImagesForInsert(){
-  const container = document.getElementById('quick-images'); container.innerHTML = `<div class="spinner"></div>`;
-  try{
-    const imgs = await getR2Images();
-    container.innerHTML = imgs.map(img=> {
-      const url = `${CFG.r2PublicUrl}/${img.key}`;
-      return `<img src="${url}" style="width:100%;height:65px;object-fit:cover;cursor:pointer;border:1px solid var(--border);border-radius:4px" onclick="STATE.mde.codemirror.replaceSelection('![插图](${url})')" title="点击瞬插编辑器">`
-    }).join('');
-  }catch(e){container.innerHTML=`<span class="text-sm">读取被拒</span>`}
-}
-
-// ============================================================
-// Vercel Pack
-// ============================================================
-async function renderDeployPage(){
-  document.getElementById('page-title').textContent='编译打包监控';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="triggerRedeploy()">迫使 Vercel 重新编译</button>`;
-  const c=document.getElementById('main-content'); if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在嗅探 Vercel Deployment 状态…</div>`;
-  try{
-    let vStatus = `<span class="tag draft">控制链未打通</span>`;
-    if(CFG.vercelToken && CFG.vercelProjectId){
-      const vRes = await fetch(`https://api.vercel.com/v6/deployments?projectId=${CFG.vercelProjectId}&limit=1`, { headers: { 'Authorization': `Bearer ${CFG.vercelToken}` } });
-      if(vRes.ok) {
-        const vData = await vRes.json();
-        if(vData.deployments && vData.deployments.length > 0){
-          const d = vData.deployments[0]; vStatus = `<span class="tag ${d.state==='READY'?'published':'draft'}" style="font-size:13px;padding:6px 12px">${d.state} (${new Date(d.createdAt).toLocaleString()})</span>`;
-        }
-      }
-    }
-    const commits = await ghFetch(`/commits?per_page=5`);
-    c.innerHTML=`
-      <div class="card mb-2">
-        <div class="card-title" style="margin-bottom:10px">Vercel 云节点渲染分发状态</div><div>${vStatus}</div>
-      </div>
-      <div class="card">
-        <div class="card-title mb-2">GitHub 最近 5 次原子级 Commit 提交日志</div>
-        <div class="table-wrap"><table>
-          ${commits.map(cm=>`<tr><td class="mono" style="width:90px">${cm.sha.slice(0,7)}</td><td style="font-weight:500">${cm.commit.message}</td><td class="text-sm" style="color:var(--text3)">${cm.commit.author.name}</td></tr>`).join('')}
-        </table></div>
-      </div>`;
-  }catch(e){c.innerHTML=`<div class="alert danger">${e.message}</div>`}
-}
-
-async function triggerRedeploy(){
-  try{
-    const ref=await ghFetch(`/git/refs/heads/${CFG.branch}`); const cSha=ref.object.sha; const commit=await ghFetch(`/git/commits/${cSha}`);
-    const nCommit=await ghFetch('/git/commits',{method:'POST',body:JSON.stringify({message:'chore: platform force dashboard redeploy pipeline', tree:commit.tree.sha, parents:[cSha]})});
-    await ghFetch(`/git/refs/heads/${CFG.branch}`,{method:'PATCH',body:JSON.stringify({sha:nCommit.sha})});
-    toast('Webhook 信号已送达','success'); setTimeout(renderDeployPage, 1000);
-  }catch(e){toast(e.message,'error')}
-}
-
-// ============================================================
-// Core Settings System
-// ============================================================
-function renderSettingsPage(){
-  document.getElementById('page-title').textContent='系统核心环境变量';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="saveAllSettings()">保存系统设置</button>`;
-  const c=document.getElementById('main-content');
-  c.innerHTML=`
-    <div class="card" style="max-width:800px">
-      <div class="section-title" style="margin-top:0">GitHub 仓库底座拓扑</div>
-      <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">空间/所有者 (Owner)</label><input class="setting-input" id="s-owner" value="${CFG.owner}"></div>
-        <div class="setting-group"><label class="setting-label">仓库名字 (Repo)</label><input class="setting-input" id="s-repo" value="${CFG.repo}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">GitHub Token (PAT)</label><input class="setting-input" type="password" id="s-token" value="${CFG.token}"></div>
-        <div class="setting-group"><label class="setting-label">分支 (Branch)</label><input class="setting-input" id="s-branch" value="${CFG.branch}"></div>
-        <div class="setting-group"><label class="setting-label">扫描根路径 (Posts Path)</label><input class="setting-input" id="s-posts" value="${CFG.postsPath}"></div>
-      </div>
-      <div class="section-title">Cloudflare R2 对象存储底座</div>
-      <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">R2 账户 ID (Account ID)</label><input class="setting-input" id="s-r2-id" value="${CFG.r2AccountId}"></div>
-        <div class="setting-group"><label class="setting-label">对应存储桶 (Bucket Name)</label><input class="setting-input" id="s-r2-bucket" value="${CFG.r2BucketName}"></div>
-        <div class="setting-group"><label class="setting-label">R2 Access Key ID</label><input class="setting-input" id="s-r2-key" value="${CFG.r2AccessKeyId}"></div>
-        <div class="setting-group"><label class="setting-label">R2 Secret Access Key</label><input class="setting-input" type="password" id="s-r2-secret" value="${CFG.r2SecretAccessKey}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">外部 CDN 映射专属域名 (必须带 https://)</label><input class="setting-input" id="s-r2-url" value="${CFG.r2PublicUrl||''}"></div>
-      </div>
-      <div class="section-title">Twikoo 互动与 Vercel 扩展</div>
-      <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">独立主页网址</label><input class="setting-input" id="s-blog" value="${CFG.blogUrl}"></div>
-        <div class="setting-group"><label class="setting-label">Twikoo 集中环境 envId (后端 API 地址)</label><input class="setting-input" id="s-twikoo" value="${CFG.twikooEnvId}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="setting-label">🔒 Twikoo 管理员专属密码 (Admin Password)</label><input class="setting-input" type="password" id="s-twikoo-pwd" value="${CFG.twikooAdminPassword||''}"></div>
-        <div class="setting-group"><label class="setting-label">Vercel Project ID</label><input class="setting-input" id="s-v-id" value="${CFG.vercelProjectId}"></div>
-        <div class="
+window.addEventListener('DOMContentLoaded', async()=>{
+  loadCfg(); const active=await checkStatus();
+  if(active) showPage('posts'); else { showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning'); }
+});
+</script>
+</body>
+</html>
