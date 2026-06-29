@@ -185,26 +185,6 @@ input:checked+.slider:before{transform:translateX(18px)}
 .markdown-body{font-size:15px;line-height:1.78}
 .markdown-body img{border-radius:8px}
 
-
-/* R2 media library */
-.media-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:136px;border:1px dashed var(--border2);border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,var(--bg2));padding:24px;text-align:center;color:var(--text2);transition:.16s;cursor:pointer;position:relative;overflow:hidden}
-.media-drop::before{content:'🖼️';display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:var(--accent-light);color:var(--accent);font-size:20px;margin-bottom:12px}
-.media-drop:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.08);background:#fff}
-.media-drop input{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
-.media-drop-title{font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
-.media-drop-desc{font-size:12.5px;color:var(--text3);line-height:1.6;max-width:640px}
-.media-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:center}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
-.media-item{border:1px solid var(--border);border-radius:var(--radius-lg);background:#fff;overflow:hidden;box-shadow:var(--shadow-soft)}
-.media-thumb{height:128px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3);font-size:12px;text-align:center;padding:10px}
-.media-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.media-info{padding:10px;display:grid;gap:8px}
-.media-name{font-weight:700;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.media-meta{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.media-item-actions{display:flex;gap:6px;flex-wrap:wrap}
-.editor-upload-card .media-drop{padding:14px;min-height:112px}
-.editor-upload-card .media-actions{justify-content:flex-start;margin-top:10px}
-
 /* Settings */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .setting-group{display:flex;flex-direction:column;gap:7px}
@@ -282,10 +262,6 @@ input:checked+.slider:before{transform:translateX(18px)}
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
       </div>
-      <div class="nav-item" onclick="showPage('media')" id="nav-media">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        图床管理
-      </div>
       <div class="nav-section">系统设置</div>
       <div class="nav-item" onclick="showPage('deploy')" id="nav-deploy">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
@@ -326,10 +302,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 // ============================================================
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
-  blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: '',
-  r2AccountId: '', r2Bucket: '', r2AccessKeyId: '', r2SecretAccessKey: '',
-  r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}',
-  r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920
+  blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: ''
 };
 
 let STATE = {
@@ -478,7 +451,7 @@ function showPage(page){
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   const nav=document.getElementById('nav-'+page); if(nav) nav.classList.add('active');
   const c=document.getElementById('main-content'); c.style.overflow='auto';
-  switch(page){ case 'posts': renderPostsPage(); break; case 'media': renderMediaPage(); break; case 'deploy': renderDeployPage(); break; case 'settings': renderSettingsPage(); break; }
+  switch(page){ case 'posts': renderPostsPage(); break; case 'deploy': renderDeployPage(); break; case 'settings': renderSettingsPage(); break; }
 }
 
 async function checkStatus(){
@@ -883,11 +856,11 @@ function renderEditor(){
   document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="showPage('posts')">返回列表</button>
-    <button class="btn" onclick="previewCurrentEditor()">预览</button>
+    ${post.path?`<button class="btn" onclick="viewPost('${encodePath(post.path)}')">预览</button>`:''}
     <button class="btn" onclick="savePost('draft')" id="btn-save-draft">保存草稿</button>
     <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
-  const filePath=post.path || post.previewPath || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
+  const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
   c.innerHTML=`
     <div class="editor-wrap">
       <div class="editor-left">
@@ -917,23 +890,11 @@ function renderEditor(){
             <span>保存为草稿，不公开渲染</span>
           </div>
         </div>       
-        <div class="fm-card editor-upload-card">
-          <div class="fm-card-title">R2 图床</div>
-          <label class="media-drop" for="editor-r2-file">
-            <input type="file" id="editor-r2-file" accept="image/*" multiple onchange="uploadEditorR2Images(this)">
-            <div class="media-drop-title">上传图片并插入正文</div>
-            <div class="media-drop-desc">支持多选；上传前会按设置压缩并转换为 WebP，成功后自动插入 Markdown 图片链接。</div>
-          </label>
-          <div class="media-actions">
-            <button class="btn sm" onclick="document.getElementById('editor-r2-file')?.click()">选择图片</button>
-            <button class="btn sm" onclick="showPage('media')">打开图床</button>
-          </div>
-        </div>
         <div class="fm-card">
           <div class="fm-card-title">先完成，再完美</div>
           <div class="helper-list">
             <div>⌘ <span>使用 <span class="kbd">Ctrl</span> + <span class="kbd">S</span> 快速保存草稿。</span></div>
-            <div>🖼️ <span>可在右侧 R2 图床上传图片，默认会压缩转成 WebP，上传后自动插入 Markdown 图片语法。</span></div>
+            <div>🖼️ <span>图片建议继续使用 PicGo 或图床外链，直接粘贴 Markdown 图片语法。</span></div>
             <div>🚀 <span>发布会写入 GitHub，Vercel 会按你的项目配置自动构建。</span></div>
           </div>
           <div class="autosave-box"><span id="autosave-card-text">本地自动保存已开启</span><button class="btn sm" onclick="clearCurrentLocalDraft()">清除本地草稿</button></div>
@@ -944,7 +905,7 @@ function renderEditor(){
   STATE.mde=new EasyMDE({
   element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
   placeholder:'从这里开始写正文，支持 Markdown…', status:false,
-  toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|',{name:'r2-image',action:function(){document.getElementById('editor-r2-file')?.click();},text:'R2',title:'上传图片到 Cloudflare R2 并插入文章'},'|','preview','side-by-side','fullscreen']
+  toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
 });
 
 if(post.isNew && (post.body || '').trim() === '❤'){
@@ -957,106 +918,6 @@ if(post.isNew && (post.body || '').trim() === '❤'){
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
   document.addEventListener('keydown', editorShortcut, {once:false});
   refreshEditorMeta();
-}
-
-
-function collectEditorPreviewData(){
-  const title=getFormValue('fm-title') || '未命名文章';
-  const slug=getFormValue('fm-slug') || slugify(title);
-  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
-
-  let path=cleanPath(getFormValue('fm-path', defaultPath));
-  if(!path) path=defaultPath;
-  if(!path.endsWith('.md')) path += '.md';
-
-  const draftCheckbox=document.getElementById('fm-draft');
-  const fm={
-    ...(STATE.editingPost?.fm||{}),
-    title,
-    author:getFormValue('fm-author'),
-    date:getFormValue('fm-date', nowLocalString()) || nowLocalString(),
-    description:getFormValue('fm-description'),
-    tags:STATE.activeTags,
-    slug,
-    draft:draftCheckbox ? draftCheckbox.checked : isDraftValue(STATE.editingPost?.fm?.draft)
-  };
-
-  return {
-    fm,
-    body:STATE.mde ? STATE.mde.value() : '',
-    path
-  };
-}
-
-function previewCurrentEditor(){
-  try{
-    const data=collectEditorPreviewData();
-    const keepDirty=STATE.dirty;
-    STATE.editingPost={
-      ...(STATE.editingPost||{}),
-      fm:data.fm,
-      body:data.body,
-      previewPath:data.path
-    };
-    STATE.dirty=keepDirty;
-    renderEditorSnapshotPreview(data, keepDirty);
-  }catch(e){ toast(e.message,'error'); }
-}
-
-function renderEditorSnapshotPreview(data, keepDirty=true){
-  const c=document.getElementById('main-content');
-  STATE.page='reader';
-  document.getElementById('page-title').innerHTML='文章预览 <small>当前编辑快照</small>';
-  document.getElementById('topbar-actions').innerHTML='';
-  c.style.overflow='auto';
-
-  const fm=data.fm || {};
-  const body=data.body || '';
-  const path=data.path || '';
-  const tags=normalizeTags(fm.tags);
-  const htmlContent=marked.parse(body||'*当前文章无正文内容*');
-  const isDraftPost=isDraftValue(fm.draft);
-  const publicLink=CFG.blogUrl && (fm.slug || path) ? buildPublicUrl(fm, path) : '';
-
-  c.innerHTML=`
-    <div class="reader-wrap">
-      <div class="reader-header">
-        <div class="reader-title-row">
-          <h1 class="reader-title">${escapeHTML(fm.title || '未命名文章')}</h1>
-          <div class="reader-title-actions">
-            <button class="btn primary" onclick="returnToEditorFromPreview()">继续编辑</button>
-            <button class="btn" onclick="exitEditorPreviewToPosts()">返回列表</button>
-          </div>
-        </div>
-        ${fm.description?`<div class="reader-desc">${escapeHTML(fm.description)}</div>`:''}
-        <div class="reader-meta">
-          <span>📅 ${escapeHTML(formatDate(fm.date))}</span>
-          <span>📂 <span class="mono">${escapeHTML(path)}</span></span>
-          <span>✍️ ${countWords(body)} 字 · ${readMinutes(body)} 分钟</span>
-          <span><span class="tag ${isDraftPost?'draft':'published'}">${isDraftPost?'草稿':'发布'}</span></span>
-          ${tags.length?`<span>🏷️ ${tags.map(t=>`<span class="tag soft">${escapeHTML(t)}</span>`).join(' ')}</span>`:''}
-          ${publicLink?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">跳转前台</a>`:''}
-        </div>
-      </div>
-      <div class="markdown-body">${htmlContent}</div>
-    </div>`;
-
-  STATE.dirty=!!keepDirty;
-}
-
-function returnToEditorFromPreview(){
-  const keepDirty=STATE.dirty;
-  renderEditor();
-  if(keepDirty){
-    STATE.dirty=true;
-    const ds=document.getElementById('dirty-state');
-    if(ds) ds.textContent='有未保存修改';
-  }
-}
-
-function exitEditorPreviewToPosts(){
-  if(STATE.dirty && !confirm('当前文章还没有保存，确定返回列表吗？')) return;
-  showPage('posts');
 }
 
 function editorShortcut(e){ if(STATE.page==='editor' && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); savePost('draft'); } }
@@ -1078,7 +939,7 @@ function collectEditorData(mode='draft'){
   if(!title) throw new Error('文章标题不可为空');
 
   const slug=getFormValue('fm-slug') || slugify(title);
-  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
+  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${slug}.md`;
 
   let path=cleanPath(getFormValue('fm-path', defaultPath));
   if(!path) path=`${normalizePostsPath()}/${slug}.md`;
@@ -1155,292 +1016,6 @@ function scheduleLocalDraft(){
 function clearLocalDraftByKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
 function clearCurrentLocalDraft(){ clearLocalDraftByKey(localDraftKey(STATE.editingPost?.path || '__new__')); toast('当前本地草稿已清除','success'); }
 
-
-// ============================================================
-// Cloudflare R2 Image Library
-// 浏览器直连 R2 S3 API。适合自用后台；公开多人后台建议改为 Worker 签名上传。
-// ============================================================
-function r2Configured(){
-  return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
-}
-function r2Endpoint(){ return `https://${CFG.r2AccountId}.r2.cloudflarestorage.com`; }
-function r2SafeSegment(v){ return encodeURIComponent(String(v)).replace(/[!'()*]/g, c=>'%'+c.charCodeAt(0).toString(16).toUpperCase()); }
-function r2CanonicalUri(key=''){
-  const parts=[CFG.r2Bucket, ...String(key||'').split('/').filter(Boolean)];
-  return '/' + parts.map(r2SafeSegment).join('/');
-}
-function r2ObjectUrl(key){
-  const base=String(CFG.r2PublicUrl||'').replace(/\/$/,'');
-  return `${base}/${String(key).split('/').map(r2SafeSegment).join('/')}`;
-}
-function r2PrefixNow(){
-  const d=new Date(); const pad=n=>String(n).padStart(2,'0');
-  return cleanPath(String(CFG.r2Prefix||'images/{yyyy}/{mm}')
-    .replace(/\{yyyy\}/g,d.getFullYear())
-    .replace(/\{mm\}/g,pad(d.getMonth()+1))
-    .replace(/\{dd\}/g,pad(d.getDate())));
-}
-function r2BuildKey(file){
-  const original=String(file.name||'image');
-  const dot=original.lastIndexOf('.');
-  const ext=dot>=0 ? original.slice(dot).toLowerCase().replace(/[^.a-z0-9]/g,'') : '';
-  const base=dot>=0 ? original.slice(0,dot) : original;
-  const safeBase=slugify(base).replace(/\.md$/,'') || 'image';
-  const stamp=nowLocalString().replace(/[-:\s]/g,'').slice(0,14);
-  const rand=Math.random().toString(36).slice(2,7);
-  const prefix=r2PrefixNow();
-  return cleanPath(`${prefix}/${stamp}-${rand}-${safeBase}${ext || '.jpg'}`);
-}
-async function sha256Hex(data){
-  let buf;
-  if(data instanceof ArrayBuffer) buf=data;
-  else if(data instanceof Uint8Array) buf=data.buffer.slice(data.byteOffset, data.byteOffset+data.byteLength);
-  else buf=new TextEncoder().encode(String(data)).buffer;
-  const hash=await crypto.subtle.digest('SHA-256', buf);
-  return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function hmacRaw(key, data){
-  const rawKey=typeof key==='string'?new TextEncoder().encode(key):key;
-  const cryptoKey=await crypto.subtle.importKey('raw', rawKey, {name:'HMAC', hash:'SHA-256'}, false, ['sign']);
-  return crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(data));
-}
-async function hmacHex(key, data){
-  const sig=await hmacRaw(key,data);
-  return [...new Uint8Array(sig)].map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-function r2CanonicalQuery(query={}){
-  return Object.entries(query)
-    .filter(([,v])=>v!==undefined && v!==null)
-    .sort(([a],[b])=>a.localeCompare(b))
-    .map(([k,v])=>`${r2SafeSegment(k)}=${r2SafeSegment(v)}`)
-    .join('&');
-}
-async function r2SignRequest(method, key='', {query={}, headers={}, payloadHash}={}){
-  if(!r2Configured()) throw new Error('请先在系统设置中完整配置 Cloudflare R2 图床参数');
-  const now=new Date();
-  const amzDate=now.toISOString().replace(/[:-]|\.\d{3}/g,'');
-  const dateStamp=amzDate.slice(0,8);
-  const host=`${CFG.r2AccountId}.r2.cloudflarestorage.com`;
-  const lower={};
-  Object.entries(headers).forEach(([k,v])=>{ if(v!==undefined && v!==null && v!=='') lower[k.toLowerCase()]=String(v); });
-  lower.host=host;
-  lower['x-amz-content-sha256']=payloadHash || await sha256Hex('');
-  lower['x-amz-date']=amzDate;
-  const headerKeys=Object.keys(lower).sort();
-  const canonicalHeaders=headerKeys.map(k=>`${k}:${String(lower[k]).trim().replace(/\s+/g,' ')}\n`).join('');
-  const signedHeaders=headerKeys.join(';');
-  const canonicalRequest=[method.toUpperCase(), r2CanonicalUri(key), r2CanonicalQuery(query), canonicalHeaders, signedHeaders, lower['x-amz-content-sha256']].join('\n');
-  const scope=`${dateStamp}/auto/s3/aws4_request`;
-  const stringToSign=['AWS4-HMAC-SHA256', amzDate, scope, await sha256Hex(canonicalRequest)].join('\n');
-  const kDate=await hmacRaw('AWS4'+CFG.r2SecretAccessKey, dateStamp);
-  const kRegion=await hmacRaw(kDate, 'auto');
-  const kService=await hmacRaw(kRegion, 's3');
-  const kSigning=await hmacRaw(kService, 'aws4_request');
-  const signature=await hmacHex(kSigning, stringToSign);
-  return {
-    url:`${r2Endpoint()}${r2CanonicalUri(key)}${r2CanonicalQuery(query)?'?'+r2CanonicalQuery(query):''}`,
-    headers:{...lower, Authorization:`AWS4-HMAC-SHA256 Credential=${CFG.r2AccessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`}
-  };
-}
-async function r2UploadFile(file){
-  const prepared=await prepareR2UploadFile(file);
-  const uploadFile=prepared.file;
-  const key=r2BuildKey(uploadFile);
-  const buf=await uploadFile.arrayBuffer();
-  const payloadHash=await sha256Hex(buf);
-  const contentType=uploadFile.type || 'application/octet-stream';
-  const signed=await r2SignRequest('PUT', key, {headers:{'content-type':contentType}, payloadHash});
-  const res=await fetch(signed.url, {method:'PUT', headers:signed.headers, body:uploadFile});
-  if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 上传失败：${res.status} ${text}`); }
-  return {
-    key, url:r2ObjectUrl(key), name:uploadFile.name, originalName:prepared.originalName,
-    size:uploadFile.size, originalSize:prepared.originalSize, type:contentType,
-    optimized:prepared.optimized, width:prepared.width, height:prepared.height
-  };
-}
-async function r2ListObjects(){
-  const prefix=r2PrefixNow();
-  const signed=await r2SignRequest('GET','',{query:{'list-type':'2', prefix, 'max-keys':'100'}, payloadHash:await sha256Hex('')});
-  const res=await fetch(signed.url, {method:'GET', headers:signed.headers});
-  if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 列表读取失败：${res.status} ${text}`); }
-  const xml=await res.text();
-  const doc=new DOMParser().parseFromString(xml,'application/xml');
-  return [...doc.querySelectorAll('Contents')].map(n=>({
-    key:n.querySelector('Key')?.textContent || '',
-    size:Number(n.querySelector('Size')?.textContent || 0),
-    lastModified:n.querySelector('LastModified')?.textContent || ''
-  })).filter(x=>x.key).sort((a,b)=>String(b.lastModified).localeCompare(String(a.lastModified)));
-}
-async function r2DeleteObject(key){
-  const signed=await r2SignRequest('DELETE',key,{payloadHash:await sha256Hex('')});
-  const res=await fetch(signed.url,{method:'DELETE',headers:signed.headers});
-  if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 删除失败：${res.status} ${text}`); }
-}
-function formatBytes(n){
-  n=Number(n||0); if(n<1024) return `${n} B`; if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`; return `${(n/1024/1024).toFixed(1)} MB`;
-}
-function r2WebpEnabled(){ return CFG.r2WebpEnabled !== false; }
-function r2WebpQuality(){
-  const q=Number(CFG.r2WebpQuality);
-  if(!Number.isFinite(q)) return 0.82;
-  return Math.min(0.95, Math.max(0.5, q));
-}
-function r2ImageMaxSide(){
-  const n=parseInt(CFG.r2ImageMaxSide,10);
-  if(!Number.isFinite(n) || n<=0) return 1920;
-  return Math.min(6000, Math.max(800, n));
-}
-function r2CanOptimizeImage(file){
-  const type=String(file?.type||'').toLowerCase();
-  const name=String(file?.name||'').toLowerCase();
-  if(!type.startsWith('image/')) return false;
-  // SVG 和 GIF 通常不适合用 canvas 转：SVG 可能有脚本/外链，GIF 会丢失动画。
-  if(type.includes('svg') || type.includes('gif') || /\.(svg|gif)$/i.test(name)) return false;
-  return true;
-}
-function r2ReplaceFileExt(name, ext){
-  const safe=String(name||'image').replace(/\.[^.\/]+$/,'');
-  return `${safe || 'image'}${ext}`;
-}
-function r2LoadImage(file){
-  return new Promise((resolve,reject)=>{
-    const url=URL.createObjectURL(file);
-    const img=new Image();
-    img.onload=()=>{ URL.revokeObjectURL(url); resolve(img); };
-    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败：${file.name}`)); };
-    img.src=url;
-  });
-}
-function r2CanvasToBlob(canvas, type, quality){
-  return new Promise(resolve=>canvas.toBlob(resolve, type, quality));
-}
-async function prepareR2UploadFile(file){
-  const original={file, originalName:file.name, originalSize:file.size, optimized:false, width:0, height:0};
-  if(!r2WebpEnabled() || !r2CanOptimizeImage(file)) return original;
-
-  try{
-    const img=await r2LoadImage(file);
-    const maxSide=r2ImageMaxSide();
-    let width=img.naturalWidth || img.width;
-    let height=img.naturalHeight || img.height;
-    if(!width || !height) return original;
-
-    const scale=Math.min(1, maxSide / Math.max(width, height));
-    const targetW=Math.max(1, Math.round(width * scale));
-    const targetH=Math.max(1, Math.round(height * scale));
-
-    const canvas=document.createElement('canvas');
-    canvas.width=targetW; canvas.height=targetH;
-    const ctx=canvas.getContext('2d', {alpha:true});
-    ctx.drawImage(img, 0, 0, targetW, targetH);
-
-    const blob=await r2CanvasToBlob(canvas, 'image/webp', r2WebpQuality());
-    if(!blob) return original;
-
-    const webpName=r2ReplaceFileExt(file.name, '.webp');
-    const webpFile=new File([blob], webpName, {type:'image/webp', lastModified:Date.now()});
-    return {file:webpFile, originalName:file.name, originalSize:file.size, optimized:true, width:targetW, height:targetH};
-  }catch(e){
-    console.warn('图片压缩转换失败，保留原文件上传：', e);
-    return original;
-  }
-}
-function r2UploadSummary(item){
-  if(!item?.optimized) return `${formatBytes(item.size)}`;
-  const ratio=item.originalSize ? Math.max(0, Math.round((1 - item.size / item.originalSize) * 100)) : 0;
-  const sizeLine=`${formatBytes(item.originalSize)} → ${formatBytes(item.size)}${ratio>0 ? `，减少 ${ratio}%` : ''}`;
-  const dimLine=item.width&&item.height ? ` · ${item.width}×${item.height}` : '';
-  return `WebP ${sizeLine}${dimLine}`;
-}
-function insertIntoEditor(text){
-  if(!STATE.mde) return false;
-  try{ STATE.mde.codemirror.replaceSelection(text); STATE.mde.codemirror.focus(); markDirty(); refreshEditorMeta(); return true; }catch(e){}
-  try{ STATE.mde.value((STATE.mde.value()||'')+text); markDirty(); refreshEditorMeta(); return true; }catch(e){}
-  return false;
-}
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); toast('已复制到剪贴板','success'); }
-  catch(e){ prompt('复制失败，请手动复制：', text); }
-}
-async function uploadEditorR2Images(input){
-  const files=[...(input?.files||[])]; if(!files.length) return;
-  try{
-    toast(`开始处理并上传 ${files.length} 张图片到 R2…`);
-    for(const file of files){
-      if(!file.type.startsWith('image/')) throw new Error(`${file.name} 不是图片文件`);
-      const item=await r2UploadFile(file);
-      insertIntoEditor(`\n![${item.originalName.replace(/\.[^.]+$/,'')}](${item.url})\n`);
-    }
-    toast('图片已上传并插入文章','success');
-  }catch(e){ toast(e.message,'error'); }
-  finally{ if(input) input.value=''; }
-}
-async function uploadMediaFiles(input){
-  const files=[...(input?.files||[])]; if(!files.length) return;
-  const box=document.getElementById('media-upload-result');
-  try{
-    if(box) box.innerHTML=`<div class="loading" style="padding:22px"><div class="spinner"></div>正在压缩转换并上传 ${files.length} 个文件…</div>`;
-    const uploaded=[];
-    for(const file of files){ uploaded.push(await r2UploadFile(file)); }
-    if(box) box.innerHTML=`<div class="alert info">${uploaded.map(x=>`<div><span class="mono">${escapeHTML(x.key)}</span><br><a href="${escapeAttr(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.url)}</a><br><span class="muted">${escapeHTML(r2UploadSummary(x))}</span></div>`).join('<hr style="border:none;border-top:1px solid var(--border);margin:10px 0">')}</div>`;
-    toast('上传完成','success'); await refreshMediaList();
-  }catch(e){ if(box) box.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; toast(e.message,'error'); }
-  finally{ if(input) input.value=''; }
-}
-async function refreshMediaList(){
-  const box=document.getElementById('media-list-box'); if(!box) return;
-  if(!r2Configured()){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">🖼️</div><p>请先到系统设置中配置 Cloudflare R2 图床参数。</p></div>`; return; }
-  box.innerHTML=`<div class="loading" style="padding:34px"><div class="spinner"></div>正在读取 R2 图片列表…</div>`;
-  try{
-    const objects=await r2ListObjects();
-    if(!objects.length){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">🖼️</div><p>当前前缀下还没有文件。</p><p class="muted">当前前缀：${escapeHTML(r2PrefixNow())}</p></div>`; return; }
-    box.innerHTML=`<div class="media-grid">${objects.map(renderMediaItem).join('')}</div>`;
-  }catch(e){ box.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; }
-}
-function renderMediaItem(item){
-  const url=r2ObjectUrl(item.key); const isImg=/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(item.key);
-  return `<div class="media-item">
-    <div class="media-thumb">${isImg?`<img src="${escapeAttr(url)}" loading="lazy" alt="">`:'文件'}</div>
-    <div class="media-info">
-      <div class="media-name" title="${escapeAttr(item.key)}">${escapeHTML(item.key.split('/').pop())}</div>
-      <div class="media-meta">${formatBytes(item.size)} · ${item.lastModified?new Date(item.lastModified).toLocaleDateString():'未知日期'}</div>
-      <div class="media-item-actions">
-        <button class="btn sm" onclick="copyText('${escapeAttr(url)}')">复制链接</button>
-        <button class="btn sm" onclick="copyText('![image](${escapeAttr(url)})')">复制 MD</button>
-        <a class="btn sm" href="${escapeAttr(url)}" target="_blank" rel="noopener">打开</a>
-        <button class="btn sm danger" onclick="deleteMediaObject('${escapeAttr(item.key)}')">删除</button>
-      </div>
-    </div>
-  </div>`;
-}
-async function deleteMediaObject(key){
-  if(!confirm(`确定从 R2 删除这个文件吗？\n${key}`)) return;
-  try{ await r2DeleteObject(key); toast('R2 文件已删除','success'); refreshMediaList(); }
-  catch(e){ toast(e.message,'error'); }
-}
-function renderMediaPage(){
-  STATE.page='media';
-  document.getElementById('page-title').innerHTML='图床管理 <small>Cloudflare R2</small>';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="refreshMediaList()">刷新列表</button><button class="btn primary" onclick="document.getElementById('media-file-input')?.click()">上传图片</button>`;
-  const c=document.getElementById('main-content'); c.style.overflow='auto';
-  c.innerHTML=`
-    <div class="alert info" style="max-width:980px">R2 上传使用 S3 兼容 API。请先在系统设置中填写 R2 参数，并在 R2 Bucket CORS 中允许当前后台域名执行 PUT / GET / DELETE 请求。</div>
-    <div class="card" style="max-width:980px">
-      <div class="card-header"><div><div class="card-title">上传到 R2</div><div class="card-desc">上传成功后会生成可直接粘贴到 Markdown 的图片链接。</div></div><span class="tag soft">${escapeHTML(r2PrefixNow())}</span></div>
-      <label class="media-drop" for="media-file-input">
-        <input type="file" id="media-file-input" accept="image/*" multiple onchange="uploadMediaFiles(this)">
-        <div class="media-drop-title">点击选择图片，或拖到这里后再选择</div>
-        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF；默认会在浏览器本地压缩并转成 WebP，再上传到 R2。</div>
-      </label>
-      <div id="media-upload-result" style="margin-top:14px"></div>
-    </div>
-    <div class="card" style="max-width:980px">
-      <div class="card-header"><div><div class="card-title">最近图片</div><div class="card-desc">显示当前前缀下最近 100 个对象。可以复制链接或 Markdown 语法。</div></div></div>
-      <div id="media-list-box"></div>
-    </div>`;
-  refreshMediaList();
-}
-
 // ============================================================
 // Deploy
 // ============================================================
@@ -1501,19 +1076,6 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">Vercel Project ID</label><input class="setting-input" id="s-v-id" value="${escapeAttr(CFG.vercelProjectId||'')}"></div>
         <div class="setting-group" style="grid-column:span 2"><label class="setting-label">Vercel Token</label><input class="setting-input" type="password" id="s-v-token" value="${escapeAttr(CFG.vercelToken||'')}"></div>
       </div>
-      <div class="section-title">Cloudflare R2 图床</div>
-      <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">R2 Account ID</label><input class="setting-input" id="s-r2-account" value="${escapeAttr(CFG.r2AccountId||'')}"></div>
-        <div class="setting-group"><label class="setting-label">R2 Bucket</label><input class="setting-input" id="s-r2-bucket" value="${escapeAttr(CFG.r2Bucket||'')}"></div>
-        <div class="setting-group"><label class="setting-label">R2 Access Key ID</label><input class="setting-input" id="s-r2-ak" value="${escapeAttr(CFG.r2AccessKeyId||'')}"></div>
-        <div class="setting-group"><label class="setting-label">R2 Secret Access Key</label><input class="setting-input" type="password" id="s-r2-sk" value="${escapeAttr(CFG.r2SecretAccessKey||'')}"></div>
-        <div class="setting-group"><label class="setting-label">图片公开访问 URL</label><input class="setting-input" id="s-r2-public" placeholder="https://img.example.com" value="${escapeAttr(CFG.r2PublicUrl||'')}"></div>
-        <div class="setting-group"><label class="setting-label">上传路径前缀</label><input class="setting-input" id="s-r2-prefix" placeholder="images/{yyyy}/{mm}" value="${escapeAttr(CFG.r2Prefix||'images/{yyyy}/{mm}')}"></div>
-        <div class="setting-group"><label class="setting-label">WebP 质量 <span class="muted">0.5 - 0.95</span></label><input class="setting-input" id="s-r2-webp-quality" placeholder="0.82" value="${escapeAttr(CFG.r2WebpQuality ?? 0.82)}"></div>
-        <div class="setting-group"><label class="setting-label">最大边长 <span class="muted">px</span></label><input class="setting-input" id="s-r2-max-side" placeholder="1920" value="${escapeAttr(CFG.r2ImageMaxSide || 1920)}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="switch-wrap"><span class="switch"><input type="checkbox" id="s-r2-webp-enabled" ${CFG.r2WebpEnabled === false ? '' : 'checked'}><span class="slider"></span></span><span>上传图片前自动压缩并转换成 WebP；SVG / GIF 会保留原格式。</span></label></div>
-      </div>
-      <div class="alert warning">R2 密钥会和 GitHub Token 一样保存在浏览器 localStorage。仅建议自用后台使用；若后台要多人使用，建议改为 Cloudflare Worker 生成临时上传签名。</div>
     </div>`;
 }
 
@@ -1522,12 +1084,6 @@ function saveAllSettings(){
   CFG.token=document.getElementById('s-token').value.trim(); CFG.branch=document.getElementById('s-branch').value.trim()||'main';
   CFG.postsPath=cleanPath(document.getElementById('s-posts').value.trim()||'content/posts'); CFG.blogUrl=document.getElementById('s-blog').value.trim();
   CFG.vercelProjectId=document.getElementById('s-v-id').value.trim(); CFG.vercelToken=document.getElementById('s-v-token').value.trim();
-  CFG.r2AccountId=document.getElementById('s-r2-account').value.trim(); CFG.r2Bucket=document.getElementById('s-r2-bucket').value.trim();
-  CFG.r2AccessKeyId=document.getElementById('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=document.getElementById('s-r2-sk').value.trim();
-  CFG.r2PublicUrl=document.getElementById('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(document.getElementById('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');
-  CFG.r2WebpEnabled=document.getElementById('s-r2-webp-enabled')?.checked !== false;
-  CFG.r2WebpQuality=Math.min(0.95, Math.max(0.5, Number(document.getElementById('s-r2-webp-quality')?.value || 0.82)));
-  CFG.r2ImageMaxSide=Math.min(6000, Math.max(800, parseInt(document.getElementById('s-r2-max-side')?.value || 1920, 10)));
   saveCfg(); toast('设置已保存到当前浏览器','success'); checkStatus();
 }
 

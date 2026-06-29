@@ -328,8 +328,7 @@ let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
   blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: '',
   r2AccountId: '', r2Bucket: '', r2AccessKeyId: '', r2SecretAccessKey: '',
-  r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}',
-  r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920
+  r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}'
 };
 
 let STATE = {
@@ -883,11 +882,11 @@ function renderEditor(){
   document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="showPage('posts')">返回列表</button>
-    <button class="btn" onclick="previewCurrentEditor()">预览</button>
+    ${post.path?`<button class="btn" onclick="viewPost('${encodePath(post.path)}')">预览</button>`:''}
     <button class="btn" onclick="savePost('draft')" id="btn-save-draft">保存草稿</button>
     <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
-  const filePath=post.path || post.previewPath || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
+  const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
   c.innerHTML=`
     <div class="editor-wrap">
       <div class="editor-left">
@@ -922,7 +921,7 @@ function renderEditor(){
           <label class="media-drop" for="editor-r2-file">
             <input type="file" id="editor-r2-file" accept="image/*" multiple onchange="uploadEditorR2Images(this)">
             <div class="media-drop-title">上传图片并插入正文</div>
-            <div class="media-drop-desc">支持多选；上传前会按设置压缩并转换为 WebP，成功后自动插入 Markdown 图片链接。</div>
+            <div class="media-drop-desc">支持多选；上传成功后自动插入 Markdown 图片链接。</div>
           </label>
           <div class="media-actions">
             <button class="btn sm" onclick="document.getElementById('editor-r2-file')?.click()">选择图片</button>
@@ -933,7 +932,7 @@ function renderEditor(){
           <div class="fm-card-title">先完成，再完美</div>
           <div class="helper-list">
             <div>⌘ <span>使用 <span class="kbd">Ctrl</span> + <span class="kbd">S</span> 快速保存草稿。</span></div>
-            <div>🖼️ <span>可在右侧 R2 图床上传图片，默认会压缩转成 WebP，上传后自动插入 Markdown 图片语法。</span></div>
+            <div>🖼️ <span>可在右侧 R2 图床上传图片，上传后会自动插入 Markdown 图片语法。</span></div>
             <div>🚀 <span>发布会写入 GitHub，Vercel 会按你的项目配置自动构建。</span></div>
           </div>
           <div class="autosave-box"><span id="autosave-card-text">本地自动保存已开启</span><button class="btn sm" onclick="clearCurrentLocalDraft()">清除本地草稿</button></div>
@@ -959,106 +958,6 @@ if(post.isNew && (post.body || '').trim() === '❤'){
   refreshEditorMeta();
 }
 
-
-function collectEditorPreviewData(){
-  const title=getFormValue('fm-title') || '未命名文章';
-  const slug=getFormValue('fm-slug') || slugify(title);
-  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
-
-  let path=cleanPath(getFormValue('fm-path', defaultPath));
-  if(!path) path=defaultPath;
-  if(!path.endsWith('.md')) path += '.md';
-
-  const draftCheckbox=document.getElementById('fm-draft');
-  const fm={
-    ...(STATE.editingPost?.fm||{}),
-    title,
-    author:getFormValue('fm-author'),
-    date:getFormValue('fm-date', nowLocalString()) || nowLocalString(),
-    description:getFormValue('fm-description'),
-    tags:STATE.activeTags,
-    slug,
-    draft:draftCheckbox ? draftCheckbox.checked : isDraftValue(STATE.editingPost?.fm?.draft)
-  };
-
-  return {
-    fm,
-    body:STATE.mde ? STATE.mde.value() : '',
-    path
-  };
-}
-
-function previewCurrentEditor(){
-  try{
-    const data=collectEditorPreviewData();
-    const keepDirty=STATE.dirty;
-    STATE.editingPost={
-      ...(STATE.editingPost||{}),
-      fm:data.fm,
-      body:data.body,
-      previewPath:data.path
-    };
-    STATE.dirty=keepDirty;
-    renderEditorSnapshotPreview(data, keepDirty);
-  }catch(e){ toast(e.message,'error'); }
-}
-
-function renderEditorSnapshotPreview(data, keepDirty=true){
-  const c=document.getElementById('main-content');
-  STATE.page='reader';
-  document.getElementById('page-title').innerHTML='文章预览 <small>当前编辑快照</small>';
-  document.getElementById('topbar-actions').innerHTML='';
-  c.style.overflow='auto';
-
-  const fm=data.fm || {};
-  const body=data.body || '';
-  const path=data.path || '';
-  const tags=normalizeTags(fm.tags);
-  const htmlContent=marked.parse(body||'*当前文章无正文内容*');
-  const isDraftPost=isDraftValue(fm.draft);
-  const publicLink=CFG.blogUrl && (fm.slug || path) ? buildPublicUrl(fm, path) : '';
-
-  c.innerHTML=`
-    <div class="reader-wrap">
-      <div class="reader-header">
-        <div class="reader-title-row">
-          <h1 class="reader-title">${escapeHTML(fm.title || '未命名文章')}</h1>
-          <div class="reader-title-actions">
-            <button class="btn primary" onclick="returnToEditorFromPreview()">继续编辑</button>
-            <button class="btn" onclick="exitEditorPreviewToPosts()">返回列表</button>
-          </div>
-        </div>
-        ${fm.description?`<div class="reader-desc">${escapeHTML(fm.description)}</div>`:''}
-        <div class="reader-meta">
-          <span>📅 ${escapeHTML(formatDate(fm.date))}</span>
-          <span>📂 <span class="mono">${escapeHTML(path)}</span></span>
-          <span>✍️ ${countWords(body)} 字 · ${readMinutes(body)} 分钟</span>
-          <span><span class="tag ${isDraftPost?'draft':'published'}">${isDraftPost?'草稿':'发布'}</span></span>
-          ${tags.length?`<span>🏷️ ${tags.map(t=>`<span class="tag soft">${escapeHTML(t)}</span>`).join(' ')}</span>`:''}
-          ${publicLink?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">跳转前台</a>`:''}
-        </div>
-      </div>
-      <div class="markdown-body">${htmlContent}</div>
-    </div>`;
-
-  STATE.dirty=!!keepDirty;
-}
-
-function returnToEditorFromPreview(){
-  const keepDirty=STATE.dirty;
-  renderEditor();
-  if(keepDirty){
-    STATE.dirty=true;
-    const ds=document.getElementById('dirty-state');
-    if(ds) ds.textContent='有未保存修改';
-  }
-}
-
-function exitEditorPreviewToPosts(){
-  if(STATE.dirty && !confirm('当前文章还没有保存，确定返回列表吗？')) return;
-  showPage('posts');
-}
-
 function editorShortcut(e){ if(STATE.page==='editor' && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); savePost('draft'); } }
 function tagChip(t){ return `<span class="tag-chip">${escapeHTML(t)}<span class="remove" onclick="removeTagNode(this,'${escapeAttr(t)}')">×</span></span>`; }
 function markDirty(){ STATE.dirty=true; const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未保存修改'; scheduleLocalDraft(); }
@@ -1078,7 +977,7 @@ function collectEditorData(mode='draft'){
   if(!title) throw new Error('文章标题不可为空');
 
   const slug=getFormValue('fm-slug') || slugify(title);
-  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
+  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${slug}.md`;
 
   let path=cleanPath(getFormValue('fm-path', defaultPath));
   if(!path) path=`${normalizePostsPath()}/${slug}.md`;
@@ -1243,20 +1142,14 @@ async function r2SignRequest(method, key='', {query={}, headers={}, payloadHash}
   };
 }
 async function r2UploadFile(file){
-  const prepared=await prepareR2UploadFile(file);
-  const uploadFile=prepared.file;
-  const key=r2BuildKey(uploadFile);
-  const buf=await uploadFile.arrayBuffer();
+  const key=r2BuildKey(file);
+  const buf=await file.arrayBuffer();
   const payloadHash=await sha256Hex(buf);
-  const contentType=uploadFile.type || 'application/octet-stream';
+  const contentType=file.type || 'application/octet-stream';
   const signed=await r2SignRequest('PUT', key, {headers:{'content-type':contentType}, payloadHash});
-  const res=await fetch(signed.url, {method:'PUT', headers:signed.headers, body:uploadFile});
+  const res=await fetch(signed.url, {method:'PUT', headers:signed.headers, body:file});
   if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 上传失败：${res.status} ${text}`); }
-  return {
-    key, url:r2ObjectUrl(key), name:uploadFile.name, originalName:prepared.originalName,
-    size:uploadFile.size, originalSize:prepared.originalSize, type:contentType,
-    optimized:prepared.optimized, width:prepared.width, height:prepared.height
-  };
+  return {key, url:r2ObjectUrl(key), name:file.name, size:file.size, type:contentType};
 }
 async function r2ListObjects(){
   const prefix=r2PrefixNow();
@@ -1279,79 +1172,6 @@ async function r2DeleteObject(key){
 function formatBytes(n){
   n=Number(n||0); if(n<1024) return `${n} B`; if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`; return `${(n/1024/1024).toFixed(1)} MB`;
 }
-function r2WebpEnabled(){ return CFG.r2WebpEnabled !== false; }
-function r2WebpQuality(){
-  const q=Number(CFG.r2WebpQuality);
-  if(!Number.isFinite(q)) return 0.82;
-  return Math.min(0.95, Math.max(0.5, q));
-}
-function r2ImageMaxSide(){
-  const n=parseInt(CFG.r2ImageMaxSide,10);
-  if(!Number.isFinite(n) || n<=0) return 1920;
-  return Math.min(6000, Math.max(800, n));
-}
-function r2CanOptimizeImage(file){
-  const type=String(file?.type||'').toLowerCase();
-  const name=String(file?.name||'').toLowerCase();
-  if(!type.startsWith('image/')) return false;
-  // SVG 和 GIF 通常不适合用 canvas 转：SVG 可能有脚本/外链，GIF 会丢失动画。
-  if(type.includes('svg') || type.includes('gif') || /\.(svg|gif)$/i.test(name)) return false;
-  return true;
-}
-function r2ReplaceFileExt(name, ext){
-  const safe=String(name||'image').replace(/\.[^.\/]+$/,'');
-  return `${safe || 'image'}${ext}`;
-}
-function r2LoadImage(file){
-  return new Promise((resolve,reject)=>{
-    const url=URL.createObjectURL(file);
-    const img=new Image();
-    img.onload=()=>{ URL.revokeObjectURL(url); resolve(img); };
-    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败：${file.name}`)); };
-    img.src=url;
-  });
-}
-function r2CanvasToBlob(canvas, type, quality){
-  return new Promise(resolve=>canvas.toBlob(resolve, type, quality));
-}
-async function prepareR2UploadFile(file){
-  const original={file, originalName:file.name, originalSize:file.size, optimized:false, width:0, height:0};
-  if(!r2WebpEnabled() || !r2CanOptimizeImage(file)) return original;
-
-  try{
-    const img=await r2LoadImage(file);
-    const maxSide=r2ImageMaxSide();
-    let width=img.naturalWidth || img.width;
-    let height=img.naturalHeight || img.height;
-    if(!width || !height) return original;
-
-    const scale=Math.min(1, maxSide / Math.max(width, height));
-    const targetW=Math.max(1, Math.round(width * scale));
-    const targetH=Math.max(1, Math.round(height * scale));
-
-    const canvas=document.createElement('canvas');
-    canvas.width=targetW; canvas.height=targetH;
-    const ctx=canvas.getContext('2d', {alpha:true});
-    ctx.drawImage(img, 0, 0, targetW, targetH);
-
-    const blob=await r2CanvasToBlob(canvas, 'image/webp', r2WebpQuality());
-    if(!blob) return original;
-
-    const webpName=r2ReplaceFileExt(file.name, '.webp');
-    const webpFile=new File([blob], webpName, {type:'image/webp', lastModified:Date.now()});
-    return {file:webpFile, originalName:file.name, originalSize:file.size, optimized:true, width:targetW, height:targetH};
-  }catch(e){
-    console.warn('图片压缩转换失败，保留原文件上传：', e);
-    return original;
-  }
-}
-function r2UploadSummary(item){
-  if(!item?.optimized) return `${formatBytes(item.size)}`;
-  const ratio=item.originalSize ? Math.max(0, Math.round((1 - item.size / item.originalSize) * 100)) : 0;
-  const sizeLine=`${formatBytes(item.originalSize)} → ${formatBytes(item.size)}${ratio>0 ? `，减少 ${ratio}%` : ''}`;
-  const dimLine=item.width&&item.height ? ` · ${item.width}×${item.height}` : '';
-  return `WebP ${sizeLine}${dimLine}`;
-}
 function insertIntoEditor(text){
   if(!STATE.mde) return false;
   try{ STATE.mde.codemirror.replaceSelection(text); STATE.mde.codemirror.focus(); markDirty(); refreshEditorMeta(); return true; }catch(e){}
@@ -1365,11 +1185,11 @@ async function copyText(text){
 async function uploadEditorR2Images(input){
   const files=[...(input?.files||[])]; if(!files.length) return;
   try{
-    toast(`开始处理并上传 ${files.length} 张图片到 R2…`);
+    toast(`开始上传 ${files.length} 张图片到 R2…`);
     for(const file of files){
       if(!file.type.startsWith('image/')) throw new Error(`${file.name} 不是图片文件`);
       const item=await r2UploadFile(file);
-      insertIntoEditor(`\n![${item.originalName.replace(/\.[^.]+$/,'')}](${item.url})\n`);
+      insertIntoEditor(`\n![${file.name.replace(/\.[^.]+$/,'')}](${item.url})\n`);
     }
     toast('图片已上传并插入文章','success');
   }catch(e){ toast(e.message,'error'); }
@@ -1379,10 +1199,10 @@ async function uploadMediaFiles(input){
   const files=[...(input?.files||[])]; if(!files.length) return;
   const box=document.getElementById('media-upload-result');
   try{
-    if(box) box.innerHTML=`<div class="loading" style="padding:22px"><div class="spinner"></div>正在压缩转换并上传 ${files.length} 个文件…</div>`;
+    if(box) box.innerHTML=`<div class="loading" style="padding:22px"><div class="spinner"></div>正在上传 ${files.length} 个文件…</div>`;
     const uploaded=[];
     for(const file of files){ uploaded.push(await r2UploadFile(file)); }
-    if(box) box.innerHTML=`<div class="alert info">${uploaded.map(x=>`<div><span class="mono">${escapeHTML(x.key)}</span><br><a href="${escapeAttr(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.url)}</a><br><span class="muted">${escapeHTML(r2UploadSummary(x))}</span></div>`).join('<hr style="border:none;border-top:1px solid var(--border);margin:10px 0">')}</div>`;
+    if(box) box.innerHTML=`<div class="alert info">${uploaded.map(x=>`<div><span class="mono">${escapeHTML(x.key)}</span><br><a href="${escapeAttr(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.url)}</a></div>`).join('<hr style="border:none;border-top:1px solid var(--border);margin:10px 0">')}</div>`;
     toast('上传完成','success'); await refreshMediaList();
   }catch(e){ if(box) box.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; toast(e.message,'error'); }
   finally{ if(input) input.value=''; }
@@ -1430,7 +1250,7 @@ function renderMediaPage(){
       <label class="media-drop" for="media-file-input">
         <input type="file" id="media-file-input" accept="image/*" multiple onchange="uploadMediaFiles(this)">
         <div class="media-drop-title">点击选择图片，或拖到这里后再选择</div>
-        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF；默认会在浏览器本地压缩并转成 WebP，再上传到 R2。</div>
+        <div class="media-drop-desc">建议使用 JPG / PNG / WebP / AVIF。对象路径会自动按前缀和日期生成，避免重名覆盖。</div>
       </label>
       <div id="media-upload-result" style="margin-top:14px"></div>
     </div>
@@ -1509,9 +1329,6 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">R2 Secret Access Key</label><input class="setting-input" type="password" id="s-r2-sk" value="${escapeAttr(CFG.r2SecretAccessKey||'')}"></div>
         <div class="setting-group"><label class="setting-label">图片公开访问 URL</label><input class="setting-input" id="s-r2-public" placeholder="https://img.example.com" value="${escapeAttr(CFG.r2PublicUrl||'')}"></div>
         <div class="setting-group"><label class="setting-label">上传路径前缀</label><input class="setting-input" id="s-r2-prefix" placeholder="images/{yyyy}/{mm}" value="${escapeAttr(CFG.r2Prefix||'images/{yyyy}/{mm}')}"></div>
-        <div class="setting-group"><label class="setting-label">WebP 质量 <span class="muted">0.5 - 0.95</span></label><input class="setting-input" id="s-r2-webp-quality" placeholder="0.82" value="${escapeAttr(CFG.r2WebpQuality ?? 0.82)}"></div>
-        <div class="setting-group"><label class="setting-label">最大边长 <span class="muted">px</span></label><input class="setting-input" id="s-r2-max-side" placeholder="1920" value="${escapeAttr(CFG.r2ImageMaxSide || 1920)}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="switch-wrap"><span class="switch"><input type="checkbox" id="s-r2-webp-enabled" ${CFG.r2WebpEnabled === false ? '' : 'checked'}><span class="slider"></span></span><span>上传图片前自动压缩并转换成 WebP；SVG / GIF 会保留原格式。</span></label></div>
       </div>
       <div class="alert warning">R2 密钥会和 GitHub Token 一样保存在浏览器 localStorage。仅建议自用后台使用；若后台要多人使用，建议改为 Cloudflare Worker 生成临时上传签名。</div>
     </div>`;
@@ -1525,9 +1342,6 @@ function saveAllSettings(){
   CFG.r2AccountId=document.getElementById('s-r2-account').value.trim(); CFG.r2Bucket=document.getElementById('s-r2-bucket').value.trim();
   CFG.r2AccessKeyId=document.getElementById('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=document.getElementById('s-r2-sk').value.trim();
   CFG.r2PublicUrl=document.getElementById('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(document.getElementById('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');
-  CFG.r2WebpEnabled=document.getElementById('s-r2-webp-enabled')?.checked !== false;
-  CFG.r2WebpQuality=Math.min(0.95, Math.max(0.5, Number(document.getElementById('s-r2-webp-quality')?.value || 0.82)));
-  CFG.r2ImageMaxSide=Math.min(6000, Math.max(800, parseInt(document.getElementById('s-r2-max-side')?.value || 1920, 10)));
   saveCfg(); toast('设置已保存到当前浏览器','success'); checkStatus();
 }
 
