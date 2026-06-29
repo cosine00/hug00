@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博客管理后台 · Counting Stars</title>
+<title>💫Counting Stars</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
 <style>
@@ -253,7 +253,7 @@ input:checked+.slider:before{transform:translateX(18px)}
       <div class="logo-icon">★</div>
       <div>
         <div class="logo-title">博客控制台</div>
-        <div class="logo-sub">Counting Stars</div>
+        <div class="logo-sub">💫Counting Stars</div>
       </div>
     </div>
     <nav class="sidebar-nav">
@@ -459,7 +459,7 @@ async function checkStatus(){
   if(!CFG.token||!CFG.owner||!CFG.repo){ dot.className='status-dot err'; txt.textContent='未连接仓库'; return false; }
   try{
     await ghFetch(`/git/ref/heads/${encodeURIComponent(CFG.branch).replace(/%2F/g,'/')}`);
-    dot.className='status-dot ok'; txt.textContent=`正常：${CFG.owner}/${CFG.repo}`; return true;
+    dot.className='status-dot ok'; txt.textContent=`连接成功：${CFG.owner}/${CFG.repo}`; return true;
   }catch(e){ dot.className='status-dot err'; txt.textContent='连接或鉴权失败'; return false; }
 }
 
@@ -474,7 +474,7 @@ async function renderPostsPage(){
     <button class="btn primary" onclick="openNewPost()">新建文章</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 同步文章树和 Front Matter…</div>`;
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>💫星河漫游中，正在同步最新文稿…</div>`;
   try{
     await loadPosts();
     c.innerHTML=`
