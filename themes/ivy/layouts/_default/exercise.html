@@ -242,6 +242,8 @@
   "WaterSport"   (dict "color" "#0BAEE6")
   "StairStepper" (dict "color" "#AF52DE")
   "Stair"        (dict "color" "#007AFF")
+  "RopeSkipping" (dict "color" "#FF2D55")
+  "Workout"      (dict "color" "#FF9500")
 }}
 {{ $defaultTheme := dict "color" "#32D74B" }}
 
@@ -332,7 +334,7 @@
             <div class="leftInfo">
               <div class="runName">{{ .name }}</div>
               <div class="runDistance" style="color: {{ $theme.color }}">
-               {{ if in (slice "StairStepper" "Stair") .type }}
+               {{ if in (slice "StairStepper" "Stair" "RopeSkipping" "Workout") .type }}
                  <span style="font-size: 1.1rem;">{{ .moving_time }}</span>
                {{ else }}
                 {{ printf "%.2f" (div (math.Floor (div .distance 10.0)) 100.0) }}<span class="distUnit">km</span>

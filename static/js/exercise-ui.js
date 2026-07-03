@@ -50,13 +50,15 @@
     'Run': '#F58200', 'TrailRun': '#F58200', 'Treadmill': '#F58200', 'VirtualRun': '#F58200',
     'Ride': '#32D74B', 'EBikeRide': '#32D74B', 'VirtualRide': '#32D74B', 
     'Walk': '#DF40C4', 'Hike': '#DF40C4', 'Swim': '#0BAEE6', 'WaterSport': '#0BAEE6', 
-    'StairStepper': '#007AFF', 'Stair': '#007AFF' 
+    'StairStepper': '#007AFF', 'Stair': '#007AFF' ,
+    'RopeSkipping': '#FF2D55', 'Workout': '#FF9500' // 👈 追加颜色
   };
 
   const RIDE_TYPES = new Set(['Ride', 'VirtualRide', 'EBikeRide']);
   const RUN_TYPES = new Set(['Run', 'TrailRun', 'Treadmill', 'VirtualRun']);
   const WALK_TYPES = new Set(['Walk', 'Hike']);
   const STAIR_TYPES = new Set(['StairStepper', 'Stair']);
+  const INDOOR_TYPES = new Set(['RopeSkipping', 'Workout']); // 👈 新增：定义无轨迹室内类型
 
   const colorFromType = (type) => window.KoobaiRun.SPORT_COLORS[type] || '#14C759';
 
@@ -69,7 +71,15 @@
 
   const getActivityIcon = (type) => {
     if (STAIR_TYPES.has(type)) {
-      return `<svg class="custom-sport-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M372.849778 0a92.16 92.16 0 1 0 0 184.32 92.16 92.16 0 0 0 0-184.32z m-92.16 182.385778c-6.144 0-14.563556 1.934222-16.668445 1.934222l-153.6 34.531556a33.393778 33.393778 0 0 0-26.168889 23.096888L27.192889 373.134222c-8.192 18.375111-0.398222 39.992889 20.48 49.265778 20.878222 9.272889 44.373333-6.144 50.574222-20.48l47.331556-111.388444 67.185777-15.928889-53.077333 210.488889c-12.344889 53.304889 18.375111 82.432 40.96 84.536888l151.665778 26.168889 20.48 158.151111c4.096 24.519111 22.755556 40.96 47.331555 40.96h5.802667c26.624-4.096 43.008-27.136 40.96-53.816888L440.661333 552.96C438.613333 532.48 422.115556 516.096 401.635556 512l-83.854223-16.668444 34.588445-157.411556 51.2 75.491556a38.684444 38.684444 0 0 0 32.654222 18.602666c4.039111 0 8.078222 0.170667 12.117333-1.934222l133.12-44.145778c20.48-10.24 31.118222-30.72 25.031111-51.2a37.717333 37.717333 0 0 0-47.388444-24.348444l-106.268444 35.84S379.221333 237.283556 368.981333 218.851556c-10.24-18.375111-24.519111-22.129778-40.96-26.168889 0 0-37.091556-10.24-47.331555-10.24z m512 309.134222v102.4h-143.36v102.4h-143.36v102.4h-143.36v102.4h-143.36V1024h40.96v-81.92h143.36v-102.4h143.36v-102.4h143.36v-102.4h143.36v-102.4h143.36v-40.96h-184.32zM155.875556 592.611556l-18.545778 58.936888-123.505778 124.757334a47.786667 47.786667 0 0 0 0 67.185778c10.24 8.192 20.309333 14.791111 32.597333 14.791111 12.344889 0 24.462222-4.551111 32.654223-14.791111l131.868444-133.12a48.184889 48.184889 0 0 0 12.117333-22.357334l17.92-69.745778-46.08-8.362666a81.92 81.92 0 0 1-39.025777-17.237334z"/></svg>`;
+      return `<svg class="custom-sport-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M372.849778...（省略原爬楼梯SVG）..."/></svg>`;
+    }
+    // 👈 新增：跳绳图标
+    if (type === 'RopeSkipping') {
+      return `<svg class="custom-sport-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1H4v2h2v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7h2V5h-4zm-6-1h4v1h-4V4zM8 19V7h8v12H8z"/></svg>`;
+    }
+    // 👈 新增：workout闪电图标
+    if (type === 'Workout') {
+      return `<svg class="custom-sport-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-6l3-7L5 15h6l-3 7z"/></svg>`;
     }
     return `<svg class="custom-sport-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`;
   };
@@ -247,7 +257,7 @@
             if (currentPace < mPaceMin.pace) monthRwPaceMin.set(month, { pace: currentPace, id: runIdStr });
           }
         } 
-        else if (STAIR_TYPES.has(r.type)) {
+        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) { // 👈 加上室内类型
           stairDuration += durHours;
           if (durHours > calStairYMax) { calStairYMax = durHours; calStairYId = runIdStr; }
           const mMax = monthStairMax.get(month) || { dur: 0, id: null };
@@ -355,7 +365,7 @@
         if (RIDE_TYPES.has(r.type)) mRide += d;
         else if (RUN_TYPES.has(r.type)) mRun += d;
         else if (WALK_TYPES.has(r.type)) mWalk += d;
-        else if (STAIR_TYPES.has(r.type)) mStairDur += hw;
+        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) mStairDur += hw; // 👈 加上室内类型
 
         const blockIdx = Math.floor(r.hour / 3);
         if (++timeBlocks[blockIdx] > maxTimeBlockCount) maxTimeBlockCount = timeBlocks[blockIdx];
@@ -429,7 +439,7 @@
             pills.push({ text: '月度最快', gold: false }); 
             injectTooltipRows.push('<div class="ttAchieveRow"><span>月度最快</span><span class="titleTag">跑走</span></div>');
           }
-        } else if (STAIR_TYPES.has(runData.type)) {
+        } else if (STAIR_TYPES.has(runData.type) || INDOOR_TYPES.has(runData.type)) { // 👈 加上室内类型
           if (nId === String(ach.calStairYId)) pills.push({ text: '年度最久', gold: true });
           else if (ach.calStairMIds.has(nId)) pills.push({ text: '月度最久', gold: false });
         }
@@ -491,7 +501,7 @@
               <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">跑步</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.runDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
               <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">健走</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.walkDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
               <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">骑行</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.rideDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">登月</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.stairDuration.toFixed(1)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">h</small></div></div>
+              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">扑腾</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.stairDuration.toFixed(1)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">h</small></div></div>
               <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">出勤</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.activeDays}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">天</small></div></div>              
             </div>
 
@@ -611,7 +621,7 @@
             <span>跑步 <strong style="color: #333;">${engine.monthly.runDist.toFixed(2)}</strong> km</span>
             <span>健走 <strong style="color: #333;">${engine.monthly.walkDist.toFixed(2)}</strong> km</span>
             <span>骑行 <strong style="color: #333;">${engine.monthly.rideDist.toFixed(2)}</strong> km</span>
-            <span>登月 <strong style="color: #333;">${engine.monthly.stairDuration.toFixed(1)}</strong> h</span>
+            <span>扑腾 <strong style="color: #333;">${engine.monthly.stairDuration.toFixed(1)}</strong> h</span>
           </div>
         </div>
 
