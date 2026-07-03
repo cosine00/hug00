@@ -1,7 +1,7 @@
 [
   {
     "id": 1114,
-    "content": "Strava API 改收费，运动记录无法同步了。",
+    "content": "Strava API 改收费，运动记录无法同步了。\n将同步源改成了 keep，忍一忍 keep app 里面牛皮癣一般的广告，反正不是用它来记录，只是苹果健康传递数据到 keep 里中转一下。",
     "createdTs": 1782959822,
     "resourceList": [],
     "tags": []
