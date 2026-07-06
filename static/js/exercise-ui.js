@@ -293,7 +293,7 @@
           let validParts = nonEnglishParts.length > 0 ? nonEnglishParts : parts;
           validParts = validParts.filter(p => !/中国|China|PRC/i.test(p));
           
-          if (validParts.length === 0) return { name: '深圳市', isForeign: false }; 
+          if (validParts.length === 0) return { name: '深圳市', isForeign: false };
 
           const cnProvinces = ['北京', '天津', '河北', '山西', '内蒙', '辽宁', '吉林', '黑龙江', '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆'];
           const isDomestic = /中国|China/i.test(rawStr) || cnProvinces.some(prov => rawStr.includes(prov));
@@ -301,30 +301,34 @@
           let lastPart = validParts[validParts.length - 1];
 
           if (!isDomestic) {
-              return { name: lastPart, isForeign: true }; 
+          return { name: lastPart, isForeign: true }; 
           }
 
           let city = '', district = '';
           const directCities = new Set(['北京市', '上海市', '天津市', '重庆市', '北京', '上海', '天津', '重庆']);
           let isDirectCity = false;
+          let directCityName = ''; // ✨ 新增：用来缓存规范化后的直辖市名称
 
           for (let i = validParts.length - 1; i >= 0; i--) {
             let p = validParts[i];
             if (directCities.has(p)) {
-                isDirectCity = true;
+              isDirectCity = true;
+              // ✨ 统一转换为带“市”尾缀的规范名称
+              directCityName = p.endsWith('市') ? p : p + '市'; 
             } else if (p.endsWith('市') || p.endsWith('自治州') || p.endsWith('地区') || p.endsWith('盟')) {
-                if (!city) city = p;
+              if (!city) city = p;
             } else if (p.endsWith('区') || p.endsWith('县') || p.endsWith('旗')) {
-                if (!district) district = p;
+              if (!district) district = p;
             }
           }
 
-          if (isDirectCity && district) return { name: district, isForeign: false }; 
-          if (city) return { name: city, isForeign: false }; 
+          // 🚀 【核心逻辑修改】如果是直辖市，直接返回“xx市”，不再受下方 district 分区逻辑的干扰
           if (isDirectCity) {
-            let dc = validParts.find(p => directCities.has(p));
-            return { name: dc.endsWith('市') ? dc : dc + '市', isForeign: false }; 
+            return { name: directCityName, isForeign: false };
           }
+
+          // 普通省份城市的解析逻辑保持原样
+          if (city) return { name: city, isForeign: false }; 
           if (district) return { name: district, isForeign: false }; 
 
           return { name: '深圳市', isForeign: false }; 
