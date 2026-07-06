@@ -283,6 +283,7 @@
           if (/香港|Hong\s*Kong|HK/i.test(rawStr)) return { name: '香港特别行政区', isForeign: false };
           if (/澳门|Macao|Macau|嘉模堂区/i.test(rawStr)) return { name: '澳门特别行政区', isForeign: false };
           if (/台湾|Taiwan/i.test(rawStr)) return { name: '台湾省', isForeign: false };
+          if (/珠海|香洲|金湾|斗门/i.test(rawStr)) return { name: '珠海市', isForeign: false }; // 👈 强行拦截
           if (/横琴/i.test(rawStr)) return { name: '珠海市', isForeign: false };
           if (/坪山|南山|福田|罗湖|宝安|龙岗|龙华|盐田|光明|大鹏/i.test(rawStr)) return { name: '深圳市', isForeign: false };
           if (/惠城|博罗|惠阳|惠东|龙门/i.test(rawStr)) return { name: '惠州市', isForeign: false };
