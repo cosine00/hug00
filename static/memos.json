@@ -66,7 +66,18 @@
     "id": 1120,
     "content": "今天幼儿园最后一天，毕业了。",
     "createdTs": 1783641217,
-    "resourceList": [],
+    "resourceList": [
+      {
+        "id": 595,
+        "creatorId": 1,
+        "createdTs": 1784077217,
+        "updatedTs": 1784077217,
+        "filename": "975F475E-4718-401E-B00D-2C218B658993.jpg",
+        "externalLink": "https://img.hux.ink/image/2026/07/975F475E-4718-401E-B00D-2C218B658993.jpg",
+        "type": "image/jpeg",
+        "size": 1967754
+      }
+    ],
     "tags": []
   },
   {
