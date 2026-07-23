@@ -1,0 +1,22 @@
+{{ partial "header.html" . }}
+
+<!-- 1. 引入足迹专属 CSS（放在 static/js/footprintmap.css） -->
+<link rel="stylesheet" href="/js/footprintmap.css">
+
+<!-- 2. 页面主体容器 -->
+<div class="footprint-page-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+  {{ $jsonResource := resources.Get "footprints.json" }}
+  
+  <!-- 地图容器：填入真实的高德 Key 与安全密钥 -->
+  <div class="footprint-map" 
+       data-json="{{ $jsonResource.RelPermalink }}" 
+       data-amap-key="0d4b886f7c34e19066e776eabf8e2310" 
+       data-amap-secret="5a01263b6b8d94d9f8bfaf203ab7c736"
+       style="width: 100%; height: 600px; margin: 20px 0;">
+  </div>
+</div>
+
+<!-- 3. 引入地图 logic JS -->
+<script defer src="/js/footprintmap.js"></script>
+
