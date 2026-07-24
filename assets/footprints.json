@@ -54,6 +54,28 @@
       "photos": [],
       "categories": ["常驻"],
       "markerColor": "citrus"
+    },
+    {
+      "name": "海宁",
+      "coordinates": "120.543276,30.404032",
+      "description": "钱塘观潮",
+      "date": "2025-08-21",
+      "url": "/posts/travel-to-haining/",
+      "urlLabel": "钱塘观潮",
+      "photos": ["https://img.hux.ink/image/2025/08/202508261714903.png", "https://img.hux.ink/image/2025/08/202508261715819.png","https://img.hux.ink/image/2025/08/202508261710388.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "明月山",
+      "coordinates": "114.262179,27.602069",
+      "description": "宜春明月山一日游",
+      "date": "2023-01-18",
+      "url": "/posts/mingyueshan/",
+      "urlLabel": "朝花夕拾2023 明月山之行",
+      "photos": ["https://img.hux.ink/notion/bc6d9ef542.jpg", "https://img.hux.ink/notion/cb720f4916.jpg","https://img.hux.ink/notion/cbda9c1f9b.jpg","https://img.hux.ink/notion/00348b63f4.jpg"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
     }
   ]
 }

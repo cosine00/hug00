@@ -83,7 +83,8 @@
       script.src = `https://webapi.amap.com/maps?v=2.0&key=${apiKey}`;
       script.async = true;
       script.onload = () => {
-        AMap.plugin(['AMap.Scale'], resolve);
+        // 加载行政区划和缩放插件
+        AMap.plugin(['AMap.Scale', 'AMap.DistrictSearch', 'AMap.Geocoder'], resolve);
       };
       script.onerror = () => reject(new Error('高德地图脚本加载失败'));
       document.head.appendChild(script);
@@ -111,6 +112,7 @@
 
     return {
       name: item.name || '未命名地点',
+      province: item.province || '', // 支持手动指定省份，如 "四川省"
       lat: coords.lat,
       lng: coords.lng,
       url: item.url || item.link || '',
@@ -178,6 +180,9 @@
 
     // 渲染右上角 4 控制件（全屏、重置视角、放大、缩小）
     renderCustomControls(container, map, locations);
+
+    // ✨ 点亮涉及的省份
+    highlightProvinces(map, locations);
 
     const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
 
@@ -287,6 +292,58 @@
     });
 
     registerThemeSync(map);
+  }
+
+  // 🌟 绘制省份高亮/点亮的核心逻辑
+  function highlightProvinces(map, locations) {
+    const geocoder = new AMap.Geocoder();
+    const districtSearch = new AMap.DistrictSearch({
+      subdistrict: 0,
+      extensions: 'all',
+      level: 'province'
+    });
+
+    const provincesToHighlight = new Set();
+
+    // 收集所有位置的坐标
+    const coordsList = locations.map(loc => [loc.lng, loc.lat]);
+
+    // 使用逆地理编码推算经纬度对应的省份
+    let processed = 0;
+    coordsList.forEach(([lng, lat]) => {
+      geocoder.getAddress([lng, lat], (status, result) => {
+        processed++;
+        if (status === 'complete' && result.regeocode) {
+          const prov = result.regeocode.addressComponent.province;
+          if (prov) provincesToHighlight.add(prov);
+        }
+
+        // 当所有点查完后，统一绘制省份遮罩
+        if (processed === coordsList.length) {
+          provincesToHighlight.forEach(provName => {
+            districtSearch.search(provName, (status, result) => {
+              if (status === 'complete' && result.districtList[0]) {
+                const bounds = result.districtList[0].boundaries;
+                if (bounds) {
+                  bounds.forEach(path => {
+                    new AMap.Polygon({
+                      map: map,
+                      path: path,
+                      strokeWeight: 1,
+                      strokeColor: '#06beb6', // 边框线颜色
+                      strokeOpacity: 0.8,
+                      fillColor: '#06beb6',   // 填充颜色（与点标记主题色一致的淡绿色）
+                      fillOpacity: 0.15,      // 填充透明度
+                      zIndex: 1
+                    });
+                  });
+                }
+              }
+            });
+          });
+        }
+      });
+    });
   }
 
   function renderCustomControls(container, map, locations) {
