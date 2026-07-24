@@ -83,8 +83,8 @@
       script.src = `https://webapi.amap.com/maps?v=2.0&key=${apiKey}`;
       script.async = true;
       script.onload = () => {
-        // 加载行政区划和缩放插件
-        AMap.plugin(['AMap.Scale', 'AMap.DistrictSearch', 'AMap.Geocoder'], resolve);
+        // 关键：加载高德 2.0 的 DistrictLayer 图层插件
+        AMap.plugin(['AMap.Scale', 'AMap.Geocoder', 'AMap.DistrictLayer'], resolve);
       };
       script.onerror = () => reject(new Error('高德地图脚本加载失败'));
       document.head.appendChild(script);
@@ -112,7 +112,7 @@
 
     return {
       name: item.name || '未命名地点',
-      province: item.province || '', // 支持手动指定省份，如 "四川省"
+      province: item.province || '',
       lat: coords.lat,
       lng: coords.lng,
       url: item.url || item.link || '',
@@ -178,11 +178,10 @@
       map.addControl(new AMap.Scale({ position: { bottom: '20px', right: '20px' } }));
     });
 
-    // 渲染右上角 4 控制件（全屏、重置视角、放大、缩小）
     renderCustomControls(container, map, locations);
 
-    // ✨ 点亮涉及的省份
-    highlightProvinces(map, locations);
+    // ✨ 点亮省份逻辑：改用 高德 DistrictLayer 高效图层
+    highlightProvincesWithLayer(map, locations);
 
     const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
 
@@ -294,55 +293,44 @@
     registerThemeSync(map);
   }
 
-  // 🌟 绘制省份高亮/点亮的核心逻辑
-  function highlightProvinces(map, locations) {
+  // 🚀 使用高德 2.0 官方原生 DistrictLayer.Province 渲染高亮省份
+  function highlightProvincesWithLayer(map, locations) {
     const geocoder = new AMap.Geocoder();
-    const districtSearch = new AMap.DistrictSearch({
-      subdistrict: 0,
-      extensions: 'all',
-      level: 'province'
+    const adcodesToHighlight = new Set();
+
+    const fetchPromises = locations.map(loc => {
+      return new Promise((resolve) => {
+        geocoder.getAddress([loc.lng, loc.lat], (status, result) => {
+          if (status === 'complete' && result.regeocode) {
+            const adcode = result.regeocode.addressComponent.adcode;
+            if (adcode) {
+              // 截取前两位获取省级的标准 Adcode（例如 360000 对应江西省）
+              const provAdcode = adcode.substring(0, 2) + '0000';
+              adcodesToHighlight.add(parseInt(provAdcode, 10));
+            }
+          }
+          resolve();
+        });
+      });
     });
 
-    const provincesToHighlight = new Set();
+    Promise.all(fetchPromises).then(() => {
+      const adcodeArray = Array.from(adcodesToHighlight);
 
-    // 收集所有位置的坐标
-    const coordsList = locations.map(loc => [loc.lng, loc.lat]);
-
-    // 使用逆地理编码推算经纬度对应的省份
-    let processed = 0;
-    coordsList.forEach(([lng, lat]) => {
-      geocoder.getAddress([lng, lat], (status, result) => {
-        processed++;
-        if (status === 'complete' && result.regeocode) {
-          const prov = result.regeocode.addressComponent.province;
-          if (prov) provincesToHighlight.add(prov);
-        }
-
-        // 当所有点查完后，统一绘制省份遮罩
-        if (processed === coordsList.length) {
-          provincesToHighlight.forEach(provName => {
-            districtSearch.search(provName, (status, result) => {
-              if (status === 'complete' && result.districtList[0]) {
-                const bounds = result.districtList[0].boundaries;
-                if (bounds) {
-                  bounds.forEach(path => {
-                    new AMap.Polygon({
-                      map: map,
-                      path: path,
-                      strokeWeight: 1,
-                      strokeColor: '#06beb6', // 边框线颜色
-                      strokeOpacity: 0.8,
-                      fillColor: '#06beb6',   // 填充颜色（与点标记主题色一致的淡绿色）
-                      fillOpacity: 0.15,      // 填充透明度
-                      zIndex: 1
-                    });
-                  });
-                }
-              }
-            });
-          });
+      // 创建高德省份省界图层
+      const disProvince = new AMap.DistrictLayer.Province({
+        zIndex: 12,
+        adcode: adcodeArray,
+        depth: 0,
+        styles: {
+          'fill': 'rgba(6, 190, 182, 0.12)',         // 填充色：降低不透明度，呈现淡淡的柔和青绿
+          'province-stroke': 'rgba(6, 190, 182, 0.6)',// 省界线：半透明青绿线条
+          'stroke-width': 1,
+          'fill-opacity': 0.18   // 点亮透明度
         }
       });
+
+      disProvince.setMap(map);
     });
   }
 
