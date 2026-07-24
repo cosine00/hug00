@@ -334,6 +334,30 @@
       "photos": ["https://img.hux.ink/image/2024/09/202409191415651.png"],
       "categories": ["旅行"],
       "markerColor": "forest"
+    },
+    {
+      "name": "香港",
+      "coordinates": "114.169382,22.319384",
+      "provinceAdcode": "810000",
+      "description": "2016年第一次去香港，随后基本每年都会过港两三次。实话说，内心并不喜欢这个城市。",
+      "date": "2016-03-20",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "廉江",
+      "coordinates": "109.829613,21.522359",
+      "provinceAdcode": "440000",
+      "description": "2010年暑假，我在广州舅舅家。随大姨和表哥一起去表姐远嫁的廉江。那是我第一次到海边，见到大海。",
+      "date": "2010-07-21",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
     }  
   ]
 }

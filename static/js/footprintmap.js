@@ -199,7 +199,7 @@
     let allMarkers = [];
     let clusterMarkers = [];
     let markerData = locations;
-    let clusterEnabled = true;
+    let clusterEnabled = false;
 
     function updateClusters() {
       [...allMarkers, ...clusterMarkers].forEach(m => m.setMap(null));
@@ -535,7 +535,7 @@
   }
 
   function renderClusterToggle(container, onChange) {
-    let enabled = true;
+    let enabled = false;
     const isDark = () => document.documentElement.classList.contains('dark');
 
     const wrapper = document.createElement('div');
@@ -571,7 +571,7 @@
     };
 
     switchBtn.onclick = toggle;
-    knob.style.left = '22px';
+    knob.style.left = '2px';
     updateTheme();
 
     new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
