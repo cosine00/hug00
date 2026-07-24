@@ -83,7 +83,7 @@
       script.src = `https://webapi.amap.com/maps?v=2.0&key=${apiKey}`;
       script.async = true;
       script.onload = () => {
-        // 关键：加载高德 2.0 的 DistrictLayer 图层插件
+        // 加载 DistrictLayer 省份图层与逆地理编码组件
         AMap.plugin(['AMap.Scale', 'AMap.Geocoder', 'AMap.DistrictLayer'], resolve);
       };
       script.onerror = () => reject(new Error('高德地图脚本加载失败'));
@@ -112,7 +112,7 @@
 
     return {
       name: item.name || '未命名地点',
-      province: item.province || '',
+      provinceAdcode: item.provinceAdcode || item.adcode || '', // 接收自定义的 Adcode
       lat: coords.lat,
       lng: coords.lng,
       url: item.url || item.link || '',
@@ -180,7 +180,7 @@
 
     renderCustomControls(container, map, locations);
 
-    // ✨ 点亮省份逻辑：改用 高德 DistrictLayer 高效图层
+    // ✨ 依据 JSON 内的 provinceAdcode 极速渲染省份点亮图层
     highlightProvincesWithLayer(map, locations);
 
     const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
@@ -293,45 +293,66 @@
     registerThemeSync(map);
   }
 
-  // 🚀 使用高德 2.0 官方原生 DistrictLayer.Province 渲染高亮省份
+  // 🚀 高效省份点亮：直接读取 JSON 里的 provinceAdcode
   function highlightProvincesWithLayer(map, locations) {
-    const geocoder = new AMap.Geocoder();
     const adcodesToHighlight = new Set();
+    const pendingLocations = [];
 
-    const fetchPromises = locations.map(loc => {
-      return new Promise((resolve) => {
-        geocoder.getAddress([loc.lng, loc.lat], (status, result) => {
-          if (status === 'complete' && result.regeocode) {
-            const adcode = result.regeocode.addressComponent.adcode;
-            if (adcode) {
-              // 截取前两位获取省级的标准 Adcode（例如 360000 对应江西省）
-              const provAdcode = adcode.substring(0, 2) + '0000';
-              adcodesToHighlight.add(parseInt(provAdcode, 10));
-            }
-          }
-          resolve();
-        });
-      });
+    // 1. 优先搜集 JSON 文件中已经直接配置的 Adcode
+    locations.forEach(loc => {
+      if (loc.provinceAdcode) {
+        // 自动标准化：取前两位并补齐 0000 确保获得省级代码
+        const codeStr = String(loc.provinceAdcode).trim();
+        const provCode = codeStr.length >= 2 ? codeStr.substring(0, 2) + '0000' : codeStr;
+        adcodesToHighlight.add(parseInt(provCode, 10));
+      } else {
+        pendingLocations.push(loc);
+      }
     });
 
-    Promise.all(fetchPromises).then(() => {
+    // 创建和画出行政区划遮罩层的函数
+    const drawLayer = () => {
+      if (adcodesToHighlight.size === 0) return;
+
       const adcodeArray = Array.from(adcodesToHighlight);
 
-      // 创建高德省份省界图层
       const disProvince = new AMap.DistrictLayer.Province({
-        zIndex: 12,
+        zIndex: 10,
         adcode: adcodeArray,
         depth: 0,
         styles: {
-          'fill': 'rgba(6, 190, 182, 0.12)',         // 填充色：降低不透明度，呈现淡淡的柔和青绿
-          'province-stroke': 'rgba(6, 190, 182, 0.6)',// 省界线：半透明青绿线条
-          'stroke-width': 1,
-          'fill-opacity': 0.18   // 点亮透明度
+          'fill': 'rgba(6, 190, 182, 0.12)',         // 柔和低饱度淡青绿
+          'province-stroke': 'rgba(6, 190, 182, 0.6)',// 浅清绿边框线
+          'stroke-width': 1.2
         }
       });
 
       disProvince.setMap(map);
-    });
+    };
+
+    // 2. 如果有没有写 provinceAdcode 的点，通过 Geocoder 兜底查询
+    if (pendingLocations.length > 0) {
+      const geocoder = new AMap.Geocoder();
+      const fetchPromises = pendingLocations.map(loc => {
+        return new Promise((resolve) => {
+          geocoder.getAddress([loc.lng, loc.lat], (status, result) => {
+            if (status === 'complete' && result.regeocode) {
+              const adcode = result.regeocode.addressComponent.adcode;
+              if (adcode) {
+                const provAdcode = String(adcode).substring(0, 2) + '0000';
+                adcodesToHighlight.add(parseInt(provAdcode, 10));
+              }
+            }
+            resolve();
+          });
+        });
+      });
+
+      Promise.all(fetchPromises).then(drawLayer);
+    } else {
+      // 如果全部点都有 provinceAdcode，无需网络请求，直接渲染！
+      drawLayer();
+    }
   }
 
   function renderCustomControls(container, map, locations) {

@@ -3,6 +3,7 @@
     {
       "name": "高安市",
       "coordinates": "115.366863,28.448054",
+      "provinceAdcode": "360000",
       "description": "我的家乡",
       "date": "",
       "url": "",
@@ -14,6 +15,7 @@
     {
       "name": "南昌",
       "coordinates": "115.836021,28.732546",
+      "provinceAdcode": "360000",
       "description": "2019年上大学第一次到省城南昌，而后算是我的第二家乡",
       "date": "2019-09-06",
       "url": "",
@@ -25,6 +27,7 @@
     {
       "name": "上海",
       "coordinates": "121.4737,31.2304",
+      "provinceAdcode": "310000",
       "description": "2026年元旦假期，上海游玩。",
       "date": "2026-01-01",
       "url": "",
@@ -36,28 +39,31 @@
     {
       "name": "杭州",
       "coordinates": "120.121358,30.222692",
+      "provinceAdcode": "330000",
       "description": "部门团建，杭州两日游，西湖美景令人流连忘返。",
       "date": "2023-03-25",
       "url": "/posts/hangzhouwuzhen/",
       "urlLabel": "杭州-乌镇三日游",
       "photos": ["https://img.hux.ink/notion/3579d250dc.jpg","https://img.hux.ink/notion/5d0a0a3ab7.jpg"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "乌镇",
       "coordinates": "120.486173,30.748979",
+      "provinceAdcode": "330000",
       "description": "部门团建，乌镇两日游。",
       "date": "2023-03-26",
       "url": "/posts/hangzhouwuzhen/",
       "urlLabel": "杭州-乌镇三日游",
       "photos": ["https://img.hux.ink/notion/453ee6950d.jpg"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "成都",
       "coordinates": "104.0668,30.5728",
+      "provinceAdcode": "510000",
       "description": "2024年两度前往成都游玩，感受慢生活的魅力。",
       "date": "2024-08-10",
       "url": "",
@@ -69,6 +75,7 @@
     {
       "name": "深圳",
       "coordinates": "114.0579,22.5431",
+      "provinceAdcode": "440000",
       "description": "2012年12月20日，工作和生活的起点。来了就是深圳人。",
       "date": "2012-12-20",
       "url": "",
@@ -80,28 +87,31 @@
     {
       "name": "海宁",
       "coordinates": "120.543276,30.404032",
+      "provinceAdcode": "330000",
       "description": "钱塘观潮",
       "date": "2025-08-21",
       "url": "/posts/travel-to-haining/",
       "urlLabel": "钱塘观潮",
       "photos": ["https://img.hux.ink/image/2025/08/202508261714903.png", "https://img.hux.ink/image/2025/08/202508261715819.png","https://img.hux.ink/image/2025/08/202508261710388.png"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "明月山",
       "coordinates": "114.262179,27.602069",
+      "provinceAdcode": "360000",
       "description": "宜春明月山一日游",
       "date": "2023-01-18",
       "url": "/posts/mingyueshan/",
       "urlLabel": "朝花夕拾2023 明月山之行",
       "photos": ["https://img.hux.ink/notion/bc6d9ef542.jpg", "https://img.hux.ink/notion/cb720f4916.jpg","https://img.hux.ink/notion/cbda9c1f9b.jpg","https://img.hux.ink/notion/00348b63f4.jpg"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "仙女湖",
       "coordinates": "114.766472,27.719141",
+      "provinceAdcode": "360000",
       "description": "新余仙女湖一日游",
       "date": "2023-04-30",
       "url": "",
@@ -113,6 +123,7 @@
     {
       "name": "三亚",
       "coordinates": "109.348143,18.294988",
+      "provinceAdcode": "460000",
       "description": "工作后第一次部门团建，海南环岛游",
       "date": "2013-12-22",
       "url": "",
@@ -124,6 +135,7 @@
     {
       "name": "郴州",
       "coordinates": "113.015517,25.770117",
+      "provinceAdcode": "430000",
       "description": "部门团建，游东江湖，登莽山。",
       "date": "2017-11-04",
       "url": "",
@@ -135,6 +147,7 @@
     {
       "name": "庐山",
       "coordinates": "115.973108,29.522059",
+      "provinceAdcode": "360000",
       "description": "国庆假期，与同学同游庐山，望庐山瀑布。",
       "date": "2011-10-05",
       "url": "",
@@ -146,6 +159,7 @@
     {
       "name": "澳门",
       "coordinates": "113.54909,22.198951",
+      "provinceAdcode": "820000",
       "description": "部门团建，第一次去澳门。随后又去了两三次。",
       "date": "2018-12-16",
       "url": "",
@@ -157,6 +171,7 @@
     {
       "name": "阜阳",
       "coordinates": "115.790413,32.887456",
+      "provinceAdcode": "340000",
       "description": "送我妹上学",
       "date": "2021-10-09",
       "url": "",
@@ -168,17 +183,19 @@
     {
       "name": "南京",
       "coordinates": "118.840463,32.051926",
+      "provinceAdcode": "320000",
       "description": "部门团建，南京三日游。",
       "date": "2025-11-01",
       "url": "/posts/travel-to-nanjing/",
       "urlLabel": "南京之行",
       "photos": [],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "韶山",
       "coordinates": "112.525364,27.914796",
+      "provinceAdcode": "430000",
       "description": "部门团建，游伟人故里。",
       "date": "2016-11-05",
       "url": "",
@@ -190,6 +207,7 @@
     {
       "name": "长沙",
       "coordinates": "112.963081,28.196505",
+      "provinceAdcode": "430000",
       "description": "独立寒秋，湘江北去，橘子洲头。",
       "date": "2016-11-06",
       "url": "",
@@ -201,13 +219,14 @@
     {
       "name": "稻城亚丁",
       "coordinates": "100.286793,28.458898",
+      "provinceAdcode": "510000",
       "description": "邂逅川西，高反初体验。",
       "date": "2024-09-16",
       "url": "/posts/altitude-sickness/",
       "urlLabel": "川西高反",
       "photos": ["https://img.hux.ink/image/2024/09/202409251503456.png","https://img.hux.ink/image/2024/09/202409251435628.png"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "泰国普吉岛",
@@ -218,11 +237,12 @@
       "urlLabel": "泰国普吉岛之行",
       "photos": ["https://img.hux.ink/image/2024/12/202412181544054.png","https://img.hux.ink/image/2024/12/202412181539325.png"],
       "categories": ["旅行", "游记"],
-      "markerColor": "forest"
+      "markerColor": "violet"
     },
     {
       "name": "厦门",
       "coordinates": "118.06702,24.444695",
+      "provinceAdcode": "350000",
       "description": "部门团建，鼓浪屿。",
       "date": "2015-04-11",
       "url": "",
@@ -234,6 +254,7 @@
     {
       "name": "南宁",
       "coordinates": "108.320044,22.824061",
+      "provinceAdcode": "450000",
       "description": "新手上路，从深圳自驾到南宁。",
       "date": "2023-01-06",
       "url": "",
@@ -245,13 +266,74 @@
     {
       "name": "景德镇",
       "coordinates": "117.184892,29.2744",
+      "provinceAdcode": "360000",
       "description": "国庆节回老家，花了两天时间就近打卡景德镇。",
       "date": "2025-10-03",
       "url": "/posts/moon-gazing/",
       "urlLabel": "大聪明高速赏月",
       "photos": ["https://img.hux.ink/image/2025/10/20251011084852659.webp"],
       "categories": ["旅行", "游记"],
+      "markerColor": "violet"
+    },
+    {
+      "name": "武汉",
+      "coordinates": "114.304569,30.593354",
+      "provinceAdcode": "420000",
+      "description": "大二国庆节，去武汉找同学游玩，穿梭于武汉各大高校之间。",
+      "date": "2010-10-02",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
       "markerColor": "forest"
-    }   
+    },
+    {
+      "name": "肇兴侗寨",
+      "coordinates": "109.170752,25.90652",
+      "provinceAdcode": "520000",
+      "description": "肇兴侗寨，侗族村落。体验民族服饰、民族风俗、民族建筑。",
+      "date": "2024-08-31",
+      "url": "/posts/travel-to-sichuan/",
+      "urlLabel": "中断的渝贵川9日行",
+      "photos": ["https://img.hux.ink/image/2024/09/202409191418706.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "violet"
+    },
+    {
+      "name": "荔波小七孔",
+      "coordinates": "107.705723,25.252959",
+      "provinceAdcode": "520000",
+      "description": "人间绿宝石。",
+      "date": "2024-09-02",
+      "url": "/posts/travel-to-sichuan/",
+      "urlLabel": "中断的渝贵川9日行",
+      "photos": ["https://img.hux.ink/image/2024/09/202409191422574.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "violet"
+    },
+    {
+      "name": "三星堆博物馆",
+      "coordinates": "104.218621,31.001439",
+      "provinceAdcode": "510000",
+      "description": "沉睡数千年，一醒惊天下。",
+      "date": "2024-09-04",
+      "url": "/posts/travel-to-sichuan/",
+      "urlLabel": "中断的渝贵川9日行",
+      "photos": ["https://img.hux.ink/image/2024/09/202409191427124.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "violet"
+    },
+    {
+      "name": "桂林",
+      "coordinates": "110.496305,24.778785",
+      "provinceAdcode": "450000",
+      "description": "桂林山水甲天下。",
+      "date": "2016-09-16",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2024/09/202409191415651.png"],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    }  
   ]
 }
