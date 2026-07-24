@@ -1,6 +1,28 @@
 {
   "locations": [
     {
+      "name": "高安市",
+      "coordinates": "115.366863,28.448054",
+      "description": "我的家乡",
+      "date": "",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2025/05/1B6D1B02-54D8-4B89-9242-E2802E92BA84.jpg"],
+      "categories": ["常驻"],
+      "markerColor": "sunset"
+    },
+    {
+      "name": "南昌",
+      "coordinates": "115.836021,28.732546",
+      "description": "2019年上大学第一次到省城南昌，而后算是我的第二家乡",
+      "date": "2019-09-06",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2026/07/20260724111604-iwo3v-jxufe.webp"],
+      "categories": ["常驻"],
+      "markerColor": "sunset"
+    },
+    {
       "name": "上海",
       "coordinates": "121.4737,31.2304",
       "description": "2026年元旦假期，上海游玩。",
@@ -42,18 +64,18 @@
       "urlLabel": "",
       "photos": [],
       "categories": ["旅行"],
-      "markerColor": "amber"
+      "markerColor": "forest"
     },
     {
       "name": "深圳",
       "coordinates": "114.0579,22.5431",
-      "description": "2012年12月20日，第二故乡开启，工作和生活的起点。",
+      "description": "2012年12月20日，工作和生活的起点。来了就是深圳人。",
       "date": "2012-12-20",
       "url": "",
       "urlLabel": "",
       "photos": [],
       "categories": ["常驻"],
-      "markerColor": "citrus"
+      "markerColor": "sunset"
     },
     {
       "name": "海宁",
@@ -76,6 +98,160 @@
       "photos": ["https://img.hux.ink/notion/bc6d9ef542.jpg", "https://img.hux.ink/notion/cb720f4916.jpg","https://img.hux.ink/notion/cbda9c1f9b.jpg","https://img.hux.ink/notion/00348b63f4.jpg"],
       "categories": ["旅行", "游记"],
       "markerColor": "forest"
-    }
+    },
+    {
+      "name": "仙女湖",
+      "coordinates": "114.766472,27.719141",
+      "description": "新余仙女湖一日游",
+      "date": "2023-04-30",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2026/07/20260724103111-yqc2n-img-0297.webp"],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "三亚",
+      "coordinates": "109.348143,18.294988",
+      "description": "工作后第一次部门团建，海南环岛游",
+      "date": "2013-12-22",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "郴州",
+      "coordinates": "113.015517,25.770117",
+      "description": "部门团建，游东江湖，登莽山。",
+      "date": "2017-11-04",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "庐山",
+      "coordinates": "115.973108,29.522059",
+      "description": "国庆假期，与同学同游庐山，望庐山瀑布。",
+      "date": "2011-10-05",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "澳门",
+      "coordinates": "113.54909,22.198951",
+      "description": "部门团建，第一次去澳门。随后又去了两三次。",
+      "date": "2018-12-16",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "阜阳",
+      "coordinates": "115.790413,32.887456",
+      "description": "送我妹上学",
+      "date": "2021-10-09",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "南京",
+      "coordinates": "118.840463,32.051926",
+      "description": "部门团建，南京三日游。",
+      "date": "2025-11-01",
+      "url": "/posts/travel-to-nanjing/",
+      "urlLabel": "南京之行",
+      "photos": [],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "韶山",
+      "coordinates": "112.525364,27.914796",
+      "description": "部门团建，游伟人故里。",
+      "date": "2016-11-05",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "长沙",
+      "coordinates": "112.963081,28.196505",
+      "description": "独立寒秋，湘江北去，橘子洲头。",
+      "date": "2016-11-06",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "稻城亚丁",
+      "coordinates": "100.286793,28.458898",
+      "description": "邂逅川西，高反初体验。",
+      "date": "2024-09-16",
+      "url": "/posts/altitude-sickness/",
+      "urlLabel": "川西高反",
+      "photos": ["https://img.hux.ink/image/2024/09/202409251503456.png","https://img.hux.ink/image/2024/09/202409251435628.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "泰国普吉岛",
+      "coordinates": "98.391321,7.88609",
+      "description": "第一次出国之旅，普吉岛游玩。",
+      "date": "2024-12-12",
+      "url": "/posts/travel-to-phuket/",
+      "urlLabel": "泰国普吉岛之行",
+      "photos": ["https://img.hux.ink/image/2024/12/202412181544054.png","https://img.hux.ink/image/2024/12/202412181539325.png"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "厦门",
+      "coordinates": "118.06702,24.444695",
+      "description": "部门团建，鼓浪屿。",
+      "date": "2015-04-11",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "南宁",
+      "coordinates": "108.320044,22.824061",
+      "description": "新手上路，从深圳自驾到南宁。",
+      "date": "2023-01-06",
+      "url": "",
+      "urlLabel": "",
+      "photos": [],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "景德镇",
+      "coordinates": "117.184892,29.2744",
+      "description": "国庆节回老家，花了两天时间就近打卡景德镇。",
+      "date": "2025-10-03",
+      "url": "/posts/moon-gazing/",
+      "urlLabel": "大聪明高速赏月",
+      "photos": ["https://img.hux.ink/image/2025/10/20251011084852659.webp"],
+      "categories": ["旅行", "游记"],
+      "markerColor": "forest"
+    }   
   ]
 }
