@@ -501,3 +501,51 @@
 .dark .amap-scale-line {
     border-color: rgba(255, 255, 255, 0.6) !important;
 }
+
+/* 大图灯箱左右切换按钮样式 */
+.footprint-photo-viewer__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.2s ease, transform 0.2s ease;
+    user-select: none;
+}
+
+.footprint-photo-viewer__nav:hover {
+    background: rgba(6, 190, 182, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.footprint-photo-viewer__nav--prev {
+    left: 1.5rem;
+}
+
+.footprint-photo-viewer__nav--next {
+    right: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .footprint-photo-viewer__nav {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    .footprint-photo-viewer__nav--prev {
+        left: 0.5rem;
+    }
+    .footprint-photo-viewer__nav--next {
+        right: 0.5rem;
+    }
+}

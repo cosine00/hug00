@@ -21,6 +21,7 @@
   let themeObserver = null;
   let photoViewer = null;
   let suppressMapClose = false;
+  let viewerState = { photos: [], currentIndex: 0 };
 
   const escapeHtml = str => String(str)
     .replace(/&/g, '&amp;')
@@ -83,7 +84,6 @@
       script.src = `https://webapi.amap.com/maps?v=2.0&key=${apiKey}`;
       script.async = true;
       script.onload = () => {
-        // 加载 DistrictLayer 省份图层与逆地理编码组件
         AMap.plugin(['AMap.Scale', 'AMap.Geocoder', 'AMap.DistrictLayer'], resolve);
       };
       script.onerror = () => reject(new Error('高德地图脚本加载失败'));
@@ -112,7 +112,7 @@
 
     return {
       name: item.name || '未命名地点',
-      provinceAdcode: item.provinceAdcode || item.adcode || '', // 接收自定义的 Adcode
+      provinceAdcode: item.provinceAdcode || item.adcode || '',
       lat: coords.lat,
       lng: coords.lng,
       url: item.url || item.link || '',
@@ -179,8 +179,6 @@
     });
 
     renderCustomControls(container, map, locations);
-
-    // ✨ 依据 JSON 内的 provinceAdcode 极速渲染省份点亮图层
     highlightProvincesWithLayer(map, locations);
 
     const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
@@ -199,7 +197,7 @@
     let allMarkers = [];
     let clusterMarkers = [];
     let markerData = locations;
-    let clusterEnabled = false;
+    let clusterEnabled = false; // 默认不启用集群
 
     function updateClusters() {
       [...allMarkers, ...clusterMarkers].forEach(m => m.setMap(null));
@@ -293,15 +291,12 @@
     registerThemeSync(map);
   }
 
-  // 🚀 高效省份点亮：直接读取 JSON 里的 provinceAdcode
   function highlightProvincesWithLayer(map, locations) {
     const adcodesToHighlight = new Set();
     const pendingLocations = [];
 
-    // 1. 优先搜集 JSON 文件中已经直接配置的 Adcode
     locations.forEach(loc => {
       if (loc.provinceAdcode) {
-        // 自动标准化：取前两位并补齐 0000 确保获得省级代码
         const codeStr = String(loc.provinceAdcode).trim();
         const provCode = codeStr.length >= 2 ? codeStr.substring(0, 2) + '0000' : codeStr;
         adcodesToHighlight.add(parseInt(provCode, 10));
@@ -310,7 +305,6 @@
       }
     });
 
-    // 创建和画出行政区划遮罩层的函数
     const drawLayer = () => {
       if (adcodesToHighlight.size === 0) return;
 
@@ -321,8 +315,8 @@
         adcode: adcodeArray,
         depth: 0,
         styles: {
-          'fill': 'rgba(6, 190, 182, 0.12)',         // 柔和低饱度淡青绿
-          'province-stroke': 'rgba(6, 190, 182, 0.6)',// 浅清绿边框线
+          'fill': 'rgba(6, 190, 182, 0.12)',
+          'province-stroke': 'rgba(6, 190, 182, 0.6)',
           'stroke-width': 1.2
         }
       });
@@ -330,7 +324,6 @@
       disProvince.setMap(map);
     };
 
-    // 2. 如果有没有写 provinceAdcode 的点，通过 Geocoder 兜底查询
     if (pendingLocations.length > 0) {
       const geocoder = new AMap.Geocoder();
       const fetchPromises = pendingLocations.map(loc => {
@@ -350,7 +343,6 @@
 
       Promise.all(fetchPromises).then(drawLayer);
     } else {
-      // 如果全部点都有 provinceAdcode，无需网络请求，直接渲染！
       drawLayer();
     }
   }
@@ -497,13 +489,17 @@
         });
       }
 
-      popup.querySelectorAll('.footprint-popup__photos img').forEach(img => {
+      // 提取弹窗内该足迹点的所有图片组，连同索引传给全屏 Viewer
+      const imgs = Array.from(popup.querySelectorAll('.footprint-popup__photos img'));
+      const photoList = imgs.map(img => ({ src: img.src, alt: img.alt }));
+
+      imgs.forEach((img, idx) => {
         if (img.dataset.bound) return;
         img.dataset.bound = '1';
         img.addEventListener('click', e => {
           e.preventDefault();
           e.stopPropagation();
-          openPhotoViewer(img.src, img.alt);
+          openPhotoViewer(photoList, idx);
         });
       });
     });
@@ -535,7 +531,7 @@
   }
 
   function renderClusterToggle(container, onChange) {
-    let enabled = false;
+    let enabled = false; // 默认关闭集群
     const isDark = () => document.documentElement.classList.contains('dark');
 
     const wrapper = document.createElement('div');
@@ -571,7 +567,7 @@
     };
 
     switchBtn.onclick = toggle;
-    knob.style.left = '2px';
+    knob.style.left = '2px'; // 滑块初始放置于左边
     updateTheme();
 
     new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
@@ -580,7 +576,15 @@
     container.appendChild(wrapper);
   }
 
-  function openPhotoViewer(src, alt) {
+  function openPhotoViewer(photos, initialIndex = 0) {
+    if (typeof photos === 'string') {
+      photos = [{ src: photos, alt: initialIndex || '' }];
+      initialIndex = 0;
+    }
+
+    viewerState.photos = photos;
+    viewerState.currentIndex = initialIndex;
+
     if (!photoViewer) {
       photoViewer = document.createElement('div');
       photoViewer.className = 'footprint-photo-viewer';
@@ -588,6 +592,8 @@
         <div class="footprint-photo-viewer__mask"></div>
         <div class="footprint-photo-viewer__dialog">
           <button type="button" class="footprint-photo-viewer__close">&times;</button>
+          <button type="button" class="footprint-photo-viewer__nav footprint-photo-viewer__nav--prev">&#10094;</button>
+          <button type="button" class="footprint-photo-viewer__nav footprint-photo-viewer__nav--next">&#10095;</button>
           <img alt="" />
         </div>`;
       document.body.appendChild(photoViewer);
@@ -597,19 +603,47 @@
         document.documentElement.classList.remove('footprint-photo-viewer-open');
       };
 
+      const updateImage = (index) => {
+        if (!viewerState.photos.length) return;
+        viewerState.currentIndex = (index + viewerState.photos.length) % viewerState.photos.length;
+        const current = viewerState.photos[viewerState.currentIndex];
+        const imgEl = photoViewer.querySelector('img');
+        imgEl.src = current.src;
+        imgEl.alt = current.alt || '';
+
+        const prevBtn = photoViewer.querySelector('.footprint-photo-viewer__nav--prev');
+        const nextBtn = photoViewer.querySelector('.footprint-photo-viewer__nav--next');
+        const showNav = viewerState.photos.length > 1;
+        prevBtn.style.display = showNav ? 'flex' : 'none';
+        nextBtn.style.display = showNav ? 'flex' : 'none';
+      };
+
+      photoViewer.querySelector('.footprint-photo-viewer__nav--prev').addEventListener('click', e => {
+        e.stopPropagation();
+        updateImage(viewerState.currentIndex - 1);
+      });
+
+      photoViewer.querySelector('.footprint-photo-viewer__nav--next').addEventListener('click', e => {
+        e.stopPropagation();
+        updateImage(viewerState.currentIndex + 1);
+      });
+
       photoViewer.addEventListener('click', e => {
         if (e.target === photoViewer || e.target.classList.contains('footprint-photo-viewer__mask') || 
             e.target.classList.contains('footprint-photo-viewer__close')) close();
       });
 
       document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && photoViewer.classList.contains('is-visible')) close();
+        if (!photoViewer.classList.contains('is-visible')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') updateImage(viewerState.currentIndex - 1);
+        if (e.key === 'ArrowRight') updateImage(viewerState.currentIndex + 1);
       });
+
+      photoViewer._updateImage = updateImage;
     }
 
-    const img = photoViewer.querySelector('img');
-    img.src = src;
-    img.alt = alt || '';
+    photoViewer._updateImage(initialIndex);
     photoViewer.classList.add('is-visible');
     document.documentElement.classList.add('footprint-photo-viewer-open');
   }
