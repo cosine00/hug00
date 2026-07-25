@@ -276,6 +276,8 @@
       {{ range $index, $year := $years }}
         <li class="button {{ if eq $index 0 }}selected{{ end }}" data-year="{{ . }}" onclick="window.KoobaiRun.ui.setYear('{{ . }}')">{{ . }}</li>
       {{ end }}
+      <!-- 👈 追加全部按钮 -->
+      <li class="button" data-year="All" onclick="window.KoobaiRun.ui.setYear('All')">全部</li>
     </ul>
     
     <div class="scroll-btn" id="scroll-right-btn" onclick="scrollYearNav('right')">

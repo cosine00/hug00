@@ -51,14 +51,14 @@
     'Ride': '#32D74B', 'EBikeRide': '#32D74B', 'VirtualRide': '#32D74B', 
     'Walk': '#DF40C4', 'Hike': '#DF40C4', 'Swim': '#0BAEE6', 'WaterSport': '#0BAEE6', 
     'StairStepper': '#007AFF', 'Stair': '#007AFF' ,
-    'RopeSkipping': '#6e41d6', 'Workout': '#b2d75c' // 👈 追加颜色
+    'RopeSkipping': '#6e41d6', 'Workout': '#b2d75c'
   };
 
   const RIDE_TYPES = new Set(['Ride', 'VirtualRide', 'EBikeRide']);
   const RUN_TYPES = new Set(['Run', 'TrailRun', 'Treadmill', 'VirtualRun']);
   const WALK_TYPES = new Set(['Walk', 'Hike']);
   const STAIR_TYPES = new Set(['StairStepper', 'Stair']);
-  const INDOOR_TYPES = new Set(['RopeSkipping', 'Workout']); // 👈 新增：定义无轨迹室内类型
+  const INDOOR_TYPES = new Set(['RopeSkipping', 'Workout']);
 
   const colorFromType = (type) => window.KoobaiRun.SPORT_COLORS[type] || '#14C759';
 
@@ -120,6 +120,10 @@
     }
 
     setSmartMonth() {
+      if (this.currentYear === 'All') {
+        this.calMonthIndex = new Date().getMonth();
+        return;
+      }
       const runsInYear = this.allRuns.filter(r => r.start_date_local?.startsWith(this.currentYear));
       this.calMonthIndex = runsInYear.length > 0 ? Math.max(...runsInYear.map(r => parseInt(r.start_date_local.substring(5, 7), 10) - 1)) : new Date().getMonth();
     }
@@ -140,7 +144,7 @@
       this.listMonth = monthStr;
       this.renderMonthFilterUI(); 
       document.querySelectorAll('.runCard').forEach(card => {
-        const isYearMatch = card.classList.contains(`item-year-${this.currentYear}`);
+        const isYearMatch = this.currentYear === 'All' || card.classList.contains(`item-year-${this.currentYear}`);
         const isMonthMatch = this.listMonth === 'All' || card.classList.contains(`item-month-${this.listMonth}`);
         card.style.display = (isYearMatch && isMonthMatch) ? 'flex' : 'none';
       });
@@ -202,8 +206,11 @@
         return 0;
       };
 
-      const displayYear = Number(this.currentYear);
-      const filteredRuns = this.allRuns.filter(r => r.start_date_local?.startsWith(this.currentYear));
+      const isAll = this.currentYear === 'All';
+      const displayYear = isAll ? '历史汇总' : Number(this.currentYear);
+      const statsTitle = isAll ? '人生总里程' : '年度总里程';
+
+      const filteredRuns = isAll ? this.allRuns : this.allRuns.filter(r => r.start_date_local?.startsWith(this.currentYear));
       const monthMap = new Map(), dateStats = new Map(), datesSet = new Set();
       
       let totalDist = 0, rideDist = 0, runDist = 0, walkDist = 0, stairDuration = 0;
@@ -216,8 +223,11 @@
       const monthRwMax = new Map(), monthRwPaceMin = new Map();
       const monthStairMax = new Map();
 
-      const firstDayUTC = Date.UTC(displayYear, 0, 1), lastDayUTC = Date.UTC(displayYear, 11, 31);
-      const totalWeeks = Math.ceil((lastDayUTC - firstDayUTC) / 86400000 / 7) + 1;
+      // 全量时间线或单年周数据支持
+      const yearStart = isAll && filteredRuns.length ? parseInt(filteredRuns[filteredRuns.length - 1].start_date_local.slice(0, 4)) : (typeof displayYear === 'number' ? displayYear : new Date().getFullYear());
+      const yearEnd = isAll ? new Date().getFullYear() : yearStart;
+      const firstDayUTC = Date.UTC(yearStart, 0, 1), lastDayUTC = Date.UTC(yearEnd, 11, 31);
+      const totalWeeks = Math.max(1, Math.ceil((lastDayUTC - firstDayUTC) / 86400000 / 7));
       const weekData = new Array(totalWeeks).fill(0);
 
       filteredRuns.forEach(r => {
@@ -234,7 +244,7 @@
         monthMap.get(month).runsByDate.get(dateStr).push(r);
 
         totalDist += distNum; datesSet.add(utcTimestamp);
-        const weekIdx = Math.max(0, Math.floor((utcTimestamp - firstDayUTC) / 86400000 / 7));
+        const weekIdx = Math.max(0, Math.min(totalWeeks - 1, Math.floor((utcTimestamp - firstDayUTC) / 86400000 / 7)));
         weekData[weekIdx] += distNum;
 
         const runIdStr = String(r.run_id);
@@ -265,7 +275,7 @@
             if (currentPace < mPaceMin.pace) monthRwPaceMin.set(month, { pace: currentPace, id: runIdStr });
           }
         } 
-        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) { // 👈 加上室内类型
+        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) {
           stairDuration += durHours;
           if (durHours > calStairYMax) { calStairYMax = durHours; calStairYId = runIdStr; }
           const mMax = monthStairMax.get(month) || { dur: 0, id: null };
@@ -274,11 +284,10 @@
 
         const formatCity = (rawStr) => {
           if (!rawStr || rawStr === 'null' || rawStr === 'undefined') return { name: '深圳市', isForeign: false };
-          
           if (/香港|Hong\s*Kong|HK/i.test(rawStr)) return { name: '香港特别行政区', isForeign: false };
           if (/澳门|Macao|Macau|嘉模堂区/i.test(rawStr)) return { name: '澳门特别行政区', isForeign: false };
           if (/台湾|Taiwan/i.test(rawStr)) return { name: '台湾省', isForeign: false };
-          if (/珠海|香洲|金湾|斗门/i.test(rawStr)) return { name: '珠海市', isForeign: false }; // 👈 强行拦截
+          if (/珠海|香洲|金湾|斗门/i.test(rawStr)) return { name: '珠海市', isForeign: false };
           if (/横琴/i.test(rawStr)) return { name: '珠海市', isForeign: false };
           if (/坪山|南山|福田|罗湖|宝安|龙岗|龙华|盐田|光明|大鹏/i.test(rawStr)) return { name: '深圳市', isForeign: false };
           if (/惠城|博罗|惠阳|惠东|龙门/i.test(rawStr)) return { name: '惠州市', isForeign: false };
@@ -294,21 +303,17 @@
           const isDomestic = /中国|China/i.test(rawStr) || cnProvinces.some(prov => rawStr.includes(prov));
 
           let lastPart = validParts[validParts.length - 1];
-
-          if (!isDomestic) {
-          return { name: lastPart, isForeign: true }; 
-          }
+          if (!isDomestic) return { name: lastPart, isForeign: true }; 
 
           let city = '', district = '';
           const directCities = new Set(['北京市', '上海市', '天津市', '重庆市', '北京', '上海', '天津', '重庆']);
           let isDirectCity = false;
-          let directCityName = ''; // ✨ 新增：用来缓存规范化后的直辖市名称
+          let directCityName = '';
 
           for (let i = validParts.length - 1; i >= 0; i--) {
             let p = validParts[i];
             if (directCities.has(p)) {
               isDirectCity = true;
-              // ✨ 统一转换为带“市”尾缀的规范名称
               directCityName = p.endsWith('市') ? p : p + '市'; 
             } else if (p.endsWith('市') || p.endsWith('自治州') || p.endsWith('地区') || p.endsWith('盟')) {
               if (!city) city = p;
@@ -317,12 +322,7 @@
             }
           }
 
-          // 🚀 【核心逻辑修改】如果是直辖市，直接返回“xx市”，不再受下方 district 分区逻辑的干扰
-          if (isDirectCity) {
-            return { name: directCityName, isForeign: false };
-          }
-
-          // 普通省份城市的解析逻辑保持原样
+          if (isDirectCity) return { name: directCityName, isForeign: false };
           if (city) return { name: city, isForeign: false }; 
           if (district) return { name: district, isForeign: false }; 
 
@@ -330,7 +330,6 @@
         };
 
         let cityObj = formatCity(r.location_country);
-        
         if (cityObj && cityObj.name) {
             let existing = cityDataMap.get(cityObj.name);
             if (!existing) {
@@ -378,7 +377,7 @@
         if (RIDE_TYPES.has(r.type)) mRide += d;
         else if (RUN_TYPES.has(r.type)) mRun += d;
         else if (WALK_TYPES.has(r.type)) mWalk += d;
-        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) mStairDur += hw; // 👈 加上室内类型
+        else if (STAIR_TYPES.has(r.type) || INDOOR_TYPES.has(r.type)) mStairDur += hw;
 
         const blockIdx = Math.floor(r.hour / 3);
         if (++timeBlocks[blockIdx] > maxTimeBlockCount) maxTimeBlockCount = timeBlocks[blockIdx];
@@ -394,14 +393,17 @@
       const hrZonesInfo = [ { color: '#32D74B', title: '舒缓有氧', name: 'Z1', range: '<115' }, { color: '#FFCC00', title: '稳态燃脂', name: 'Z2', range: '115-129' }, { color: '#FF9500', title: '有氧强化', name: 'Z3', range: '130-144' }, { color: '#FF5E3A', title: '乳酸阈值', name: 'Z4', range: '145-159' }, { color: '#FF3B30', title: '无氧极限', name: 'Z5', range: '≥160' } ];
 
       return {
-        displayYear, availableMonths: Array.from(new Set(filteredRuns.map(r => r.start_date_local.slice(5, 7)))).sort().reverse(),
+        isAll,
+        statsTitle,
+        displayYear, 
+        availableMonths: Array.from(new Set(filteredRuns.map(r => r.start_date_local.slice(5, 7)))).sort().reverse(),
         global: { 
           totalDist, rideDist, runDist, walkDist, stairDuration, activeDays: datesSet.size, maxStreak, sparklineData, sortedCities,
           achieve: { calRideYId, calRideMIds, calRwYId, calRwMIds, calStairYId, calStairMIds, calRwYPaceId, calRwPaceMIds, calRidePaceId, calRidePaceMIds }
         },
         monthly: { 
           total: mTotal, rideDist: mRide, runDist: mRun, walkDist: mWalk, stairDuration: mStairDur, runsByDate: currentMonthData.runsByDate,
-          totalRunsCount: currentMonthData.runs.length, // <--- 新增这一句：获取本月实际活动总数
+          totalRunsCount: currentMonthData.runs.length,
           insights: { 
             hasActivities: currentMonthData.runs.length > 0, timeBlocks, maxTimeBlockCount: Math.max(maxTimeBlockCount, 1), peakPersona: maxTimeBlockCount > 0 ? personas[timeBlocks.indexOf(maxTimeBlockCount)].name : '等待记录', 
             personas, validHrRuns, hrCounts, hrZonesInfo, hrMaxZone: hrZonesInfo[hrCounts.indexOf(Math.max(...hrCounts))] || hrZonesInfo[0] 
@@ -431,29 +433,29 @@
         const ach = engine.global.achieve;
 
         if (RIDE_TYPES.has(runData.type)) {
-          if (nId === String(ach.calRideYId)) pills.push({ text: '年度最远', gold: true });
+          if (nId === String(ach.calRideYId)) pills.push({ text: '历史最远', gold: true });
           else if (ach.calRideMIds.has(nId)) pills.push({ text: '月度最远', gold: false });
           
           if (nId === String(ach.calRidePaceId)) { 
-            pills.push({ text: '年度最快', gold: true }); 
-            injectTooltipRows.push('<div class="ttAchieveRow"><span>年度最快</span><span class="titleTag">骑行</span></div>');
+            pills.push({ text: '历史最快', gold: true }); 
+            injectTooltipRows.push('<div class="ttAchieveRow"><span>历史最快</span><span class="titleTag">骑行</span></div>');
           } else if (ach.calRidePaceMIds.has(nId)) { 
             pills.push({ text: '月度最快', gold: false }); 
             injectTooltipRows.push('<div class="ttAchieveRow"><span>月度最快</span><span class="titleTag">骑行</span></div>');
           }
         } else if (RUN_TYPES.has(runData.type) || WALK_TYPES.has(runData.type)) {
-          if (nId === String(ach.calRwYId)) pills.push({ text: '年度最远', gold: true });
+          if (nId === String(ach.calRwYId)) pills.push({ text: '历史最远', gold: true });
           else if (ach.calRwMIds.has(nId)) pills.push({ text: '月度最远', gold: false });
           
           if (nId === String(ach.calRwYPaceId)) { 
-            pills.push({ text: '年度最快', gold: true }); 
-            injectTooltipRows.push('<div class="ttAchieveRow"><span>年度最快</span><span class="titleTag">跑走</span></div>');
+            pills.push({ text: '历史最快', gold: true }); 
+            injectTooltipRows.push('<div class="ttAchieveRow"><span>历史最快</span><span class="titleTag">跑走</span></div>');
           } else if (ach.calRwPaceMIds.has(nId)) { 
             pills.push({ text: '月度最快', gold: false }); 
             injectTooltipRows.push('<div class="ttAchieveRow"><span>月度最快</span><span class="titleTag">跑走</span></div>');
           }
-        } else if (STAIR_TYPES.has(runData.type) || INDOOR_TYPES.has(runData.type)) { // 👈 加上室内类型
-          if (nId === String(ach.calStairYId)) pills.push({ text: '年度最久', gold: true });
+        } else if (STAIR_TYPES.has(runData.type) || INDOOR_TYPES.has(runData.type)) {
+          if (nId === String(ach.calStairYId)) pills.push({ text: '历史最久', gold: true });
           else if (ach.calStairMIds.has(nId)) pills.push({ text: '月度最久', gold: false });
         }
 
@@ -477,7 +479,7 @@
     renderMonthFilterUI(monthsArr) {
       const container = document.getElementById('month-filter-bar');
       if (!container) return;
-      const arr = monthsArr || Array.from(new Set(this.allRuns.filter(r => r.start_date_local?.startsWith(this.currentYear)).map(r => r.start_date_local.slice(5, 7)))).sort().reverse();
+      const arr = monthsArr || Array.from(new Set(this.allRuns.filter(r => this.currentYear === 'All' || r.start_date_local?.startsWith(this.currentYear)).map(r => r.start_date_local.slice(5, 7)))).sort().reverse();
       const pills = arr.map(m => `<div class="filterPill ${this.listMonth === m ? 'activePill' : ''}" onclick="window.KoobaiRun.ui.setListMonth('${m}')">${m}</div>`).join('');
       container.innerHTML = `<div class="filterPill ${this.listMonth === 'All' ? 'activePill' : ''}" onclick="window.KoobaiRun.ui.setListMonth('All')">全部</div>${pills}<div class="monthLabel">月</div>`;
     }
@@ -499,7 +501,7 @@
 
         globalStatsContainer.innerHTML = `
           <div style="padding: 16px 20px; position: relative; text-align: center; overflow: hidden; display: flex; flex-direction: column; align-items: center; background: #fff; border-radius: 16px; border: 1px solid #e5e5e5; margin-bottom: 15px;">
-            <div style="font-size: 12px; color: #999; margin-bottom: 2px; z-index: 1; letter-spacing: 1px;">年度总里程</div>
+            <div style="font-size: 12px; color: #999; margin-bottom: 2px; z-index: 1; letter-spacing: 1px;">${engine.statsTitle}</div>
             <div style="display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 12px; z-index: 1;">
               <span style="font-size: 40px; font-weight: 800; color: #32D74B; line-height: 1;">${engine.global.totalDist.toFixed(2)}</span>
               <span style="font-size: 13px; color: #999; font-weight: 600; text-transform: uppercase;">KM</span>
@@ -532,6 +534,12 @@
       }
 
       if (!container) return;
+
+      // 如果选中的是全部汇总，隐藏单月网格日历
+      if (engine.isAll) {
+        container.innerHTML = '';
+        return;
+      }
 
       const firstDay = (new Date(engine.displayYear, this.calMonthIndex, 1).getDay() + 6) % 7;
       const daysInMonth = new Date(engine.displayYear, this.calMonthIndex + 1, 0).getDate();
@@ -593,7 +601,7 @@
             <div class="runTooltip">
               <div class="ttItem" style="display: flex; gap: 12px; justify-content: center; margin-bottom: 0;">
                 <span class="ttName" style="font-size: 0.75rem; color: #666;">${insights.personas[i].time}</span>
-                <span class="ttNum">${count} <small>趟</small></span>
+                <span class="ttNum">${count} <small>次</small></span>
               </div>
             </div>
           </div>`;
@@ -610,7 +618,7 @@
             <div class="runTooltip">
               <div class="ttItem" style="display: flex; gap: 12px; justify-content: center; margin-bottom: 0;">
                 <span class="ttName" style="color: ${info.color}; font-size: 0.75rem;">${info.range} <small>BPM</small></span>
-                <span class="ttNum">${count} <small>趟</small></span>
+                <span class="ttNum">${count} <small>次</small></span>
               </div>
             </div>
           </div>`;
