@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <path fill="currentColor" d="M4.5 3.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75H6v2.75a.75.75 0 0 1-1.5 0zM6 13h3v-3h3v3h3v-3h-3V7h3V4h-3v3H9V4H6v3h3v3H6z"/>
     </svg>`;
 
+  // 默认固定打卡点：罗湖大剧院坐标 [经度, 纬度]
+  const DEFAULT_FIXED_POINT = [114.097, 22.5488];
+
   mapboxgl.accessToken = window.KoobaiRun.config.MAPBOX_TOKEN;
 
   const getMapStyleUrl = () => {
@@ -85,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
   colorRules.push(FALLBACK_COLOR);
 
   const decodePolyline = (str, precision = 5) => {
+    if (!str) return [];
     let index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null;
     let factor = Math.pow(10, precision);
     
@@ -218,45 +222,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const renderDataByYear = (targetYear) => {
     activeRunId = null; 
     currentYear = targetYear; 
-    resetState(); // 自动清理上一轮的动画和旧 Marker 标记
+    resetState();
     
     if (!map.getSource('all-runs')) return;
     
     const features = []; 
     let allCoordsForBounds = [];
 
-    // 遍历筛选属于当前年份（或全部）的数据
     window.KoobaiRun.data.forEach(run => {
       if (targetYear !== 'All' && !run.start_date_local?.startsWith(targetYear)) return;
-      if (!run.summary_polyline) return;
       
-      // 缓存解码后的坐标
-      if (!run._decodedCoords) {
-        run._decodedCoords = decodePolyline(run.summary_polyline);
+      // 1. 解码 Polyline 轨迹
+      let coords = [];
+      if (run.summary_polyline) {
+        if (!run._decodedCoords) {
+          run._decodedCoords = decodePolyline(run.summary_polyline);
+        }
+        coords = run._decodedCoords;
       }
-      let coords = run._decodedCoords;
 
-      if (coords.length === 0) return;
-
-      // 👈 单点处理（跳绳、HIIT等手工记录）：生成带颜色发光效果的圆点 Marker
-      if (coords.length === 1) {
-        const point = coords[0];
+      // 2. 核心逻辑：若没有轨迹或解码点小于等于1（如跳绳、HIIT），统一在【罗湖大剧院】标记固定点
+      if (!coords || coords.length <= 1) {
+        const point = (coords && coords.length === 1) ? coords[0] : DEFAULT_FIXED_POINT;
         allCoordsForBounds.push(point);
 
         const el = document.createElement('div');
         const color = getColor(run.type);
-        el.className = 'manual-point-marker';
+        el.className = 'manual-fixed-point-marker';
         el.style.cssText = `
-          width: 12px;
-          height: 12px;
+          width: 14px;
+          height: 14px;
           background-color: ${color};
           border: 2px solid #ffffff;
           border-radius: 50%;
-          box-shadow: 0 0 8px ${color};
+          box-shadow: 0 0 10px ${color};
           cursor: pointer;
         `;
 
-        // 点击圆点时触发飞向和详情弹窗
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           window.KoobaiRun.map.flyTo(run.run_id);
@@ -266,11 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
           .setLngLat(point)
           .addTo(map);
 
-        currentMarkers.push(marker); // 存入数组便于切换年份时自动清除
+        currentMarkers.push(marker);
         return;
       }
 
-      // 正常多点轨迹线处理
+      // 3. 正常路线绘制（跑步、骑行等）
       allCoordsForBounds.push(...coords);
       features.push({ 
         type: 'Feature', 
@@ -279,12 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // 更新轨迹线数据源
     map.getSource('all-runs').setData({ type: 'FeatureCollection', features });
     map.getSource('highlight-run-source').setData({ type: 'FeatureCollection', features: [] });
     map.setPaintProperty('runs-core', 'line-opacity', targetYear === 'All' ? 0.5 : 0.8);
 
-    // 将地图视角居中至轨迹与单点集合
     if (allCoordsForBounds.length > 0) {
       const validCoords = filterCityBoundingBox(allCoordsForBounds);
       const bounds = new mapboxgl.LngLatBounds();
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ========================================================================
-     板块 5：路线飞行动画 (挂载至全局空间供 UI 调用)
+     板块 5：路线飞行动画与单点定位
   ======================================================================== */
   window.KoobaiRun.map = {
     flyTo: (rawRunId) => {
@@ -487,12 +487,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const coords = runData._decodedCoords || decodePolyline(runData.summary_polyline);
-      const totalPoints = coords.length;
-      if (totalPoints < 2) return;
+      let coords = runData._decodedCoords;
+      if (!coords && runData.summary_polyline) {
+        coords = decodePolyline(runData.summary_polyline);
+      }
 
       const sportColor = getColor(runData.type);
-      
+
+      // 单点点击定位：平移到固定点（大剧院）并弹出发光高亮圆点
+      if (!coords || coords.length <= 1) {
+        const point = (coords && coords.length === 1) ? coords[0] : DEFAULT_FIXED_POINT;
+
+        const el = document.createElement('div');
+        el.className = 'selected-point-marker';
+        el.style.cssText = `
+          width: 18px;
+          height: 18px;
+          background-color: ${sportColor};
+          border: 3px solid #ffffff;
+          border-radius: 50%;
+          box-shadow: 0 0 15px ${sportColor};
+        `;
+
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat(point)
+          .addTo(map);
+
+        currentMarkers.push(marker);
+
+        map.flyTo({
+          center: point,
+          zoom: 15,
+          pitch: 0,
+          duration: 1000,
+          essential: true
+        });
+        return;
+      }
+
+      // 正常轨迹动效逻辑
+      const totalPoints = coords.length;
       const startEl = document.createElement('div'); 
       startEl.style.color = sportColor; 
       startEl.style.lineHeight = '0'; 
@@ -526,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
       map.flyTo({ center: coords[0], bearing: currentBearing, pitch: 70, zoom: 16, duration: 2500, essential: true });
 
       const animate = (timestamp) => {
-        if (String(activeRunId) !== runId) return; 
+        if (normalizeId(activeRunId) !== runId) return; 
         if (!startTime) startTime = timestamp;
         
         const progress = Math.min((timestamp - startTime) / Math.min(3500 + Math.sqrt(runData.distance || 5) * 800, 12000), 1);
