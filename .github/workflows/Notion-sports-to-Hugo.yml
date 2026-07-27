@@ -5,6 +5,9 @@ on:
     # 每天 UTC 14:00（北京时间 22:00）自动触发
     - cron: "0 */4 * * *" # 每 4 小时执行一次
   workflow_dispatch: # 支持手动点击 Run Workflow 触发
+  repository_dispatch:
+    types: 
+      - sports_sync
 
 jobs:
   build-and-sync:
