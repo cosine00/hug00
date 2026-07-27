@@ -394,6 +394,30 @@
       "photos": ["https://img.hux.ink/image/2026/07/20260725154946-m4mty-img-0975.webp","https://img.hux.ink/image/2026/07/20260725155237-1tp7k-img-1050.webp"],
       "categories": ["旅行"],
       "markerColor": "forest"
+    },
+    {
+      "name": "佛山",
+      "coordinates": "113.255086,22.835613",
+      "provinceAdcode": "440000",
+      "description": "佛山特种兵一日游，打卡清晖园和逢简水乡。",
+      "date": "2023-05-20",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2026/07/20260727173625-oy8nb-foshan.webp"],
+      "categories": ["旅行"],
+      "markerColor": "forest"
+    },
+    {
+      "name": "南武当山",
+      "coordinates": "114.723202,24.614572",
+      "provinceAdcode": "360000",
+      "description": "2026年端午节假期，自驾游龙南。游览客家围屋，上南武当山。",
+      "date": "2026-06-19",
+      "url": "",
+      "urlLabel": "",
+      "photos": ["https://img.hux.ink/image/2026/07/20260727174304-kxfk9-img-20260620-150944.webp","https://img.hux.ink/image/2026/07/20260727174302-ka19u-img-20260620-164127.webp","https://img.hux.ink/image/2026/07/20260727174307-p36gy-longnan01.webp"],
+      "categories": ["旅行"],
+      "markerColor": "forest"
     }  
   ]
 }

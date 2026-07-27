@@ -360,51 +360,11 @@
     "source": "manual"
   },
   {
-    "run_id": 20260707001,
-    "name": "HIIT",
-    "moving_time": "0:42:00",
-    "type": "Workout",
-    "start_date_local": "2026-07-07 19:05:00",
-    "summary_polyline": "",
-    "average_heartrate": 139.0,
-    "source": "Notion"
-  },
-  {
-    "run_id": 20260707002,
-    "name": "YaoYao跳绳",
-    "moving_time": "0:20:00",
-    "type": "RopeSkipping",
-    "start_date_local": "2026-07-07 20:20:00",
-    "summary_polyline": "",
-    "average_heartrate": 136.0,
-    "source": "Notion"
-  },
-  {
     "run_id": 20260708001,
     "name": "登月计划",
     "moving_time": "1:06:00",
     "type": "Stair",
     "start_date_local": "2026-07-08 19:33:00",
-    "summary_polyline": "",
-    "average_heartrate": 142.0,
-    "source": "Notion"
-  },
-  {
-    "run_id": 20260716001,
-    "name": "高强度间歇",
-    "moving_time": "0:36:00",
-    "type": "Workout",
-    "start_date_local": "2026-07-16 19:50:00",
-    "summary_polyline": "",
-    "average_heartrate": 142.0,
-    "source": "Notion"
-  },
-  {
-    "run_id": 20260716002,
-    "name": "高强度间歇",
-    "moving_time": "0:36:00",
-    "type": "Workout",
-    "start_date_local": "2026-07-16 19:55:00",
     "summary_polyline": "",
     "average_heartrate": 142.0,
     "source": "Notion"
