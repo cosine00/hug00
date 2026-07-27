@@ -1,0 +1,37 @@
+name: Sync Notion Sports Data
+
+on:
+  schedule:
+    # 每天 UTC 14:00（北京时间 22:00）自动触发
+    - cron: "0 */4 * * *" # 每 4 小时执行一次
+  workflow_dispatch: # 支持手动点击 Run Workflow 触发
+
+jobs:
+  build-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Run Sync Script
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_SECRET }}
+          NOTION_SPORT_DATABASE_ID: ${{ secrets.NOTION_SPORT_DATABASE_ID }}
+        run:
+          python .github/scripts/sync_notion-sports.py
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto sync sports data from Notion [skip ci]"
+          file_pattern: 'assets/act.json' # 替换为你存放 json 的实际相对路径（如 data/act.json）
