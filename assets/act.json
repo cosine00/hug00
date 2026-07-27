@@ -404,8 +404,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:36:27",
     "type": "RopeSkipping", 
-    "start_date_local": "2026-07-25 18:30:00",
-    "summary_polyline": "__roEak`w@",
+    "start_date_local": "2026-07-25 18:30:00",  
     "average_heartrate": 142.0,
     "source": "manual"
   },  
@@ -414,8 +413,7 @@
     "name": "HIIT",
     "moving_time": "0:20:04",
     "type": "Workout", 
-    "start_date_local": "2026-07-26 11:03:00",
-    "summary_polyline": "_w_oEqk|w@",
+    "start_date_local": "2026-07-26 11:03:00",  
     "average_heartrate": 131.0,
     "source": "manual"
   }
