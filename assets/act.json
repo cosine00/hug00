@@ -446,5 +446,15 @@
     "start_date_local": "2026-07-26 11:03:00",
     "average_heartrate": 131,
     "source": "manual"
+  },
+  {
+    "run_id": 20260727001,
+    "name": "YaoYao跳绳",
+    "moving_time": "0:31:00",
+    "type": "RopeSkipping",
+    "start_date_local": "2026-07-27 19:23:46",
+    "summary_polyline": "",
+    "average_heartrate": 145,
+    "source": "admin"
   }
 ]
