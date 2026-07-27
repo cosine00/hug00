@@ -1230,10 +1230,17 @@ function openSportsModal(startDateKey=null) {
         <div class="modal-body">
           <div class="fm-group"><label class="fm-label">运动名称</label><input class="fm-input" id="sp-name" value="${escapeAttr(item.name || '登月计划')}"></div>
           <div class="fm-group"><label class="fm-label">开始时间 (start_date_local) <span class="muted">格式: YYYY-MM-DD HH:mm:ss</span></label><input class="fm-input" id="sp-start" value="${escapeAttr(item.start_date_local || nowLocalString())}" ${isEdit ? 'readonly style="background:var(--bg3)"' : ''}></div>
-          <div class="fm-group"><label class="fm-label">运动类型 (Type)</label><input class="fm-input" id="sp-type" value="${escapeAttr(item.type || 'Stair')}" placeholder="如 Stair, RopeSkipping, Workout, Running"></div>
+          <div class="fm-group">
+  <label class="fm-label">运动类型 (Type)</label>
+  <select class="form-select" id="sp-type" style="width:100%;">
+    <option value="Stair" ${ (item.type || 'Stair') === 'Stair' ? 'selected' : '' }>Stair (爬楼/登月)</option>
+    <option value="RopeSkipping" ${ item.type === 'RopeSkipping' ? 'selected' : '' }>RopeSkipping (跳绳)</option>
+    <option value="Workout" ${ item.type === 'Workout' ? 'selected' : '' }>Workout (HIIT/健身)</option>    
+  </select>
+</div>
           <div class="fm-group"><label class="fm-label">时长 (分钟) <span class="muted">保存时会自动转为 H:MM:SS</span></label><input class="fm-input" type="number" id="sp-duration" value="${currentMinutes}"></div>
           <div class="fm-group"><label class="fm-label">平均心率 (bpm)</label><input class="fm-input" type="number" step="0.1" id="sp-hr" value="${item.average_heartrate || 135}"></div>
-          <div class="fm-group"><label class="fm-label">数据来源 (Source)</label><input class="fm-input" id="sp-source" value="${escapeAttr(item.source || 'manual')}"></div>
+          <div class="fm-group"><label class="fm-label">数据来源 (Source)</label><input class="fm-input" id="sp-source" value="${escapeAttr(item.source || 'admin')}"></div>
         </div>
         <div class="modal-footer">
           <button class="btn" onclick="closeModal()">取消</button>
