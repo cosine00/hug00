@@ -176,7 +176,7 @@
     "type": "Stair",
     "start_date_local": "2025-12-02 19:04:27",
     "summary_polyline": "",
-    "average_heartrate": 131.0,
+    "average_heartrate": 131,
     "source": "manual"
   },
   {
@@ -346,7 +346,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-02 19:24:00",
     "summary_polyline": "",
-    "average_heartrate": 136.0,
+    "average_heartrate": 136,
     "source": "manual"
   },
   {
@@ -356,7 +356,17 @@
     "type": "Workout",
     "start_date_local": "2026-07-03 06:33:00",
     "summary_polyline": "",
-    "average_heartrate": 129.0,
+    "average_heartrate": 129,
+    "source": "manual"
+  },
+  {
+    "run_id": 20260707001,
+    "name": "HIIT",
+    "moving_time": "0:35:00",
+    "type": "Workout",
+    "start_date_local": "2026-07-07 18:59:24",
+    "summary_polyline": "",
+    "average_heartrate": 136,
     "source": "manual"
   },
   {
@@ -366,7 +376,7 @@
     "type": "Stair",
     "start_date_local": "2026-07-08 19:33:00",
     "summary_polyline": "",
-    "average_heartrate": 142.0,
+    "average_heartrate": 142,
     "source": "Notion"
   },
   {
@@ -376,7 +386,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-20 19:57:00",
     "summary_polyline": "",
-    "average_heartrate": 135.0,
+    "average_heartrate": 135,
     "source": "manual"
   },
   {
@@ -386,7 +396,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-21 19:27:00",
     "summary_polyline": "",
-    "average_heartrate": 139.0,
+    "average_heartrate": 139,
     "source": "manual"
   },
   {
@@ -396,7 +406,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-22 19:28:00",
     "summary_polyline": "",
-    "average_heartrate": 143.0,
+    "average_heartrate": 143,
     "source": "manual"
   },
   {
@@ -406,7 +416,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-23 19:43:00",
     "summary_polyline": "",
-    "average_heartrate": 141.0,
+    "average_heartrate": 141,
     "source": "manual"
   },
   {
@@ -416,7 +426,7 @@
     "type": "RopeSkipping",
     "start_date_local": "2026-07-24 14:00:00",
     "summary_polyline": "",
-    "average_heartrate": 137.0,
+    "average_heartrate": 137,
     "source": "Notion"
   },
   {
@@ -425,7 +435,7 @@
     "moving_time": "0:36:27",
     "type": "RopeSkipping",
     "start_date_local": "2026-07-25 18:30:00",
-    "average_heartrate": 142.0,
+    "average_heartrate": 142,
     "source": "manual"
   },
   {
@@ -434,7 +444,7 @@
     "moving_time": "0:20:04",
     "type": "Workout",
     "start_date_local": "2026-07-26 11:03:00",
-    "average_heartrate": 131.0,
+    "average_heartrate": 131,
     "source": "manual"
   }
 ]
