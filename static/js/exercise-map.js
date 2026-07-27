@@ -214,28 +214,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // 根据选中的年份，提取数据并重绘底图所有轨迹与单点
   const renderDataByYear = (targetYear) => {
     activeRunId = null; 
     currentYear = targetYear; 
-    resetState();
+    resetState(); // 自动清理上一轮的动画和旧 Marker 标记
     
     if (!map.getSource('all-runs')) return;
     
     const features = []; 
     let allCoordsForBounds = [];
 
+    // 遍历筛选属于当前年份（或全部）的数据
     window.KoobaiRun.data.forEach(run => {
-      // 核心条件：若选择 All 则全量渲染
       if (targetYear !== 'All' && !run.start_date_local?.startsWith(targetYear)) return;
       if (!run.summary_polyline) return;
       
+      // 缓存解码后的坐标
       if (!run._decodedCoords) {
         run._decodedCoords = decodePolyline(run.summary_polyline);
       }
-      const coords = run._decodedCoords;
+      let coords = run._decodedCoords;
 
       if (coords.length === 0) return;
-      
+
+      // 👈 单点处理（跳绳、HIIT等手工记录）：生成带颜色发光效果的圆点 Marker
+      if (coords.length === 1) {
+        const point = coords[0];
+        allCoordsForBounds.push(point);
+
+        const el = document.createElement('div');
+        const color = getColor(run.type);
+        el.className = 'manual-point-marker';
+        el.style.cssText = `
+          width: 12px;
+          height: 12px;
+          background-color: ${color};
+          border: 2px solid #ffffff;
+          border-radius: 50%;
+          box-shadow: 0 0 8px ${color};
+          cursor: pointer;
+        `;
+
+        // 点击圆点时触发飞向和详情弹窗
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.KoobaiRun.map.flyTo(run.run_id);
+        });
+
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat(point)
+          .addTo(map);
+
+        currentMarkers.push(marker); // 存入数组便于切换年份时自动清除
+        return;
+      }
+
+      // 正常多点轨迹线处理
       allCoordsForBounds.push(...coords);
       features.push({ 
         type: 'Feature', 
@@ -244,10 +279,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
+    // 更新轨迹线数据源
     map.getSource('all-runs').setData({ type: 'FeatureCollection', features });
     map.getSource('highlight-run-source').setData({ type: 'FeatureCollection', features: [] });
     map.setPaintProperty('runs-core', 'line-opacity', targetYear === 'All' ? 0.5 : 0.8);
 
+    // 将地图视角居中至轨迹与单点集合
     if (allCoordsForBounds.length > 0) {
       const validCoords = filterCityBoundingBox(allCoordsForBounds);
       const bounds = new mapboxgl.LngLatBounds();
@@ -267,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-  }; 
+  };
 
   map.on('style.load', () => {
     injectCustomLayers(); 
