@@ -400,6 +400,16 @@
     "source": "Notion"
   },
   {
+    "run_id": 20260716002,
+    "name": "高强度间歇",
+    "moving_time": "0:36:00",
+    "type": "Workout",
+    "start_date_local": "2026-07-16 19:55:00",
+    "summary_polyline": "",
+    "average_heartrate": 142.0,
+    "source": "Notion"
+  },
+  {
     "run_id": 20260720001,
     "name": "YaoYao跳绳",
     "moving_time": "0:21:59",
