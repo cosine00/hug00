@@ -73,20 +73,6 @@ a{color:inherit;text-decoration:none}
 .card-title{font-weight:700;font-size:15px;color:var(--text)}
 .card-desc{font-size:12.5px;color:var(--text3);margin-top:4px;line-height:1.5}
 
-/* Dashboard */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:18px}
-.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden;cursor:pointer;transition:.16s}
-.stat-card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
-.stat-card.active{border-color:rgba(31,122,77,.45);box-shadow:0 0 0 3px rgba(31,122,77,.08)}
-.stat-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
-.stat-card.pub::after{background:var(--success)}
-.stat-card.dra::after{background:var(--warning)}
-.stat-card.trash::after{background:var(--text3)}
-.stat-card.tagstat::after{background:var(--purple)}
-.stat-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:8px;letter-spacing:.04em}
-.stat-value{font-size:28px;font-weight:800;color:var(--text);line-height:1}
-.stat-note{font-size:12px;color:var(--text3);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 /* Article management */
 .management-shell{display:grid;grid-template-columns:1fr;gap:16px}
 .segmented{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -130,7 +116,6 @@ tbody tr:hover td{background:#fbfcfd}
 .tag.meta{background:var(--blue-light);color:#2b43b0}
 .tag.soft{background:var(--bg3);color:var(--text2)}
 .tag.purple{background:var(--purple-light);color:var(--purple)}
-.action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:5px;color:var(--text2)}
 .muted{color:var(--text3)}
 .nowrap{white-space:nowrap}
@@ -185,7 +170,6 @@ input:checked+.slider:before{transform:translateX(18px)}
 .markdown-body{font-size:15px;line-height:1.78}
 .markdown-body img{border-radius:8px}
 
-
 /* R2 media library */
 .media-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:136px;border:1px dashed var(--border2);border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,var(--bg2));padding:24px;text-align:center;color:var(--text2);transition:.16s;cursor:pointer;position:relative;overflow:hidden}
 .media-drop::before{content:'🖼️';display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:var(--accent-light);color:var(--accent);font-size:20px;margin-bottom:12px}
@@ -204,6 +188,13 @@ input:checked+.slider:before{transform:translateX(18px)}
 .media-item-actions{display:flex;gap:6px;flex-wrap:wrap}
 .editor-upload-card .media-drop{padding:14px;min-height:112px}
 .editor-upload-card .media-actions{justify-content:flex-start;margin-top:10px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.modal-card{background:var(--bg);border-radius:var(--radius-lg);width:100%;max-width:560px;box-shadow:0 12px 32px rgba(0,0,0,.18);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:16px}
+.modal-body{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--bg2)}
 
 /* Settings */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -249,20 +240,6 @@ input:checked+.slider:before{transform:translateX(18px)}
   .topbar{height:auto;min-height:58px;padding:12px 16px;align-items:flex-start;flex-direction:column}
   .topbar-actions{margin-left:0;width:100%;justify-content:flex-start}
   .content{height:auto;min-height:calc(100vh - 120px);padding:16px}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .settings-grid{grid-template-columns:1fr}
-  .setting-group[style*="span 2"]{grid-column:auto!important}
-  .editor-wrap{margin:-16px;padding:16px;height:auto}
-  .reader-wrap{padding:24px}
-  .reader-title{font-size:26px}
-  .reader-title-row{flex-direction:column;align-items:stretch}
-  .reader-title-actions{justify-content:flex-start;padding-top:0}
-}
-@media (max-width:560px){
-  .stats-grid{grid-template-columns:1fr}
-  .toolbar{align-items:stretch}
-  .search-box,select.filter,.btn{width:100%}
-  .batch-bar{align-items:flex-start;flex-direction:column}
 }
 </style>
 </head>
@@ -281,6 +258,14 @@ input:checked+.slider:before{transform:translateX(18px)}
       <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
+      </div>
+      <div class="nav-item" onclick="showPage('sports')" id="nav-sports">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        运动记录
+      </div>
+      <div class="nav-item" onclick="showPage('footprints')" id="nav-footprints">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        足迹记录
       </div>
       <div class="nav-item" onclick="showPage('media')" id="nav-media">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -315,6 +300,7 @@ input:checked+.slider:before{transform:translateX(18px)}
   </div>
 </div>
 
+<div id="modal-container"></div>
 <div class="toast-container" id="toast-container"></div>
 <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -322,7 +308,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 <script>
 // ============================================================
 // Counting Stars Hugo Admin
-// 单文件后台：GitHub 内容管理 + Hugo Front Matter + Vercel 状态查看
+// 单文件后台：GitHub 内容管理 + Hugo Front Matter + Vercel 状态 + R2 图床 + 运动与足迹 JSON
 // ============================================================
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
@@ -334,9 +320,12 @@ let CFG = {
 
 let STATE = {
   page: 'posts', posts: [], searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
-  selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null
+  selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
+  sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null
 };
 
+const ACT_JSON_PATH = "assets/act.json";
+const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
 
 function saveCfg(){ localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG)); }
@@ -365,6 +354,31 @@ function toast(msg, type='info'){
   t.className=`toast show ${type==='error'?'error':type==='success'?'success':type==='warning'?'warning':''}`;
   t.textContent=msg; c.appendChild(t);
   setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),260); }, type==='error'?4600:3000);
+}
+
+function closeModal(){
+  document.getElementById('modal-container').innerHTML = '';
+}
+
+function formatMovingTime(minutes) {
+  try {
+    const totalSeconds = Math.round(parseFloat(minutes) * 60);
+    const hours = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    const pad = n => String(n).padStart(2, '0');
+    return `${hours}:${pad(mins)}:${pad(secs)}`;
+  } catch (e) {
+    return "0:00:00";
+  }
+}
+
+function parseTimeToMinutes(timeStr) {
+  if (!timeStr) return 0;
+  const parts = String(timeStr).split(':').map(Number);
+  if (parts.length === 3) return parts[0] * 60 + parts[1] + Math.round(parts[2] / 60);
+  if (parts.length === 2) return parts[0] + Math.round(parts[1] / 60);
+  return 0;
 }
 
 // ============================================================
@@ -478,7 +492,14 @@ function showPage(page){
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   const nav=document.getElementById('nav-'+page); if(nav) nav.classList.add('active');
   const c=document.getElementById('main-content'); c.style.overflow='auto';
-  switch(page){ case 'posts': renderPostsPage(); break; case 'media': renderMediaPage(); break; case 'deploy': renderDeployPage(); break; case 'settings': renderSettingsPage(); break; }
+  switch(page){ 
+    case 'posts': renderPostsPage(); break; 
+    case 'sports': renderSportsPage(); break;
+    case 'footprints': renderFootprintsPage(); break;
+    case 'media': renderMediaPage(); break; 
+    case 'deploy': renderDeployPage(); break; 
+    case 'settings': renderSettingsPage(); break; 
+  }
 }
 
 async function checkStatus(){
@@ -600,9 +621,7 @@ function renderStatusTabs(counts){
   ).join('');
 }
 
-function renderStats(counts){
-  // 顶部统计卡片已移除；保留空函数，避免后续调用报错。
-}
+function renderStats(counts){}
 
 function basePostsForFilters(){
   let posts=STATE.posts.slice();
@@ -628,14 +647,12 @@ function renderTagFilter(){
 function getPostYear(post){
   const fromDate=String(post?.date || '').match(/^(\d{4})/);
   if(fromDate) return fromDate[1];
-
   const fromPath=String(post?.path || '').match(/(20\d{2}|19\d{2})/);
   return fromPath ? fromPath[1] : '';
 }
 
 function renderYearFilter(){
   const select=document.getElementById('year-filter'); if(!select) return;
-
   const base=basePostsForFilters().filter(p=>STATE.tagFilter==='all' || p.tags.includes(STATE.tagFilter));
   const yearCounts=new Map();
   base.forEach(p=>{
@@ -644,10 +661,8 @@ function renderYearFilter(){
   });
   const years=[...yearCounts.keys()].sort((a,b)=>b.localeCompare(a));
   const current=STATE.yearFilter;
-
   select.innerHTML=`<option value="all">全部年份（${base.length}）</option>` +
     years.map(y=>`<option value="${escapeAttr(y)}">${escapeHTML(y)} 年（${yearCounts.get(y)}）</option>`).join('');
-
   select.value=years.includes(current) ? current : 'all';
   STATE.yearFilter=select.value;
 }
@@ -679,6 +694,7 @@ function renderBatchBar(visiblePosts){
   const selected=[...STATE.selected].filter(p=>visiblePosts.some(v=>v.path===p)); STATE.selected=new Set(selected);
   const count=selected.length; const isTrash=STATE.statusTab==='trash';
   const batch=document.getElementById('batch-bar');
+  if(!batch) return;
   batch.innerHTML=`
     <div><strong>${count}</strong> 篇已选 <span class="muted">/ 当前筛选 ${visiblePosts.length} 篇</span></div>
     <div class="batch-actions">
@@ -727,6 +743,7 @@ function renderPostRow(p){
     <td><span class="tag ${statusClass}">${status}</span></td>
   </tr>`;
 }
+
 function toggleSelectAll(checked){ getFilteredPosts().forEach(p=>checked?STATE.selected.add(p.path):STATE.selected.delete(p.path)); renderPostsTableBody(); }
 function toggleSelectPath(encodedPath, checked){ const path=decodeURIComponent(encodedPath); checked?STATE.selected.add(path):STATE.selected.delete(path); renderPostsTableBody(); }
 function clearSelection(){ STATE.selected.clear(); renderPostsTableBody(); }
@@ -748,9 +765,6 @@ async function batchAction(action){
   }catch(e){ toast(e.message,'error'); }
 }
 
-// ============================================================
-// Trash / Status Actions
-// ============================================================
 function trashPathFor(oldPath){
   const baseName=oldPath.replace(/^content\//,'').replace(/\//g,'--').replace(/[^\w\-.\u4e00-\u9fa5]+/g,'-');
   const stamp=new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
@@ -808,9 +822,6 @@ async function setDraftByPath(path, draft){
   await putFile(path, buildFrontMatter(fm, parsed.body), file.sha, `${draft?'draft':'publish'}: ${fm.title || path}`);
 }
 
-// ============================================================
-// Reader
-// ============================================================
 async function viewPost(encodedPath){
   const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content'); STATE.page='reader';
   document.getElementById('page-title').innerHTML='文章预览 <small>Markdown 渲染快照</small>';
@@ -849,15 +860,13 @@ async function viewPost(encodedPath){
       </div>`;
   }catch(e){ toast(e.message,'error'); renderPostsPage(); }
 }
+
 function buildPublicUrl(fm, path){
   const base=String(CFG.blogUrl||'').replace(/\/$/,'');
   const slug=fm.slug || path.split('/').pop().replace(/\.md$/,'');
   return `${base}/posts/${encodeURIComponent(slug).replace(/%2F/g,'/')}/`;
 }
 
-// ============================================================
-// Editor
-// ============================================================
 function openNewPost(){
   const draft=readLocalDraft('__new__');
   const useDraft=draft && confirm('检测到一份未提交的新文章本地草稿，是否恢复？');
@@ -911,6 +920,7 @@ function renderEditor(){
               ${STATE.activeTags.map(t=>tagChip(t)).join('')}
               <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)" placeholder="添加标签">
             </div>
+          </div>
           <div class="fm-group"><label class="fm-label">文件路径 <span class="muted">可改目录</span></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
           <div class="switch-wrap">
             <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
@@ -942,23 +952,22 @@ function renderEditor(){
     </div>`;
   if(STATE.mde){ try{STATE.mde.toTextArea();}catch(e){} }
   STATE.mde=new EasyMDE({
-  element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
-  placeholder:'从这里开始写正文，支持 Markdown…', status:false,
-  toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|',{name:'r2-image',action:function(){document.getElementById('editor-r2-file')?.click();},text:'R2',title:'上传图片到 Cloudflare R2 并插入文章'},'|','preview','side-by-side','fullscreen']
-});
+    element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
+    placeholder:'从这里开始写正文，支持 Markdown…', status:false,
+    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|',{name:'r2-image',action:function(){document.getElementById('editor-r2-file')?.click();},text:'R2',title:'上传图片到 Cloudflare R2 并插入文章'},'|','preview','side-by-side','fullscreen']
+  });
 
-if(post.isNew && (post.body || '').trim() === '❤'){
-  setTimeout(()=>STATE.mde.codemirror.setCursor({line:0,ch:0}), 0);
-}
+  if(post.isNew && (post.body || '').trim() === '❤'){
+    setTimeout(()=>STATE.mde.codemirror.setCursor({line:0,ch:0}), 0);
+  }
   ['fm-title','fm-description','fm-author','fm-date','fm-slug','fm-path'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
-});
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
+  });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
   document.addEventListener('keydown', editorShortcut, {once:false});
   refreshEditorMeta();
 }
-
 
 function collectEditorPreviewData(){
   const title=getFormValue('fm-title') || '未命名文章';
@@ -981,23 +990,14 @@ function collectEditorPreviewData(){
     draft:draftCheckbox ? draftCheckbox.checked : isDraftValue(STATE.editingPost?.fm?.draft)
   };
 
-  return {
-    fm,
-    body:STATE.mde ? STATE.mde.value() : '',
-    path
-  };
+  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
 }
 
 function previewCurrentEditor(){
   try{
     const data=collectEditorPreviewData();
     const keepDirty=STATE.dirty;
-    STATE.editingPost={
-      ...(STATE.editingPost||{}),
-      fm:data.fm,
-      body:data.body,
-      previewPath:data.path
-    };
+    STATE.editingPost={ ...(STATE.editingPost||{}), fm:data.fm, body:data.body, previewPath:data.path };
     STATE.dirty=keepDirty;
     renderEditorSnapshotPreview(data, keepDirty);
   }catch(e){ toast(e.message,'error'); }
@@ -1101,12 +1101,9 @@ function collectEditorData(mode='draft'){
   delete fm.trashOriginalPath;
   delete fm.deletedAt;
 
-  return {
-    fm,
-    body:STATE.mde ? STATE.mde.value() : '',
-    path
-  };
+  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
 }
+
 async function savePost(mode){
   const btn=document.getElementById(mode==='publish'?'btn-publish':'btn-save-draft');
   try{
@@ -1155,10 +1152,300 @@ function scheduleLocalDraft(){
 function clearLocalDraftByKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
 function clearCurrentLocalDraft(){ clearLocalDraftByKey(localDraftKey(STATE.editingPost?.path || '__new__')); toast('当前本地草稿已清除','success'); }
 
+// ============================================================
+// Sports Management (assets/act.json)
+// ============================================================
+async function renderSportsPage(){
+  STATE.page='sports';
+  document.getElementById('page-title').innerHTML='运动记录 <small>assets/act.json 数据维护</small>';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="renderSportsPage()">刷新数据</button>
+    <button class="btn primary" onclick="openSportsModal()">新建运动条目</button>`;
+  
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取运动记录…</div>`;
+
+  try {
+    const file = await getFileContent(ACT_JSON_PATH);
+    const list = JSON.parse(file.content || "[]");
+    list.sort((a,b) => String(b.start_date_local).localeCompare(String(a.start_date_local)));
+    STATE.sportsData = list;
+    STATE.sportsSha = file.sha;
+
+    c.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">运动项目列表（共 ${list.length} 条）</div><div class="card-desc">以此唯一标识 start_date_local，编辑时会自动覆盖原数据防止重复。</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>run_id</th>
+                <th>运动名称</th>
+                <th>开始时间 (start_date_local)</th>
+                <th>运动类型</th>
+                <th>时长</th>
+                <th>平均心率</th>
+                <th>来源</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(item => `
+                <tr>
+                  <td><span class="mono">${escapeHTML(item.run_id)}</span></td>
+                  <td><strong>${escapeHTML(item.name)}</strong></td>
+                  <td class="mono">${escapeHTML(item.start_date_local)}</td>
+                  <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
+                  <td>${escapeHTML(item.moving_time)}</td>
+                  <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
+                  <td><span class="tag soft">${escapeHTML(item.source || 'manual')}</span></td>
+                  <td>
+                    <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  } catch (e) {
+    c.innerHTML = `<div class="alert danger">读取运动数据失败: ${escapeHTML(e.message)}</div>`;
+  }
+}
+
+function openSportsModal(startDateKey=null) {
+  const isEdit = !!startDateKey;
+  const item = isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {};
+  const currentMinutes = isEdit ? parseTimeToMinutes(item.moving_time) : 30;
+
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>${isEdit ? '编辑运动记录' : '新增运动记录'}</div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="fm-group"><label class="fm-label">运动名称</label><input class="fm-input" id="sp-name" value="${escapeAttr(item.name || '登月计划')}"></div>
+          <div class="fm-group"><label class="fm-label">开始时间 (start_date_local) <span class="muted">格式: YYYY-MM-DD HH:mm:ss</span></label><input class="fm-input" id="sp-start" value="${escapeAttr(item.start_date_local || nowLocalString())}" ${isEdit ? 'readonly style="background:var(--bg3)"' : ''}></div>
+          <div class="fm-group"><label class="fm-label">运动类型 (Type)</label><input class="fm-input" id="sp-type" value="${escapeAttr(item.type || 'Stair')}" placeholder="如 Stair, RopeSkipping, Workout, Running"></div>
+          <div class="fm-group"><label class="fm-label">时长 (分钟) <span class="muted">保存时会自动转为 H:MM:SS</span></label><input class="fm-input" type="number" id="sp-duration" value="${currentMinutes}"></div>
+          <div class="fm-group"><label class="fm-label">平均心率 (bpm)</label><input class="fm-input" type="number" step="0.1" id="sp-hr" value="${item.average_heartrate || 135}"></div>
+          <div class="fm-group"><label class="fm-label">数据来源 (Source)</label><input class="fm-input" id="sp-source" value="${escapeAttr(item.source || 'manual')}"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn primary" onclick="saveSportsData()">保存并写入</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modal-container').innerHTML = html;
+}
+
+async function saveSportsData() {
+  const name = document.getElementById('sp-name').value.trim();
+  const startDateLocal = document.getElementById('sp-start').value.trim();
+  const type = document.getElementById('sp-type').value.trim();
+  const durationMin = parseFloat(document.getElementById('sp-duration').value) || 0;
+  const hr = parseFloat(document.getElementById('sp-hr').value) || 0;
+  const source = document.getElementById('sp-source').value.trim() || 'manual';
+
+  if (!startDateLocal || !name) {
+    toast("名称与开始时间不能为空", "error");
+    return;
+  }
+
+  try {
+    toast("正在保存更新运动 JSON...");
+    const movingTime = formatMovingTime(durationMin);
+
+    let map = {};
+    STATE.sportsData.forEach(item => { if(item.start_date_local) map[item.start_date_local] = item; });
+
+    if (map[startDateLocal]) {
+      map[startDateLocal] = {
+        ...map[startDateLocal],
+        name,
+        type,
+        moving_time: movingTime,
+        average_heartrate: hr,
+        source
+      };
+    } else {
+      const datePrefix = startDateLocal.slice(0, 10).replace(/-/g, "");
+      const count = STATE.sportsData.filter(i => String(i.run_id).startsWith(datePrefix)).length;
+      const run_id = parseInt(`${datePrefix}${String(count + 1).padStart(3, '0')}`);
+      map[startDateLocal] = {
+        run_id,
+        name,
+        moving_time: movingTime,
+        type,
+        start_date_local: startDateLocal,
+        summary_polyline: "",
+        average_heartrate: hr,
+        source
+      };
+    }
+
+    let newList = Object.values(map);
+    newList.sort((a,b) => String(a.start_date_local).localeCompare(String(b.start_date_local)));
+
+    await putFile(ACT_JSON_PATH, JSON.stringify(newList, null, 2), STATE.sportsSha, `chore: update sports record ${startDateLocal}`);
+    toast("运动记录更新成功", "success");
+    closeModal();
+    renderSportsPage();
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
+// ============================================================
+// Footprints Management (assets/footprints.json)
+// ============================================================
+async function renderFootprintsPage(){
+  STATE.page='footprints';
+  document.getElementById('page-title').innerHTML='足迹记录 <small>assets/footprints.json 数据维护</small>';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="renderFootprintsPage()">刷新数据</button>
+    <button class="btn primary" onclick="openFootprintModal()">添加新足迹</button>`;
+  
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取足迹数据…</div>`;
+
+  try {
+    const file = await getFileContent(FOOTPRINTS_JSON_PATH);
+    const json = JSON.parse(file.content || '{"locations":[]}');
+    const list = json.locations || [];
+    STATE.footprintsData = list;
+    STATE.footprintsSha = file.sha;
+
+    c.innerHTML = `
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">已标记足迹（共 ${list.length} 个）</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>打卡日期</th>
+                <th>坐标 (lng,lat)</th>
+                <th>分类</th>
+                <th>标记颜色</th>
+                <th>描述</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map((item, index) => `
+                <tr>
+                  <td><strong>${escapeHTML(item.name)}</strong></td>
+                  <td class="mono">${escapeHTML(item.date || '-')}</td>
+                  <td class="mono">${escapeHTML(item.coordinates)}</td>
+                  <td>${(item.categories||[]).map(cat=>`<span class="tag soft">${escapeHTML(cat)}</span>`).join(' ')}</td>
+                  <td><span class="tag purple">${escapeHTML(item.markerColor||'default')}</span></td>
+                  <td style="max-width:240px;text-align:left;" title="${escapeAttr(item.description)}">${escapeHTML(item.description||'')}</td>
+                  <td>
+                    <button class="btn sm" onclick="openFootprintModal(${index})">编辑</button>
+                    <button class="btn sm danger" onclick="deleteFootprint(${index})">删除</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  } catch (e) {
+    c.innerHTML = `<div class="alert danger">读取足迹 JSON 失败: ${escapeHTML(e.message)}</div>`;
+  }
+}
+
+function openFootprintModal(index=null) {
+  const isEdit = index !== null;
+  const item = isEdit ? STATE.footprintsData[index] : {};
+
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>${isEdit ? '编辑足迹记录' : '新增足迹记录'}</div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="fm-group"><label class="fm-label">地点/城市名称</label><input class="fm-input" id="fp-name" value="${escapeAttr(item.name || '')}"></div>
+          <div class="fm-group"><label class="fm-label">坐标 (经度,纬度) <span class="muted">例如: 115.366863,28.448054</span></label><input class="fm-input" id="fp-coords" value="${escapeAttr(item.coordinates || '')}"></div>
+          <div class="fm-group"><label class="fm-label">行政区划 Adcode <span class="muted">可选</span></label><input class="fm-input" id="fp-adcode" value="${escapeAttr(item.provinceAdcode || '')}"></div>
+          <div class="fm-group"><label class="fm-label">打卡日期</label><input class="fm-input" id="fp-date" value="${escapeAttr(item.date || '')}" placeholder="YYYY-MM-DD"></div>
+          <div class="fm-group"><label class="fm-label">分类 (Categories) <span class="muted">用逗号分隔，如: 常驻, 旅行</span></label><input class="fm-input" id="fp-cats" value="${escapeAttr((item.categories||[]).join(','))}"></div>
+          <div class="fm-group"><label class="fm-label">标记图标颜色 (markerColor)</label><input class="fm-input" id="fp-color" value="${escapeAttr(item.markerColor || 'forest')}" placeholder="sunset / forest / ocean / violet"></div>
+          <div class="fm-group"><label class="fm-label">详细描述</label><textarea class="fm-textarea" id="fp-desc">${escapeHTML(item.description || '')}</textarea></div>
+          <div class="fm-group"><label class="fm-label">关联文章 URL</label><input class="fm-input" id="fp-url" value="${escapeAttr(item.url || '')}"></div>
+          <div class="fm-group"><label class="fm-label">关联文章标题 (urlLabel)</label><input class="fm-input" id="fp-urllabel" value="${escapeAttr(item.urlLabel || '')}"></div>
+          <div class="fm-group"><label class="fm-label">照片 URL 列表 <span class="muted">每行一个图片链接</span></label><textarea class="fm-textarea" id="fp-photos">${(item.photos||[]).join('\n')}</textarea></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn primary" onclick="saveFootprintData(${index})">保存更改</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modal-container').innerHTML = html;
+}
+
+async function saveFootprintData(editIndex) {
+  const name = document.getElementById('fp-name').value.trim();
+  const coordinates = document.getElementById('fp-coords').value.trim();
+  if (!name || !coordinates) {
+    toast("地点名称与坐标不能为空", "error");
+    return;
+  }
+
+  const provinceAdcode = document.getElementById('fp-adcode').value.trim();
+  const date = document.getElementById('fp-date').value.trim();
+  const cats = document.getElementById('fp-cats').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const markerColor = document.getElementById('fp-color').value.trim() || 'forest';
+  const description = document.getElementById('fp-desc').value.trim();
+  const url = document.getElementById('fp-url').value.trim();
+  const urlLabel = document.getElementById('fp-urllabel').value.trim();
+  const photos = document.getElementById('fp-photos').value.split('\n').map(s=>s.trim()).filter(Boolean);
+
+  const newItem = { name, coordinates, provinceAdcode, description, date, url, urlLabel, photos, categories: cats, markerColor };
+
+  try {
+    toast("正在保存足迹数据...");
+    let newList = [...STATE.footprintsData];
+    if (editIndex !== null) newList[editIndex] = newItem;
+    else newList.push(newItem);
+
+    const payload = { locations: newList };
+    await putFile(FOOTPRINTS_JSON_PATH, JSON.stringify(payload, null, 2), STATE.footprintsSha, `chore: update footprints JSON (${name})`);
+    toast("足迹保存成功", "success");
+    closeModal();
+    renderFootprintsPage();
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
+async function deleteFootprint(index) {
+  const item = STATE.footprintsData[index];
+  if (!confirm(`确定删除足迹记录「${item.name}」吗？`)) return;
+
+  try {
+    toast("正在删除该条足迹...");
+    let newList = STATE.footprintsData.filter((_, i) => i !== index);
+    const payload = { locations: newList };
+    await putFile(FOOTPRINTS_JSON_PATH, JSON.stringify(payload, null, 2), STATE.footprintsSha, `chore: delete footprint (${item.name})`);
+    toast("足迹已被删除", "success");
+    renderFootprintsPage();
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
 
 // ============================================================
 // Cloudflare R2 Image Library
-// 浏览器直连 R2 S3 API。适合自用后台；公开多人后台建议改为 Worker 签名上传。
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
@@ -1294,7 +1581,6 @@ function r2CanOptimizeImage(file){
   const type=String(file?.type||'').toLowerCase();
   const name=String(file?.name||'').toLowerCase();
   if(!type.startsWith('image/')) return false;
-  // SVG 和 GIF 通常不适合用 canvas 转：SVG 可能有脚本/外链，GIF 会丢失动画。
   if(type.includes('svg') || type.includes('gif') || /\.(svg|gif)$/i.test(name)) return false;
   return true;
 }
