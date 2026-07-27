@@ -84,11 +84,18 @@ def process_and_merge():
     print("没有发现需要同步的新数据。")
     return
 
-  print(f"发现 {len(unsynced_pages)} 条待同步记录，正在处理...")
+  print(f"发现 {len(unsynced_pages)} 条待同步/更新的记录，正在处理...")
 
-  # 统计已有数据中各个日期最大的自增编号 (例如 20260727001)
+  # 1. 将现有的 act.json 转为字典形式，使用 start_date_local 作为唯一 Key
+  existing_map = {}
   date_counts = defaultdict(int)
+
   for item in existing_data:
+    start_time_key = item.get("start_date_local")
+    if start_time_key:
+      existing_map[start_time_key] = item
+
+    # 统计已有数据中各个日期最大的自增编号 (例如 20260727001)
     run_id = str(item.get("run_id", ""))
     if len(run_id) == 11:
       date_part = run_id[:8]
@@ -96,14 +103,15 @@ def process_and_merge():
       if seq_part > date_counts[date_part]:
         date_counts[date_part] = seq_part
 
-  # 按照 Notion 记录中的时间提取与解析
+  # 2. 解析 Notion 待同步数据
   new_items_by_date = defaultdict(list)
+  processed_page_ids = []
 
   for page in unsynced_pages:
     page_id = page["id"]
     props = page["properties"]
 
-    # 1. 提取日期与时间 (start_date_local)
+    # 提取日期与时间 (start_date_local)
     date_prop = props.get("日期", {}).get("date")
     if not date_prop or not date_prop.get("start"):
       continue
@@ -118,30 +126,30 @@ def process_and_merge():
       start_date_local = f"{start_iso} 00:00:00"
       date_str = start_iso
 
-    # 2. 运动名称
+    # 运动名称
     title_list = props.get("运动名称", {}).get("title", [])
     name = title_list[0].get("plain_text", "") if title_list else ""
 
-    # 3. 运动时长 (分钟数 -> H:MM:SS)
+    # 运动时长 (分钟数 -> H:MM:SS)
     duration_min = props.get("运动时长", {}).get("number", 0)
     moving_time = format_moving_time(duration_min)
 
-    # 4. 平均心率
+    # 平均心率
     average_heartrate = props.get("平均心率", {}).get("number", 0.0)
     if average_heartrate is not None:
       average_heartrate = round(float(average_heartrate), 1)
 
-    # 5. 运动类型 (Select)
+    # 运动类型 (Select)
     type_select = props.get("运动类型", {}).get("select")
     activity_type = type_select.get("name", "") if type_select else ""
 
-    # 6. 数据来源 (Select)
+    # 数据来源 (Select)
     source_select = props.get("来源", {}).get("select")
     source = (
         source_select.get("name", "Notion") if source_select else "Notion"
     )
 
-    new_items_by_date[date_str].append({
+    item_data = {
         "page_id": page_id,
         "name": name,
         "moving_time": moving_time,
@@ -150,12 +158,15 @@ def process_and_merge():
         "summary_polyline": "",
         "average_heartrate": average_heartrate,
         "source": source,
-    })
+    }
 
-  new_entries = []
-  processed_page_ids = []
+    new_items_by_date[date_str].append(item_data)
+    processed_page_ids.append(page_id)
 
-  # 生成递增 run_id 并整理数据
+  # 3. 核心比对与合并逻辑（存在即覆盖更新，不存在即分配 run_id 新增）
+  updated_count = 0
+  inserted_count = 0
+
   for date_str in sorted(new_items_by_date.keys()):
     day_records = new_items_by_date[date_str]
     # 同一天内按 start_date_local 升序排列
@@ -164,37 +175,68 @@ def process_and_merge():
     date_prefix = date_str.replace("-", "")
 
     for item in day_records:
-      date_counts[date_prefix] += 1
-      seq = date_counts[date_prefix]
-      run_id = int(f"{date_prefix}{seq:03d}")
+      start_key = item["start_date_local"]
 
-      new_entries.append({
-          "run_id": run_id,
-          "name": item["name"],
-          "moving_time": item["moving_time"],
-          "type": item["type"],
-          "start_date_local": item["start_date_local"],
-          "summary_polyline": item["summary_polyline"],
-          "average_heartrate": item["average_heartrate"],
-          "source": item["source"],
-      })
-      processed_page_ids.append(item["page_id"])
+      if start_key in existing_map:
+        # ----------------------------------------------------
+        # 情况 A：根据 start_date_local 匹配到旧记录 -> 执行更新
+        # ----------------------------------------------------
+        old_run_id = existing_map[start_key].get("run_id")
+        existing_map[start_key] = {
+            "run_id": old_run_id,  # 保持原来的 run_id 不变
+            "name": item["name"],
+            "moving_time": item["moving_time"],
+            "type": item["type"],
+            "start_date_local": item["start_date_local"],
+            "summary_polyline": item["summary_polyline"],
+            "average_heartrate": item["average_heartrate"],
+            "source": item["source"],
+        }
+        updated_count += 1
+        print(
+            f"[覆盖更新] start_date_local: {start_key} | 原 run_id:"
+            f" {old_run_id}"
+        )
 
-  # 合并旧数据与新数据，并按 start_date_local 重新升序排列
-  final_json_data = existing_data + new_entries
+      else:
+        # ----------------------------------------------------
+        # 情况 B：未匹配到该时间 -> 生成全新 run_id 并新增
+        # ----------------------------------------------------
+        date_counts[date_prefix] += 1
+        seq = date_counts[date_prefix]
+        run_id = int(f"{date_prefix}{seq:03d}")
+
+        existing_map[start_key] = {
+            "run_id": run_id,
+            "name": item["name"],
+            "moving_time": item["moving_time"],
+            "type": item["type"],
+            "start_date_local": item["start_date_local"],
+            "summary_polyline": item["summary_polyline"],
+            "average_heartrate": item["average_heartrate"],
+            "source": item["source"],
+        }
+        inserted_count += 1
+        print(f"[新增记录] start_date_local: {start_key} | 分配新 run_id: {run_id}")
+
+  # 4. 转回列表并重新按 start_date_local 升序排序
+  final_json_data = list(existing_map.values())
   final_json_data.sort(key=lambda x: x.get("start_date_local", ""))
 
-  # 保存写入 JSON
+  # 5. 写回 json 文件
   with open(JSON_FILE_PATH, "w", encoding="utf-8") as f:
     json.dump(final_json_data, f, ensure_ascii=False, indent=2)
 
-  print(f"成功将 {len(new_entries)} 条新数据追加并写入 {JSON_FILE_PATH}")
+  print(
+      f"数据处理完毕！更新了 {updated_count} 条，新增了 {inserted_count}"
+      f" 条。已写入 {JSON_FILE_PATH}"
+  )
 
-  # 回写 Notion 勾选复选框
+  # 6. 回写 Notion 勾选『同步』复选框
   for pid in processed_page_ids:
     mark_page_as_synced(pid)
 
-  print("Notion 状态更新完毕（已勾选『同步』）。")
+  print("Notion 页面状态已更新（已自动重勾选『同步』）。")
 
 
 if __name__ == "__main__":
