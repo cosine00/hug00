@@ -8,8 +8,12 @@
       "date": "",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2025/05/1B6D1B02-54D8-4B89-9242-E2802E92BA84.jpg"],
-      "categories": ["常驻"],
+      "photos": [
+        "https://img.hux.ink/image/2025/05/1B6D1B02-54D8-4B89-9242-E2802E92BA84.jpg"
+      ],
+      "categories": [
+        "常驻"
+      ],
       "markerColor": "sunset"
     },
     {
@@ -20,8 +24,12 @@
       "date": "2009-09-12",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260724111604-iwo3v-jxufe.webp"],
-      "categories": ["常驻"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260724111604-iwo3v-jxufe.webp"
+      ],
+      "categories": [
+        "常驻"
+      ],
       "markerColor": "sunset"
     },
     {
@@ -32,8 +40,12 @@
       "date": "2010-03-27",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725154452-73w66-dsc04051.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725154452-73w66-dsc04051.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -44,8 +56,14 @@
       "date": "2026-01-01",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725172120-2ei6r-2026-01-01-18-10-img-7919.webp","https://img.hux.ink/image/2026/07/20260725172450-72bkm-2026-01-01-17-02-img-7822.webp","https://img.hux.ink/image/2026/07/20260725172455-oj083-2026-01-02-11-48-img-7986.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725172120-2ei6r-2026-01-01-18-10-img-7919.webp",
+        "https://img.hux.ink/image/2026/07/20260725172450-72bkm-2026-01-01-17-02-img-7822.webp",
+        "https://img.hux.ink/image/2026/07/20260725172455-oj083-2026-01-02-11-48-img-7986.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "ocean"
     },
     {
@@ -56,8 +74,14 @@
       "date": "2023-03-25",
       "url": "/posts/hangzhouwuzhen/",
       "urlLabel": "杭州-乌镇三日游",
-      "photos": ["https://img.hux.ink/notion/3579d250dc.jpg","https://img.hux.ink/notion/5d0a0a3ab7.jpg"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/notion/3579d250dc.jpg",
+        "https://img.hux.ink/notion/5d0a0a3ab7.jpg"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -68,9 +92,30 @@
       "date": "2023-03-26",
       "url": "/posts/hangzhouwuzhen/",
       "urlLabel": "杭州-乌镇三日游",
-      "photos": ["https://img.hux.ink/notion/453ee6950d.jpg"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/notion/453ee6950d.jpg"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
+    },
+    {
+      "name": "深圳",
+      "coordinates": "114.0579,22.5431",
+      "provinceAdcode": "440000",
+      "description": "2012年12月20日，一张硬座火车票，从学校到社会。工作和生活的起点，来了就是深圳人。",
+      "date": "2012-12-20",
+      "url": "",
+      "urlLabel": "",
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725145820-lfspq-nanchang-shenzhen.webp"
+      ],
+      "categories": [
+        "常驻"
+      ],
+      "markerColor": "sunset"
     },
     {
       "name": "成都",
@@ -81,20 +126,10 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
-    },
-    {
-      "name": "深圳",
-      "coordinates": "114.0579,22.5431",
-      "provinceAdcode": "440000",
-      "description": "2012年12月20日，一张硬座火车票，从学校到社会。工作和生活的起点，来了就是深圳人。",
-      "date": "2012-12-20",
-      "url": "",
-      "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725145820-lfspq-nanchang-shenzhen.webp"],
-      "categories": ["常驻"],
-      "markerColor": "sunset"
     },
     {
       "name": "海宁",
@@ -104,8 +139,15 @@
       "date": "2025-08-21",
       "url": "/posts/travel-to-haining/",
       "urlLabel": "钱塘观潮",
-      "photos": ["https://img.hux.ink/image/2025/08/202508261714903.png", "https://img.hux.ink/image/2025/08/202508261715819.png","https://img.hux.ink/image/2025/08/202508261710388.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2025/08/202508261714903.png",
+        "https://img.hux.ink/image/2025/08/202508261715819.png",
+        "https://img.hux.ink/image/2025/08/202508261710388.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -116,8 +158,16 @@
       "date": "2023-01-18",
       "url": "/posts/mingyueshan/",
       "urlLabel": "朝花夕拾2023 明月山之行",
-      "photos": ["https://img.hux.ink/notion/bc6d9ef542.jpg", "https://img.hux.ink/notion/cb720f4916.jpg","https://img.hux.ink/notion/cbda9c1f9b.jpg","https://img.hux.ink/notion/00348b63f4.jpg"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/notion/bc6d9ef542.jpg",
+        "https://img.hux.ink/notion/cb720f4916.jpg",
+        "https://img.hux.ink/notion/cbda9c1f9b.jpg",
+        "https://img.hux.ink/notion/00348b63f4.jpg"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -128,8 +178,12 @@
       "date": "2023-04-30",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260724103111-yqc2n-img-0297.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260724103111-yqc2n-img-0297.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -140,8 +194,12 @@
       "date": "2013-12-22",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725153659-6nqwd-%E7%85%A7%E7%89%87-900.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725153659-6nqwd-%E7%85%A7%E7%89%87-900.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -153,7 +211,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -164,8 +224,14 @@
       "date": "2011-10-05",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725152632-j2a38-dsc06511.webp","https://img.hux.ink/image/2026/07/20260725152636-j3kta-sam-3799.webp","https://img.hux.ink/image/2026/07/20260725152635-7qxh3-dsc06900.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725152632-j2a38-dsc06511.webp",
+        "https://img.hux.ink/image/2026/07/20260725152636-j3kta-sam-3799.webp",
+        "https://img.hux.ink/image/2026/07/20260725152635-7qxh3-dsc06900.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -177,7 +243,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -189,7 +257,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -201,7 +271,10 @@
       "url": "/posts/travel-to-nanjing/",
       "urlLabel": "南京之行",
       "photos": [],
-      "categories": ["旅行", "游记"],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -213,7 +286,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -225,7 +300,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -236,8 +313,14 @@
       "date": "2024-09-16",
       "url": "/posts/altitude-sickness/",
       "urlLabel": "川西高反",
-      "photos": ["https://img.hux.ink/image/2024/09/202409251503456.png","https://img.hux.ink/image/2024/09/202409251435628.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2024/09/202409251503456.png",
+        "https://img.hux.ink/image/2024/09/202409251435628.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -247,8 +330,14 @@
       "date": "2024-12-12",
       "url": "/posts/travel-to-phuket/",
       "urlLabel": "泰国普吉岛之行",
-      "photos": ["https://img.hux.ink/image/2024/12/202412181544054.png","https://img.hux.ink/image/2024/12/202412181539325.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2024/12/202412181544054.png",
+        "https://img.hux.ink/image/2024/12/202412181539325.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -260,7 +349,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -272,7 +363,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -283,8 +376,13 @@
       "date": "2025-10-03",
       "url": "/posts/moon-gazing/",
       "urlLabel": "大聪明高速赏月",
-      "photos": ["https://img.hux.ink/image/2025/10/20251011084852659.webp"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2025/10/20251011084852659.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -296,7 +394,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -307,8 +407,13 @@
       "date": "2024-08-31",
       "url": "/posts/travel-to-sichuan/",
       "urlLabel": "中断的渝贵川9日行",
-      "photos": ["https://img.hux.ink/image/2024/09/202409191418706.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2024/09/202409191418706.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -319,8 +424,13 @@
       "date": "2024-09-02",
       "url": "/posts/travel-to-sichuan/",
       "urlLabel": "中断的渝贵川9日行",
-      "photos": ["https://img.hux.ink/image/2024/09/202409191422574.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2024/09/202409191422574.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -331,8 +441,13 @@
       "date": "2024-09-04",
       "url": "/posts/travel-to-sichuan/",
       "urlLabel": "中断的渝贵川9日行",
-      "photos": ["https://img.hux.ink/image/2024/09/202409191427124.png"],
-      "categories": ["旅行", "游记"],
+      "photos": [
+        "https://img.hux.ink/image/2024/09/202409191427124.png"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
       "markerColor": "violet"
     },
     {
@@ -343,8 +458,13 @@
       "date": "2016-09-15",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2024/09/202409191415651.png","https://img.hux.ink/image/2026/07/20260725155908-nsmse-img-20160914-161135-hdr.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2024/09/202409191415651.png",
+        "https://img.hux.ink/image/2026/07/20260725155908-nsmse-img-20160914-161135-hdr.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -356,7 +476,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -368,7 +490,9 @@
       "url": "",
       "urlLabel": "",
       "photos": [],
-      "categories": ["旅行"],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -379,8 +503,12 @@
       "date": "2012-05-01",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725151151-9fwa0-img-0613.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725151151-9fwa0-img-0613.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -391,8 +519,13 @@
       "date": "2014-06-01",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260725154946-m4mty-img-0975.webp","https://img.hux.ink/image/2026/07/20260725155237-1tp7k-img-1050.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725154946-m4mty-img-0975.webp",
+        "https://img.hux.ink/image/2026/07/20260725155237-1tp7k-img-1050.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -403,8 +536,12 @@
       "date": "2023-05-20",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260727173625-oy8nb-foshan.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260727173625-oy8nb-foshan.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
     },
     {
@@ -415,9 +552,15 @@
       "date": "2026-06-19",
       "url": "",
       "urlLabel": "",
-      "photos": ["https://img.hux.ink/image/2026/07/20260727174304-kxfk9-img-20260620-150944.webp","https://img.hux.ink/image/2026/07/20260727174302-ka19u-img-20260620-164127.webp","https://img.hux.ink/image/2026/07/20260727174307-p36gy-longnan01.webp"],
-      "categories": ["旅行"],
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260727174304-kxfk9-img-20260620-150944.webp",
+        "https://img.hux.ink/image/2026/07/20260727174302-ka19u-img-20260620-164127.webp",
+        "https://img.hux.ink/image/2026/07/20260727174307-p36gy-longnan01.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
       "markerColor": "forest"
-    }  
+    }
   ]
 }
