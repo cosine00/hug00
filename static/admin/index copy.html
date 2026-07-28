@@ -204,75 +204,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 .setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:9px}
 
-/* 前台 1:1 Footprint Map CSS 复刻 */
-.footprint-shell{display:flex;flex-direction:column;gap:20px;}
-#main-footprint-map-wrapper{position:relative;width:100%;height:440px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:var(--shadow-soft);}
-#main-footprint-map{width:100%;height:100%;}
-
-.footprint-marker {
-  display: block; width: 18px; height: 18px; border-radius: 50%; border: 1px solid #fff;
-  background: linear-gradient(135deg, #ffb347, #ff6f61); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); cursor: pointer;
-}
-.footprint-marker--sunset { background: linear-gradient(135deg, #ffb347, #ff6f61); }
-.footprint-marker--ocean  { background: linear-gradient(135deg, #06beb6, #48b1bf); }
-.footprint-marker--violet { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-.footprint-marker--forest { background: linear-gradient(135deg, #5ee7df, #39a37c); }
-.footprint-marker--amber  { background: linear-gradient(135deg, #f6d365, #fda085); }
-.footprint-marker--citrus { background: linear-gradient(135deg, #fdfb8f, #a1ffce); }
-
-.footprint-map__filters {
-  position: absolute; top: 10px; left: 10px; display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 6px; border-radius: 24px; background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12); z-index: 10; max-width: calc(100% - 120px);
-}
-.footprint-map__filter-btn {
-  border: none; background: transparent; color: #333; font-size: 0.8rem; font-weight:600;
-  padding: 5px 11px; border-radius: 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-}
-.footprint-map__filter-btn.is-active { background: #111826; color: #fff; }
-
-.footprint-popup { width: 260px; font-size: .9rem; line-height: 1.5; color: #111826; padding: 2px; }
-.footprint-popup h4 { margin: 0 0 .25rem; font-size: .95rem; font-weight:700; }
-.footprint-popup .meta { font-size: .78rem; color: #666; margin-bottom: .25rem; }
-.footprint-popup .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: .35rem; }
-.footprint-popup .tag-item { font-size: .72rem; padding: 1px 5px; border-radius: 4px; background: rgba(6, 190, 182, 0.12); color: #06beb6; }
-.footprint-popup p { margin: 0 0 .35rem; font-size: .85rem; color:#4e5969; }
-.footprint-popup .links { margin-top: .35rem; margin-bottom: .35rem; }
-.footprint-popup .link-btn { display: inline-block; padding: 4px 10px; border-radius: 4px; background: #111826; color: #fff; font-size: .78rem; text-decoration: none; }
-
-.footprint-popup__track { display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth; padding-bottom:4px; }
-.footprint-popup__track::-webkit-scrollbar { height: 4px; }
-.footprint-popup__track::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-.footprint-popup__slide { flex-shrink: 0; flex-basis: 110px; margin: 0; }
-.footprint-popup__slide img { display: block; width: 110px; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
-.footprint-popup__slide img:hover { transform: scale(1.05); }
-
-.footprint-photo-viewer {
-  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(0, 0, 0, 0.82); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.footprint-photo-viewer.is-visible { opacity: 1; pointer-events: auto; }
-.footprint-photo-viewer__dialog { position: relative; max-width: 90vw; max-height: 90vh; }
-.footprint-photo-viewer__dialog img { max-width: 90vw; max-height: 85vh; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-.footprint-photo-viewer__close {
-  position: absolute; top: -18px; right: -18px; background: rgba(255,255,255,0.25); color: #fff;
-  border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
-}
-.footprint-photo-viewer__nav {
-  position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2);
-  color: #fff; border: none; width: 40px; height: 42px; border-radius: 50%; font-size: 1.4rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; user-select: none;
-}
-.footprint-photo-viewer__nav:hover { background: rgba(6, 190, 182, 0.8); }
-.footprint-photo-viewer__nav--prev { left: -60px; }
-.footprint-photo-viewer__nav--next { right: -60px; }
-
-.amap-logo, .amap-copyright { display: none !important; }
-
-.footprint-bottom-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;}
-#picker-map{width:100%;height:180px;border-radius:var(--radius);border:1px solid var(--border2);margin-top:8px;}
-
-/* Global Toast */
+/* Global Components */
 .toast-container{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:360px}
 .toast{background:#1f2329;color:#fff;padding:12px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:600;box-shadow:0 10px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(-10px);transition:all .24s;line-height:1.45}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -292,7 +224,8 @@ input:checked+.slider:before{transform:translateX(18px)}
 
 @media (max-width:1080px){
   .editor-wrap{grid-template-columns:1fr;height:auto;overflow:auto}
-  .footprint-bottom-grid{grid-template-columns:1fr;}
+  .editor-left{min-height:680px}
+  .editor-right{height:auto;overflow:visible;padding-right:0}
 }
 @media (max-width:860px){
   .app{display:block;height:auto;min-height:100vh;overflow:auto}
@@ -373,10 +306,10 @@ input:checked+.slider:before{transform:translateX(18px)}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
-// 高德地图前台配置凭证
-const AMAP_KEY = "0d4b886f7c34e19066e776eabf8e2310";
-const AMAP_SECRET = "5a01263b6b8d94d9f8bfaf203ab7c736";
-
+// ============================================================
+// Counting Stars Hugo Admin
+// 单文件后台：GitHub 内容管理 + Hugo Front Matter + Vercel 状态 + R2 图床 + 运动与足迹 JSON
+// ============================================================
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
   blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: '',
@@ -386,28 +319,14 @@ let CFG = {
 };
 
 let STATE = {
-  page: 'posts', posts: [], postsLoaded: false, searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
+  page: 'posts', posts: [], searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
-  sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
-  editingFootprintIndex: null, mainMap: null, pickerMap: null, pickerMarker: null,
-  activeMapFilter: 'all', tableCategoryFilter: 'all', tableProvinceFilter: 'all',
-  tableSearchKeyword: '', selectedMapLocationName: null, allMapMarkers: [],
-  photoViewerEl: null, viewerPhotos: [], viewerIndex: 0
+  sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null
 };
 
 const ACT_JSON_PATH = "assets/act.json";
 const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
-
-const PROVINCE_MAP = {
-  "11": "北京市", "12": "天津市", "13": "河北省", "14": "山西省", "15": "内蒙古自治区",
-  "21": "辽宁省", "22": "吉林省", "23": "黑龙江省", "31": "上海市", "32": "江苏省",
-  "33": "浙江省", "34": "安徽省", "35": "福建省", "36": "江西省", "37": "山东省",
-  "41": "河南省", "42": "湖北省", "43": "湖南省", "44": "广东省", "45": "广西壮族自治区",
-  "46": "海南省", "50": "重庆市", "51": "四川省", "52": "贵州省", "53": "云南省",
-  "54": "西藏自治区", "61": "陕西省", "62": "甘肃省", "63": "青海省", "64": "宁夏回族自治区",
-  "65": "新疆维吾尔自治区", "71": "台湾省", "81": "香港特别行政区", "82": "澳门特别行政区"
-};
 
 function saveCfg(){ localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG)); }
 function loadCfg(){ try{ const s=localStorage.getItem('hugo_admin_cfg'); if(s) Object.assign(CFG, JSON.parse(s)); }catch(e){} }
@@ -426,7 +345,9 @@ function getExcerpt(body, desc){ if(desc) return String(desc).trim(); return Str
 function normalizeTags(tags){ if(Array.isArray(tags)) return tags.map(t=>String(t).trim()).filter(Boolean); if(!tags) return []; return String(tags).split(',').map(t=>t.trim()).filter(Boolean); }
 function isDraftValue(v){ return v === true || String(v).toLowerCase() === 'true' || String(v).toLowerCase() === 'yes'; }
 
-function renderNoConfig(){ return `<div class="alert warning">未检测到核心变量配置。请先前往 <strong>系统设置</strong> 页面配置 GitHub Token、Owner、Repo 和文章目录。</div>`; }
+function renderNoConfig(){
+  return `<div class="alert warning">未检测到核心变量配置。请先前往 <strong>系统设置</strong> 页面配置 GitHub Token、Owner、Repo 和文章目录。</div>`;
+}
 
 function toast(msg, type='info'){
   const c=document.getElementById('toast-container'); const t=document.createElement('div');
@@ -435,7 +356,9 @@ function toast(msg, type='info'){
   setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),260); }, type==='error'?4600:3000);
 }
 
-function closeModal(){ document.getElementById('modal-container').innerHTML = ''; }
+function closeModal(){
+  document.getElementById('modal-container').innerHTML = '';
+}
 
 function formatMovingTime(minutes) {
   try {
@@ -445,7 +368,9 @@ function formatMovingTime(minutes) {
     const secs = totalSeconds % 60;
     const pad = n => String(n).padStart(2, '0');
     return `${hours}:${pad(mins)}:${pad(secs)}`;
-  } catch (e) { return "0:00:00"; }
+  } catch (e) {
+    return "0:00:00";
+  }
 }
 
 function parseTimeToMinutes(timeStr) {
@@ -456,29 +381,20 @@ function parseTimeToMinutes(timeStr) {
   return 0;
 }
 
-let amapLoaderPromise = null;
-function loadAmapSDK() {
-  if (window.AMap) return Promise.resolve();
-  if (amapLoaderPromise) return amapLoaderPromise;
-
-  window._AMapSecurityConfig = { securityJsCode: AMAP_SECRET };
-  amapLoaderPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://webapi.amap.com/maps?v=2.0&key=${AMAP_KEY}`;
-    script.async = true;
-    script.onload = () => { AMap.plugin(['AMap.Scale', 'AMap.DistrictLayer', 'AMap.Geocoder'], resolve); };
-    script.onerror = () => reject(new Error('高德地图脚本加载失败'));
-    document.head.appendChild(script);
-  });
-  return amapLoaderPromise;
-}
-
+// ============================================================
+// GitHub API
+// ============================================================
 async function ghFetch(path, opts={}){
   if(!CFG.token||!CFG.owner||!CFG.repo) throw new Error('请先在系统设置中保存 GitHub 配置及有效凭证');
   const base = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
   const res = await fetch(base+path, {
     ...opts,
-    headers:{ 'Authorization': `Bearer ${CFG.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', ...(opts.headers||{}) }
+    headers:{
+      'Authorization': `Bearer ${CFG.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers||{})
+    }
   });
   if(!res.ok){ const err=await res.json().catch(()=>({})); throw new Error(err.message||`GitHub API 错误：${res.status}`); }
   return res.json();
@@ -515,6 +431,9 @@ async function deleteFile(path, sha, message){
   });
 }
 
+// ============================================================
+// Front Matter Parser / Builder
+// ============================================================
 function parseScalar(v){
   const s=String(v??'').trim();
   if(s === 'true') return true; if(s === 'false') return false;
@@ -563,6 +482,9 @@ function buildFrontMatter(fm, body){
   out+='---\n'; if(body && !String(body).startsWith('\n')) out+='\n'; return out + (body||'');
 }
 
+// ============================================================
+// Router / Status
+// ============================================================
 function showPage(page){
   if(STATE.page === 'editor' && STATE.dirty && !confirm('当前文章有未保存修改，确定离开编辑器吗？')) return;
   STATE.page=page; STATE.dirty=false;
@@ -590,9 +512,9 @@ async function checkStatus(){
 }
 
 // ============================================================
-// 1. 文章管理 (100% 完整原封不动复刻 index_3.html 原版逻辑)[cite: 7]
+// Article Management
 // ============================================================
-async function renderPostsPage(forceRefresh = false){
+async function renderPostsPage(){
   STATE.page='posts'; STATE.selected.clear();
   document.getElementById('page-title').innerHTML='文章管理 <small>公众号后台式内容工作台</small>';
   document.getElementById('topbar-actions').innerHTML=`
@@ -600,53 +522,42 @@ async function renderPostsPage(forceRefresh = false){
     <button class="btn primary" onclick="openNewPost()">新建文章</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
-
-  // 内存缓存逻辑[cite: 7]
-  if (STATE.postsLoaded && !forceRefresh) {
-    renderPostsPageContainer();
-    return;
-  }
-
   c.innerHTML=`<div class="loading"><div class="spinner"></div>💫星河漫游中，正在同步最新文稿…</div>`;
   try{
     await loadPosts();
-    STATE.postsLoaded = true;
-    renderPostsPageContainer();
+    c.innerHTML=`
+      <div class="management-shell">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">文章列表</div>
+            </div>
+            <div class="segmented" id="status-tabs"></div>
+          </div>
+          <div class="toolbar">
+            <div class="search-box">${ICON_SEARCH}<input type="text" class="search-input" id="table-search" placeholder="搜索标题、摘要、标签或文件路径…" value="${escapeAttr(STATE.searchQuery)}"></div>
+            <select class="filter" id="year-filter"></select>
+            <select class="filter" id="tag-filter"></select>
+            <select class="filter" id="sort-filter">
+              <option value="date_desc">按日期倒序</option>
+              <option value="date_asc">按日期正序</option>
+              <option value="title_asc">按标题 A-Z</option>
+              <option value="words_desc">按字数最多</option>
+            </select>
+          </div>
+          <div id="table-render-box"></div>
+        </div>
+      </div>`;
+    document.getElementById('table-search').addEventListener('input', e=>{ STATE.searchQuery=e.target.value; renderPostsTableBody(); });
+    document.getElementById('year-filter').addEventListener('change', e=>{ STATE.yearFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
+    document.getElementById('tag-filter').addEventListener('change', e=>{ STATE.tagFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
+    document.getElementById('sort-filter').value=STATE.sortBy;
+    document.getElementById('sort-filter').addEventListener('change', e=>{ STATE.sortBy=e.target.value; renderPostsTableBody(); });
+    renderPostsTableBody();
   }catch(e){ c.innerHTML=`<div class="alert danger">数据读取失败：${escapeHTML(e.message)}<br>请检查仓库、分支、Token 权限和文章扫描根路径。</div>`; }
 }
 
-function renderPostsPageContainer() {
-  const c = document.getElementById('main-content');
-  c.innerHTML=`
-    <div class="management-shell">
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">文章列表</div></div>
-          <div class="segmented" id="status-tabs"></div>
-        </div>
-        <div class="toolbar">
-          <div class="search-box">${ICON_SEARCH}<input type="text" class="search-input" id="table-search" placeholder="搜索标题、摘要、标签或文件路径…" value="${escapeAttr(STATE.searchQuery)}"></div>
-          <select class="filter" id="year-filter"></select>
-          <select class="filter" id="tag-filter"></select>
-          <select class="filter" id="sort-filter">
-            <option value="date_desc">按日期倒序</option>
-            <option value="date_asc">按日期正序</option>
-            <option value="title_asc">按标题 A-Z</option>
-            <option value="words_desc">按字数最多</option>
-          </select>
-        </div>
-        <div id="table-render-box"></div>
-      </div>
-    </div>`;
-  document.getElementById('table-search').addEventListener('input', e=>{ STATE.searchQuery=e.target.value; renderPostsTableBody(); });
-  document.getElementById('year-filter').addEventListener('change', e=>{ STATE.yearFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
-  document.getElementById('tag-filter').addEventListener('change', e=>{ STATE.tagFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
-  document.getElementById('sort-filter').value=STATE.sortBy;
-  document.getElementById('sort-filter').addEventListener('change', e=>{ STATE.sortBy=e.target.value; renderPostsTableBody(); });
-  renderPostsTableBody();
-}
-
-async function refreshPosts(){ toast('正在重新同步远程仓库…'); await renderPostsPage(true); }
+async function refreshPosts(){ toast('正在重新同步远程仓库…'); await renderPostsPage(); }
 
 async function loadPosts(){
   const branchRef=encodeURIComponent(CFG.branch).replace(/%2F/g,'/');
@@ -779,11 +690,29 @@ function getFilteredPosts(){
   return posts;
 }
 
+function renderBatchBar(visiblePosts){
+  const selected=[...STATE.selected].filter(p=>visiblePosts.some(v=>v.path===p)); STATE.selected=new Set(selected);
+  const count=selected.length; const isTrash=STATE.statusTab==='trash';
+  const batch=document.getElementById('batch-bar');
+  if(!batch) return;
+  batch.innerHTML=`
+    <div><strong>${count}</strong> 篇已选 <span class="muted">/ 当前筛选 ${visiblePosts.length} 篇</span></div>
+    <div class="batch-actions">
+      ${count?`<button class="btn sm" onclick="clearSelection()">取消选择</button>`:''}
+      ${!isTrash?`
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('publish')">批量发布</button>
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('draft')">设为草稿</button>
+        <button class="btn sm danger" ${count?'':'disabled'} onclick="batchAction('trash')">移入回收站</button>`:`
+        <button class="btn sm" ${count?'':'disabled'} onclick="batchAction('restore')">批量还原</button>
+        <button class="btn sm danger" ${count?'':'disabled'} onclick="batchAction('delete')">永久删除</button>`}
+    </div>`;
+}
+
 function renderPostsTableBody(){
   const counts=postCounts(); renderStats(counts); renderStatusTabs(counts); renderYearFilter(); renderTagFilter();
   const posts=getFilteredPosts();
   const box=document.getElementById('table-render-box');
-  if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的文章</p></div>`; return; }
+  if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的文章</p><p>可以清空搜索条件，或新建一篇文章。</p></div>`; return; }
   box.innerHTML=`
     <div class="table-wrap">
       <table>
@@ -813,6 +742,84 @@ function renderPostRow(p){
     <td class="nowrap"><div>${escapeHTML(formatDateShort(p.date))}</div><div class="muted" style="font-size:12px;margin-top:4px">${p.words} 字 · ${p.minutes} 分钟</div></td>
     <td><span class="tag ${statusClass}">${status}</span></td>
   </tr>`;
+}
+
+function toggleSelectAll(checked){ getFilteredPosts().forEach(p=>checked?STATE.selected.add(p.path):STATE.selected.delete(p.path)); renderPostsTableBody(); }
+function toggleSelectPath(encodedPath, checked){ const path=decodeURIComponent(encodedPath); checked?STATE.selected.add(path):STATE.selected.delete(path); renderPostsTableBody(); }
+function clearSelection(){ STATE.selected.clear(); renderPostsTableBody(); }
+
+async function batchAction(action){
+  const paths=[...STATE.selected]; if(!paths.length) return;
+  const names={publish:'批量发布',draft:'设为草稿',trash:'移入回收站',restore:'批量还原',delete:'永久删除'};
+  if(!confirm(`确定对 ${paths.length} 篇文章执行「${names[action]}」吗？`)) return;
+  toast(`正在执行：${names[action]}…`);
+  try{
+    for(const path of paths){
+      if(action==='publish') await setDraftByPath(path,false);
+      if(action==='draft') await setDraftByPath(path,true);
+      if(action==='trash') await movePathToTrash(path,false);
+      if(action==='restore') await restorePathFromTrash(path,false);
+      if(action==='delete') await deletePathPermanently(path,false);
+    }
+    STATE.selected.clear(); toast('批量操作完成','success'); renderPostsPage();
+  }catch(e){ toast(e.message,'error'); }
+}
+
+function trashPathFor(oldPath){
+  const baseName=oldPath.replace(/^content\//,'').replace(/\//g,'--').replace(/[^\w\-.\u4e00-\u9fa5]+/g,'-');
+  const stamp=new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
+  return `content/trash/${stamp}-${baseName}`;
+}
+
+async function moveToTrash(encodedPath){ const path=decodeURIComponent(encodedPath); if(!confirm('确定将此文章移入回收站吗？移入后前台将不再展示。')) return; await movePathToTrash(path,true); }
+async function movePathToTrash(oldPath, rerender=true){
+  const file=await getFileContent(oldPath); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  fm.trashOriginalPath=oldPath; fm.deletedAt=new Date().toISOString(); fm.draft=true;
+  const newPath=trashPathFor(oldPath); const title=fm.title || oldPath.split('/').pop();
+  await putFile(newPath, buildFrontMatter(fm, parsed.body), null, `trash: move ${title} to recycle bin`);
+  await deleteFile(oldPath, file.sha, `trash: remove source ${title}`);
+  if(rerender){ toast('文章已移入回收站','success'); renderPostsPage(); }
+}
+
+async function restoreFromTrash(encodedPath){ const path=decodeURIComponent(encodedPath); await restorePathFromTrash(path,true); }
+async function restorePathFromTrash(oldPath, rerender=true){
+  const file=await getFileContent(oldPath); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  const fallbackName=oldPath.split('/').pop().replace(/^\d{14}-/,'');
+  const newPath=fm.trashOriginalPath || `${normalizePostsPath()}/${fallbackName}`;
+  const title=fm.title || fallbackName;
+  delete fm.trashOriginalPath; delete fm.deletedAt;
+  await putFile(newPath, buildFrontMatter(fm, parsed.body), null, `trash: restore ${title}`);
+  await deleteFile(oldPath, file.sha, `trash: clear trash snapshot ${title}`);
+  if(rerender){ toast('文章已还原','success'); renderPostsPage(); }
+}
+
+async function physicsDeletePost(encodedPath){ const path=decodeURIComponent(encodedPath); if(!confirm('确定永久删除这篇文章吗？该操作无法恢复。')) return; await deletePathPermanently(path,true); }
+async function deletePathPermanently(path, rerender=true){
+  const file=await getFileContent(path); const title=(STATE.posts.find(p=>p.path===path)?.title) || path.split('/').pop();
+  await deleteFile(path, file.sha, `delete post permanently: ${title}`);
+  if(rerender){ toast('文章已永久删除','success'); renderPostsPage(); }
+}
+
+async function toggleDraft(encodedPath, isDraft){
+  const path=decodeURIComponent(encodedPath);
+  try{ await setDraftByPath(path, !isDraft); toast(isDraft?'文章已发布':'文章已下架为草稿','success'); renderPostsPage(); }
+  catch(e){ toast(e.message,'error'); }
+}
+
+async function toggleDraftFromReader(encodedPath, isDraft){
+  const path=decodeURIComponent(encodedPath);
+  try{
+    await setDraftByPath(path, !isDraft);
+    toast(isDraft?'文章已发布':'文章已下架为草稿','success');
+    await loadPosts();
+    viewPost(encodedPath);
+  }catch(e){ toast(e.message,'error'); }
+}
+
+async function setDraftByPath(path, draft){
+  const file=await getFileContent(path); const parsed=parseFrontMatter(file.content); const fm={...parsed.fm};
+  fm.draft=!!draft; fm.lastmod=nowLocalString();
+  await putFile(path, buildFrontMatter(fm, parsed.body), file.sha, `${draft?'draft':'publish'}: ${fm.title || path}`);
 }
 
 async function viewPost(encodedPath){
@@ -878,7 +885,6 @@ async function openEditPost(encodedPath){
   }catch(e){ toast(e.message,'error'); renderPostsPage(); }
 }
 
-// 还原完整的渲染编辑器 DOM（包含完整的表单交互与侧边控制卡片）[cite: 7]
 function renderEditor(){
   STATE.page='editor'; STATE.dirty=false;
   const post=STATE.editingPost; const fm=post.fm || {};
@@ -886,16 +892,16 @@ function renderEditor(){
   document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="showPage('posts')">返回列表</button>
+    <button class="btn" onclick="previewCurrentEditor()">预览</button>
     <button class="btn" onclick="savePost('draft')" id="btn-save-draft">保存草稿</button>
     <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
-  const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
+  const filePath=post.path || post.previewPath || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
   c.innerHTML=`
     <div class="editor-wrap">
       <div class="editor-left">
         <div class="editor-title-panel">
           <input class="title-input" id="fm-title" placeholder="请输入文章标题" value="${escapeAttr(fm.title||'')}">
-          <textarea class="desc-input" id="fm-description" placeholder="请输入文章摘要 (可选)...">${escapeHTML(fm.description||'')}</textarea>
           <div class="editor-meta-line">
             <span id="word-counter">0 字 · 1 分钟</span>
             <span>路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
@@ -910,37 +916,211 @@ function renderEditor(){
           <div class="fm-group"><label class="fm-label">作者</label><input class="fm-input" id="fm-author" value="${escapeAttr(fm.author||'落落vici')}"></div>
           <div class="fm-group"><label class="fm-label">发布日期</label><input class="fm-input" id="fm-date" value="${escapeAttr(fm.date||nowLocalString())}"></div>
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
-          <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label>
-            <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
+          <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label><div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
               ${STATE.activeTags.map(t=>tagChip(t)).join('')}
               <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)" placeholder="添加标签">
             </div>
           </div>
-          <div class="fm-group"><label class="fm-label">文件路径</label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
+          <div class="fm-group"><label class="fm-label">文件路径 <span class="muted">可改目录</span></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
           <div class="switch-wrap">
             <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
             <span>保存为草稿，不公开渲染</span>
           </div>
         </div>       
+        <div class="fm-card editor-upload-card">
+          <div class="fm-card-title">R2 图床</div>
+          <label class="media-drop" for="editor-r2-file">
+            <input type="file" id="editor-r2-file" accept="image/*" multiple onchange="uploadEditorR2Images(this)">
+            <div class="media-drop-title">上传图片并插入正文</div>
+            <div class="media-drop-desc">支持多选；上传前会按设置压缩并转换为 WebP，成功后自动插入 Markdown 图片链接。</div>
+          </label>
+          <div class="media-actions">
+            <button class="btn sm" onclick="document.getElementById('editor-r2-file')?.click()">选择图片</button>
+            <button class="btn sm" onclick="showPage('media')">打开图床</button>
+          </div>
+        </div>
+        <div class="fm-card">
+          <div class="fm-card-title">先完成，再完美</div>
+          <div class="helper-list">
+            <div>⌘ <span>使用 <span class="kbd">Ctrl</span> + <span class="kbd">S</span> 快速保存草稿。</span></div>
+            <div>🖼️ <span>可在右侧 R2 图床上传图片，默认会压缩转成 WebP，上传后自动插入 Markdown 图片语法。</span></div>
+            <div>🚀 <span>发布会写入 GitHub，Vercel 会按你的项目配置自动构建。</span></div>
+          </div>
+          <div class="autosave-box"><span id="autosave-card-text">本地自动保存已开启</span><button class="btn sm" onclick="clearCurrentLocalDraft()">清除本地草稿</button></div>
+        </div>
       </div>
     </div>`;
-
   if(STATE.mde){ try{STATE.mde.toTextArea();}catch(e){} }
   STATE.mde=new EasyMDE({
     element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
     placeholder:'从这里开始写正文，支持 Markdown…', status:false,
-    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
+    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|',{name:'r2-image',action:function(){document.getElementById('editor-r2-file')?.click();},text:'R2',title:'上传图片到 Cloudflare R2 并插入文章'},'|','preview','side-by-side','fullscreen']
   });
 
+  if(post.isNew && (post.body || '').trim() === '❤'){
+    setTimeout(()=>STATE.mde.codemirror.setCursor({line:0,ch:0}), 0);
+  }
   ['fm-title','fm-description','fm-author','fm-date','fm-slug','fm-path'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
   });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
+  document.addEventListener('keydown', editorShortcut, {once:false});
   refreshEditorMeta();
 }
 
+function collectEditorPreviewData(){
+  const title=getFormValue('fm-title') || '未命名文章';
+  const slug=getFormValue('fm-slug') || slugify(title);
+  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
+
+  let path=cleanPath(getFormValue('fm-path', defaultPath));
+  if(!path) path=defaultPath;
+  if(!path.endsWith('.md')) path += '.md';
+
+  const draftCheckbox=document.getElementById('fm-draft');
+  const fm={
+    ...(STATE.editingPost?.fm||{}),
+    title,
+    author:getFormValue('fm-author'),
+    date:getFormValue('fm-date', nowLocalString()) || nowLocalString(),
+    description:getFormValue('fm-description'),
+    tags:STATE.activeTags,
+    slug,
+    draft:draftCheckbox ? draftCheckbox.checked : isDraftValue(STATE.editingPost?.fm?.draft)
+  };
+
+  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
+}
+
+function previewCurrentEditor(){
+  try{
+    const data=collectEditorPreviewData();
+    const keepDirty=STATE.dirty;
+    STATE.editingPost={ ...(STATE.editingPost||{}), fm:data.fm, body:data.body, previewPath:data.path };
+    STATE.dirty=keepDirty;
+    renderEditorSnapshotPreview(data, keepDirty);
+  }catch(e){ toast(e.message,'error'); }
+}
+
+function renderEditorSnapshotPreview(data, keepDirty=true){
+  const c=document.getElementById('main-content');
+  STATE.page='reader';
+  document.getElementById('page-title').innerHTML='文章预览 <small>当前编辑快照</small>';
+  document.getElementById('topbar-actions').innerHTML='';
+  c.style.overflow='auto';
+
+  const fm=data.fm || {};
+  const body=data.body || '';
+  const path=data.path || '';
+  const tags=normalizeTags(fm.tags);
+  const htmlContent=marked.parse(body||'*当前文章无正文内容*');
+  const isDraftPost=isDraftValue(fm.draft);
+  const publicLink=CFG.blogUrl && (fm.slug || path) ? buildPublicUrl(fm, path) : '';
+
+  c.innerHTML=`
+    <div class="reader-wrap">
+      <div class="reader-header">
+        <div class="reader-title-row">
+          <h1 class="reader-title">${escapeHTML(fm.title || '未命名文章')}</h1>
+          <div class="reader-title-actions">
+            <button class="btn primary" onclick="returnToEditorFromPreview()">继续编辑</button>
+            <button class="btn" onclick="exitEditorPreviewToPosts()">返回列表</button>
+          </div>
+        </div>
+        ${fm.description?`<div class="reader-desc">${escapeHTML(fm.description)}</div>`:''}
+        <div class="reader-meta">
+          <span>📅 ${escapeHTML(formatDate(fm.date))}</span>
+          <span>📂 <span class="mono">${escapeHTML(path)}</span></span>
+          <span>✍️ ${countWords(body)} 字 · ${readMinutes(body)} 分钟</span>
+          <span><span class="tag ${isDraftPost?'draft':'published'}">${isDraftPost?'草稿':'发布'}</span></span>
+          ${tags.length?`<span>🏷️ ${tags.map(t=>`<span class="tag soft">${escapeHTML(t)}</span>`).join(' ')}</span>`:''}
+          ${publicLink?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">跳转前台</a>`:''}
+        </div>
+      </div>
+      <div class="markdown-body">${htmlContent}</div>
+    </div>`;
+
+  STATE.dirty=!!keepDirty;
+}
+
+function returnToEditorFromPreview(){
+  const keepDirty=STATE.dirty;
+  renderEditor();
+  if(keepDirty){
+    STATE.dirty=true;
+    const ds=document.getElementById('dirty-state');
+    if(ds) ds.textContent='有未保存修改';
+  }
+}
+
+function exitEditorPreviewToPosts(){
+  if(STATE.dirty && !confirm('当前文章还没有保存，确定返回列表吗？')) return;
+  showPage('posts');
+}
+
+function editorShortcut(e){ if(STATE.page==='editor' && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); savePost('draft'); } }
 function tagChip(t){ return `<span class="tag-chip">${escapeHTML(t)}<span class="remove" onclick="removeTagNode(this,'${escapeAttr(t)}')">×</span></span>`; }
+function markDirty(){ STATE.dirty=true; const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未保存修改'; scheduleLocalDraft(); }
+function updateDraftTag(){ const el=document.getElementById('draft-tag'); const checked=document.getElementById('fm-draft')?.checked; if(el){ el.className=`tag ${checked?'draft':'published'}`; el.textContent=checked?'草稿':'发布'; } }
+function refreshEditorMeta(){
+  const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
+  const word=document.getElementById('word-counter'); if(word) word.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
+  const pp=document.getElementById('path-preview'); if(pp) pp.textContent=path;
+}
+function getFormValue(id, fallback=''){
+  const el=document.getElementById(id);
+  return el && 'value' in el ? String(el.value).trim() : fallback;
+}
+
+function collectEditorData(mode='draft'){
+  const title=getFormValue('fm-title');
+  if(!title) throw new Error('文章标题不可为空');
+
+  const slug=getFormValue('fm-slug') || slugify(title);
+  const defaultPath=STATE.editingPost?.path || STATE.editingPost?.previewPath || `${normalizePostsPath()}/${slug}.md`;
+
+  let path=cleanPath(getFormValue('fm-path', defaultPath));
+  if(!path) path=`${normalizePostsPath()}/${slug}.md`;
+  if(!path.endsWith('.md')) path += '.md';
+
+  const draft = mode==='publish' ? false : true;
+
+  const fm={
+    ...(STATE.editingPost.fm||{}),
+    title,
+    author:getFormValue('fm-author'),
+    date:getFormValue('fm-date', nowLocalString()) || nowLocalString(),
+    lastmod:nowLocalString(),
+    description:getFormValue('fm-description'),
+    tags:STATE.activeTags,
+    slug,
+    draft
+  };
+
+  delete fm.trashOriginalPath;
+  delete fm.deletedAt;
+
+  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
+}
+
+async function savePost(mode){
+  const btn=document.getElementById(mode==='publish'?'btn-publish':'btn-save-draft');
+  try{
+    const data=collectEditorData(mode); btn.disabled=true; btn.textContent=mode==='publish'?'正在发布…':'正在保存…';
+    const oldPath=STATE.editingPost.path; const content=buildFrontMatter(data.fm, data.body);
+    if(oldPath && oldPath !== data.path){
+      await putFile(data.path, content, null, `content: move and update ${data.fm.title}`);
+      await deleteFile(oldPath, STATE.editingPost.sha, `content: remove old path ${oldPath}`);
+    }else{
+      await putFile(data.path, content, STATE.editingPost.sha, `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`);
+    }
+    clearLocalDraftByKey(localDraftKey(oldPath || '__new__'));
+    STATE.dirty=false; toast(mode==='publish'?'文章已发布/更新，等待 Vercel 构建':'草稿已保存到 GitHub','success'); setTimeout(()=>showPage('posts'),500);
+  }catch(e){ toast(e.message,'error'); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent=mode==='publish'?'发布/更新':'保存草稿'; } }
+}
+
 function handleTagPush(e){
   if(e.key==='Enter'||e.key===','){
     e.preventDefault(); const val=e.target.value.trim().replace(/^#/,'');
@@ -951,44 +1131,29 @@ function handleTagPush(e){
   }
 }
 function removeTagNode(el,val){ STATE.activeTags=STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); markDirty(); }
-function markDirty(){ STATE.dirty=true; const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未保存修改'; }
-function updateDraftTag(){ const el=document.getElementById('draft-tag'); const checked=document.getElementById('fm-draft')?.checked; if(el){ el.className=`tag ${checked?'draft':'published'}`; el.textContent=checked?'草稿':'发布'; } }
-function refreshEditorMeta(){
-  const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
-  const word=document.getElementById('word-counter'); if(word) word.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
-  const pp=document.getElementById('path-preview'); if(pp) pp.textContent=path;
+
+function localDraftKey(path){ return `hugo_admin_local_draft:${CFG.owner}/${CFG.repo}:${path}`; }
+function readLocalDraft(path){ try{ const s=localStorage.getItem(localDraftKey(path)); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function scheduleLocalDraft(){
+  clearTimeout(STATE.autosaveTimer);
+  STATE.autosaveTimer=setTimeout(()=>{
+    if(STATE.page!=='editor') return;
+    try{
+      const data=collectEditorData(document.getElementById('fm-draft')?.checked?'draft':'publish');
+      const key=localDraftKey(STATE.editingPost.path || '__new__');
+      localStorage.setItem(key, JSON.stringify({...STATE.editingPost, ...data, fm:data.fm, body:data.body, path:STATE.editingPost.path, isNew:STATE.editingPost.isNew}));
+      STATE.lastAutosaveAt=new Date();
+      const txt=`本地草稿 ${STATE.lastAutosaveAt.toLocaleTimeString()} 已保存`;
+      const a=document.getElementById('autosave-text'); if(a) a.textContent=txt;
+      const b=document.getElementById('autosave-card-text'); if(b) b.textContent=txt;
+    }catch(e){}
+  },700);
 }
-
-function getFormValue(id, fallback=''){
-  const el=document.getElementById(id);
-  return el && 'value' in el ? String(el.value).trim() : fallback;
-}
-
-function collectEditorData(mode='draft'){
-  const title=getFormValue('fm-title');
-  if(!title) throw new Error('文章标题不可为空');
-  const slug=getFormValue('fm-slug') || slugify(title);
-  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${slug}.md`;
-  let path=cleanPath(getFormValue('fm-path', defaultPath));
-  if(!path.endsWith('.md')) path += '.md';
-
-  const fm={ ...(STATE.editingPost?.fm||{}), title, author:getFormValue('fm-author'), date:getFormValue('fm-date', nowLocalString()), lastmod:nowLocalString(), slug, draft: mode==='draft' };
-  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
-}
-
-async function savePost(mode){
-  try{
-    const data=collectEditorData(mode); const content=buildFrontMatter(data.fm, data.body);
-    await putFile(data.path, content, STATE.editingPost?.sha, `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`);
-    STATE.postsLoaded = false;
-    toast('保存成功','success'); showPage('posts');
-  }catch(e){ toast(e.message,'error'); }
-}
-
-function readLocalDraft(path){ return null; }
+function clearLocalDraftByKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
+function clearCurrentLocalDraft(){ clearLocalDraftByKey(localDraftKey(STATE.editingPost?.path || '__new__')); toast('当前本地草稿已清除','success'); }
 
 // ============================================================
-// 2. 运动记录管理 (原封不动 100% 对应 index_4.html)
+// Sports Management (assets/act.json)
 // ============================================================
 async function renderSportsPage(){
   STATE.page='sports';
@@ -1066,13 +1231,13 @@ function openSportsModal(startDateKey=null) {
           <div class="fm-group"><label class="fm-label">运动名称</label><input class="fm-input" id="sp-name" value="${escapeAttr(item.name || '登月计划')}"></div>
           <div class="fm-group"><label class="fm-label">开始时间 (start_date_local) <span class="muted">格式: YYYY-MM-DD HH:mm:ss</span></label><input class="fm-input" id="sp-start" value="${escapeAttr(item.start_date_local || nowLocalString())}" ${isEdit ? 'readonly style="background:var(--bg3)"' : ''}></div>
           <div class="fm-group">
-            <label class="fm-label">运动类型 (Type)</label>
-            <select class="form-select" id="sp-type" style="width:100%;">
-              <option value="Stair" ${ (item.type || 'Stair') === 'Stair' ? 'selected' : '' }>Stair (爬楼/登月)</option>
-              <option value="RopeSkipping" ${ item.type === 'RopeSkipping' ? 'selected' : '' }>RopeSkipping (跳绳)</option>
-              <option value="Workout" ${ item.type === 'Workout' ? 'selected' : '' }>Workout (HIIT/健身)</option>    
-            </select>
-          </div>
+  <label class="fm-label">运动类型 (Type)</label>
+  <select class="form-select" id="sp-type" style="width:100%;">
+    <option value="Stair" ${ (item.type || 'Stair') === 'Stair' ? 'selected' : '' }>Stair (爬楼/登月)</option>
+    <option value="RopeSkipping" ${ item.type === 'RopeSkipping' ? 'selected' : '' }>RopeSkipping (跳绳)</option>
+    <option value="Workout" ${ item.type === 'Workout' ? 'selected' : '' }>Workout (HIIT/健身)</option>    
+  </select>
+</div>
           <div class="fm-group"><label class="fm-label">时长 (分钟) <span class="muted">保存时会自动转为 H:MM:SS</span></label><input class="fm-input" type="number" id="sp-duration" value="${currentMinutes}"></div>
           <div class="fm-group"><label class="fm-label">平均心率 (bpm)</label><input class="fm-input" type="number" step="0.1" id="sp-hr" value="${item.average_heartrate || 135}"></div>
           <div class="fm-group"><label class="fm-label">数据来源 (Source)</label><input class="fm-input" id="sp-source" value="${escapeAttr(item.source || 'admin')}"></div>
@@ -1094,7 +1259,10 @@ async function saveSportsData() {
   const hr = parseFloat(document.getElementById('sp-hr').value) || 0;
   const source = document.getElementById('sp-source').value.trim() || 'manual';
 
-  if (!startDateLocal || !name) { toast("名称与开始时间不能为空", "error"); return; }
+  if (!startDateLocal || !name) {
+    toast("名称与开始时间不能为空", "error");
+    return;
+  }
 
   try {
     toast("正在保存更新运动 JSON...");
@@ -1104,607 +1272,187 @@ async function saveSportsData() {
     STATE.sportsData.forEach(item => { if(item.start_date_local) map[item.start_date_local] = item; });
 
     if (map[startDateLocal]) {
-      map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr, source };
+      map[startDateLocal] = {
+        ...map[startDateLocal],
+        name,
+        type,
+        moving_time: movingTime,
+        average_heartrate: hr,
+        source
+      };
     } else {
       const datePrefix = startDateLocal.slice(0, 10).replace(/-/g, "");
       const count = STATE.sportsData.filter(i => String(i.run_id).startsWith(datePrefix)).length;
       const run_id = parseInt(`${datePrefix}${String(count + 1).padStart(3, '0')}`);
-      map[startDateLocal] = { run_id, name, moving_time: movingTime, type, start_date_local: startDateLocal, summary_polyline: "", average_heartrate: hr, source };
+      map[startDateLocal] = {
+        run_id,
+        name,
+        moving_time: movingTime,
+        type,
+        start_date_local: startDateLocal,
+        summary_polyline: "",
+        average_heartrate: hr,
+        source
+      };
     }
 
     let newList = Object.values(map);
-    newList.sort((a,b) => String(a.start_date_local).localeCompare(String(a.start_date_local)));
+    newList.sort((a,b) => String(a.start_date_local).localeCompare(String(b.start_date_local)));
 
     await putFile(ACT_JSON_PATH, JSON.stringify(newList, null, 2), STATE.sportsSha, `chore: update sports record ${startDateLocal}`);
     toast("运动记录更新成功", "success");
     closeModal();
     renderSportsPage();
-  } catch (e) { toast(e.message, "error"); }
+  } catch (e) {
+    toast(e.message, "error");
+  }
 }
 
 // ============================================================
-// 3. 足迹管理（最新要求：描述替代坐标、按需批量保存、全量前台多图/文章/灯箱）[cite: 7]
+// Footprints Management (assets/footprints.json)
 // ============================================================
 async function renderFootprintsPage(){
   STATE.page='footprints';
-  document.getElementById('page-title').innerHTML='足迹记录 <small>高德地图 1:1 前台同步管理</small>';
+  document.getElementById('page-title').innerHTML='足迹记录 <small>assets/footprints.json 数据维护</small>';
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="renderFootprintsPage()">刷新数据</button>
-    <button class="btn primary" onclick="resetFootprintForm()">新建足迹</button>`;
+    <button class="btn primary" onclick="openFootprintModal()">添加新足迹</button>`;
   
   const c=document.getElementById('main-content');
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在加载高德地图与足迹图层…</div>`;
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取足迹数据…</div>`;
 
   try {
-    await loadAmapSDK();
     const file = await getFileContent(FOOTPRINTS_JSON_PATH);
     const json = JSON.parse(file.content || '{"locations":[]}');
-    STATE.footprintsData = json.locations || [];
+    const list = json.locations || [];
+    STATE.footprintsData = list;
     STATE.footprintsSha = file.sha;
 
     c.innerHTML = `
-      <div class="footprint-shell">
-        <div id="main-footprint-map-wrapper">
-          <div id="main-footprint-map"></div>
-          <div class="footprint-map__filters" id="fp-map-filters"></div>
-        </div>
-
-        <div class="footprint-bottom-grid">
-          <div class="card" style="margin-bottom:0">
-            <div class="card-header" style="flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-              <div class="card-title" id="fp-list-title">全部足迹（共 ${STATE.footprintsData.length} 个）</div>
-              
-              <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center;">
-                <input class="fm-input" id="fp-search-kw" placeholder="搜索地点或描述…" style="width:130px;padding:5px 8px;font-size:12.5px;" oninput="handleFootprintTableFilter()">
-                <select class="form-select" id="fp-filter-cat" style="width:105px;padding:5px 8px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
-                  <option value="all">全部标签</option>
-                </select>
-                <select class="form-select" id="fp-filter-prov" style="width:105px;padding:5px 8px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
-                  <option value="all">全部省份</option>
-                </select>
-                <button class="btn sm" onclick="clearMapLocationSelection()" title="重置地图选中">清除选中</button>
-              </div>
-            </div>
-
-            <!-- 按需提交工具栏 -->
-            <div style="display:flex;gap:10px;margin-bottom:14px;padding:10px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);">
-              <button class="btn sm" onclick="downloadFootprintsJson()">下载 JSON</button>
-              <button class="btn sm primary" onclick="saveAllFootprintsToGithub()">保存到仓库</button>
-            </div>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>地点</th>
-                    <th>描述</th>
-                    <th>分类</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody id="fp-table-body">
-                  <!-- 动态渲染 -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:0">
-            <div class="card-title" id="fp-form-title">编辑/新增足迹</div>
-            <div class="card-desc">点击下方小地图可精准拾取高德坐标点。</div>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
-              <div class="fm-group"><label class="fm-label">地点/城市名称</label><input class="fm-input" id="fp-input-name" placeholder="例如: 杭州西湖"></div>
-              <div class="fm-group">
-                <label class="fm-label">坐标 (经度,纬度)</label>
-                <input class="fm-input mono" id="fp-input-coords" placeholder="点击下方地图拾取坐标">
-                <div id="picker-map"></div>
-              </div>
-              <div class="fm-group"><label class="fm-label">省份 Adcode <span class="muted">如: 360000 (高亮点亮省份)</span></label><input class="fm-input" id="fp-input-adcode" placeholder="如: 360000"></div>
-              <div class="fm-group"><label class="fm-label">打卡日期</label><input class="fm-input" id="fp-input-date" placeholder="YYYY-MM-DD"></div>
-              <div class="fm-group"><label class="fm-label">分类标签 (逗号分隔)</label><input class="fm-input" id="fp-input-cats" placeholder="旅行, 游记"></div>
-              <div class="fm-group"><label class="fm-label">图标颜色 (markerColor)</label>
-                <select class="form-select" id="fp-input-color">
-                  <option value="forest">forest (绿色渐变)</option>
-                  <option value="sunset">sunset (橙红渐变)</option>
-                  <option value="ocean">ocean (青蓝渐变)</option>
-                  <option value="violet">violet (紫粉渐变)</option>
-                  <option value="amber">amber (琥珀黄渐变)</option>
-                  <option value="citrus">citrus (柠檬绿渐变)</option>
-                </select>
-              </div>
-              <div class="fm-group"><label class="fm-label">详细描述</label><textarea class="fm-textarea" id="fp-input-desc" placeholder="简短描述/记录..."></textarea></div>
-              <div class="fm-group"><label class="fm-label">关联文章 URL</label><input class="fm-input" id="fp-input-url" placeholder="/posts/xxx/"></div>
-              <div class="fm-group"><label class="fm-label">关联文章标题 (urlLabel)</label><input class="fm-input" id="fp-input-urllabel" placeholder="例: 杭州-乌镇三日游"></div>
-              <div class="fm-group"><label class="fm-label">照片 URL (每行一个)</label><textarea class="fm-textarea" id="fp-input-photos" placeholder="https://..."></textarea></div>
-              <div style="display:flex;gap:10px;margin-top:8px;">
-                <button class="btn primary" style="flex:1" onclick="applyFootprintFormChange()">更新到列表 (暂存)</button>
-                <button class="btn" onclick="resetFootprintForm()">重置</button>
-              </div>
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">已标记足迹（共 ${list.length} 个）</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>打卡日期</th>
+                <th>坐标 (lng,lat)</th>
+                <th>分类</th>
+                <th>标记颜色</th>
+                <th>描述</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map((item, index) => `
+                <tr>
+                  <td><strong>${escapeHTML(item.name)}</strong></td>
+                  <td class="mono">${escapeHTML(item.date || '-')}</td>
+                  <td class="mono">${escapeHTML(item.coordinates)}</td>
+                  <td>${(item.categories||[]).map(cat=>`<span class="tag soft">${escapeHTML(cat)}</span>`).join(' ')}</td>
+                  <td><span class="tag purple">${escapeHTML(item.markerColor||'default')}</span></td>
+                  <td style="max-width:240px;text-align:left;" title="${escapeAttr(item.description)}">${escapeHTML(item.description||'')}</td>
+                  <td>
+                    <button class="btn sm" onclick="openFootprintModal(${index})">编辑</button>
+                    <button class="btn sm danger" onclick="deleteFootprint(${index})">删除</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
         </div>
       </div>`;
-
-    initFootprintFilterDropdowns();
-    renderFootprintTableRows();
-    initMainFootprintMap();
-    initPickerMap();
-
   } catch (e) {
-    c.innerHTML = `<div class="alert danger">读取足迹失败: ${escapeHTML(e.message)}</div>`;
+    c.innerHTML = `<div class="alert danger">读取足迹 JSON 失败: ${escapeHTML(e.message)}</div>`;
   }
 }
 
-function initFootprintFilterDropdowns() {
-  const catSelect = document.getElementById('fp-filter-cat');
-  const provSelect = document.getElementById('fp-filter-prov');
-  if (!catSelect || !provSelect) return;
+function openFootprintModal(index=null) {
+  const isEdit = index !== null;
+  const item = isEdit ? STATE.footprintsData[index] : {};
 
-  const categories = [...new Set(STATE.footprintsData.flatMap(l => l.categories || []))].filter(Boolean).sort();
-  catSelect.innerHTML = `<option value="all">全部标签</option>` + 
-    categories.map(c => `<option value="${escapeAttr(c)}">${escapeHTML(c)}</option>`).join('');
-
-  const provinces = new Set();
-  STATE.footprintsData.forEach(item => {
-    if (item.provinceAdcode) {
-      const prefix = String(item.provinceAdcode).trim().substring(0, 2);
-      if (PROVINCE_MAP[prefix]) provinces.add(prefix);
-    }
-  });
-
-  provSelect.innerHTML = `<option value="all">全部省份</option>` + 
-    Array.from(provinces).sort().map(p => `<option value="${p}">${escapeHTML(PROVINCE_MAP[p])}</option>`).join('');
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>${isEdit ? '编辑足迹记录' : '新增足迹记录'}</div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="fm-group"><label class="fm-label">地点/城市名称</label><input class="fm-input" id="fp-name" value="${escapeAttr(item.name || '')}"></div>
+          <div class="fm-group"><label class="fm-label">坐标 (经度,纬度) <span class="muted">例如: 115.366863,28.448054</span></label><input class="fm-input" id="fp-coords" value="${escapeAttr(item.coordinates || '')}"></div>
+          <div class="fm-group"><label class="fm-label">行政区划 Adcode <span class="muted">可选</span></label><input class="fm-input" id="fp-adcode" value="${escapeAttr(item.provinceAdcode || '')}"></div>
+          <div class="fm-group"><label class="fm-label">打卡日期</label><input class="fm-input" id="fp-date" value="${escapeAttr(item.date || '')}" placeholder="YYYY-MM-DD"></div>
+          <div class="fm-group"><label class="fm-label">分类 (Categories) <span class="muted">用逗号分隔，如: 常驻, 旅行</span></label><input class="fm-input" id="fp-cats" value="${escapeAttr((item.categories||[]).join(','))}"></div>
+          <div class="fm-group"><label class="fm-label">标记图标颜色 (markerColor)</label><input class="fm-input" id="fp-color" value="${escapeAttr(item.markerColor || 'forest')}" placeholder="sunset / forest / ocean / violet"></div>
+          <div class="fm-group"><label class="fm-label">详细描述</label><textarea class="fm-textarea" id="fp-desc">${escapeHTML(item.description || '')}</textarea></div>
+          <div class="fm-group"><label class="fm-label">关联文章 URL</label><input class="fm-input" id="fp-url" value="${escapeAttr(item.url || '')}"></div>
+          <div class="fm-group"><label class="fm-label">关联文章标题 (urlLabel)</label><input class="fm-input" id="fp-urllabel" value="${escapeAttr(item.urlLabel || '')}"></div>
+          <div class="fm-group"><label class="fm-label">照片 URL 列表 <span class="muted">每行一个图片链接</span></label><textarea class="fm-textarea" id="fp-photos">${(item.photos||[]).join('\n')}</textarea></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn primary" onclick="saveFootprintData(${index})">保存更改</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modal-container').innerHTML = html;
 }
 
-function clearMapLocationSelection() {
-  STATE.selectedMapLocationName = null;
-  renderFootprintTableRows();
-  if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
-}
-
-function handleFootprintTableFilter() {
-  STATE.tableCategoryFilter = document.getElementById('fp-filter-cat').value;
-  STATE.tableProvinceFilter = document.getElementById('fp-filter-prov').value;
-  STATE.tableSearchKeyword = document.getElementById('fp-search-kw').value.trim().toLowerCase();
-
-  renderFootprintTableRows();
-
-  if (STATE.mainMap) {
-    const filtered = getFilteredFootprintData();
-    renderMapMarkers(STATE.mainMap, filtered);
-  }
-}
-
-function getFilteredFootprintData() {
-  return STATE.footprintsData.filter(item => {
-    if (STATE.selectedMapLocationName && item.name !== STATE.selectedMapLocationName) return false;
-    const matchCat = STATE.tableCategoryFilter === 'all' || (item.categories || []).includes(STATE.tableCategoryFilter);
-    const provPrefix = item.provinceAdcode ? String(item.provinceAdcode).trim().substring(0, 2) : '';
-    const matchProv = STATE.tableProvinceFilter === 'all' || provPrefix === STATE.tableProvinceFilter;
-    const kw = STATE.tableSearchKeyword;
-    const matchKw = !kw || (item.name || '').toLowerCase().includes(kw) || (item.description || '').toLowerCase().includes(kw);
-
-    return matchCat && matchProv && matchKw;
-  });
-}
-
-function renderFootprintTableRows() {
-  const tbody = document.getElementById('fp-table-body');
-  const titleEl = document.getElementById('fp-list-title');
-  if (!tbody) return;
-
-  const filtered = getFilteredFootprintData();
-  if (titleEl) titleEl.textContent = `全部足迹（当前 ${filtered.length} / 共 ${STATE.footprintsData.length} 个）`;
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text3);padding:24px;">未找到符合条件的足迹记录</td></tr>`;
+async function saveFootprintData(editIndex) {
+  const name = document.getElementById('fp-name').value.trim();
+  const coordinates = document.getElementById('fp-coords').value.trim();
+  if (!name || !coordinates) {
+    toast("地点名称与坐标不能为空", "error");
     return;
   }
 
-  const isFiltered = (STATE.tableCategoryFilter !== 'all' || STATE.tableProvinceFilter !== 'all' || STATE.tableSearchKeyword !== '' || STATE.selectedMapLocationName !== null);
+  const provinceAdcode = document.getElementById('fp-adcode').value.trim();
+  const date = document.getElementById('fp-date').value.trim();
+  const cats = document.getElementById('fp-cats').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const markerColor = document.getElementById('fp-color').value.trim() || 'forest';
+  const description = document.getElementById('fp-desc').value.trim();
+  const url = document.getElementById('fp-url').value.trim();
+  const urlLabel = document.getElementById('fp-urllabel').value.trim();
+  const photos = document.getElementById('fp-photos').value.split('\n').map(s=>s.trim()).filter(Boolean);
 
-  tbody.innerHTML = filtered.map((item) => {
-    const originalIndex = STATE.footprintsData.indexOf(item);
-    return `
-      <tr id="fp-row-${originalIndex}">
-        <td style="text-align:left;min-width:110px;">
-          <a href="javascript:void(0)" onclick="focusFootprintOnMap(${originalIndex})" style="color:var(--text);font-weight:700;" title="点击在地图上定位">
-            ${escapeHTML(item.name)}
-          </a>
-          ${item.date ? `<div class="muted" style="font-size:11px;margin-top:2px;">${escapeHTML(item.date)}</div>` : ''}
-        </td>
-        <td style="text-align:left;max-width:220px;font-size:12.5px;color:var(--text2);" title="${escapeAttr(item.description||'')}">
-          ${escapeHTML(item.description || '-')}
-        </td>
-        <td>${(item.categories||[]).map(cat=>`<span class="tag soft">${escapeHTML(cat)}</span>`).join(' ')}</td>
-        <td>
-          <div style="display:flex;gap:4px;justify-content:center;">
-            <button class="btn sm" onclick="loadFootprintIntoForm(${originalIndex})">编辑</button>
-            <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, -1)" ${isFiltered || originalIndex === 0 ? 'disabled' : ''}>上移</button>
-            <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, 1)" ${isFiltered || originalIndex === STATE.footprintsData.length - 1 ? 'disabled' : ''}>下移</button>
-            <button class="btn sm danger" onclick="deleteFootprintItemLocal(${originalIndex})">删除</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
+  const newItem = { name, coordinates, provinceAdcode, description, date, url, urlLabel, photos, categories: cats, markerColor };
 
-function moveFootprintOrderLocal(index, direction) {
-  const targetIndex = index + direction;
-  if (targetIndex < 0 || targetIndex >= STATE.footprintsData.length) return;
-
-  const temp = STATE.footprintsData[index];
-  STATE.footprintsData[index] = STATE.footprintsData[targetIndex];
-  STATE.footprintsData[targetIndex] = temp;
-
-  renderFootprintsPageContentOnly();
-  toast("已调整顺序（确认完成后点击『保存到仓库』）", "info");
-}
-
-function deleteFootprintItemLocal(index) {
-  const item = STATE.footprintsData[index];
-  if (!confirm(`确定删除足迹「${item.name}」吗？`)) return;
-  STATE.footprintsData.splice(index, 1);
-  renderFootprintsPageContentOnly();
-  toast("已从本地移除（点击『保存到仓库』完成提交）", "info");
-}
-
-function applyFootprintFormChange() {
-  const name = document.getElementById('fp-input-name').value.trim();
-  const coordinates = document.getElementById('fp-input-coords').value.trim();
-  if (!name || !coordinates) { toast("地点名称与坐标不能为空", "error"); return; }
-
-  const provinceAdcode = document.getElementById('fp-input-adcode').value.trim();
-  const date = document.getElementById('fp-input-date').value.trim();
-  const cats = document.getElementById('fp-input-cats').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const color = document.getElementById('fp-input-color').value;
-  const desc = document.getElementById('fp-input-desc').value.trim();
-  const url = document.getElementById('fp-input-url').value.trim();
-  const urlLabel = document.getElementById('fp-input-urllabel').value.trim();
-  const photos = document.getElementById('fp-input-photos').value.split('\n').map(s=>s.trim()).filter(Boolean);
-
-  const newItem = { name, coordinates, provinceAdcode, description: desc, date, url, urlLabel, photos, categories: cats, markerColor: color };
-
-  if (STATE.editingFootprintIndex !== null) {
-    STATE.footprintsData[STATE.editingFootprintIndex] = newItem;
-  } else {
-    STATE.footprintsData.push(newItem);
-  }
-
-  renderFootprintsPageContentOnly();
-  toast("足迹条目已更新至本地（点击『保存到仓库』写入 GitHub）", "success");
-}
-
-function renderFootprintsPageContentOnly() {
-  renderFootprintTableRows();
-  if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
-}
-
-async function saveAllFootprintsToGithub() {
   try {
-    toast("正在保存全量足迹 JSON 至 GitHub...");
-    const payload = { locations: STATE.footprintsData };
-    const res = await putFile(FOOTPRINTS_JSON_PATH, JSON.stringify(payload, null, 2), STATE.footprintsSha, `chore: update footprints JSON`);
-    STATE.footprintsSha = res.content.sha;
-    toast("全量足迹数据成功同步至仓库！", "success");
+    toast("正在保存足迹数据...");
+    let newList = [...STATE.footprintsData];
+    if (editIndex !== null) newList[editIndex] = newItem;
+    else newList.push(newItem);
+
+    const payload = { locations: newList };
+    await putFile(FOOTPRINTS_JSON_PATH, JSON.stringify(payload, null, 2), STATE.footprintsSha, `chore: update footprints JSON (${name})`);
+    toast("足迹保存成功", "success");
+    closeModal();
+    renderFootprintsPage();
   } catch (e) {
-    toast(`保存失败: ${e.message}`, "error");
+    toast(e.message, "error");
   }
 }
 
-function downloadFootprintsJson() {
-  const payload = { locations: STATE.footprintsData };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'footprints.json';
-  a.click();
-}
-
-function focusFootprintOnMap(index) {
+async function deleteFootprint(index) {
   const item = STATE.footprintsData[index];
-  loadFootprintIntoForm(index);
+  if (!confirm(`确定删除足迹记录「${item.name}」吗？`)) return;
 
-  if (item && item.coordinates && STATE.mainMap) {
-    const parts = item.coordinates.split(',').map(parseFloat);
-    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      STATE.mainMap.setZoomAndCenter(9, [parts[0], parts[1]]);
-    }
+  try {
+    toast("正在删除该条足迹...");
+    let newList = STATE.footprintsData.filter((_, i) => i !== index);
+    const payload = { locations: newList };
+    await putFile(FOOTPRINTS_JSON_PATH, JSON.stringify(payload, null, 2), STATE.footprintsSha, `chore: delete footprint (${item.name})`);
+    toast("足迹已被删除", "success");
+    renderFootprintsPage();
+  } catch (e) {
+    toast(e.message, "error");
   }
-}
-
-function initMainFootprintMap() {
-  if (STATE.mainMap) STATE.mainMap.destroy();
-
-  const container = document.getElementById('main-footprint-map-wrapper');
-  const map = new AMap.Map('main-footprint-map', {
-    zoom: 4,
-    center: [108.0, 34.0],
-    mapStyle: 'amap://styles/whitesmoke',
-    viewMode: '2D'
-  });
-
-  renderAmapCustomControls(container, map);
-
-  const adcodesToHighlight = new Set();
-  STATE.footprintsData.forEach(item => {
-    if (item.provinceAdcode) {
-      const codeStr = String(item.provinceAdcode).trim();
-      const provCode = codeStr.length >= 2 ? codeStr.substring(0, 2) + '0000' : codeStr;
-      adcodesToHighlight.add(parseInt(provCode, 10));
-    }
-  });
-
-  if (adcodesToHighlight.size > 0) {
-    const disProvince = new AMap.DistrictLayer.Province({
-      zIndex: 10,
-      adcode: Array.from(adcodesToHighlight),
-      depth: 0,
-      styles: {
-        'fill': 'rgba(6, 190, 182, 0.15)',
-        'province-stroke': 'rgba(6, 190, 182, 0.6)',
-        'stroke-width': 1.2
-      }
-    });
-    disProvince.setMap(map);
-  }
-
-  renderMapCategoryFilters(container, map);
-  renderMapMarkers(map, getFilteredFootprintData());
-
-  STATE.mainMap = map;
-}
-
-// 1:1 前台卡片 Popup + 多图轮播查看 + 全屏灯箱
-function renderMapMarkers(map, locations) {
-  if (STATE.allMapMarkers.length > 0) {
-    STATE.allMapMarkers.forEach(m => m.setMap(null));
-    STATE.allMapMarkers = [];
-  }
-
-  const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
-
-  locations.forEach((item) => {
-    if (!item.coordinates) return;
-    const parts = item.coordinates.split(',').map(parseFloat);
-    if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return;
-
-    const [lng, lat] = parts;
-    const colorPreset = item.markerColor || 'forest';
-
-    const marker = new AMap.Marker({
-      position: [lng, lat],
-      content: `<span class="footprint-marker footprint-marker--${escapeHTML(colorPreset)}" title="${escapeHTML(item.name)}"></span>`,
-      offset: new AMap.Pixel(-9, -9),
-      map
-    });
-
-    const linkHtml = item.url 
-      ? `<div class="links"><a class="link-btn" href="${escapeHTML(item.url)}" target="_blank">${escapeHTML(item.urlLabel || '查看游记文章')}</a></div>` 
-      : '';
-
-    let photosHtml = '';
-    if (item.photos && item.photos.length > 0) {
-      const slides = item.photos.map((src, pIdx) => `<figure class="footprint-popup__slide"><img src="${escapeHTML(src)}" loading="lazy" onclick="openPhotoViewerFromPopup('${escapeAttr(item.name)}', ${pIdx})"></figure>`).join('');
-      photosHtml = `<div class="footprint-popup__track">${slides}</div>`;
-    }
-
-    const popupHtml = `
-      <div class="footprint-popup">
-        <h4>${escapeHTML(item.name)}</h4>
-        ${item.date ? `<div class="meta">${escapeHTML(item.date)}</div>` : ''}
-        ${(item.categories||[]).length ? `<div class="tags">${item.categories.map(c=>`<span class="tag-item">${escapeHTML(c)}</span>`).join('')}</div>` : ''}
-        ${item.description ? `<p>${escapeHTML(item.description)}</p>` : ''}
-        ${linkHtml}
-        ${photosHtml}
-      </div>
-    `;
-
-    marker.on('click', () => {
-      infoWindow.setContent(popupHtml);
-      infoWindow.open(map, [lng, lat]);
-      STATE.selectedMapLocationName = item.name;
-      
-      const originalIdx = STATE.footprintsData.indexOf(item);
-      if (originalIdx >= 0) loadFootprintIntoForm(originalIdx);
-
-      renderFootprintTableRows();
-    });
-
-    STATE.allMapMarkers.push(marker);
-  });
-}
-
-function openPhotoViewerFromPopup(locationName, initialIndex) {
-  const item = STATE.footprintsData.find(f => f.name === locationName);
-  if (!item || !item.photos || item.photos.length === 0) return;
-
-  STATE.viewerPhotos = item.photos;
-  STATE.viewerIndex = initialIndex;
-
-  if (!STATE.photoViewerEl) {
-    const el = document.createElement('div');
-    el.className = 'footprint-photo-viewer';
-    el.innerHTML = `
-      <div class="footprint-photo-viewer__dialog">
-        <button class="footprint-photo-viewer__close" onclick="closePhotoViewer()">&times;</button>
-        <button class="footprint-photo-viewer__nav footprint-photo-viewer__nav--prev" onclick="changeViewerPhoto(-1)">&#10094;</button>
-        <button class="footprint-photo-viewer__nav footprint-photo-viewer__nav--next" onclick="changeViewerPhoto(1)">&#10095;</button>
-        <img id="viewer-img" src="" />
-      </div>`;
-    document.body.appendChild(el);
-    STATE.photoViewerEl = el;
-
-    el.addEventListener('click', (e) => {
-      if (e.target === el) closePhotoViewer();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (!STATE.photoViewerEl.classList.contains('is-visible')) return;
-      if (e.key === 'Escape') closePhotoViewer();
-      if (e.key === 'ArrowLeft') changeViewerPhoto(-1);
-      if (e.key === 'ArrowRight') changeViewerPhoto(1);
-    });
-  }
-
-  updateViewerImage();
-  STATE.photoViewerEl.classList.add('is-visible');
-}
-
-function updateViewerImage() {
-  const img = document.getElementById('viewer-img');
-  if (img && STATE.viewerPhotos.length > 0) {
-    img.src = STATE.viewerPhotos[STATE.viewerIndex];
-  }
-}
-
-function changeViewerPhoto(dir) {
-  STATE.viewerIndex = (STATE.viewerIndex + dir + STATE.viewerPhotos.length) % STATE.viewerPhotos.length;
-  updateViewerImage();
-}
-
-function closePhotoViewer() {
-  if (STATE.photoViewerEl) STATE.photoViewerEl.classList.remove('is-visible');
-}
-
-function renderMapCategoryFilters(container, map) {
-  const filterBox = document.getElementById('fp-map-filters');
-  if (!filterBox) return;
-
-  const categories = [...new Set(STATE.footprintsData.flatMap(l => l.categories || []))].filter(Boolean).sort();
-  filterBox.innerHTML = '';
-
-  const createBtn = (label, val, active) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `footprint-map__filter-btn ${active ? 'is-active' : ''}`;
-    btn.textContent = label;
-    btn.onclick = () => {
-      filterBox.querySelectorAll('.footprint-map__filter-btn').forEach(b => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      STATE.activeMapFilter = val;
-
-      const filteredLocations = val === 'all' 
-        ? STATE.footprintsData 
-        : STATE.footprintsData.filter(l => (l.categories || []).includes(val));
-
-      renderMapMarkers(map, filteredLocations);
-    };
-    return btn;
-  };
-
-  filterBox.appendChild(createBtn('全部足迹', 'all', STATE.activeMapFilter === 'all'));
-  categories.forEach(cat => {
-    filterBox.appendChild(createBtn(cat, cat, STATE.activeMapFilter === cat));
-  });
-}
-
-function renderAmapCustomControls(container, map) {
-  const controlBox = document.createElement('div');
-  controlBox.className = 'footprint-map__custom-controls';
-  controlBox.style.cssText = `
-    position: absolute; top: 12px; right: 12px; z-index: 10;
-    display: flex; flex-direction: column; background: #ffffff;
-    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow: hidden;
-  `;
-
-  const buttons = [
-    { title: '全屏切换', icon: '&#x26F6;', action: () => {
-        if (!document.fullscreenElement) container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
-        else document.exitFullscreen?.() || document.webkitExitFullscreen?.();
-      }},
-    { title: '重置视角', icon: '&#x21BB;', action: () => map.setZoomAndCenter(4, [108.0, 34.0]) },
-    { title: '放大', icon: '&#x2B;', action: () => map.zoomIn() },
-    { title: '缩小', icon: '&#x2212;', action: () => map.zoomOut() }
-  ];
-
-  buttons.forEach((btn, index) => {
-    const btnEl = document.createElement('button');
-    btnEl.type = 'button';
-    btnEl.title = btn.title;
-    btnEl.innerHTML = btn.icon;
-    btnEl.style.cssText = `
-      width: 32px; height: 32px; border: none; background: #ffffff;
-      color: #333333; font-size: 15px; font-weight: bold; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      ${index < buttons.length - 1 ? 'border-bottom: 1px solid #eeeeee;' : ''}
-    `;
-    btnEl.onmouseover = () => btnEl.style.background = '#f5f5f5';
-    btnEl.onmouseout = () => btnEl.style.background = '#ffffff';
-    btnEl.onclick = (e) => { e.stopPropagation(); btn.action(); };
-    controlBox.appendChild(btnEl);
-  });
-
-  container.appendChild(controlBox);
-}
-
-function initPickerMap() {
-  if (STATE.pickerMap) STATE.pickerMap.destroy();
-
-  const picker = new AMap.Map('picker-map', {
-    zoom: 4, center: [115.0, 30.0],
-    mapStyle: 'amap://styles/whitesmoke', viewMode: '2D'
-  });
-
-  picker.on('click', (e) => {
-    const lng = e.lnglat.getLng().toFixed(6);
-    const lat = e.lnglat.getLat().toFixed(6);
-    document.getElementById('fp-input-coords').value = `${lng},${lat}`;
-
-    if (STATE.pickerMarker) picker.remove(STATE.pickerMarker);
-    STATE.pickerMarker = new AMap.Marker({
-      position: [e.lnglat.getLng(), e.lnglat.getLat()],
-      content: `<span class="footprint-marker footprint-marker--sunset"></span>`,
-      offset: new AMap.Pixel(-9, -9),
-      map: picker
-    });
-  });
-
-  STATE.pickerMap = picker;
-}
-
-function loadFootprintIntoForm(index) {
-  STATE.editingFootprintIndex = index;
-  const item = STATE.footprintsData[index];
-  document.getElementById('fp-form-title').textContent = `编辑足迹: ${item.name}`;
-  document.getElementById('fp-input-name').value = item.name || '';
-  document.getElementById('fp-input-coords').value = item.coordinates || '';
-  document.getElementById('fp-input-adcode').value = item.provinceAdcode || '';
-  document.getElementById('fp-input-date').value = item.date || '';
-  document.getElementById('fp-input-cats').value = (item.categories || []).join(',');
-  document.getElementById('fp-input-color').value = item.markerColor || 'forest';
-  document.getElementById('fp-input-desc').value = item.description || '';
-  document.getElementById('fp-input-url').value = item.url || '';
-  document.getElementById('fp-input-urllabel').value = item.urlLabel || '';
-  document.getElementById('fp-input-photos').value = (item.photos || []).join('\n');
-
-  if (item.coordinates && STATE.pickerMap) {
-    const parts = item.coordinates.split(',').map(parseFloat);
-    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      STATE.pickerMap.setZoomAndCenter(8, [parts[0], parts[1]]);
-      if (STATE.pickerMarker) STATE.pickerMap.remove(STATE.pickerMarker);
-      STATE.pickerMarker = new AMap.Marker({
-        position: [parts[0], parts[1]],
-        content: `<span class="footprint-marker footprint-marker--${item.markerColor || 'forest'}"></span>`,
-        offset: new AMap.Pixel(-9, -9),
-        map: STATE.pickerMap
-      });
-    }
-  }
-}
-
-function resetFootprintForm() {
-  STATE.editingFootprintIndex = null;
-  document.getElementById('fp-form-title').textContent = '新增足迹条目';
-  ['fp-input-name','fp-input-coords','fp-input-adcode','fp-input-date','fp-input-cats','fp-input-desc','fp-input-url','fp-input-urllabel','fp-input-photos'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
 }
 
 // ============================================================
-// 4. 图床 / 部署状态 / 系统设置 (100% 完整复刻原版，零修改)
+// Cloudflare R2 Image Library
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
@@ -1818,9 +1566,9 @@ async function r2ListObjects(){
   })).filter(x=>x.key).sort((a,b)=>String(b.lastModified).localeCompare(String(a.lastModified)));
 }
 async function r2DeleteObject(key){
-  if(!confirm(`确定从 R2 删除这个文件吗？\n${key}`)) return;
-  try{ await r2DeleteObject(key); toast('R2 文件已删除','success'); refreshMediaList(); }
-  catch(e){ toast(e.message,'error'); }
+  const signed=await r2SignRequest('DELETE',key,{payloadHash:await sha256Hex('')});
+  const res=await fetch(signed.url,{method:'DELETE',headers:signed.headers});
+  if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 删除失败：${res.status} ${text}`); }
 }
 function formatBytes(n){
   n=Number(n||0); if(n<1024) return `${n} B`; if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`; return `${(n/1024/1024).toFixed(1)} MB`;
@@ -1957,6 +1705,11 @@ function renderMediaItem(item){
       </div>
     </div>
   </div>`;
+}
+async function deleteMediaObject(key){
+  if(!confirm(`确定从 R2 删除这个文件吗？\n${key}`)) return;
+  try{ await r2DeleteObject(key); toast('R2 文件已删除','success'); refreshMediaList(); }
+  catch(e){ toast(e.message,'error'); }
 }
 function renderMediaPage(){
   STATE.page='media';
@@ -2152,7 +1905,9 @@ async function importSettingsFile(file){
   }
 }
 
+// ============================================================
 // Lifecycle
+// ============================================================
 window.addEventListener('DOMContentLoaded', async()=>{
   loadCfg(); const active=await checkStatus();
   if(active) showPage('posts'); else { showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning'); }
