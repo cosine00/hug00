@@ -67,6 +67,10 @@ a{color:inherit;text-decoration:none}
 .btn.sm{padding:6px 9px;font-size:12px;border-radius:6px}
 .btn.icon{width:34px;height:34px;padding:0}
 
+/* Pagination Styles */
+.pagination-wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:var(--bg2);font-size:12.5px;color:var(--text2);flex-wrap:wrap;gap:10px}
+.pagination-controls{display:flex;align-items:center;gap:6px}
+
 /* Cards */
 .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
 .card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
@@ -231,7 +235,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 }
 .footprint-map__filter-btn.is-active { background: #111826; color: #fff; }
 
-.footprint-popup { width: 260px; font-size: .9rem; line-height: 1.5; color: #111826; padding: 2px; }
+.footprint-popup { position: relative; width: 260px; font-size: .9rem; line-height: 1.5; color: #111826; padding: 2px; }
 .footprint-popup h4 { margin: 0 0 .25rem; font-size: .95rem; font-weight:700; }
 .footprint-popup .meta { font-size: .78rem; color: #666; margin-bottom: .25rem; }
 .footprint-popup .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: .35rem; }
@@ -240,12 +244,22 @@ input:checked+.slider:before{transform:translateX(18px)}
 .footprint-popup .links { margin-top: .35rem; margin-bottom: .35rem; }
 .footprint-popup .link-btn { display: inline-block; padding: 4px 10px; border-radius: 4px; background: #111826; color: #fff; font-size: .78rem; text-decoration: none; }
 
-.footprint-popup__track { display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth; padding-bottom:4px; }
-.footprint-popup__track::-webkit-scrollbar { height: 4px; }
-.footprint-popup__track::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+.footprint-popup__track-wrapper { position: relative; margin-top: 4px; }
+.footprint-popup__track { display: flex; gap: 6px; overflow-x: hidden; scroll-behavior: smooth; padding-bottom: 2px; }
+.footprint-popup__track::-webkit-scrollbar { display: none; }
 .footprint-popup__slide { flex-shrink: 0; flex-basis: 110px; margin: 0; }
-.footprint-popup__slide img { display: block; width: 110px; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
-.footprint-popup__slide img:hover { transform: scale(1.05); }
+.footprint-popup__slide img { display: block; width: 110px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }
+.footprint-popup__slide img:hover { transform: scale(1.03); }
+
+.footprint-popup__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; border-radius: 50%; background: rgba(0, 0, 0, 0.45); color: #fff;
+  border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 5; transition: background 0.2s; backdrop-filter: blur(2px);
+}
+.footprint-popup__arrow:hover { background: rgba(0, 0, 0, 0.75); }
+.footprint-popup__arrow--left { left: 4px; }
+.footprint-popup__arrow--right { right: 4px; }
 
 .footprint-photo-viewer {
   position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -269,8 +283,8 @@ input:checked+.slider:before{transform:translateX(18px)}
 
 .amap-logo, .amap-copyright { display: none !important; }
 
-.footprint-bottom-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;}
-#picker-map{width:100%;height:180px;border-radius:var(--radius);border:1px solid var(--border2);margin-top:8px;}
+/* 足迹网格两栏排布 */
+.fp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
 
 /* Global Toast */
 .toast-container{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:360px}
@@ -292,7 +306,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 
 @media (max-width:1080px){
   .editor-wrap{grid-template-columns:1fr;height:auto;overflow:auto}
-  .footprint-bottom-grid{grid-template-columns:1fr;}
+  .fp-form-grid{grid-template-columns:1fr;}
 }
 @media (max-width:860px){
   .app{display:block;height:auto;min-height:100vh;overflow:auto}
@@ -387,9 +401,10 @@ let CFG = {
 
 let STATE = {
   page: 'posts', posts: [], postsLoaded: false, searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
+  postsPage: 1, footprintsPage: 1, sportsTypeFilter: 'all',
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
   sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
-  editingFootprintIndex: null, mainMap: null, pickerMap: null, pickerMarker: null,
+  editingFootprintIndex: null, footprintsMode: 'list', mainMap: null, editMarker: null,
   activeMapFilter: 'all', tableCategoryFilter: 'all', tableProvinceFilter: 'all',
   tableSearchKeyword: '', selectedMapLocationName: null, allMapMarkers: [],
   photoViewerEl: null, viewerPhotos: [], viewerIndex: 0
@@ -590,7 +605,7 @@ async function checkStatus(){
 }
 
 // ============================================================
-// 1. 文章管理 (100% 完整原封不动复刻 index_3.html 原版逻辑)[cite: 7]
+// 1. 文章管理（支持分页，每页10条项目）
 // ============================================================
 async function renderPostsPage(forceRefresh = false){
   STATE.page='posts'; STATE.selected.clear();
@@ -601,7 +616,6 @@ async function renderPostsPage(forceRefresh = false){
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
 
-  // 内存缓存逻辑[cite: 7]
   if (STATE.postsLoaded && !forceRefresh) {
     renderPostsPageContainer();
     return;
@@ -638,11 +652,11 @@ function renderPostsPageContainer() {
         <div id="table-render-box"></div>
       </div>
     </div>`;
-  document.getElementById('table-search').addEventListener('input', e=>{ STATE.searchQuery=e.target.value; renderPostsTableBody(); });
-  document.getElementById('year-filter').addEventListener('change', e=>{ STATE.yearFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
-  document.getElementById('tag-filter').addEventListener('change', e=>{ STATE.tagFilter=e.target.value; STATE.selected.clear(); renderPostsTableBody(); });
+  document.getElementById('table-search').addEventListener('input', e=>{ STATE.searchQuery=e.target.value; STATE.postsPage = 1; renderPostsTableBody(); });
+  document.getElementById('year-filter').addEventListener('change', e=>{ STATE.yearFilter=e.target.value; STATE.postsPage = 1; STATE.selected.clear(); renderPostsTableBody(); });
+  document.getElementById('tag-filter').addEventListener('change', e=>{ STATE.tagFilter=e.target.value; STATE.postsPage = 1; STATE.selected.clear(); renderPostsTableBody(); });
   document.getElementById('sort-filter').value=STATE.sortBy;
-  document.getElementById('sort-filter').addEventListener('change', e=>{ STATE.sortBy=e.target.value; renderPostsTableBody(); });
+  document.getElementById('sort-filter').addEventListener('change', e=>{ STATE.sortBy=e.target.value; STATE.postsPage = 1; renderPostsTableBody(); });
   renderPostsTableBody();
 }
 
@@ -701,7 +715,7 @@ function postCounts(){
   return {total,published,drafts,trash,tags:tags.size};
 }
 
-function setStatusTab(tab){ STATE.statusTab=tab; STATE.selected.clear(); renderPostsTableBody(); }
+function setStatusTab(tab){ STATE.statusTab=tab; STATE.postsPage=1; STATE.selected.clear(); renderPostsTableBody(); }
 
 function renderStatusTabs(counts){
   const tabs=[['all','全部',counts.total],['published','已发布',counts.published],['draft','草稿',counts.drafts],['trash','回收站',counts.trash]];
@@ -779,19 +793,41 @@ function getFilteredPosts(){
   return posts;
 }
 
+function changePostsPage(page) {
+  STATE.postsPage = page;
+  renderPostsTableBody();
+}
+
 function renderPostsTableBody(){
   const counts=postCounts(); renderStats(counts); renderStatusTabs(counts); renderYearFilter(); renderTagFilter();
   const posts=getFilteredPosts();
   const box=document.getElementById('table-render-box');
   if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的文章</p></div>`; return; }
+  
+  const pageSize = 10;
+  const totalPages = Math.ceil(posts.length / pageSize) || 1;
+  if(STATE.postsPage > totalPages) STATE.postsPage = totalPages;
+  if(STATE.postsPage < 1) STATE.postsPage = 1;
+  
+  const startIndex = (STATE.postsPage - 1) * pageSize;
+  const pagePosts = posts.slice(startIndex, startIndex + pageSize);
+
   box.innerHTML=`
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th>文章</th><th>标签</th><th>日期 / 字数</th><th>状态</th>
         </tr></thead>
-        <tbody>${posts.map(renderPostRow).join('')}</tbody>
+        <tbody>${pagePosts.map(renderPostRow).join('')}</tbody>
       </table>
+    </div>
+    <div class="pagination-wrap">
+      <div>共 ${posts.length} 篇文章，显示第 ${startIndex + 1} - ${Math.min(startIndex + pageSize, posts.length)} 条</div>
+      <div class="pagination-controls">
+        <button class="btn sm" ${STATE.postsPage <= 1 ? 'disabled' : ''} onclick="changePostsPage(${STATE.postsPage - 1})">上一页</button>
+        <span style="padding: 0 8px; font-weight: 600;">${STATE.postsPage} / ${totalPages}</span>
+        <button class="btn sm" ${STATE.postsPage >= totalPages ? 'disabled' : ''} onclick="changePostsPage(${STATE.postsPage + 1})">下一页</button>
+      </div>
     </div>`;
 }
 
@@ -878,7 +914,6 @@ async function openEditPost(encodedPath){
   }catch(e){ toast(e.message,'error'); renderPostsPage(); }
 }
 
-// 还原完整的渲染编辑器 DOM（包含完整的表单交互与侧边控制卡片）[cite: 7]
 function renderEditor(){
   STATE.page='editor'; STATE.dirty=false;
   const post=STATE.editingPost; const fm=post.fm || {};
@@ -988,7 +1023,7 @@ async function savePost(mode){
 function readLocalDraft(path){ return null; }
 
 // ============================================================
-// 2. 运动记录管理 (原封不动 100% 对应 index_4.html)
+// 2. 运动记录管理（支持按运动类型分类显示）
 // ============================================================
 async function renderSportsPage(){
   STATE.page='sports';
@@ -1007,47 +1042,84 @@ async function renderSportsPage(){
     STATE.sportsData = list;
     STATE.sportsSha = file.sha;
 
-    c.innerHTML = `
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">运动项目列表（共 ${list.length} 条）</div><div class="card-desc">以此唯一标识 start_date_local，编辑时会自动覆盖原数据防止重复。</div></div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>run_id</th>
-                <th>运动名称</th>
-                <th>开始时间 (start_date_local)</th>
-                <th>运动类型</th>
-                <th>时长</th>
-                <th>平均心率</th>
-                <th>来源</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${list.map(item => `
-                <tr>
-                  <td><span class="mono">${escapeHTML(item.run_id)}</span></td>
-                  <td><strong>${escapeHTML(item.name)}</strong></td>
-                  <td class="mono">${escapeHTML(item.start_date_local)}</td>
-                  <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
-                  <td>${escapeHTML(item.moving_time)}</td>
-                  <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
-                  <td><span class="tag soft">${escapeHTML(item.source || 'manual')}</span></td>
-                  <td>
-                    <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>`;
+    renderSportsTableContainer();
   } catch (e) {
     c.innerHTML = `<div class="alert danger">读取运动数据失败: ${escapeHTML(e.message)}</div>`;
   }
+}
+
+function setSportsTypeFilter(type) {
+  STATE.sportsTypeFilter = type;
+  renderSportsTableContainer();
+}
+
+function renderSportsTableContainer() {
+  const c = document.getElementById('main-content');
+  const types = [...new Set(STATE.sportsData.map(i => i.type || 'Workout'))].filter(Boolean);
+
+  let filteredList = STATE.sportsData;
+  if (STATE.sportsTypeFilter !== 'all') {
+    filteredList = STATE.sportsData.filter(i => (i.type || 'Workout') === STATE.sportsTypeFilter);
+  }
+
+  const typeTabs = [
+    { key: 'all', name: '全部分类', count: STATE.sportsData.length },
+    ...types.map(t => ({
+      key: t,
+      name: t,
+      count: STATE.sportsData.filter(i => (i.type || 'Workout') === t).length
+    }))
+  ];
+
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">运动项目列表（共 ${filteredList.length} / ${STATE.sportsData.length} 条）</div>
+          <div class="card-desc">以此唯一标识 start_date_local，编辑时会自动覆盖原数据防止重复。</div>
+        </div>
+        <div class="segmented">
+          ${typeTabs.map(tab => `
+            <button class="seg-btn ${STATE.sportsTypeFilter === tab.key ? 'active' : ''}" onclick="setSportsTypeFilter('${tab.key}')">
+              ${escapeHTML(tab.name)} <span class="seg-count">${tab.count}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>run_id</th>
+              <th>运动名称</th>
+              <th>开始时间 (start_date_local)</th>
+              <th>运动类型</th>
+              <th>时长</th>
+              <th>平均心率</th>
+              <th>来源</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredList.length === 0 ? `<tr><td colspan="8" class="muted" style="padding:24px;">暂无该分类的运动记录</td></tr>` : 
+              filteredList.map(item => `
+              <tr>
+                <td><span class="mono">${escapeHTML(item.run_id)}</span></td>
+                <td><strong>${escapeHTML(item.name)}</strong></td>
+                <td class="mono">${escapeHTML(item.start_date_local)}</td>
+                <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
+                <td>${escapeHTML(item.moving_time)}</td>
+                <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
+                <td><span class="tag soft">${escapeHTML(item.source || 'manual')}</span></td>
+                <td>
+                  <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 function openSportsModal(startDateKey=null) {
@@ -1113,7 +1185,7 @@ async function saveSportsData() {
     }
 
     let newList = Object.values(map);
-    newList.sort((a,b) => String(a.start_date_local).localeCompare(String(a.start_date_local)));
+    newList.sort((a,b) => String(b.start_date_local).localeCompare(String(a.start_date_local)));
 
     await putFile(ACT_JSON_PATH, JSON.stringify(newList, null, 2), STATE.sportsSha, `chore: update sports record ${startDateLocal}`);
     toast("运动记录更新成功", "success");
@@ -1123,14 +1195,13 @@ async function saveSportsData() {
 }
 
 // ============================================================
-// 3. 足迹管理（最新要求：描述替代坐标、按需批量保存、全量前台多图/文章/灯箱）[cite: 7]
+// 3. 足迹管理（单大地图模式 + 列表/编辑页面模式无缝切换）
 // ============================================================
 async function renderFootprintsPage(){
   STATE.page='footprints';
+  STATE.footprintsMode = 'list';
   document.getElementById('page-title').innerHTML='足迹记录 <small>高德地图 1:1 前台同步管理</small>';
-  document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="renderFootprintsPage()">刷新数据</button>
-    <button class="btn primary" onclick="resetFootprintForm()">新建足迹</button>`;
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="renderFootprintsPage()">刷新数据</button>`;
   
   const c=document.getElementById('main-content');
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在加载高德地图与足迹图层…</div>`;
@@ -1149,90 +1220,230 @@ async function renderFootprintsPage(){
           <div class="footprint-map__filters" id="fp-map-filters"></div>
         </div>
 
-        <div class="footprint-bottom-grid">
-          <div class="card" style="margin-bottom:0">
-            <div class="card-header" style="flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-              <div class="card-title" id="fp-list-title">全部足迹（共 ${STATE.footprintsData.length} 个）</div>
-              
-              <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center;">
-                <input class="fm-input" id="fp-search-kw" placeholder="搜索地点或描述…" style="width:130px;padding:5px 8px;font-size:12.5px;" oninput="handleFootprintTableFilter()">
-                <select class="form-select" id="fp-filter-cat" style="width:105px;padding:5px 8px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
-                  <option value="all">全部标签</option>
-                </select>
-                <select class="form-select" id="fp-filter-prov" style="width:105px;padding:5px 8px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
-                  <option value="all">全部省份</option>
-                </select>
-                <button class="btn sm" onclick="clearMapLocationSelection()" title="重置地图选中">清除选中</button>
-              </div>
-            </div>
-
-            <!-- 按需提交工具栏 -->
-            <div style="display:flex;gap:10px;margin-bottom:14px;padding:10px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);">
-              <button class="btn sm" onclick="downloadFootprintsJson()">下载 JSON</button>
-              <button class="btn sm primary" onclick="saveAllFootprintsToGithub()">保存到仓库</button>
-            </div>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>地点</th>
-                    <th>描述</th>
-                    <th>分类</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody id="fp-table-body">
-                  <!-- 动态渲染 -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:0">
-            <div class="card-title" id="fp-form-title">编辑/新增足迹</div>
-            <div class="card-desc">点击下方小地图可精准拾取高德坐标点。</div>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
-              <div class="fm-group"><label class="fm-label">地点/城市名称</label><input class="fm-input" id="fp-input-name" placeholder="例如: 杭州西湖"></div>
-              <div class="fm-group">
-                <label class="fm-label">坐标 (经度,纬度)</label>
-                <input class="fm-input mono" id="fp-input-coords" placeholder="点击下方地图拾取坐标">
-                <div id="picker-map"></div>
-              </div>
-              <div class="fm-group"><label class="fm-label">省份 Adcode <span class="muted">如: 360000 (高亮点亮省份)</span></label><input class="fm-input" id="fp-input-adcode" placeholder="如: 360000"></div>
-              <div class="fm-group"><label class="fm-label">打卡日期</label><input class="fm-input" id="fp-input-date" placeholder="YYYY-MM-DD"></div>
-              <div class="fm-group"><label class="fm-label">分类标签 (逗号分隔)</label><input class="fm-input" id="fp-input-cats" placeholder="旅行, 游记"></div>
-              <div class="fm-group"><label class="fm-label">图标颜色 (markerColor)</label>
-                <select class="form-select" id="fp-input-color">
-                  <option value="forest">forest (绿色渐变)</option>
-                  <option value="sunset">sunset (橙红渐变)</option>
-                  <option value="ocean">ocean (青蓝渐变)</option>
-                  <option value="violet">violet (紫粉渐变)</option>
-                  <option value="amber">amber (琥珀黄渐变)</option>
-                  <option value="citrus">citrus (柠檬绿渐变)</option>
-                </select>
-              </div>
-              <div class="fm-group"><label class="fm-label">详细描述</label><textarea class="fm-textarea" id="fp-input-desc" placeholder="简短描述/记录..."></textarea></div>
-              <div class="fm-group"><label class="fm-label">关联文章 URL</label><input class="fm-input" id="fp-input-url" placeholder="/posts/xxx/"></div>
-              <div class="fm-group"><label class="fm-label">关联文章标题 (urlLabel)</label><input class="fm-input" id="fp-input-urllabel" placeholder="例: 杭州-乌镇三日游"></div>
-              <div class="fm-group"><label class="fm-label">照片 URL (每行一个)</label><textarea class="fm-textarea" id="fp-input-photos" placeholder="https://..."></textarea></div>
-              <div style="display:flex;gap:10px;margin-top:8px;">
-                <button class="btn primary" style="flex:1" onclick="applyFootprintFormChange()">更新到列表 (暂存)</button>
-                <button class="btn" onclick="resetFootprintForm()">重置</button>
-              </div>
-            </div>
-          </div>
+        <div id="fp-content-panel">
+          <!-- 列表或编辑表单动态切入 -->
         </div>
       </div>`;
 
-    initFootprintFilterDropdowns();
-    renderFootprintTableRows();
     initMainFootprintMap();
-    initPickerMap();
+    renderFootprintPanel();
 
   } catch (e) {
     c.innerHTML = `<div class="alert danger">读取足迹失败: ${escapeHTML(e.message)}</div>`;
   }
+}
+
+function removeTempMapMarker() {
+  if (STATE.editMarker && STATE.mainMap) {
+    STATE.mainMap.remove(STATE.editMarker);
+    STATE.editMarker = null;
+  }
+}
+
+function updateTempMapMarker(lng, lat, title = '') {
+  if (!STATE.mainMap) return;
+  removeTempMapMarker();
+
+  const colorPreset = document.getElementById('fp-input-color')?.value || 'sunset';
+  STATE.editMarker = new AMap.Marker({
+    position: [lng, lat],
+    content: `<span class="footprint-marker footprint-marker--${escapeHTML(colorPreset)}" title="${escapeHTML(title)}"></span>`,
+    offset: new AMap.Pixel(-9, -9),
+    map: STATE.mainMap,
+    zIndex: 100
+  });
+}
+
+function renderFootprintPanel() {
+  const panel = document.getElementById('fp-content-panel');
+  if (!panel) return;
+
+  if (STATE.footprintsMode === 'edit') {
+    renderFootprintEditForm(panel);
+  } else {
+    removeTempMapMarker();
+    renderFootprintListPanel(panel);
+    initFootprintFilterDropdowns();
+    renderFootprintTableRows();
+  }
+}
+
+function switchFootprintMode(mode, index = null) {
+  STATE.footprintsMode = mode;
+  STATE.editingFootprintIndex = index;
+  renderFootprintPanel();
+}
+
+function renderFootprintListPanel(container) {
+  container.innerHTML = `
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header" style="flex-direction:column;align-items:stretch;gap:12px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div class="card-title" id="fp-list-title">全部足迹（共 ${STATE.footprintsData.length} 个）</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn sm primary" onclick="switchFootprintMode('edit', null)">＋ 新建足迹</button>
+            <button class="btn sm" onclick="downloadFootprintsJson()">JSON 备份</button>
+            <button class="btn sm primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveAllFootprintsToGithub()">保存到仓库</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;">
+          <input class="fm-input" id="fp-search-kw" placeholder="搜索地点或描述…" style="padding:6px 10px;font-size:12.5px;" oninput="handleFootprintTableFilter()">
+          <select class="form-select" id="fp-filter-cat" style="padding:6px 10px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
+            <option value="all">全部标签</option>
+          </select>
+          <select class="form-select" id="fp-filter-prov" style="padding:6px 10px;font-size:12.5px;" onchange="handleFootprintTableFilter()">
+            <option value="all">全部省份</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>地点</th>
+              <th>描述</th>
+              <th>分类</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="fp-table-body"></tbody>
+        </table>
+      </div>
+      <div id="fp-pagination-box"></div>
+    </div>`;
+}
+
+function renderFootprintEditForm(container) {
+  const isEdit = STATE.editingFootprintIndex !== null;
+  const item = isEdit ? STATE.footprintsData[STATE.editingFootprintIndex] : {};
+
+  container.innerHTML = `
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header" style="margin-bottom:8px;">
+        <div class="card-title">${isEdit ? `编辑足迹条目: ${escapeHTML(item.name || '')}` : '新建足迹条目'}</div>
+        <button class="btn sm" onclick="switchFootprintMode('list')">← 返回足迹列表</button>
+      </div>
+      <div class="card-desc">可以直接在上方大地图上点击获取经纬度，或者在下方搜索框输入地名定位。</div>
+
+      <div class="fp-form-grid">
+        <div class="fm-group">
+          <label class="fm-label">地点/城市名称</label>
+          <div style="display:flex;gap:6px;">
+            <input class="fm-input" id="fp-input-name" value="${escapeAttr(item.name || '')}" placeholder="例如: 杭州西湖" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationOnMap();}">
+            <button class="btn sm primary" type="button" onclick="searchLocationOnMap()">搜索定位</button>
+          </div>
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">坐标 (经度,纬度)</label>
+          <input class="fm-input mono" id="fp-input-coords" value="${escapeAttr(item.coordinates || '')}" placeholder="格式如: 120.15,30.28 (或在地图点击)">
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">省份 Adcode <span class="muted">如: 360000 (省份点亮)</span></label>
+          <input class="fm-input" id="fp-input-adcode" value="${escapeAttr(item.provinceAdcode || '')}" placeholder="如: 330000">
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">打卡日期</label>
+          <input class="fm-input" id="fp-input-date" value="${escapeAttr(item.date || '')}" placeholder="YYYY-MM-DD">
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">分类标签 (英文逗号分隔)</label>
+          <input class="fm-input" id="fp-input-cats" value="${escapeAttr((item.categories || []).join(','))}" placeholder="旅行, 游记">
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">图标颜色 (markerColor)</label>
+          <select class="form-select" id="fp-input-color" onchange="updateMarkerColorOnMap()">
+            <option value="forest" ${(item.markerColor||'forest')==='forest'?'selected':''}>forest (绿色渐变)</option>
+            <option value="sunset" ${item.markerColor==='sunset'?'selected':''}>sunset (橙红渐变)</option>
+            <option value="ocean" ${item.markerColor==='ocean'?'selected':''}>ocean (青蓝渐变)</option>
+            <option value="violet" ${item.markerColor==='violet'?'selected':''}>violet (紫粉渐变)</option>
+            <option value="amber" ${item.markerColor==='amber'?'selected':''}>amber (琥珀黄渐变)</option>
+            <option value="citrus" ${item.markerColor==='citrus'?'selected':''}>citrus (柠檬绿渐变)</option>
+          </select>
+        </div>
+
+        <div class="fm-group" style="grid-column: span 2;">
+          <label class="fm-label">详细描述</label>
+          <textarea class="fm-textarea" id="fp-input-desc" placeholder="简短描述/记录..." style="min-height:60px;">${escapeHTML(item.description || '')}</textarea>
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">关联文章 URL</label>
+          <input class="fm-input" id="fp-input-url" value="${escapeAttr(item.url || '')}" placeholder="/posts/xxx/">
+        </div>
+
+        <div class="fm-group">
+          <label class="fm-label">关联文章标题 (urlLabel)</label>
+          <input class="fm-input" id="fp-input-urllabel" value="${escapeAttr(item.urlLabel || '')}" placeholder="例: 杭州-乌镇三日游">
+        </div>
+
+        <div class="fm-group" style="grid-column: span 2;">
+          <label class="fm-label">照片 URL (每行一个)</label>
+          <textarea class="fm-textarea" id="fp-input-photos" placeholder="https://..." style="min-height:70px;">${escapeHTML((item.photos || []).join('\n'))}</textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button class="btn primary" style="flex:1" onclick="applyFootprintFormChange()">保存更新并返回列表</button>
+        <button class="btn" onclick="switchFootprintMode('list')">取消</button>
+      </div>
+    </div>`;
+
+  if (item.coordinates && STATE.mainMap) {
+    const parts = item.coordinates.split(',').map(parseFloat);
+    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      STATE.mainMap.setZoomAndCenter(12, [parts[0], parts[1]]);
+      updateTempMapMarker(parts[0], parts[1], item.name || '');
+    }
+  }
+}
+
+function updateMarkerColorOnMap() {
+  const coordsInput = document.getElementById('fp-input-coords');
+  if (coordsInput && coordsInput.value) {
+    const parts = coordsInput.value.split(',').map(parseFloat);
+    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      const name = document.getElementById('fp-input-name')?.value || '';
+      updateTempMapMarker(parts[0], parts[1], name);
+    }
+  }
+}
+
+function searchLocationOnMap() {
+  const nameInput = document.getElementById('fp-input-name');
+  const name = nameInput ? nameInput.value.trim() : '';
+  if (!name) { toast("请输入地点或城市名称", "warning"); return; }
+  if (!window.AMap || !AMap.Geocoder) { toast("地图服务未就绪，请稍后", "error"); return; }
+
+  const geocoder = new AMap.Geocoder();
+  geocoder.getLocation(name, function(status, result) {
+    if (status === 'complete' && result.geocodes.length) {
+      const geocode = result.geocodes[0];
+      const lng = parseFloat(geocode.location.getLng().toFixed(6));
+      const lat = parseFloat(geocode.location.getLat().toFixed(6));
+      
+      const coordsInput = document.getElementById('fp-input-coords');
+      const adcodeInput = document.getElementById('fp-input-adcode');
+      if (coordsInput) coordsInput.value = `${lng},${lat}`;
+      if (adcodeInput && geocode.adcode) {
+        const provCode = geocode.adcode.length >= 2 ? geocode.adcode.substring(0, 2) + '0000' : geocode.adcode;
+        adcodeInput.value = provCode;
+      }
+
+      if (STATE.mainMap) {
+        STATE.mainMap.setZoomAndCenter(12, [lng, lat]);
+        updateTempMapMarker(lng, lat, name);
+      }
+      toast(`已定位到：${geocode.formattedAddress || name}`, "success");
+    } else {
+      toast("未找到相关位置，请检查地名描述", "error");
+    }
+  });
 }
 
 function initFootprintFilterDropdowns() {
@@ -1258,7 +1469,10 @@ function initFootprintFilterDropdowns() {
 
 function clearMapLocationSelection() {
   STATE.selectedMapLocationName = null;
-  renderFootprintTableRows();
+  removeTempMapMarker();
+  if (STATE.footprintsMode === 'list') {
+    renderFootprintTableRows();
+  }
   if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
 }
 
@@ -1266,6 +1480,7 @@ function handleFootprintTableFilter() {
   STATE.tableCategoryFilter = document.getElementById('fp-filter-cat').value;
   STATE.tableProvinceFilter = document.getElementById('fp-filter-prov').value;
   STATE.tableSearchKeyword = document.getElementById('fp-search-kw').value.trim().toLowerCase();
+  STATE.footprintsPage = 1;
 
   renderFootprintTableRows();
 
@@ -1288,9 +1503,15 @@ function getFilteredFootprintData() {
   });
 }
 
+function changeFootprintsPage(page) {
+  STATE.footprintsPage = page;
+  renderFootprintTableRows();
+}
+
 function renderFootprintTableRows() {
   const tbody = document.getElementById('fp-table-body');
   const titleEl = document.getElementById('fp-list-title');
+  const pageBox = document.getElementById('fp-pagination-box');
   if (!tbody) return;
 
   const filtered = getFilteredFootprintData();
@@ -1298,12 +1519,21 @@ function renderFootprintTableRows() {
 
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text3);padding:24px;">未找到符合条件的足迹记录</td></tr>`;
+    if (pageBox) pageBox.innerHTML = '';
     return;
   }
 
+  const pageSize = 10;
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+  if (STATE.footprintsPage > totalPages) STATE.footprintsPage = totalPages;
+  if (STATE.footprintsPage < 1) STATE.footprintsPage = 1;
+
+  const startIndex = (STATE.footprintsPage - 1) * pageSize;
+  const pageList = filtered.slice(startIndex, startIndex + pageSize);
+
   const isFiltered = (STATE.tableCategoryFilter !== 'all' || STATE.tableProvinceFilter !== 'all' || STATE.tableSearchKeyword !== '' || STATE.selectedMapLocationName !== null);
 
-  tbody.innerHTML = filtered.map((item) => {
+  tbody.innerHTML = pageList.map((item) => {
     const originalIndex = STATE.footprintsData.indexOf(item);
     return `
       <tr id="fp-row-${originalIndex}">
@@ -1319,7 +1549,7 @@ function renderFootprintTableRows() {
         <td>${(item.categories||[]).map(cat=>`<span class="tag soft">${escapeHTML(cat)}</span>`).join(' ')}</td>
         <td>
           <div style="display:flex;gap:4px;justify-content:center;">
-            <button class="btn sm" onclick="loadFootprintIntoForm(${originalIndex})">编辑</button>
+            <button class="btn sm" onclick="switchFootprintMode('edit', ${originalIndex})">编辑</button>
             <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, -1)" ${isFiltered || originalIndex === 0 ? 'disabled' : ''}>上移</button>
             <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, 1)" ${isFiltered || originalIndex === STATE.footprintsData.length - 1 ? 'disabled' : ''}>下移</button>
             <button class="btn sm danger" onclick="deleteFootprintItemLocal(${originalIndex})">删除</button>
@@ -1328,6 +1558,19 @@ function renderFootprintTableRows() {
       </tr>
     `;
   }).join('');
+
+  if (pageBox) {
+    pageBox.innerHTML = `
+      <div class="pagination-wrap" style="border-top:none;padding:12px 0 0 0;">
+        <div>显示 ${startIndex + 1} - ${Math.min(startIndex + pageSize, filtered.length)} 条</div>
+        <div class="pagination-controls">
+          <button class="btn sm" ${STATE.footprintsPage <= 1 ? 'disabled' : ''} onclick="changeFootprintsPage(${STATE.footprintsPage - 1})">上一页</button>
+          <span style="padding: 0 8px; font-weight: 600;">${STATE.footprintsPage} / ${totalPages}</span>
+          <button class="btn sm" ${STATE.footprintsPage >= totalPages ? 'disabled' : ''} onclick="changeFootprintsPage(${STATE.footprintsPage + 1})">下一页</button>
+        </div>
+      </div>
+    `;
+  }
 }
 
 function moveFootprintOrderLocal(index, direction) {
@@ -1372,12 +1615,15 @@ function applyFootprintFormChange() {
     STATE.footprintsData.push(newItem);
   }
 
-  renderFootprintsPageContentOnly();
+  switchFootprintMode('list');
+  if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
   toast("足迹条目已更新至本地（点击『保存到仓库』写入 GitHub）", "success");
 }
 
 function renderFootprintsPageContentOnly() {
-  renderFootprintTableRows();
+  if (STATE.footprintsMode === 'list') {
+    renderFootprintTableRows();
+  }
   if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
 }
 
@@ -1404,8 +1650,6 @@ function downloadFootprintsJson() {
 
 function focusFootprintOnMap(index) {
   const item = STATE.footprintsData[index];
-  loadFootprintIntoForm(index);
-
   if (item && item.coordinates && STATE.mainMap) {
     const parts = item.coordinates.split(',').map(parseFloat);
     if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
@@ -1450,13 +1694,32 @@ function initMainFootprintMap() {
     disProvince.setMap(map);
   }
 
+  // 大地图点击事件：如果在编辑模式下，同步填入经纬度并更新临时的标记点
+  map.on('click', (e) => {
+    if (STATE.footprintsMode === 'edit') {
+      const lng = parseFloat(e.lnglat.getLng().toFixed(6));
+      const lat = parseFloat(e.lnglat.getLat().toFixed(6));
+      const coordsInput = document.getElementById('fp-input-coords');
+      if (coordsInput) coordsInput.value = `${lng},${lat}`;
+      const name = document.getElementById('fp-input-name')?.value || '';
+      updateTempMapMarker(lng, lat, name);
+      toast(`已取选坐标: ${lng}, ${lat}`, "info");
+    }
+  });
+
   renderMapCategoryFilters(container, map);
   renderMapMarkers(map, getFilteredFootprintData());
 
   STATE.mainMap = map;
 }
 
-// 1:1 前台卡片 Popup + 多图轮播查看 + 全屏灯箱
+function scrollPopupPhotos(trackId, direction) {
+  const track = document.getElementById(trackId);
+  if (track) {
+    track.scrollBy({ left: direction * 116, behavior: 'smooth' });
+  }
+}
+
 function renderMapMarkers(map, locations) {
   if (STATE.allMapMarkers.length > 0) {
     STATE.allMapMarkers.forEach(m => m.setMap(null));
@@ -1465,7 +1728,7 @@ function renderMapMarkers(map, locations) {
 
   const infoWindow = new AMap.InfoWindow({ anchor: 'bottom-center' });
 
-  locations.forEach((item) => {
+  locations.forEach((item, idx) => {
     if (!item.coordinates) return;
     const parts = item.coordinates.split(',').map(parseFloat);
     if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return;
@@ -1486,8 +1749,19 @@ function renderMapMarkers(map, locations) {
 
     let photosHtml = '';
     if (item.photos && item.photos.length > 0) {
+      const trackId = `fp-track-${idx}`;
       const slides = item.photos.map((src, pIdx) => `<figure class="footprint-popup__slide"><img src="${escapeHTML(src)}" loading="lazy" onclick="openPhotoViewerFromPopup('${escapeAttr(item.name)}', ${pIdx})"></figure>`).join('');
-      photosHtml = `<div class="footprint-popup__track">${slides}</div>`;
+      const arrows = item.photos.length > 2 ? `
+        <button class="footprint-popup__arrow footprint-popup__arrow--left" onclick="scrollPopupPhotos('${trackId}', -1)">&#10094;</button>
+        <button class="footprint-popup__arrow footprint-popup__arrow--right" onclick="scrollPopupPhotos('${trackId}', 1)">&#10095;</button>
+      ` : '';
+      
+      photosHtml = `
+        <div class="footprint-popup__track-wrapper">
+          ${arrows}
+          <div class="footprint-popup__track" id="${trackId}">${slides}</div>
+        </div>
+      `;
     }
 
     const popupHtml = `
@@ -1506,10 +1780,9 @@ function renderMapMarkers(map, locations) {
       infoWindow.open(map, [lng, lat]);
       STATE.selectedMapLocationName = item.name;
       
-      const originalIdx = STATE.footprintsData.indexOf(item);
-      if (originalIdx >= 0) loadFootprintIntoForm(originalIdx);
-
-      renderFootprintTableRows();
+      if (STATE.footprintsMode === 'list') {
+        renderFootprintTableRows();
+      }
     });
 
     STATE.allMapMarkers.push(marker);
@@ -1614,7 +1887,10 @@ function renderAmapCustomControls(container, map) {
         if (!document.fullscreenElement) container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
         else document.exitFullscreen?.() || document.webkitExitFullscreen?.();
       }},
-    { title: '重置视角', icon: '&#x21BB;', action: () => map.setZoomAndCenter(4, [108.0, 34.0]) },
+    { title: '重置视角并清除选中', icon: '&#x21BB;', action: () => {
+        map.setZoomAndCenter(4, [108.0, 34.0]);
+        clearMapLocationSelection();
+      }},
     { title: '放大', icon: '&#x2B;', action: () => map.zoomIn() },
     { title: '缩小', icon: '&#x2212;', action: () => map.zoomOut() }
   ];
@@ -1639,72 +1915,8 @@ function renderAmapCustomControls(container, map) {
   container.appendChild(controlBox);
 }
 
-function initPickerMap() {
-  if (STATE.pickerMap) STATE.pickerMap.destroy();
-
-  const picker = new AMap.Map('picker-map', {
-    zoom: 4, center: [115.0, 30.0],
-    mapStyle: 'amap://styles/whitesmoke', viewMode: '2D'
-  });
-
-  picker.on('click', (e) => {
-    const lng = e.lnglat.getLng().toFixed(6);
-    const lat = e.lnglat.getLat().toFixed(6);
-    document.getElementById('fp-input-coords').value = `${lng},${lat}`;
-
-    if (STATE.pickerMarker) picker.remove(STATE.pickerMarker);
-    STATE.pickerMarker = new AMap.Marker({
-      position: [e.lnglat.getLng(), e.lnglat.getLat()],
-      content: `<span class="footprint-marker footprint-marker--sunset"></span>`,
-      offset: new AMap.Pixel(-9, -9),
-      map: picker
-    });
-  });
-
-  STATE.pickerMap = picker;
-}
-
-function loadFootprintIntoForm(index) {
-  STATE.editingFootprintIndex = index;
-  const item = STATE.footprintsData[index];
-  document.getElementById('fp-form-title').textContent = `编辑足迹: ${item.name}`;
-  document.getElementById('fp-input-name').value = item.name || '';
-  document.getElementById('fp-input-coords').value = item.coordinates || '';
-  document.getElementById('fp-input-adcode').value = item.provinceAdcode || '';
-  document.getElementById('fp-input-date').value = item.date || '';
-  document.getElementById('fp-input-cats').value = (item.categories || []).join(',');
-  document.getElementById('fp-input-color').value = item.markerColor || 'forest';
-  document.getElementById('fp-input-desc').value = item.description || '';
-  document.getElementById('fp-input-url').value = item.url || '';
-  document.getElementById('fp-input-urllabel').value = item.urlLabel || '';
-  document.getElementById('fp-input-photos').value = (item.photos || []).join('\n');
-
-  if (item.coordinates && STATE.pickerMap) {
-    const parts = item.coordinates.split(',').map(parseFloat);
-    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      STATE.pickerMap.setZoomAndCenter(8, [parts[0], parts[1]]);
-      if (STATE.pickerMarker) STATE.pickerMap.remove(STATE.pickerMarker);
-      STATE.pickerMarker = new AMap.Marker({
-        position: [parts[0], parts[1]],
-        content: `<span class="footprint-marker footprint-marker--${item.markerColor || 'forest'}"></span>`,
-        offset: new AMap.Pixel(-9, -9),
-        map: STATE.pickerMap
-      });
-    }
-  }
-}
-
-function resetFootprintForm() {
-  STATE.editingFootprintIndex = null;
-  document.getElementById('fp-form-title').textContent = '新增足迹条目';
-  ['fp-input-name','fp-input-coords','fp-input-adcode','fp-input-date','fp-input-cats','fp-input-desc','fp-input-url','fp-input-urllabel','fp-input-photos'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
-}
-
 // ============================================================
-// 4. 图床 / 部署状态 / 系统设置 (100% 完整复刻原版，零修改)
+// 4. 图床 / 部署状态 / 系统设置
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
