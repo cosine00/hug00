@@ -77,12 +77,12 @@ a{color:inherit;text-decoration:none}
 .card-title{font-weight:700;font-size:15px;color:var(--text)}
 .card-desc{font-size:12.5px;color:var(--text3);margin-top:4px;line-height:1.5}
 
-/* Article management */
+/* Management Common */
 .management-shell{display:grid;grid-template-columns:1fr;gap:16px}
 .segmented{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .seg-btn{border:1px solid var(--border);background:var(--bg);border-radius:999px;padding:7px 12px;font-size:13px;color:var(--text2);cursor:pointer;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
 .seg-btn:hover{border-color:var(--accent);color:var(--accent)}
-.seg-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 10px rgba(31,122,77,.18)}
+.seg-btn.active{background:var(--accent) !important;border-color:var(--accent) !important;color:#fff !important;box-shadow:0 4px 10px rgba(31,122,77,.25) !important;}
 .seg-count{font-size:11px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.24)}
 .seg-btn:not(.active) .seg-count{background:var(--bg3);color:var(--text3)}
 .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
@@ -99,17 +99,12 @@ select.filter:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0
 .table-wrap{overflow-x:auto;margin:0 -20px}
 table{width:100%;border-collapse:collapse;text-align:center;min-width:780px}
 th{font-size:12px;font-weight:700;color:var(--text2);padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;text-align:center}
-td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text);vertical-align:middle;text-align:center}
+td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text);vertical-align:middle;text-align:center;box-shadow:none !important;background:transparent !important;}
 tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:#fbfcfd}
-.check-cell{width:44px;text-align:center}
-.row-check{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+tbody tr:hover td{background:#fbfcfd !important;}
 .article-title-cell{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:220px;max-width:520px;margin:0 auto;text-align:left}
-.article-title-main{font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0;text-align:left}
-.article-title-main span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:420px}
 .article-title-link{border:none;background:transparent;color:var(--text);font:inherit;font-weight:800;cursor:pointer;max-width:460px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;padding:0;line-height:1.35}
 .article-title-link:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
-.article-excerpt{font-size:12.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px;line-height:1.4}
 .article-path{display:flex;align-items:center;justify-content:flex-start;gap:6px;color:var(--text3);font-size:12px;max-width:520px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
 .path-dot{width:5px;height:5px;border-radius:50%;background:var(--text4);flex-shrink:0}
 .tag-list{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;max-width:260px;margin:0 auto}
@@ -119,7 +114,7 @@ tbody tr:hover td{background:#fbfcfd}
 .tag.trash{background:var(--bg3);color:var(--text2)}
 .tag.meta{background:var(--blue-light);color:#2b43b0}
 .tag.soft{background:var(--bg3);color:var(--text2)}
-.tag.purple{background:var(--purple-light);color:var(--purple)}
+.tag.purple{background:var(--purple-light);color:#7048e8}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:5px;color:var(--text2)}
 .muted{color:var(--text3)}
 .nowrap{white-space:nowrap}
@@ -159,9 +154,6 @@ tbody tr:hover td{background:#fbfcfd}
 .slider:before{position:absolute;content:"";width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(29,33,41,.25)}
 input:checked+.slider{background:var(--accent)}
 input:checked+.slider:before{transform:translateX(18px)}
-.helper-list{display:grid;gap:8px;font-size:12.5px;color:var(--text2);line-height:1.55}
-.helper-list div{display:flex;gap:7px;align-items:flex-start}
-.autosave-box{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--text3);border-top:1px dashed var(--border);padding-top:12px;margin-top:4px}
 
 /* Reader */
 .reader-wrap{max-width:920px;margin:0 auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:42px;box-shadow:var(--shadow)}
@@ -190,8 +182,6 @@ input:checked+.slider:before{transform:translateX(18px)}
 .media-name{font-weight:700;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-meta{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-item-actions{display:flex;gap:6px;flex-wrap:wrap}
-.editor-upload-card .media-drop{padding:14px;min-height:112px}
-.editor-upload-card .media-actions{justify-content:flex-start;margin-top:10px}
 
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
@@ -207,6 +197,110 @@ input:checked+.slider:before{transform:translateX(18px)}
 .setting-input{padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg)}
 .setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:9px}
+
+/* 图片风格网格友链与足迹网格 (Grid Styles) */
+.friends-grid, .footprint-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 8px 0;
+}
+.friend-card, .fp-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: grab;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--shadow-soft);
+  user-select: none;
+}
+.friend-card:active, .fp-card:active {
+  cursor: grabbing;
+}
+.friend-card:hover, .fp-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 18px rgba(31,122,77,0.12);
+}
+.fp-card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.friend-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+
+/* 多彩渐变轮换图标 */
+.fp-num-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.fp-num-badge--sunset { background: linear-gradient(135deg, #ffb347, #ff6f61); }
+.fp-num-badge--ocean  { background: linear-gradient(135deg, #06beb6, #48b1bf); }
+.fp-num-badge--violet { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+.fp-num-badge--forest { background: linear-gradient(135deg, #5ee7df, #39a37c); }
+.fp-num-badge--amber  { background: linear-gradient(135deg, #f6d365, #fda085); }
+.fp-num-badge--citrus { background: linear-gradient(135deg, #fdfb8f, #a1ffce); color: #333; }
+
+.friend-name, .fp-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+.friend-star {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.rss-item {
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  transition: .15s;
+}
+.rss-item:hover {
+  background: #fff;
+  border-color: var(--accent);
+}
+.rss-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+  margin-bottom: 4px;
+  display: block;
+}
+.rss-date {
+  font-size: 11.5px;
+  color: var(--text3);
+}
 
 /* 前台 1:1 Footprint Map CSS 复刻 */
 .footprint-shell{display:flex;flex-direction:column;gap:20px;}
@@ -282,12 +376,10 @@ input:checked+.slider:before{transform:translateX(18px)}
 .footprint-photo-viewer__nav--next { right: -60px; }
 
 .amap-logo, .amap-copyright { display: none !important; }
-
-/* 足迹网格两栏排布 */
 .fp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
 
 /* Global Toast */
-.toast-container{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast-container{position:fixed;top:22px;left:0;right:0;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:360px;margin:0 auto;}
 .toast{background:#1f2329;color:#fff;padding:12px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:600;box-shadow:0 10px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(-10px);transition:all .24s;line-height:1.45}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.success{background:var(--success)}
@@ -339,6 +431,10 @@ input:checked+.slider:before{transform:translateX(18px)}
       <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
+      </div>
+      <div class="nav-item" onclick="showPage('friends')" id="nav-friends">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        友链管理
       </div>
       <div class="nav-item" onclick="showPage('sports')" id="nav-sports">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -401,18 +497,23 @@ let CFG = {
 
 let STATE = {
   page: 'posts', posts: [], postsLoaded: false, searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
-  postsPage: 1, footprintsPage: 1, sportsTypeFilter: 'all',
+  postsPage: 1, footprintsPage: 1, sportsPage: 1, sportsTypeFilter: 'all',
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
   sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
+  friendsData: [], friendsSha: null, friendsSearchKeyword: '', friendsStatusFilter: 'all', friendsPage: 1, friendsStatus: {},
   editingFootprintIndex: null, footprintsMode: 'list', mainMap: null, editMarker: null,
   activeMapFilter: 'all', tableCategoryFilter: 'all', tableProvinceFilter: 'all',
   tableSearchKeyword: '', selectedMapLocationName: null, allMapMarkers: [],
-  photoViewerEl: null, viewerPhotos: [], viewerIndex: 0
+  photoViewerEl: null, viewerPhotos: [], viewerIndex: 0,
+  friendsSortMode: false, footprintsSortMode: false
 };
 
 const ACT_JSON_PATH = "assets/act.json";
 const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
+const FRIENDS_JSON_PATH = "static/friends.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
+
+const COLOR_PRESETS = ['sunset', 'ocean', 'violet', 'forest', 'amber', 'citrus'];
 
 const PROVINCE_MAP = {
   "11": "北京市", "12": "天津市", "13": "河北省", "14": "山西省", "15": "内蒙古自治区",
@@ -587,6 +688,7 @@ function showPage(page){
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   switch(page){ 
     case 'posts': renderPostsPage(); break; 
+    case 'friends': renderFriendsPage(); break;
     case 'sports': renderSportsPage(); break;
     case 'footprints': renderFootprintsPage(); break;
     case 'media': renderMediaPage(); break; 
@@ -629,11 +731,45 @@ async function renderPostsPage(forceRefresh = false){
   }catch(e){ c.innerHTML=`<div class="alert danger">数据读取失败：${escapeHTML(e.message)}<br>请检查仓库、分支、Token 权限和文章扫描根路径。</div>`; }
 }
 
+function toggleTagFilter(tag) {
+  if (STATE.tagFilter === tag) {
+    STATE.tagFilter = 'all';
+  } else {
+    STATE.tagFilter = tag;
+  }
+  STATE.postsPage = 1;
+  STATE.selected.clear();
+  renderPostsPageContainer();
+}
+
 function renderPostsPageContainer() {
   const c = document.getElementById('main-content');
+  const validPosts = STATE.posts.filter(p => !p.isTrash);
+  const totalArticles = validPosts.length;
+  const totalWords = validPosts.reduce((acc, p) => acc + (p.words || 0), 0);
+
+  const tagCounts = new Map();
+  validPosts.forEach(p => p.tags.forEach(t => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
+  const sortedTags = [...tagCounts.keys()].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+
+  const tagCloudHtml = sortedTags.map(t => {
+    const isActive = STATE.tagFilter === t;
+    return `<button class="seg-btn ${isActive ? 'active' : ''}" style="margin:2px;" onclick="toggleTagFilter('${escapeAttr(t)}')">#${escapeHTML(t)}(${tagCounts.get(t)})</button>`;
+  }).join('');
+
   c.innerHTML=`
     <div class="management-shell">
       <div class="card">
+        <div style="margin-bottom:16px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-weight:700;font-size:14px;color:var(--text);">
+          共 ${totalArticles} 篇文章，总计 ${totalWords} 字。
+        </div>
+
+        <div style="margin-bottom:16px;">          
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            ${tagCloudHtml || '<span class="muted">暂无标签</span>'}
+          </div>
+        </div>
+
         <div class="card-header">
           <div><div class="card-title">文章列表</div></div>
           <div class="segmented" id="status-tabs"></div>
@@ -728,7 +864,7 @@ function renderStats(counts){}
 
 function basePostsForFilters(){
   let posts=STATE.posts.slice();
-  if(STATE.statusTab==='trash') return posts.filter(p=>p.isTrash);
+  if(STATE.statusTab==='trash') return posts.filter(p=>!p.isTrash);
   posts=posts.filter(p=>!p.isTrash);
   if(STATE.statusTab==='draft') posts=posts.filter(p=>p.draft);
   if(STATE.statusTab==='published') posts=posts.filter(p=>!p.draft);
@@ -800,6 +936,7 @@ function changePostsPage(page) {
 
 function renderPostsTableBody(){
   const counts=postCounts(); renderStats(counts); renderStatusTabs(counts); renderYearFilter(); renderTagFilter();
+  
   const posts=getFilteredPosts();
   const box=document.getElementById('table-render-box');
   if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的文章</p></div>`; return; }
@@ -917,6 +1054,10 @@ async function openEditPost(encodedPath){
 function renderEditor(){
   STATE.page='editor'; STATE.dirty=false;
   const post=STATE.editingPost; const fm=post.fm || {};
+  
+  // 收集当前仓库所有已存在的标签供选择
+  const allExistingTags = [...new Set(STATE.posts.filter(p=>!p.isTrash).flatMap(p => p.tags))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
   document.getElementById('topbar-actions').innerHTML=`
@@ -925,6 +1066,12 @@ function renderEditor(){
     <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
   const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
+
+  const fullDate = String(fm.date || nowLocalString()).trim();
+  const parts = fullDate.split(' ');
+  const defaultDate = parts[0] || '';
+  const defaultTime = parts[1] || '12:00:00';
+
   c.innerHTML=`
     <div class="editor-wrap">
       <div class="editor-left">
@@ -943,20 +1090,38 @@ function renderEditor(){
         <div class="fm-card">
           <div class="fm-card-title">发布设置 <span class="tag ${isDraftValue(fm.draft)?'draft':'published'}" id="draft-tag">${isDraftValue(fm.draft)?'草稿':'发布'}</span></div>
           <div class="fm-group"><label class="fm-label">作者</label><input class="fm-input" id="fm-author" value="${escapeAttr(fm.author||'落落vici')}"></div>
-          <div class="fm-group"><label class="fm-label">发布日期</label><input class="fm-input" id="fm-date" value="${escapeAttr(fm.date||nowLocalString())}"></div>
+          <div class="fm-group"><label class="fm-label">发布日期</label><input class="fm-input" type="date" id="fm-date-part" value="${escapeAttr(defaultDate)}"></div>
+          <div class="fm-group"><label class="fm-label">发布时间</label><input class="fm-input" type="time" step="1" id="fm-time-part" value="${escapeAttr(defaultTime)}"></div>
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
           <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label>
             <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
               ${STATE.activeTags.map(t=>tagChip(t)).join('')}
               <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)" placeholder="添加标签">
             </div>
+            ${allExistingTags.length ? `
+              <div style="margin-top:6px;">
+                <div style="font-size:11.5px;color:var(--text3);margin-bottom:4px;">已有标签快速选择：</div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;max-height:80px;overflow-y:auto;">
+                  ${allExistingTags.map(t => `<button class="tag meta" style="cursor:pointer;border:none;" type="button" onclick="appendExistingTag('${escapeAttr(t)}')">+ #${escapeHTML(t)}</button>`).join('')}
+                </div>
+              </div>` : ''}
           </div>
           <div class="fm-group"><label class="fm-label">文件路径</label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
           <div class="switch-wrap">
             <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
             <span>保存为草稿，不公开渲染</span>
           </div>
-        </div>       
+        </div>
+
+        <!-- 编辑器图床快捷上传 -->
+        <div class="fm-card editor-upload-card">
+          <div class="fm-card-title">插入图片到文章 (R2 图床)</div>
+          <label class="media-drop" for="editor-image-upload">
+            <input type="file" id="editor-image-upload" accept="image/*,.heic" multiple onchange="uploadEditorR2Images(this)">
+            <div class="media-drop-title" style="font-size:13px;">点击或拖拽图片上传</div>
+            <div class="media-drop-desc" style="font-size:11.5px;">上传后将自动插入 Markdown 图片链接到正文中</div>
+          </label>
+        </div>
       </div>
     </div>`;
 
@@ -967,12 +1132,21 @@ function renderEditor(){
     toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
   });
 
-  ['fm-title','fm-description','fm-author','fm-date','fm-slug','fm-path'].forEach(id=>{
+  ['fm-title','fm-description','fm-author','fm-date-part','fm-time-part','fm-slug','fm-path'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
   });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
   refreshEditorMeta();
+}
+
+function appendExistingTag(val) {
+  if (val && !STATE.activeTags.includes(val)) {
+    STATE.activeTags.push(val);
+    document.getElementById('tags-wrap').insertAdjacentHTML('afterbegin', tagChip(val));
+    markDirty();
+    toast(`已添加标签 #${val}`, "success");
+  }
 }
 
 function tagChip(t){ return `<span class="tag-chip">${escapeHTML(t)}<span class="remove" onclick="removeTagNode(this,'${escapeAttr(t)}')">×</span></span>`; }
@@ -1007,7 +1181,11 @@ function collectEditorData(mode='draft'){
   let path=cleanPath(getFormValue('fm-path', defaultPath));
   if(!path.endsWith('.md')) path += '.md';
 
-  const fm={ ...(STATE.editingPost?.fm||{}), title, author:getFormValue('fm-author'), date:getFormValue('fm-date', nowLocalString()), lastmod:nowLocalString(), slug, draft: mode==='draft' };
+  const datePart = getFormValue('fm-date-part');
+  const timePart = getFormValue('fm-time-part') || '00:00:00';
+  const fullDateStr = datePart ? `${datePart} ${timePart}` : nowLocalString();
+
+  const fm={ ...(STATE.editingPost?.fm||{}), title, author:getFormValue('fm-author'), date:fullDateStr, lastmod:nowLocalString(), slug, draft: mode==='draft' };
   return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
 }
 
@@ -1023,14 +1201,415 @@ async function savePost(mode){
 function readLocalDraft(path){ return null; }
 
 // ============================================================
-// 2. 运动记录管理（支持按运动类型分类显示）
+// 2. 友链管理 (拖拽排序 + 暂存机制)
+// ============================================================
+async function renderFriendsPage(){
+  STATE.page='friends';
+  document.getElementById('page-title').innerHTML='友链管理 <small>static/friends.json</small>';
+  const sortBtnText = STATE.friendsSortMode ? '✨ 退出并应用排序' : '列表排序 ';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="toggleFriendsSortMode()">${sortBtnText}</button>
+    <button class="btn" onclick="checkFriendsAccessibility()">检查连通性</button>
+    <button class="btn" onclick="renderFriendsPage()">刷新数据</button>
+    <button class="btn primary" onclick="openFriendsEditModal()">新增友链</button>
+    <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveAllFriendsToGithub()">保存到仓库</button>`;
+  
+  const c=document.getElementById('main-content');
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取友链数据…</div>`;
+
+  try {
+    if (STATE.friendsData.length === 0) {
+      const file = await getFileContent(FRIENDS_JSON_PATH);
+      const json = JSON.parse(file.content || '{"friends":[]}');
+      STATE.friendsData = json.friends || [];
+      STATE.friendsSha = file.sha;
+    }
+    renderFriendsGridContainer();
+  } catch (e) {
+    c.innerHTML = `<div class="alert danger">读取友链数据失败: ${escapeHTML(e.message)}<br>请检查 static/friends.json 是否在仓库路径下。</div>`;
+  }
+}
+
+function toggleFriendsSortMode() {
+  STATE.friendsSortMode = !STATE.friendsSortMode;
+  renderFriendsGridBody();
+  toast(STATE.friendsSortMode ? "已开启友链自由拖拽排序模式（新顺序已暂存本地，确认无误后点击『保存到仓库』生效）" : "已退出排序模式", "info");
+}
+
+async function checkFriendsAccessibility() {
+  if (!STATE.friendsData || STATE.friendsData.length === 0) {
+    toast("没有可检测的友链数据", "warning");
+    return;
+  }
+  toast("开始检测所有博客连通状态…", "info");
+
+  STATE.friendsData.forEach(item => {
+    const url = item[1];
+    if (url) STATE.friendsStatus[url] = 'checking';
+  });
+  renderFriendsGridBody();
+
+  const checkSingleUrl = async (url) => {
+    if (!url) return '404';
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    try {
+      await fetch(url, { mode: 'no-cors', cache: 'no-cache', signal: controller.signal });
+      clearTimeout(timeoutId);
+      return 'ok';
+    } catch (e) {
+      clearTimeout(timeoutId);
+      return '404';
+    }
+  };
+
+  const tasks = STATE.friendsData.map(async (item) => {
+    const url = item[1];
+    if (!url) return;
+    const res = await checkSingleUrl(url);
+    STATE.friendsStatus[url] = res;
+    renderFriendsGridBody();
+  });
+
+  await Promise.allSettled(tasks);
+  toast("全量博客访问连通性检测完毕", "success");
+}
+
+function getFilteredFriendsData() {
+  const kw = (STATE.friendsSearchKeyword || '').trim().toLowerCase();
+  const statusFilter = STATE.friendsStatusFilter || 'all';
+
+  return STATE.friendsData.filter(item => {
+    const name = String(item[0] || '').toLowerCase();
+    const url = String(item[1] || '').toLowerCase();
+    
+    const matchKw = !kw || name.includes(kw) || url.includes(kw);
+    const currentStatus = STATE.friendsStatus[item[1]] || 'untested';
+    
+    let matchStatus = true;
+    if (statusFilter === 'ok') matchStatus = currentStatus === 'ok';
+    else if (statusFilter === '404') matchStatus = currentStatus === '404';
+    else if (statusFilter === 'untested') matchStatus = currentStatus === 'untested' || currentStatus === 'checking';
+
+    return matchKw && matchStatus;
+  });
+}
+
+function renderFriendsGridContainer() {
+  const c = document.getElementById('main-content');
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title" id="friends-count-title">我的订阅（共 ${STATE.friendsData.length} 人）</div>
+          <div class="card-desc">点击卡片弹窗可直接：访问博客、编辑资料及查看最近 5 篇文章 RSS。星标：🟢 正常访问 / 🔴 404 / ⚪ 未检测。</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          ${ICON_SEARCH}
+          <input type="text" class="search-input" id="friends-search" placeholder="搜索友链博主、网址…" value="${escapeAttr(STATE.friendsSearchKeyword)}" oninput="handleFriendsSearch(this.value)">
+        </div>
+        <select class="form-select" id="friends-status-filter" style="min-width:140px;" onchange="handleFriendsStatusFilter(this.value)">
+          <option value="all" ${STATE.friendsStatusFilter==='all'?'selected':''}>全部状态</option>
+          <option value="ok" ${STATE.friendsStatusFilter==='ok'?'selected':''}>🟢 活跃 (正常)</option>
+          <option value="404" ${STATE.friendsStatusFilter==='404'?'selected':''}>🔴 404 / 无法访问</option>
+          <option value="untested" ${STATE.friendsStatusFilter==='untested'?'selected':''}>⚪ 未检测 / 检测中</option>
+        </select>
+      </div>
+      
+      <div class="friends-grid" id="friends-grid-body"></div>
+    </div>`;
+
+  renderFriendsGridBody();
+}
+
+function handleFriendsSearch(kw) {
+  STATE.friendsSearchKeyword = kw;
+  renderFriendsGridBody();
+}
+
+function handleFriendsStatusFilter(val) {
+  STATE.friendsStatusFilter = val;
+  renderFriendsGridBody();
+}
+
+function renderFriendsGridBody() {
+  const grid = document.getElementById('friends-grid-body');
+  const countTitle = document.getElementById('friends-count-title');
+  if (!grid) return;
+
+  const filtered = getFilteredFriendsData();
+  if (countTitle) countTitle.textContent = `我的订阅（当前 ${filtered.length} / 共 ${STATE.friendsData.length} 人）`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;color:var(--text3);padding:36px;text-align:center;">未找到符合条件的友链博主</div>`;
+    return;
+  }
+
+  const isSorting = STATE.friendsSortMode;
+
+  grid.innerHTML = filtered.map((item) => {
+    const originalIndex = STATE.friendsData.indexOf(item);
+    const name = item[0] || '未命名博客';
+    const link = item[1] || '#';
+    const avatar = item[2] || 'https://cravatar.cn/avatar/00000000000000000000000000000000?d=mp';
+
+    const statusVal = STATE.friendsStatus[link];
+    let starTag = `<span class="friend-star" title="未检测连通性">⚪</span>`;
+    if (statusVal === 'checking') {
+      starTag = `<span class="friend-star" title="检测中...">🟡</span>`;
+    } else if (statusVal === 'ok') {
+      starTag = `<span class="friend-star" title="正常连通">🟢</span>`;
+    } else if (statusVal === '404') {
+      starTag = `<span class="friend-star" title="无法访问 / 404">🔴</span>`;
+    }
+
+    return `
+      <div class="friend-card" 
+           draggable="${isSorting ? 'true' : 'false'}" 
+           ondragstart="onFriendDragStart(event, ${originalIndex})" 
+           ondragover="onFriendDragOver(event)" 
+           ondrop="onFriendDrop(event, ${originalIndex})"
+           onclick="${isSorting ? '' : `openFriendActionModal(${originalIndex})`}" 
+           style="${isSorting ? 'border-color:var(--accent);background:var(--accent-light);cursor:grab;' : ''}">
+        ${starTag}
+        <img class="friend-avatar" src="${escapeAttr(avatar)}" onerror="this.src='https://cravatar.cn/avatar/00000000000000000000000000000000?d=mp'" alt="">
+        <div class="friend-name" title="${escapeAttr(name)}">${escapeHTML(name)}</div>
+      </div>`;
+  }).join('');
+}
+
+let draggedFriendIndex = null;
+function onFriendDragStart(e, index) {
+  draggedFriendIndex = index;
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onFriendDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+function onFriendDrop(e, targetIndex) {
+  e.preventDefault();
+  if (draggedFriendIndex === null || draggedFriendIndex === targetIndex) return;
+  const item = STATE.friendsData.splice(draggedFriendIndex, 1)[0];
+  STATE.friendsData.splice(targetIndex, 0, item);
+  draggedFriendIndex = null;
+  renderFriendsGridBody();
+  toast("友链新顺序已暂存本地，确认无误后请点击顶部『保存到仓库』", "success");
+}
+
+function openFriendActionModal(index) {
+  const item = STATE.friendsData[index];
+  if (!item) return;
+
+  const name = item[0] || '未命名';
+  const url = item[1] || '';
+  const avatar = item[2] || '';
+
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="${escapeAttr(avatar)}" style="width:28px;height:28px;border-radius:6px;" onerror="this.src='https://cravatar.cn/avatar/00000000000000000000000000000000?d=mp'">
+            <span>${escapeHTML(name)}</span>
+          </div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display:flex;gap:10px;margin-bottom:8px;">
+            <a href="${escapeAttr(url)}" target="_blank" rel="noopener" class="btn primary" style="flex:1;">🔗 访问博客</a>
+            <button class="btn" style="flex:1;" onclick="openFriendsEditModal(${index})">✏️ 编辑条目</button>
+            <button class="btn danger" onclick="deleteFriendItem(${index})">🗑️ 删除</button>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:12px;">
+            <div style="font-weight:700;font-size:13.5px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+              <span>📰 最近 5 篇文章 (RSS Feed)</span>
+              <small class="muted" style="font-weight:normal;">自动实时获取</small>
+            </div>
+            <div id="rss-feed-box">
+              <div class="loading" style="padding:20px 0;"><div class="spinner"></div>正在抓取最新文章…</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">关闭</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('modal-container').innerHTML = html;
+  fetchFriendRssFeed(url);
+}
+
+async function fetchFriendRssFeed(siteUrl) {
+  const box = document.getElementById('rss-feed-box');
+  if (!box) return;
+
+  if (!siteUrl) {
+    box.innerHTML = `<div class="muted" style="padding:10px 0;">该条目未配置博客网址</div>`;
+    return;
+  }
+
+  try {
+    const cleanUrl = siteUrl.replace(/\/$/, '');
+    const rssApi = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanUrl + '/index.xml')}`;
+    
+    let res = await fetch(rssApi);
+    let data = await res.json();
+
+    if (data.status !== 'ok') {
+      const altFeedApi = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanUrl + '/feed')}`;
+      res = await fetch(altFeedApi);
+      data = await res.json();
+    }
+
+    if (data.status === 'ok' && data.items && data.items.length > 0) {
+      const items = data.items.slice(0, 5);
+      box.innerHTML = items.map(item => `
+        <div class="rss-item" style="margin-bottom:8px;">
+          <a class="rss-title" href="${escapeAttr(item.link)}" target="_blank" rel="noopener">${escapeHTML(item.title)}</a>
+          <div class="rss-date">${escapeHTML((item.pubDate || '').slice(0, 16))}</div>
+        </div>
+      `).join('');
+    } else {
+      box.innerHTML = `<div class="muted" style="padding:12px 0;">未扫描到公开 RSS 订阅源或解析超时</div>`;
+    }
+  } catch (e) {
+    box.innerHTML = `<div class="muted" style="padding:12px 0;">暂无法抓取该博客最新动态</div>`;
+  }
+}
+
+function openFriendsEditModal(index = null) {
+  closeModal();
+  const isEdit = index !== null;
+  const item = isEdit ? STATE.friendsData[index] : ["", "", ""];
+
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>${isEdit ? '编辑友链条目' : '新增友链条目'}</div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="fm-group">
+            <label class="fm-label">博客名称</label>
+            <input class="fm-input" id="fr-name" value="${escapeAttr(item[0] || '')}" placeholder="例: 落落vici">
+          </div>
+          <div class="fm-group">
+            <label class="fm-label">博客网址 (URL)</label>
+            <input class="fm-input" id="fr-url" value="${escapeAttr(item[1] || '')}" placeholder="例: https://hux.ink">
+          </div>
+          <div class="fm-group">
+            <div class="fm-label">
+              <span>头像/图标地址 (Avatar)</span>
+              <button class="btn sm ghost" type="button" style="color:var(--blue);padding:0;" onclick="fetchFaviconForModal()">⚡ 自动提取 Icon</button>
+            </div>
+            <input class="fm-input" id="fr-avatar" value="${escapeAttr(item[2] || '')}" placeholder="例: https://cravatar.cn/avatar/...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn primary" onclick="saveFriendModalItem(${index})">保存更改</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modal-container').innerHTML = html;
+}
+
+function fetchFaviconForModal() {
+  const urlInput = document.getElementById('fr-url');
+  const avatarInput = document.getElementById('fr-avatar');
+  if (!urlInput || !avatarInput) return;
+
+  let urlVal = urlInput.value.trim();
+  if (!urlVal) {
+    toast("请先填写博客网址 (URL)", "warning");
+    return;
+  }
+
+  if (!urlVal.startsWith('http://') && !urlVal.startsWith('https://')) {
+    urlVal = 'https://' + urlVal;
+  }
+
+  try {
+    const parsedUrl = new URL(urlVal);
+    const domain = parsedUrl.hostname;
+    const faviconUrl = `https://icon.horse/icon/${domain}`;
+    avatarInput.value = faviconUrl;
+    toast(`已自动提取并生成图标：${domain}`, "success");
+  } catch (e) {
+    toast("博客网址格式不正确", "error");
+  }
+}
+
+function saveFriendModalItem(index) {
+  const name = document.getElementById('fr-name').value.trim();
+  const url = document.getElementById('fr-url').value.trim();
+  const avatar = document.getElementById('fr-avatar').value.trim();
+
+  if (!name || !url) {
+    toast("博客名称与网址不能为空", "error");
+    return;
+  }
+
+  const newItem = [name, url, avatar];
+
+  if (index !== null) {
+    STATE.friendsData[index] = newItem;
+  } else {
+    STATE.friendsData.push(newItem);
+  }
+
+  closeModal();
+  renderFriendsGridBody();
+  toast("更改已应用至本地，请记得点击顶部『保存到仓库』", "info");
+}
+
+function deleteFriendItem(index) {
+  const item = STATE.friendsData[index];
+  if (!confirm(`确定要删除友链「${item[0] || '未命名'}」吗？`)) return;
+
+  closeModal();
+  STATE.friendsData.splice(index, 1);
+  renderFriendsGridBody();
+  toast("友链已从本地列表移除", "info");
+}
+
+async function saveAllFriendsToGithub() {
+  try {
+    toast("正在提交 static/friends.json 至 GitHub...");
+    const payload = { friends: STATE.friendsData };
+    const res = await putFile(FRIENDS_JSON_PATH, JSON.stringify(payload, null, 4), STATE.friendsSha, `chore: update friends.json`);
+    STATE.friendsSha = res.content.sha;
+    toast(" static/friends.json 已更新成功！", "success");
+  } catch (e) {
+    toast(`保存失败: ${e.message}`, "error");
+  }
+}
+
+function downloadFriendsJson() {
+  const payload = { friends: STATE.friendsData };
+  const blob = new Blob([JSON.stringify(payload, null, 4)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'friends.json';
+  a.click();
+}
+
+// ============================================================
+// 3. 运动记录管理
 // ============================================================
 async function renderSportsPage(){
   STATE.page='sports';
-  document.getElementById('page-title').innerHTML='运动记录 <small>assets/act.json 数据维护</small>';
+  document.getElementById('page-title').innerHTML='运动记录 <small>assets/act.json</small>';
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="renderSportsPage()">刷新数据</button>
-    <button class="btn primary" onclick="openSportsModal()">新建运动条目</button>`;
+    <button class="btn primary" onclick="openSportsModal()">新建运动条目</button>
+    <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveSportsData()">保存到仓库</button>`;
   
   const c=document.getElementById('main-content');
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取运动记录…</div>`;
@@ -1050,7 +1629,13 @@ async function renderSportsPage(){
 
 function setSportsTypeFilter(type) {
   STATE.sportsTypeFilter = type;
+  STATE.sportsPage = 1;
   renderSportsTableContainer();
+}
+
+function changeSportsPage(page) {
+  STATE.sportsPage = page;
+  renderSportsTableContainer(); // 必须调用重新渲染函数以刷新页面和分页器
 }
 
 function renderSportsTableContainer() {
@@ -1062,6 +1647,11 @@ function renderSportsTableContainer() {
     filteredList = STATE.sportsData.filter(i => (i.type || 'Workout') === STATE.sportsTypeFilter);
   }
 
+  const totalMinutes = filteredList.reduce((acc, i) => acc + parseTimeToMinutes(i.moving_time), 0);
+  const totalHours = Math.floor(totalMinutes / 60);
+  const remainMins = totalMinutes % 60;
+  const timeSummaryStr = totalHours > 0 ? `${totalHours} 小时 ${remainMins} 分钟` : `${remainMins} 分钟`;
+
   const typeTabs = [
     { key: 'all', name: '全部分类', count: STATE.sportsData.length },
     ...types.map(t => ({
@@ -1071,12 +1661,19 @@ function renderSportsTableContainer() {
     }))
   ];
 
+  const pageSize = 15;
+  const totalPages = Math.ceil(filteredList.length / pageSize) || 1;
+  if (STATE.sportsPage > totalPages) STATE.sportsPage = totalPages;
+  if (STATE.sportsPage < 1) STATE.sportsPage = 1;
+
+  const startIndex = (STATE.sportsPage - 1) * pageSize;
+  const pageList = filteredList.slice(startIndex, startIndex + pageSize);
+
   c.innerHTML = `
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">运动项目列表（共 ${filteredList.length} / ${STATE.sportsData.length} 条）</div>
-          <div class="card-desc">以此唯一标识 start_date_local，编辑时会自动覆盖原数据防止重复。</div>
+          <div class="card-title">🏃运动记录列表 ${STATE.sportsTypeFilter === 'all' ? '共' : STATE.sportsTypeFilter} <strong>${filteredList.length}</strong> 次，总时长 <strong>${timeSummaryStr}</strong> </div>        
         </div>
         <div class="segmented">
           ${typeTabs.map(tab => `
@@ -1090,34 +1687,47 @@ function renderSportsTableContainer() {
         <table>
           <thead>
             <tr>
-              <th>run_id</th>
+              <th>日期</th>
+              <th>时间</th>
               <th>运动名称</th>
-              <th>开始时间 (start_date_local)</th>
               <th>运动类型</th>
               <th>时长</th>
               <th>平均心率</th>
-              <th>来源</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
-            ${filteredList.length === 0 ? `<tr><td colspan="8" class="muted" style="padding:24px;">暂无该分类的运动记录</td></tr>` : 
-              filteredList.map(item => `
-              <tr>
-                <td><span class="mono">${escapeHTML(item.run_id)}</span></td>
-                <td><strong>${escapeHTML(item.name)}</strong></td>
-                <td class="mono">${escapeHTML(item.start_date_local)}</td>
-                <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
-                <td>${escapeHTML(item.moving_time)}</td>
-                <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
-                <td><span class="tag soft">${escapeHTML(item.source || 'manual')}</span></td>
-                <td>
-                  <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
-                </td>
-              </tr>
-            `).join('')}
+            ${pageList.length === 0 ? `<tr><td colspan="7" class="muted" style="padding:24px;">暂无该分类的运动记录</td></tr>` : 
+              pageList.map(item => {
+                const fullDate = String(item.start_date_local || '').trim();
+                const parts = fullDate.split(' ');
+                const datePart = parts[0] || '-';
+                const timePart = parts[1] || '00:00:00';
+
+                return `
+                <tr>
+                  <td class="mono"><strong>${escapeHTML(datePart)}</strong></td>
+                  <td class="mono muted">${escapeHTML(timePart)}</td>
+                  <td><strong>${escapeHTML(item.name)}</strong></td>
+                  <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
+                  <td>${escapeHTML(item.moving_time)}</td>
+                  <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
+                  <td>
+                    <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
+                  </td>
+                </tr>`;
+              }).join('')}
           </tbody>
         </table>
+      </div>
+
+      <div class="pagination-wrap">
+        <div>显示第 ${startIndex + 1} - ${Math.min(startIndex + pageSize, filteredList.length)} 条，共 ${filteredList.length} 条</div>
+        <div class="pagination-controls">
+          <button class="btn sm" ${STATE.sportsPage <= 1 ? 'disabled' : ''} onclick="changeSportsPage(${STATE.sportsPage - 1})">上一页</button>
+          <span style="padding: 0 8px; font-weight: 600;">${STATE.sportsPage} / ${totalPages}</span>
+          <button class="btn sm" ${STATE.sportsPage >= totalPages ? 'disabled' : ''} onclick="changeSportsPage(${STATE.sportsPage + 1})">下一页</button>
+        </div>
       </div>
     </div>`;
 }
@@ -1127,16 +1737,24 @@ function openSportsModal(startDateKey=null) {
   const item = isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {};
   const currentMinutes = isEdit ? parseTimeToMinutes(item.moving_time) : 30;
 
+  const fullDate = String(item.start_date_local || nowLocalString()).trim();
+  const parts = fullDate.split(' ');
+  const defaultDate = parts[0] || '';
+  const defaultTime = parts[1] || '12:00:00';
+
   const html = `
     <div class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
-          <div>${isEdit ? '编辑运动记录' : '新增运动记录'}</div>
+          <div>${isEdit ? '编辑运动记录' : '新建运动记录'}</div>
           <button class="btn sm ghost" onclick="closeModal()">✕</button>
         </div>
         <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="fm-group"><label class="fm-label">运动日期</label><input class="fm-input" type="date" id="sp-date-part" value="${escapeAttr(defaultDate)}"></div>
+            <div class="fm-group"><label class="fm-label">运动时间</label><input class="fm-input" type="time" step="1" id="sp-time-part" value="${escapeAttr(defaultTime)}"></div>
+          </div>
           <div class="fm-group"><label class="fm-label">运动名称</label><input class="fm-input" id="sp-name" value="${escapeAttr(item.name || '登月计划')}"></div>
-          <div class="fm-group"><label class="fm-label">开始时间 (start_date_local) <span class="muted">格式: YYYY-MM-DD HH:mm:ss</span></label><input class="fm-input" id="sp-start" value="${escapeAttr(item.start_date_local || nowLocalString())}" ${isEdit ? 'readonly style="background:var(--bg3)"' : ''}></div>
           <div class="fm-group">
             <label class="fm-label">运动类型 (Type)</label>
             <select class="form-select" id="sp-type" style="width:100%;">
@@ -1145,28 +1763,41 @@ function openSportsModal(startDateKey=null) {
               <option value="Workout" ${ item.type === 'Workout' ? 'selected' : '' }>Workout (HIIT/健身)</option>    
             </select>
           </div>
-          <div class="fm-group"><label class="fm-label">时长 (分钟) <span class="muted">保存时会自动转为 H:MM:SS</span></label><input class="fm-input" type="number" id="sp-duration" value="${currentMinutes}"></div>
+          <div class="fm-group"><label class="fm-label">时长 (分钟) <span class="muted">保存时自动转为 H:MM:SS</span></label><input class="fm-input" type="number" id="sp-duration" value="${currentMinutes}"></div>
           <div class="fm-group"><label class="fm-label">平均心率 (bpm)</label><input class="fm-input" type="number" step="0.1" id="sp-hr" value="${item.average_heartrate || 135}"></div>
-          <div class="fm-group"><label class="fm-label">数据来源 (Source)</label><input class="fm-input" id="sp-source" value="${escapeAttr(item.source || 'admin')}"></div>
         </div>
-        <div class="modal-footer">
-          <button class="btn" onclick="closeModal()">取消</button>
-          <button class="btn primary" onclick="saveSportsData()">保存并写入</button>
+        <div class="modal-footer" style="justify-content:space-between;">
+          ${isEdit ? `<button class="btn danger" type="button" onclick="deleteSportsData('${escapeAttr(startDateKey)}')">🗑️ 删除此记录</button>` : '<div></div>'}
+          <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="closeModal()">取消</button>
+            <button class="btn primary" onclick="saveSportsData()">保存并写入</button>
+          </div>
         </div>
       </div>
     </div>`;
   document.getElementById('modal-container').innerHTML = html;
 }
 
+function deleteSportsData(startDateKey) {
+  if (!confirm(`确定要从本地列表中删除此项运动记录吗？\n（点击确认后仅从本地列表中剔除，最终提交需要保存）`)) return;
+
+  STATE.sportsData = STATE.sportsData.filter(i => i.start_date_local !== startDateKey);
+  closeModal();
+  renderSportsTableContainer();
+  toast("该运动记录已从本地列表剔除", "info");
+}
+
 async function saveSportsData() {
   const name = document.getElementById('sp-name').value.trim();
-  const startDateLocal = document.getElementById('sp-start').value.trim();
+  const datePart = document.getElementById('sp-date-part').value.trim();
+  const timePart = document.getElementById('sp-time-part').value.trim() || '00:00:00';
+  const startDateLocal = `${datePart} ${timePart}`.trim();
+
   const type = document.getElementById('sp-type').value.trim();
   const durationMin = parseFloat(document.getElementById('sp-duration').value) || 0;
   const hr = parseFloat(document.getElementById('sp-hr').value) || 0;
-  const source = document.getElementById('sp-source').value.trim() || 'manual';
 
-  if (!startDateLocal || !name) { toast("名称与开始时间不能为空", "error"); return; }
+  if (!datePart || !name) { toast("运动名称与日期不能为空", "error"); return; }
 
   try {
     toast("正在保存更新运动 JSON...");
@@ -1176,12 +1807,12 @@ async function saveSportsData() {
     STATE.sportsData.forEach(item => { if(item.start_date_local) map[item.start_date_local] = item; });
 
     if (map[startDateLocal]) {
-      map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr, source };
+      map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr };
     } else {
-      const datePrefix = startDateLocal.slice(0, 10).replace(/-/g, "");
+      const datePrefix = datePart.replace(/-/g, "");
       const count = STATE.sportsData.filter(i => String(i.run_id).startsWith(datePrefix)).length;
       const run_id = parseInt(`${datePrefix}${String(count + 1).padStart(3, '0')}`);
-      map[startDateLocal] = { run_id, name, moving_time: movingTime, type, start_date_local: startDateLocal, summary_polyline: "", average_heartrate: hr, source };
+      map[startDateLocal] = { run_id, name, moving_time: movingTime, type, start_date_local: startDateLocal, summary_polyline: "", average_heartrate: hr, source: "manual" };
     }
 
     let newList = Object.values(map);
@@ -1195,23 +1826,29 @@ async function saveSportsData() {
 }
 
 // ============================================================
-// 3. 足迹管理（单大地图模式 + 列表/编辑页面模式无缝切换）
+// 4. 足迹管理（单大地图模式 + 拖拽排序模式 + 暂存机制）
 // ============================================================
 async function renderFootprintsPage(){
   STATE.page='footprints';
   STATE.footprintsMode = 'list';
-  document.getElementById('page-title').innerHTML='足迹记录 <small>高德地图 1:1 前台同步管理</small>';
-  document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="renderFootprintsPage()">刷新数据</button>`;
+  const sortBtnText = STATE.footprintsSortMode ? '✨ 退出并应用排序' : '列表排序';
+  document.getElementById('page-title').innerHTML='足迹记录 <small>assets/footprints.json</small>';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="toggleFootprintsSortMode()">${sortBtnText}</button>
+    <button class="btn" onclick="renderFootprintsPage()">刷新数据</button>
+    <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveAllFootprintsToGithub()">保存到仓库</button>`;
   
   const c=document.getElementById('main-content');
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在加载高德地图与足迹图层…</div>`;
 
   try {
     await loadAmapSDK();
-    const file = await getFileContent(FOOTPRINTS_JSON_PATH);
-    const json = JSON.parse(file.content || '{"locations":[]}');
-    STATE.footprintsData = json.locations || [];
-    STATE.footprintsSha = file.sha;
+    if (STATE.footprintsData.length === 0) {
+      const file = await getFileContent(FOOTPRINTS_JSON_PATH);
+      const json = JSON.parse(file.content || '{"locations":[]}');
+      STATE.footprintsData = json.locations || [];
+      STATE.footprintsSha = file.sha;
+    }
 
     c.innerHTML = `
       <div class="footprint-shell">
@@ -1231,6 +1868,12 @@ async function renderFootprintsPage(){
   } catch (e) {
     c.innerHTML = `<div class="alert danger">读取足迹失败: ${escapeHTML(e.message)}</div>`;
   }
+}
+
+function toggleFootprintsSortMode() {
+  STATE.footprintsSortMode = !STATE.footprintsSortMode;
+  renderFootprintPanel();
+  toast(STATE.footprintsSortMode ? "已开启足迹自由拖拽模式：按住卡片直接拖动即可重新排序" : "已退出排序模式", "info");
 }
 
 function removeTempMapMarker() {
@@ -1282,8 +1925,7 @@ function renderFootprintListPanel(container) {
           <div class="card-title" id="fp-list-title">全部足迹（共 ${STATE.footprintsData.length} 个）</div>
           <div style="display:flex;gap:8px;align-items:center;">
             <button class="btn sm primary" onclick="switchFootprintMode('edit', null)">＋ 新建足迹</button>
-            <button class="btn sm" onclick="downloadFootprintsJson()">JSON 备份</button>
-            <button class="btn sm primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveAllFootprintsToGithub()">保存到仓库</button>
+            <button class="btn sm" onclick="downloadFootprintsJson()">JSON 备份</button>            
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;">
@@ -1297,20 +1939,7 @@ function renderFootprintListPanel(container) {
         </div>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>地点</th>
-              <th>描述</th>
-              <th>分类</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="fp-table-body"></tbody>
-        </table>
-      </div>
-      <div id="fp-pagination-box"></div>
+      <div class="footprint-cards-grid" id="fp-cards-body"></div>
     </div>`;
 }
 
@@ -1383,7 +2012,11 @@ function renderFootprintEditForm(container) {
         </div>
 
         <div class="fm-group" style="grid-column: span 2;">
-          <label class="fm-label">照片 URL (每行一个)</label>
+          <div class="fm-label">
+            <span>照片 URL (每行一个)</span>
+            <button class="btn sm ghost" type="button" style="color:var(--blue);padding:0;" onclick="document.getElementById('fp-photos-upload-input')?.click()">⚡ 上传图片到 R2 图床</button>
+            <input type="file" id="fp-photos-upload-input" accept="image/*,.heic" multiple style="display:none;" onchange="uploadFootprintPhotosToR2(this)">
+          </div>
           <textarea class="fm-textarea" id="fp-input-photos" placeholder="https://..." style="min-height:70px;">${escapeHTML((item.photos || []).join('\n'))}</textarea>
         </div>
       </div>
@@ -1400,6 +2033,33 @@ function renderFootprintEditForm(container) {
       STATE.mainMap.setZoomAndCenter(12, [parts[0], parts[1]]);
       updateTempMapMarker(parts[0], parts[1], item.name || '');
     }
+  }
+}
+
+async function uploadFootprintPhotosToR2(input) {
+  const files = [...(input?.files || [])];
+  if (!files.length) return;
+
+  const photosTextarea = document.getElementById('fp-input-photos');
+  if (!photosTextarea) return;
+
+  try {
+    toast(`正在上传 ${files.length} 张图片到 R2 图床…`, 'info');
+    const uploadedUrls = [];
+    for (const file of files) {
+      const result = await r2UploadFile(file);
+      uploadedUrls.push(result.url);
+    }
+
+    const currentText = photosTextarea.value.trim();
+    const newText = uploadedUrls.join('\n');
+    photosTextarea.value = currentText ? `${currentText}\n${newText}` : newText;
+
+    toast(`成功上传 ${files.length} 张照片并追加到列表中`, 'success');
+  } catch (e) {
+    toast(`图片上传失败: ${e.message}`, 'error');
+  } finally {
+    if (input) input.value = '';
   }
 }
 
@@ -1480,7 +2140,6 @@ function handleFootprintTableFilter() {
   STATE.tableCategoryFilter = document.getElementById('fp-filter-cat').value;
   STATE.tableProvinceFilter = document.getElementById('fp-filter-prov').value;
   STATE.tableSearchKeyword = document.getElementById('fp-search-kw').value.trim().toLowerCase();
-  STATE.footprintsPage = 1;
 
   renderFootprintTableRows();
 
@@ -1503,94 +2162,168 @@ function getFilteredFootprintData() {
   });
 }
 
-function changeFootprintsPage(page) {
-  STATE.footprintsPage = page;
-  renderFootprintTableRows();
-}
-
 function renderFootprintTableRows() {
-  const tbody = document.getElementById('fp-table-body');
+  const container = document.getElementById('fp-cards-body');
   const titleEl = document.getElementById('fp-list-title');
-  const pageBox = document.getElementById('fp-pagination-box');
-  if (!tbody) return;
+  if (!container) return;
 
   const filtered = getFilteredFootprintData();
   if (titleEl) titleEl.textContent = `全部足迹（当前 ${filtered.length} / 共 ${STATE.footprintsData.length} 个）`;
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text3);padding:24px;">未找到符合条件的足迹记录</td></tr>`;
-    if (pageBox) pageBox.innerHTML = '';
+    container.innerHTML = `<div style="grid-column:1/-1;color:var(--text3);padding:32px;text-align:center;">未找到符合条件的足迹记录</div>`;
     return;
   }
 
-  const pageSize = 10;
-  const totalPages = Math.ceil(filtered.length / pageSize) || 1;
-  if (STATE.footprintsPage > totalPages) STATE.footprintsPage = totalPages;
-  if (STATE.footprintsPage < 1) STATE.footprintsPage = 1;
+  const isSorting = STATE.footprintsSortMode;
 
-  const startIndex = (STATE.footprintsPage - 1) * pageSize;
-  const pageList = filtered.slice(startIndex, startIndex + pageSize);
-
-  const isFiltered = (STATE.tableCategoryFilter !== 'all' || STATE.tableProvinceFilter !== 'all' || STATE.tableSearchKeyword !== '' || STATE.selectedMapLocationName !== null);
-
-  tbody.innerHTML = pageList.map((item) => {
+  container.innerHTML = filtered.map((item) => {
     const originalIndex = STATE.footprintsData.indexOf(item);
-    return `
-      <tr id="fp-row-${originalIndex}">
-        <td style="text-align:left;min-width:110px;">
-          <a href="javascript:void(0)" onclick="focusFootprintOnMap(${originalIndex})" style="color:var(--text);font-weight:700;" title="点击在地图上定位">
-            ${escapeHTML(item.name)}
-          </a>
-          ${item.date ? `<div class="muted" style="font-size:11px;margin-top:2px;">${escapeHTML(item.date)}</div>` : ''}
-        </td>
-        <td style="text-align:left;max-width:220px;font-size:12.5px;color:var(--text2);" title="${escapeAttr(item.description||'')}">
-          ${escapeHTML(item.description || '-')}
-        </td>
-        <td>${(item.categories||[]).map(cat=>`<span class="tag soft">${escapeHTML(cat)}</span>`).join(' ')}</td>
-        <td>
-          <div style="display:flex;gap:4px;justify-content:center;">
-            <button class="btn sm" onclick="switchFootprintMode('edit', ${originalIndex})">编辑</button>
-            <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, -1)" ${isFiltered || originalIndex === 0 ? 'disabled' : ''}>上移</button>
-            <button class="btn sm" onclick="moveFootprintOrderLocal(${originalIndex}, 1)" ${isFiltered || originalIndex === STATE.footprintsData.length - 1 ? 'disabled' : ''}>下移</button>
-            <button class="btn sm danger" onclick="deleteFootprintItemLocal(${originalIndex})">删除</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
+    const isSelected = STATE.selectedMapLocationName === item.name;
+    const colorClass = COLOR_PRESETS[originalIndex % COLOR_PRESETS.length];
 
-  if (pageBox) {
-    pageBox.innerHTML = `
-      <div class="pagination-wrap" style="border-top:none;padding:12px 0 0 0;">
-        <div>显示 ${startIndex + 1} - ${Math.min(startIndex + pageSize, filtered.length)} 条</div>
-        <div class="pagination-controls">
-          <button class="btn sm" ${STATE.footprintsPage <= 1 ? 'disabled' : ''} onclick="changeFootprintsPage(${STATE.footprintsPage - 1})">上一页</button>
-          <span style="padding: 0 8px; font-weight: 600;">${STATE.footprintsPage} / ${totalPages}</span>
-          <button class="btn sm" ${STATE.footprintsPage >= totalPages ? 'disabled' : ''} onclick="changeFootprintsPage(${STATE.footprintsPage + 1})">下一页</button>
-        </div>
+    return `
+      <div class="fp-card ${isSelected ? 'is-selected' : ''}" 
+           id="fp-card-${originalIndex}" 
+           draggable="${isSorting ? 'true' : 'false'}"
+           ondragstart="onFootprintDragStart(event, ${originalIndex})"
+           ondragover="onFootprintDragOver(event)"
+           ondrop="onFootprintDrop(event, ${originalIndex})"
+           onclick="${isSorting ? '' : `onFootprintCardClick(${originalIndex})`}" 
+           style="${isSorting ? 'border-color:var(--accent);background:var(--accent-light);cursor:grab;' : ''}">
+        <div class="fp-num-badge fp-num-badge--${colorClass}">${originalIndex + 1}</div>
+        <div class="fp-name" title="${escapeAttr(item.name)}">${escapeHTML(item.name)}</div>
       </div>
     `;
-  }
+  }).join('');
 }
 
-function moveFootprintOrderLocal(index, direction) {
-  const targetIndex = index + direction;
-  if (targetIndex < 0 || targetIndex >= STATE.footprintsData.length) return;
+let draggedFootprintIndex = null;
+function onFootprintDragStart(e, index) {
+  draggedFootprintIndex = index;
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onFootprintDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+function onFootprintDrop(e, targetIndex) {
+  e.preventDefault();
+  if (draggedFootprintIndex === null || draggedFootprintIndex === targetIndex) return;
+  const item = STATE.footprintsData.splice(draggedFootprintIndex, 1)[0];
+  STATE.footprintsData.splice(targetIndex, 0, item);
+  draggedFootprintIndex = null;
+  renderFootprintTableRows();
+  if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
+  toast("足迹新顺序已暂存本地，确认无误后请点击顶部『保存到仓库』", "success");
+}
 
-  const temp = STATE.footprintsData[index];
-  STATE.footprintsData[index] = STATE.footprintsData[targetIndex];
-  STATE.footprintsData[targetIndex] = temp;
+function onFootprintCardClick(originalIndex) {
+  const item = STATE.footprintsData[originalIndex];
+  if (!item) return;
 
-  renderFootprintsPageContentOnly();
-  toast("已调整顺序（确认完成后点击『保存到仓库』）", "info");
+  STATE.selectedMapLocationName = item.name;
+
+  if (item.coordinates && STATE.mainMap) {
+    const parts = item.coordinates.split(',').map(parseFloat);
+    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      STATE.mainMap.setZoomAndCenter(10, [parts[0], parts[1]]);
+    }
+  }
+
+  document.querySelectorAll('.fp-card').forEach(c => c.classList.remove('is-selected'));
+  const currentCard = document.getElementById(`fp-card-${originalIndex}`);
+  if (currentCard) currentCard.classList.add('is-selected');
+
+  openFootprintDetailModal(originalIndex);
+}
+
+function openFootprintDetailModal(index) {
+  const item = STATE.footprintsData[index];
+  if (!item) return;
+
+  const photos = item.photos || [];
+  let photoGalleryHtml = '';
+  if (photos.length > 0) {
+    photoGalleryHtml = `
+      <div style="margin-top:10px;">
+        <div style="font-weight:700;font-size:12px;color:var(--text2);margin-bottom:6px;">足迹相册 (${photos.length} 张，点击放大查看)</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+          ${photos.map((p, pIdx) => `<img src="${escapeAttr(p)}" style="width:110px;height:75px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:pointer;" onclick="openPhotoViewerFromModal(${index}, ${pIdx})" title="点击放大">`).join('')}
+        </div>
+      </div>`;
+  }
+
+  const colorClass = COLOR_PRESETS[index % COLOR_PRESETS.length];
+
+  const html = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="fp-num-badge fp-num-badge--${colorClass}" style="width:28px;height:28px;font-size:12px;">${index + 1}</div>
+            <span>${escapeHTML(item.name)}</span>
+          </div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--text2);">
+            ${item.date ? `<div>📅 打卡时间: <strong>${escapeHTML(item.date)}</strong></div>` : ''}
+            ${item.coordinates ? `<div>📍 坐标: <span class="mono">${escapeHTML(item.coordinates)}</span></div>` : ''}
+          </div>
+
+          ${(item.categories || []).length ? `
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+              ${item.categories.map(c => `<span class="tag soft">${escapeHTML(c)}</span>`).join('')}
+            </div>` : ''}
+
+          <div style="padding:10px 12px;background:var(--bg2);border-radius:var(--radius);font-size:13px;color:var(--text);margin-top:4px;line-height:1.5;">
+            ${escapeHTML(item.description || '暂无详细文字描述')}
+          </div>
+
+          ${item.url ? `
+            <div style="margin-top:4px;">
+              <a href="${escapeAttr(item.url)}" target="_blank" rel="noopener" class="btn primary sm" style="display:inline-flex;">
+                🔗 ${escapeHTML(item.urlLabel || '查看游记文章')}
+              </a>
+            </div>` : ''}
+
+          ${photoGalleryHtml}
+        </div>
+        <div class="modal-footer">
+          <button class="btn danger sm" onclick="deleteFootprintItemLocal(${index});">删除点位</button>
+          <button class="btn primary sm" onclick="closeModal(); switchFootprintMode('edit', ${index});">编辑足迹</button>
+          <button class="btn sm" onclick="closeModal()">关闭</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('modal-container').innerHTML = html;
+}
+
+function openPhotoViewerFromModal(footprintIndex, photoIdx) {
+  const item = STATE.footprintsData[footprintIndex];
+  if (!item || !item.photos || item.photos.length === 0) return;
+  openPhotoViewerFromPopup(item.name, photoIdx);
 }
 
 function deleteFootprintItemLocal(index) {
   const item = STATE.footprintsData[index];
-  if (!confirm(`确定删除足迹「${item.name}」吗？`)) return;
-  STATE.footprintsData.splice(index, 1);
-  renderFootprintsPageContentOnly();
-  toast("已从本地移除（点击『保存到仓库』完成提交）", "info");
+  if (!item) return;
+
+  if (confirm(`确定要从本地列表中删除足迹「${item.name || '未命名'}」吗？\n（点击确认后仅移除本地数据，最终生效仍需点击『保存到仓库』）`)) {
+    closeModal();
+    STATE.footprintsData.splice(index, 1);
+    
+    if (STATE.footprintsMode === 'list') {
+      renderFootprintTableRows();
+    }
+    if (STATE.mainMap) {
+      renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
+    }
+    
+    toast("足迹已从本地列表移除，请点击顶部的『保存到仓库』生效提交！", "info");
+  }
 }
 
 function applyFootprintFormChange() {
@@ -1620,13 +2353,6 @@ function applyFootprintFormChange() {
   toast("足迹条目已更新至本地（点击『保存到仓库』写入 GitHub）", "success");
 }
 
-function renderFootprintsPageContentOnly() {
-  if (STATE.footprintsMode === 'list') {
-    renderFootprintTableRows();
-  }
-  if (STATE.mainMap) renderMapMarkers(STATE.mainMap, getFilteredFootprintData());
-}
-
 async function saveAllFootprintsToGithub() {
   try {
     toast("正在保存全量足迹 JSON 至 GitHub...");
@@ -1646,16 +2372,6 @@ function downloadFootprintsJson() {
   a.href = URL.createObjectURL(blob);
   a.download = 'footprints.json';
   a.click();
-}
-
-function focusFootprintOnMap(index) {
-  const item = STATE.footprintsData[index];
-  if (item && item.coordinates && STATE.mainMap) {
-    const parts = item.coordinates.split(',').map(parseFloat);
-    if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      STATE.mainMap.setZoomAndCenter(9, [parts[0], parts[1]]);
-    }
-  }
 }
 
 function initMainFootprintMap() {
@@ -1694,7 +2410,6 @@ function initMainFootprintMap() {
     disProvince.setMap(map);
   }
 
-  // 大地图点击事件：如果在编辑模式下，同步填入经纬度并更新临时的标记点
   map.on('click', (e) => {
     if (STATE.footprintsMode === 'edit') {
       const lng = parseFloat(e.lnglat.getLng().toFixed(6));
@@ -1720,6 +2435,7 @@ function scrollPopupPhotos(trackId, direction) {
   }
 }
 
+// 保留高德地图上的点击气泡展示 (Popup)
 function renderMapMarkers(map, locations) {
   if (STATE.allMapMarkers.length > 0) {
     STATE.allMapMarkers.forEach(m => m.setMap(null));
@@ -1916,7 +2632,7 @@ function renderAmapCustomControls(container, map) {
 }
 
 // ============================================================
-// 4. 图床 / 部署状态 / 系统设置
+// 5. 图床 / 部署状态 / 系统设置
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
@@ -2064,7 +2780,7 @@ function r2LoadImage(file){
     const url=URL.createObjectURL(file);
     const img=new Image();
     img.onload=()=>{ URL.revokeObjectURL(url); resolve(img); };
-    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败：${file.name}`)); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败（可能是受保护的 HEIC 格式或文件损坏）：${file.name}`)); };
     img.src=url;
   });
 }
@@ -2124,7 +2840,7 @@ async function uploadEditorR2Images(input){
   try{
     toast(`开始处理并上传 ${files.length} 张图片到 R2…`);
     for(const file of files){
-      if(!file.type.startsWith('image/')) throw new Error(`${file.name} 不是图片文件`);
+      if(!file.type.startsWith('image/') && !/\.heic$/i.test(file.name)) throw new Error(`${file.name} 不是支持的图片格式`);
       const item=await r2UploadFile(file);
       insertIntoEditor(`\n![${item.originalName.replace(/\.[^.]+$/,'')}](${item.url})\n`);
     }
@@ -2180,9 +2896,9 @@ function renderMediaPage(){
     <div class="card" style="max-width:980px">
       <div class="card-header"><div><div class="card-title">上传到 R2</div><div class="card-desc">上传成功后会生成可直接粘贴到 Markdown 的图片链接。</div></div><span class="tag soft">${escapeHTML(r2PrefixNow())}</span></div>
       <label class="media-drop" for="media-file-input">
-        <input type="file" id="media-file-input" accept="image/*" multiple onchange="uploadMediaFiles(this)">
+        <input type="file" id="media-file-input" accept="image/*,.heic" multiple onchange="uploadMediaFiles(this)">
         <div class="media-drop-title">点击选择图片，或拖到这里后再选择</div>
-        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF；默认会在浏览器本地压缩并转成 WebP，再上传到 R2。</div>
+        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF / HEIC；默认会在浏览器本地压缩并转成 WebP，再上传到 R2。</div>
       </label>
       <div id="media-upload-result" style="margin-top:14px"></div>
     </div>
