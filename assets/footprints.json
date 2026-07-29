@@ -33,20 +33,20 @@
       "markerColor": "sunset"
     },
     {
-      "name": "滕王阁",
-      "coordinates": "115.88,28.68",
-      "provinceAdcode": "360000",
-      "description": "2010年初春的一个周末，与大学同学同游滕王阁。",
-      "date": "2010-03-27",
+      "name": "深圳",
+      "coordinates": "114.0579,22.5431",
+      "provinceAdcode": "440000",
+      "description": "2012年12月20日，一张硬座火车票，从学校到社会。工作和生活的起点，来了就是深圳人。",
+      "date": "2012-12-20",
       "url": "",
       "urlLabel": "",
       "photos": [
-        "https://img.hux.ink/image/2026/07/20260725154452-73w66-dsc04051.webp"
+        "https://img.hux.ink/image/2026/07/20260725145820-lfspq-nanchang-shenzhen.webp"
       ],
       "categories": [
-        "旅行"
+        "常驻"
       ],
-      "markerColor": "forest"
+      "markerColor": "sunset"
     },
     {
       "name": "上海",
@@ -85,6 +85,22 @@
       "markerColor": "violet"
     },
     {
+      "name": "滕王阁",
+      "coordinates": "115.88,28.68",
+      "provinceAdcode": "360000",
+      "description": "2010年初春的一个周末，与大学同学同游滕王阁。",
+      "date": "2010-03-27",
+      "url": "",
+      "urlLabel": "",
+      "photos": [
+        "https://img.hux.ink/image/2026/07/20260725154452-73w66-dsc04051.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
+      "markerColor": "forest"
+    },
+    {
       "name": "乌镇",
       "coordinates": "120.486173,30.748979",
       "provinceAdcode": "330000",
@@ -100,22 +116,6 @@
         "游记"
       ],
       "markerColor": "violet"
-    },
-    {
-      "name": "深圳",
-      "coordinates": "114.0579,22.5431",
-      "provinceAdcode": "440000",
-      "description": "2012年12月20日，一张硬座火车票，从学校到社会。工作和生活的起点，来了就是深圳人。",
-      "date": "2012-12-20",
-      "url": "",
-      "urlLabel": "",
-      "photos": [
-        "https://img.hux.ink/image/2026/07/20260725145820-lfspq-nanchang-shenzhen.webp"
-      ],
-      "categories": [
-        "常驻"
-      ],
-      "markerColor": "sunset"
     },
     {
       "name": "成都",
