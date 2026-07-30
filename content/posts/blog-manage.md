@@ -1,8 +1,8 @@
 ---
 title: Hugo 管理的姿势
 author: 落落vici
-date: "2026-07-30 17:41:25"
-lastmod: "2026-07-30 17:51:03"
+date: "2026-07-30 17:57:36"
+lastmod: "2026-07-30 17:57:38"
 tags:
 slug: blog-manage
 draft: true
