@@ -92,8 +92,6 @@ a{color:inherit;text-decoration:none}
 .search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.12)}
 select.filter,.form-select{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);font-size:13.5px;cursor:pointer;outline:none;color:var(--text2);min-height:36px}
 select.filter:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
-.batch-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(180deg,#fff,var(--bg2));border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:14px;color:var(--text2);font-size:13px}
-.batch-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* Table */
 .table-wrap{overflow-x:auto;margin:0 -20px}
@@ -130,7 +128,19 @@ tbody tr:hover td{background:#fbfcfd !important;}
 .desc-input::placeholder{color:var(--text4)}
 .editor-meta-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--text3);margin-top:10px}
 .editor-left .EasyMDEContainer{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.editor-toolbar{border-top:none!important;border-left:none!important;border-right:none!important;border-bottom:1px solid var(--border)!important;background:var(--bg2)!important;border-radius:0!important;padding:7px 10px!important;opacity:1!important}
+.editor-toolbar{border-top:none!important;border-left:none!important;border-right:none!important;border-bottom:1px solid var(--border)!important;background:var(--bg2)!important;border-radius:0!important;padding:6px 10px!important;opacity:1!important;display:flex!important;align-items:center;flex-wrap:nowrap;gap:1px;min-height:52px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.editor-toolbar::before,.editor-toolbar::after{display:none!important}
+.editor-toolbar>*{flex-shrink:0}
+.editor-toolbar i.separator{height:24px;margin:0 5px!important}
+.editor-image-upload-input{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;padding:0!important;margin:-1px!important}
+.editor-toolbar-upload{margin-left:auto;min-width:174px;height:38px;padding:5px 10px;border:1px dashed #b8c3d3;border-radius:8px;background:linear-gradient(180deg,#fff,#f8fafc);color:var(--text2);display:flex;align-items:center;justify-content:flex-start;gap:8px;cursor:pointer;transition:.16s;user-select:none;box-shadow:0 1px 2px rgba(29,33,41,.04)}
+.editor-toolbar-upload:hover,.editor-toolbar-upload.is-dragover{border-color:var(--accent);background:var(--accent-light);color:var(--accent-dark);box-shadow:0 0 0 3px rgba(31,122,77,.09)}
+.editor-toolbar-upload.is-uploading{pointer-events:none;opacity:.68}
+.editor-toolbar-upload-icon{width:27px;height:27px;border-radius:8px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.editor-toolbar-upload.is-uploading .editor-toolbar-upload-icon{animation:spin .8s linear infinite}
+.editor-toolbar-upload-copy{display:grid;gap:1px;min-width:0;text-align:left;line-height:1.15}
+.editor-toolbar-upload-title{font-size:12px;font-weight:800;color:var(--text);white-space:nowrap}
+.editor-toolbar-upload-sub{font-size:10px;color:var(--text3);white-space:nowrap}
 .CodeMirror{flex:1;height:100%!important;border:none!important;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Monaco,monospace;line-height:1.72;padding:10px 18px;color:var(--text)}
 .CodeMirror-scroll{min-height:100%}
 .editor-preview,.editor-preview-side{background:#fff;color:var(--text)}
@@ -166,6 +176,105 @@ input:checked+.slider:before{transform:translateX(18px)}
 .markdown-body{font-size:15px;line-height:1.78}
 .markdown-body img{border-radius:8px}
 
+/* Twikoo 互动管理：文章索引 + 评论流 + 官方内嵌管理面板 */
+.interactions-shell{position:relative;display:grid;grid-template-columns:330px minmax(0,1fr);height:calc(100vh - 108px);margin:-24px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
+.inter-left,.inter-right{min-width:0;min-height:0;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+.inter-left{border-right:1px solid var(--border);}
+.inter-right{position:relative;isolation:isolate;}
+.inter-left-tools{padding:10px;border-bottom:1px solid var(--border);background:#fff;flex-shrink:0;}
+.inter-left-tools .form-select{width:100%;height:38px;border-color:#b8cdfb;color:#31579e;background:#fff;}
+.inter-posts-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable;}
+.inter-post-item{position:relative;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:.15s;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;border-left:3px solid transparent;background:#fff;}
+.inter-post-item:hover{background:#f8fbff;}
+.inter-post-item.active{background:#eef8f4;border-left-color:#16a085;}
+.inter-post-main{min-width:0;display:grid;gap:5px;}
+.inter-post-title{font-weight:750;font-size:13px;line-height:1.45;color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+.inter-post-meta{display:flex;align-items:center;gap:7px;min-width:0;font-size:11px;color:#91a0b5;}
+.inter-post-date{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-post-path{display:none;}
+.inter-post-count{min-width:34px;text-align:center;padding:3px 7px;border-radius:6px;background:#f1f4f8;color:#7a899e;font-size:11px;font-weight:800;white-space:nowrap;}
+.inter-post-item.active .inter-post-count{background:#fff;color:#16856d;box-shadow:0 1px 3px rgba(22,133,109,.12);}
+.inter-post-empty{padding:36px 18px;text-align:center;color:var(--text3);line-height:1.7;}
+.inter-summary-bar{height:51px;padding:0 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#fff,#fbfcfe);flex-shrink:0;}
+.inter-current{flex:1;min-width:0;display:flex;align-items:center;gap:10px;}
+.inter-back-mark{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#8291a6;font-size:18px;}
+.inter-current-copy{min-width:0;display:grid;gap:2px;}
+.inter-current-title{font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-current-path{font-size:10.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-summary-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.inter-summary-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#f3f6fa;color:#7b899c;font-size:10.5px;font-weight:700;white-space:nowrap;}
+.inter-summary-chip.ok{background:#eaf9f1;color:#16865e;}
+.inter-filter-bar{padding:10px 14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:160px 130px minmax(210px,1fr);gap:10px;align-items:center;background:#fff;flex-shrink:0;}
+.inter-filter-bar .form-select,.inter-filter-bar .search-input{height:38px;}
+.inter-filter-bar .search-box{min-width:0;}
+.inter-status-strip{padding:7px 16px;border-bottom:1px solid var(--border);font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:8px;background:#fbfcfe;min-height:34px;flex-shrink:0;}
+.inter-status-strip .status-dot{width:7px;height:7px;}
+.inter-comments-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable;background:#fcfdff;}
+.inter-notice{margin:12px 16px 0;padding:10px 12px;border:1px solid #cfe0ff;border-radius:8px;background:#f4f8ff;color:#44658f;font-size:11.5px;line-height:1.55;}
+.inter-comment-list{display:grid;}
+.inter-comment-card{position:relative;padding:16px 18px;border-bottom:1px solid #edf0f4;display:flex;gap:12px;background:#fff;transition:.15s;}
+.inter-comment-card:hover{background:#f8fbff;}
+.inter-comment-card.is-reply{padding-left:50px;background:#fbfdff;}
+.comment-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg3);object-fit:cover;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,.04);}
+.inter-comment-body{flex:1;min-width:0;}
+.inter-comment-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.inter-comment-author{min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.inter-comment-author strong{font-size:13.5px;color:#34445a;}
+.inter-comment-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;background:#edf2ff;color:#4c6bdc;font-size:9.5px;font-weight:800;}
+.inter-comment-text{font-size:13px;color:#536176;line-height:1.65;margin-top:6px;word-break:break-word;white-space:pre-wrap;}
+.inter-comment-meta{margin-top:7px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:10.5px;color:#a0adbd;}
+.inter-comment-meta .dot{width:3px;height:3px;border-radius:50%;background:#cbd3dd;}
+.inter-comment-route{max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-comment-actions{display:flex;align-items:center;gap:3px;flex-shrink:0;opacity:.62;transition:.15s;}
+.inter-comment-card:hover .inter-comment-actions{opacity:1;}
+.inter-action-btn{width:28px;height:28px;border:none;border-radius:6px;background:transparent;color:#8092aa;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;}
+.inter-action-btn:hover{background:#edf3fb;color:#365f91;}
+.inter-action-btn.danger:hover{background:var(--danger-light);color:var(--danger);}
+.inter-action-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.inter-load-more{padding:14px;text-align:center;background:#fff;}
+.inter-thread-drawer{position:absolute;inset:0;z-index:30;background:#fff;display:flex;flex-direction:column;box-shadow:-12px 0 34px rgba(38,56,82,.14);}
+.inter-thread-drawer[hidden]{display:none;}
+.inter-thread-head{height:52px;padding:0 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fff;flex-shrink:0;}
+.inter-thread-title{flex:1;min-width:0;display:grid;gap:2px;}
+.inter-thread-title strong{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-thread-title span{font-size:10.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inter-thread-body{position:relative;flex:1;min-height:0;overflow-y:auto;background:#fafbfd;padding:16px;}
+.inter-twikoo-host{min-height:180px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;}
+.inter-twikoo-host .tk-comments-container{margin-top:0;}
+.inter-thread-drawer.admin-mode .inter-thread-body{padding:0;overflow:hidden;}
+.inter-thread-drawer.admin-mode .inter-twikoo-host{height:100%;border:0;border-radius:0;padding:0;overflow:auto;}
+.inter-thread-drawer .tk-admin-container.inter-admin-docked{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:50!important;background:#fff!important;overflow:auto!important;}
+.inter-thread-drawer .tk-admin-container.inter-admin-docked .el-dialog{width:100%!important;max-width:none!important;height:100%!important;max-height:none!important;margin:0!important;border-radius:0!important;display:flex!important;flex-direction:column!important;}
+.inter-thread-drawer .tk-admin-container.inter-admin-docked .el-dialog__body{flex:1!important;min-height:0!important;overflow:auto!important;}
+.inter-error{margin:18px;}
+.inter-diagnostic{margin-top:10px;padding-top:10px;border-top:1px dashed currentColor;font-size:12px;opacity:.9;}
+.inter-origin{display:inline-block;max-width:100%;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(255,255,255,.68);padding:2px 5px;border-radius:4px;}
+.inter-inline-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.inter-local-warning{margin:12px 16px 0;}
+
+@media (max-width:1180px){
+  .interactions-shell{grid-template-columns:285px minmax(0,1fr);}
+  .inter-filter-bar{grid-template-columns:145px 120px minmax(180px,1fr);}
+}
+@media (max-width:940px){
+  .inter-filter-bar{grid-template-columns:1fr 1fr;}
+  .inter-filter-bar .search-box{grid-column:1/-1;}
+}
+@media (max-width:860px){
+  .interactions-shell{grid-template-columns:1fr;height:auto;min-height:720px;margin:-16px;overflow:visible;}
+  .inter-left{max-height:330px;border-right:0;border-bottom:1px solid var(--border);}
+  .inter-right{min-height:620px;}
+  .inter-thread-drawer{position:fixed;inset:0;z-index:9999;}
+}
+@media (max-width:560px){
+  .inter-filter-bar{grid-template-columns:1fr;}
+  .inter-filter-bar .search-box{grid-column:auto;}
+  .inter-summary-chips{display:none;}
+  .inter-comment-card{padding:14px 12px;}
+  .inter-comment-card.is-reply{padding-left:28px;}
+  .inter-comment-actions{opacity:1;}
+}
+
 /* R2 media library */
 .media-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:136px;border:1px dashed var(--border2);border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,var(--bg2));padding:24px;text-align:center;color:var(--text2);transition:.16s;cursor:pointer;position:relative;overflow:hidden}
 .media-drop::before{content:'🖼️';display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:var(--accent-light);color:var(--accent);font-size:20px;margin-bottom:12px}
@@ -196,7 +305,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 .setting-label{font-size:12px;font-weight:700;color:var(--text2)}
 .setting-input{padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg)}
 .setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
-.section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:99px}
+.section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:10px}
 
 /* 图片风格网格订阅与足迹网格 (Grid Styles) */
 .friends-grid, .footprint-cards-grid {
@@ -232,6 +341,79 @@ input:checked+.slider:before{transform:translateX(18px)}
   background: var(--accent-light);
   box-shadow: 0 0 0 2px var(--accent);
 }
+
+/* 足迹列表展示模式 */
+.fp-list-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+}
+.fp-list-table {
+  min-width: 920px;
+}
+.fp-list-table th:nth-child(2),
+.fp-list-table th:nth-child(4),
+.fp-list-table th:nth-child(5),
+.fp-list-table td:nth-child(2),
+.fp-list-table td:nth-child(4),
+.fp-list-table td:nth-child(5) {
+  text-align: left;
+}
+.fp-list-row {
+  cursor: pointer;
+  transition: background .15s;
+}
+.fp-list-row.is-selected td {
+  background: var(--accent-light) !important;
+}
+.fp-list-row.is-sorting td {
+  background: var(--accent-light) !important;
+}
+.fp-list-index {
+  display: flex;
+  justify-content: center;
+}
+.fp-list-index .fp-num-badge {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+}
+.fp-list-name {
+  min-width: 130px;
+  font-weight: 750;
+  color: var(--text);
+  line-height: 1.4;
+}
+.fp-list-date {
+  white-space: nowrap;
+  color: var(--text2);
+}
+.fp-list-desc {
+  min-width: 220px;
+  max-width: 420px;
+  color: var(--text2);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-word;
+}
+.fp-list-tags {
+  justify-content: flex-start;
+  margin: 0;
+  max-width: 280px;
+}
+.fp-list-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
 .friend-avatar {
   width: 42px;
   height: 42px;
@@ -413,6 +595,7 @@ input:checked+.slider:before{transform:translateX(18px)}
   .topbar{height:auto;min-height:58px;padding:12px 16px;align-items:flex-start;flex-direction:column}
   .topbar-actions{margin-left:0;width:100%;justify-content:flex-start}
   .content{height:auto;min-height:calc(100vh - 120px);padding:16px}
+  .interactions-shell{grid-template-columns:1fr;height:auto;}
 }
 
 /* 专门针对 768px 及以下小屏手机端的适配优化 */
@@ -447,6 +630,8 @@ input:checked+.slider:before{transform:translateX(18px)}
   #main-footprint-map-wrapper{height: 300px;}
   .reader-wrap{padding: 20px 16px;}
   .reader-title{font-size: 22px;}
+  .editor-toolbar-upload{min-width:42px;width:42px;padding:0;justify-content:center}
+  .editor-toolbar-upload-copy{display:none}
   
   /* 分页响应式优化 */
   .pagination-wrap{flex-direction:column;align-items:stretch;text-align:center;}
@@ -469,6 +654,10 @@ input:checked+.slider:before{transform:translateX(18px)}
       <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
+      </div>
+      <div class="nav-item" onclick="showPage('interactions')" id="nav-interactions">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        互动管理
       </div>
       <div class="nav-item" onclick="showPage('friends')" id="nav-friends">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -528,6 +717,7 @@ const AMAP_SECRET = "5a01263b6b8d94d9f8bfaf203ab7c736";
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
   blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: '',
+  twikooEnvId: '', twikooMasterPassword: '',
   r2AccountId: '', r2Bucket: '', r2AccessKeyId: '', r2SecretAccessKey: '',
   r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}',
   r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920
@@ -539,11 +729,18 @@ let STATE = {
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
   sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
   friendsData: [], friendsSha: null, friendsSearchKeyword: '', friendsStatusFilter: 'all', friendsPage: 1, friendsStatus: {},
-  editingFootprintIndex: null, footprintsMode: 'list', mainMap: null, editMarker: null,
+  editingFootprintIndex: null, footprintsMode: 'list', footprintDisplayMode: 'grid', mainMap: null, editMarker: null,
   activeMapFilter: 'all', tableCategoryFilter: 'all', tableProvinceFilter: 'all',
   tableSearchKeyword: '', selectedMapLocationName: null, allMapMarkers: [],
   photoViewerEl: null, viewerPhotos: [], viewerIndex: 0,
-  friendsSortMode: false, footprintsSortMode: false
+  friendsSortMode: false, footprintsSortMode: false,
+  // Twikoo 互动管理状态（文章索引、评论流与官方管理面板）
+  twikooComments: [], twikooSelectedPost: 'all', twikooSearch: '',
+  twikooPostEntries: [], twikooSdkPromise: null, twikooMountSeq: 0,
+  twikooDiagnostics: [], twikooCountsAreApproximate: false,
+  twikooArticleSort: 'comment_desc', twikooCommentSort: 'time_desc',
+  twikooCommentFilter: 'all', twikooVisibleLimit: 40,
+  twikooPendingAdminSearch: '', twikooAdminSearchTimer: null
 };
 
 const ACT_JSON_PATH = "assets/act.json";
@@ -573,6 +770,14 @@ function encodePath(path){ return encodeURIComponent(path); }
 function formatDate(v){ if(!v) return '未设置'; return String(v).replace('T',' ').slice(0,16); }
 function formatDateShort(v){ if(!v) return '未设置'; return String(v).slice(0,10); }
 function nowLocalString(){ const d=new Date(); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function nowISOStringForInput(){ const d=new Date(); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+
+function resetSingleDateTimePicker(inputId){
+  const el = document.getElementById(inputId);
+  if(el) el.value = nowISOStringForInput();
+  if(typeof markDirty === 'function') markDirty();
+}
+
 function slugify(str){ return String(str||'post').trim().toLowerCase().replace(/[\s_]+/g,'-').replace(/[^\w\-\u4e00-\u9fa5]+/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'') || `post-${Date.now()}`; }
 function countWords(text){ const t=String(text||'').replace(/```[\s\S]*?```/g,'').replace(/[#>*_`\-\[\]()!]/g,' '); const cn=(t.match(/[\u4e00-\u9fa5]/g)||[]).length; const en=(t.replace(/[\u4e00-\u9fa5]/g,' ').match(/[A-Za-z0-9]+/g)||[]).length; return cn + en; }
 function readMinutes(text){ return Math.max(1, Math.ceil(countWords(text)/400)); }
@@ -726,6 +931,7 @@ function showPage(page){
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   switch(page){ 
     case 'posts': renderPostsPage(); break; 
+    case 'interactions': renderInteractionsPage(); break;
     case 'friends': renderFriendsPage(); break;
     case 'sports': renderSportsPage(); break;
     case 'footprints': renderFootprintsPage(); break;
@@ -1105,10 +1311,7 @@ function renderEditor(){
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
   const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
 
-  const fullDate = String(fm.date || nowLocalString()).trim();
-  const parts = fullDate.split(' ');
-  const defaultDate = parts[0] || '';
-  const defaultTime = parts[1] || '12:00:00';
+  const fullDateStr = String(fm.date || nowLocalString()).trim().replace(' ', 'T');
 
   c.innerHTML=`
     <div class="editor-wrap">
@@ -1123,13 +1326,22 @@ function renderEditor(){
           </div>
         </div>
         <textarea id="mde-area"></textarea>
+        <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic" multiple onchange="uploadEditorR2Images(this)">
       </div>
       <div class="editor-right">
         <div class="fm-card">
           <div class="fm-card-title">发布设置 <span class="tag ${isDraftValue(fm.draft)?'draft':'published'}" id="draft-tag">${isDraftValue(fm.draft)?'草稿':'发布'}</span></div>
           <div class="fm-group"><label class="fm-label">作者</label><input class="fm-input" id="fm-author" value="${escapeAttr(fm.author||'落落vici')}"></div>
-          <div class="fm-group"><label class="fm-label">发布日期</label><input class="fm-input" type="date" id="fm-date-part" value="${escapeAttr(defaultDate)}"></div>
-          <div class="fm-group"><label class="fm-label">发布时间</label><input class="fm-input" type="time" step="1" id="fm-time-part" value="${escapeAttr(defaultTime)}"></div>
+          
+          <!-- 并称选择输入框 + 一键重置为当前时间 -->
+          <div class="fm-group">
+            <label class="fm-label">
+              <span>发布日期与时间</span>
+              <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('fm-datetime')">⚡ 现在</button>
+            </label>
+            <input class="fm-input" type="datetime-local" step="1" id="fm-datetime" value="${escapeAttr(fullDateStr)}">
+          </div>
+
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
           <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label>
             <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
@@ -1151,15 +1363,6 @@ function renderEditor(){
           </div>
         </div>
 
-        <!-- 编辑器图床快捷上传 -->
-        <div class="fm-card editor-upload-card">
-          <div class="fm-card-title">插入图片到文章 (R2 图床)</div>
-          <label class="media-drop" for="editor-image-upload">
-            <input type="file" id="editor-image-upload" accept="image/*,.heic" multiple onchange="uploadEditorR2Images(this)">
-            <div class="media-drop-title" style="font-size:13px;">点击或拖拽图片上传</div>
-            <div class="media-drop-desc" style="font-size:11.5px;">上传后将自动插入 Markdown 图片链接到正文中</div>
-          </label>
-        </div>
       </div>
     </div>`;
 
@@ -1169,13 +1372,52 @@ function renderEditor(){
     placeholder:'从这里开始写正文，支持 Markdown…', status:false,
     toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
   });
+  mountEditorToolbarUpload();
 
-  ['fm-title','fm-description','fm-author','fm-date-part','fm-time-part','fm-slug','fm-path'].forEach(id=>{
+  ['fm-title','fm-description','fm-author','fm-datetime','fm-slug','fm-path'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
   });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
   refreshEditorMeta();
+}
+
+function mountEditorToolbarUpload(){
+  const toolbar=document.querySelector('.editor-left .editor-toolbar');
+  const input=document.getElementById('editor-image-upload');
+  if(!toolbar || !input || toolbar.querySelector('.editor-toolbar-upload')) return;
+
+  const upload=document.createElement('label');
+  upload.className='editor-toolbar-upload';
+  upload.htmlFor=input.id;
+  upload.tabIndex=0;
+  upload.setAttribute('role','button');
+  upload.setAttribute('aria-label','上传图片到 R2 图床并插入 Markdown 正文');
+  upload.title='点击选择或拖拽图片，上传到 R2 后自动插入 Markdown 正文';
+  upload.innerHTML=`
+    <span class="editor-toolbar-upload-icon" aria-hidden="true">🖼️</span>
+    <span class="editor-toolbar-upload-copy">
+      <span class="editor-toolbar-upload-title">上传图片</span>
+      <span class="editor-toolbar-upload-sub">R2 图床 · 自动插入正文</span>
+    </span>`;
+  toolbar.appendChild(upload);
+  upload.addEventListener('keydown',e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); input.click(); }
+  });
+
+  const stop=e=>{ e.preventDefault(); e.stopPropagation(); };
+  ['dragenter','dragover'].forEach(type=>upload.addEventListener(type,e=>{
+    stop(e);
+    if(upload.dataset.uploading!=='1') upload.classList.add('is-dragover');
+  }));
+  ['dragleave','dragend'].forEach(type=>upload.addEventListener(type,e=>{
+    stop(e); upload.classList.remove('is-dragover');
+  }));
+  upload.addEventListener('drop',e=>{
+    stop(e); upload.classList.remove('is-dragover');
+    const files=[...(e.dataTransfer?.files||[])];
+    if(files.length) uploadEditorR2FileList(files);
+  });
 }
 
 function appendExistingTag(val) {
@@ -1219,9 +1461,8 @@ function collectEditorData(mode='draft'){
   let path=cleanPath(getFormValue('fm-path', defaultPath));
   if(!path.endsWith('.md')) path += '.md';
 
-  const datePart = getFormValue('fm-date-part');
-  const timePart = getFormValue('fm-time-part') || '00:00:00';
-  const fullDateStr = datePart ? `${datePart} ${timePart}` : nowLocalString();
+  const datetimeVal = getFormValue('fm-datetime');
+  const fullDateStr = datetimeVal ? datetimeVal.replace('T', ' ') : nowLocalString();
 
   const fm={ ...(STATE.editingPost?.fm||{}), title, author:getFormValue('fm-author'), date:fullDateStr, lastmod:nowLocalString(), slug, draft: mode==='draft' };
   return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
@@ -1239,7 +1480,669 @@ async function savePost(mode){
 function readLocalDraft(path){ return null; }
 
 // ============================================================
-// 2. 订阅管理 (拖拽排序 + 暂存机制)
+// 2. Twikoo 互动管理（截图式双栏评论工作台）
+// ============================================================
+const TWIKOO_SDK_VERSION = '1.7.14';
+
+function normalizedTwikooEnvId(){
+  const value=String(CFG.twikooEnvId||'').trim();
+  return /^https?:\/\//i.test(value) ? value.replace(/\/+$/,'') : value;
+}
+
+function isUrlTwikooEnv(){ return /^https?:\/\//i.test(normalizedTwikooEnvId()); }
+
+function twikooSdkUrls(){
+  const file=isUrlTwikooEnv() ? 'twikoo.min.js' : 'twikoo.all.min.js';
+  return [
+    `https://cdn.jsdelivr.net/npm/twikoo@${TWIKOO_SDK_VERSION}/dist/${file}`,
+    `https://registry.npmmirror.com/twikoo/${TWIKOO_SDK_VERSION}/files/dist/${file}`,
+    `https://s4.zstatic.net/npm/twikoo@${TWIKOO_SDK_VERSION}/dist/${file}`
+  ];
+}
+
+function loadExternalScript(url){
+  return new Promise((resolve,reject)=>{
+    const existed=[...document.scripts].find(s=>s.src===url);
+    if(existed && window.twikoo) return resolve();
+    let settled=false;
+    const finish=(handler,value)=>{
+      if(settled) return;
+      settled=true; clearTimeout(timer); handler(value);
+    };
+    const timer=setTimeout(()=>finish(reject,new Error(`Twikoo SDK 加载超时：${url}`)),8000);
+    if(existed){
+      existed.addEventListener('load',()=>finish(resolve),{once:true});
+      existed.addEventListener('error',()=>finish(reject,new Error(`脚本加载失败：${url}`)),{once:true});
+      return;
+    }
+    const script=document.createElement('script');
+    script.src=url; script.async=true; script.crossOrigin='anonymous';
+    script.onload=()=>finish(resolve);
+    script.onerror=()=>{ script.remove(); finish(reject,new Error(`脚本加载失败：${url}`)); };
+    document.head.appendChild(script);
+  });
+}
+
+function withInteractionTimeout(promise,ms,label){
+  let timer=null;
+  const timeout=new Promise((_,reject)=>{
+    timer=setTimeout(()=>reject(new Error(`${label}超时（${Math.round(ms/1000)} 秒）`)),ms);
+  });
+  return Promise.race([Promise.resolve(promise),timeout]).finally(()=>clearTimeout(timer));
+}
+
+async function ensureTwikooSdk(){
+  if(window.twikoo && typeof window.twikoo.init==='function') return window.twikoo;
+  if(STATE.twikooSdkPromise) return STATE.twikooSdkPromise;
+  STATE.twikooSdkPromise=(async()=>{
+    let lastError=null;
+    for(const url of twikooSdkUrls()){
+      try{
+        await loadExternalScript(url);
+        if(window.twikoo && typeof window.twikoo.init==='function') return window.twikoo;
+        lastError=new Error('Twikoo SDK 已下载，但未正确初始化');
+      }catch(e){ lastError=e; }
+    }
+    throw lastError || new Error('Twikoo SDK 加载失败');
+  })().catch(e=>{ STATE.twikooSdkPromise=null; throw e; });
+  return STATE.twikooSdkPromise;
+}
+
+function normalizeTwikooPath(value){
+  let raw=String(value||'/').trim();
+  if(!raw) return '/';
+  try{ if(/^https?:\/\//i.test(raw)) raw=new URL(raw).pathname; }catch(e){}
+  raw=raw.split('#')[0].split('?')[0] || '/';
+  if(!raw.startsWith('/')) raw='/'+raw;
+  raw=raw.replace(/\/{2,}/g,'/');
+  return raw.length>1 ? raw.replace(/\/+$/,'/') : '/';
+}
+
+function interactionPathForPost(post){
+  try{
+    const url=buildPublicUrl({slug:post.slug},post.path);
+    return normalizeTwikooPath(new URL(url, CFG.blogUrl || location.href).pathname);
+  }catch(e){
+    const slug=post.slug || String(post.path||'').split('/').pop().replace(/\.md$/,'');
+    return normalizeTwikooPath(`/posts/${encodeURIComponent(slug).replace(/%2F/g,'/')}/`);
+  }
+}
+
+function twikooPublicOptions(extra={}){ return {envId:normalizedTwikooEnvId(), ...extra}; }
+
+function twikooErrorMessage(error){
+  if(!error) return '未知错误';
+  if(typeof error==='string') return error;
+  return String(error.message || error.msg || error.error || error);
+}
+
+function twikooErrorHint(error){
+  const message=twikooErrorMessage(error);
+  const low=message.toLowerCase();
+  if(low.includes('password') || message.includes('密码')) return '评论索引不使用管理员密码；请通过本页“管理模式”进入 Twikoo 官方登录界面。';
+  if(low.includes('blocked_by_client')) return '请求被浏览器扩展拦截，请暂时关闭广告拦截器，或将当前后台域名加入白名单。';
+  if(low.includes('cors') || low.includes('failed to fetch') || low.includes('network') || low.includes('xhr') || low.includes('status 0')){
+    return '请直接访问 Twikoo envId 确认后端正常，并在管理面板 → 配置管理 → 通用中核对 CORS_ALLOW_ORIGIN；不要通过 file:// 打开本文件。';
+  }
+  return '请核对 Twikoo envId、前后端版本以及浏览器控制台中的完整错误。';
+}
+
+function twikooOrigin(){ return location.protocol==='file:' ? 'file://（Origin 为 null）' : location.origin; }
+
+function twikooTimestamp(value){
+  if(value===null || value===undefined || value==='') return 0;
+  let raw=value;
+  if(typeof raw==='string' && /^\d+$/.test(raw)) raw=Number(raw);
+  if(typeof raw==='number' && raw>0 && raw<1e12) raw*=1000;
+  const time=new Date(raw).getTime();
+  return Number.isFinite(time) ? time : 0;
+}
+
+function formatTwikooTime(value){
+  const time=twikooTimestamp(value);
+  if(!time) return '时间未知';
+  return new Date(time).toLocaleString('zh-CN',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function formatTwikooPostDate(value){
+  const time=twikooTimestamp(value);
+  if(!time) return '暂无时间';
+  const d=new Date(time); const pad=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function safeAvatar(url){
+  const value=String(url||'').trim();
+  return /^https?:\/\//i.test(value) ? value : 'https://cravatar.cn/avatar/00000000000000000000000000000000?d=mp';
+}
+
+function twikooCommentText(comment){
+  const raw=comment?.commentText ?? comment?.comment ?? '';
+  const box=document.createElement('div'); box.innerHTML=String(raw);
+  return (box.textContent||box.innerText||'').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+function twikooCommentIsReply(comment){
+  return Boolean(comment?.rid || comment?.pid || comment?.parentId || comment?.replyTo || comment?.isReply);
+}
+
+function twikooCommentRegion(comment){
+  return String(comment?.ipRegion || comment?.region || comment?.location || '').trim();
+}
+
+function twikooCommentAgent(comment){
+  const parts=[comment?.os,comment?.browser].map(v=>String(v||'').trim()).filter(Boolean);
+  return [...new Set(parts)].join(' · ');
+}
+
+async function loadTwikooPostData(){
+  const sdk=await ensureTwikooSdk();
+  const diagnostics=[];
+  let recent=[];
+  const jobs=[
+    withInteractionTimeout(sdk.getRecentComments(twikooPublicOptions({pageSize:100,includeReply:true})),15000,'最新评论读取')
+      .then(value=>{ recent=Array.isArray(value)?value:[]; })
+      .catch(error=>{ diagnostics.push(`最新评论读取失败：${twikooErrorMessage(error)}`); })
+  ];
+
+  if(CFG.token && CFG.owner && CFG.repo && !STATE.postsLoaded){
+    jobs.push(withInteractionTimeout(loadPosts(),20000,'GitHub 文章目录读取').then(()=>{ STATE.postsLoaded=true; }).catch(error=>{
+      diagnostics.push(`GitHub 文章目录读取失败：${twikooErrorMessage(error)}`);
+    }));
+  }
+  await Promise.all(jobs);
+
+  STATE.twikooComments=recent;
+  const entryMap=new Map();
+  const publishedPosts=STATE.posts.filter(post=>!post.isTrash && !post.draft);
+  publishedPosts.forEach(post=>{
+    const path=interactionPathForPost(post);
+    entryMap.set(path,{
+      path,
+      title:post.title||path,
+      postDate:post.date || post.fm?.date || '',
+      lastCommentAt:0,
+      count:0,
+      countApprox:false,
+      source:'post'
+    });
+  });
+
+  const recentCounts=new Map();
+  recent.forEach(comment=>{
+    const path=normalizeTwikooPath(comment.url||'/');
+    recentCounts.set(path,(recentCounts.get(path)||0)+1);
+    if(!entryMap.has(path)) entryMap.set(path,{path,title:path,postDate:'',lastCommentAt:0,count:0,countApprox:true,source:'comment'});
+    const entry=entryMap.get(path);
+    entry.lastCommentAt=Math.max(entry.lastCommentAt||0,twikooTimestamp(comment.created));
+  });
+
+  const paths=[...entryMap.keys()];
+  let countApiWorked=false;
+  for(let i=0;i<paths.length;i+=80){
+    const chunk=paths.slice(i,i+80);
+    try{
+      const counts=await withInteractionTimeout(sdk.getCommentsCount(twikooPublicOptions({urls:chunk,includeReply:true})),15000,'评论计数读取');
+      (Array.isArray(counts)?counts:[]).forEach(item=>{
+        const path=normalizeTwikooPath(item.url||'/');
+        const entry=entryMap.get(path);
+        if(entry){ entry.count=Number(item.count)||0; entry.countApprox=false; }
+      });
+      countApiWorked=true;
+    }catch(error){
+      diagnostics.push(`评论计数读取失败：${twikooErrorMessage(error)}`);
+      break;
+    }
+  }
+
+  if(!countApiWorked){
+    entryMap.forEach((entry,path)=>{ entry.count=recentCounts.get(path)||0; entry.countApprox=true; });
+  }
+
+  STATE.twikooCountsAreApproximate=!countApiWorked;
+  STATE.twikooDiagnostics=diagnostics;
+  STATE.twikooPostEntries=[...entryMap.values()];
+  const validPaths=new Set(STATE.twikooPostEntries.map(item=>item.path));
+  if(STATE.twikooSelectedPost!=='all' && !validPaths.has(STATE.twikooSelectedPost)) STATE.twikooSelectedPost='all';
+  if(!STATE.twikooPostEntries.length && !STATE.twikooComments.length && diagnostics.length) throw new Error(diagnostics.join('；'));
+}
+
+function twikooTotalCommentCount(){
+  return STATE.twikooPostEntries.reduce((sum,item)=>sum+(Number(item.count)||0),0);
+}
+
+function sortedTwikooPostEntries(){
+  const list=STATE.twikooPostEntries.slice();
+  switch(STATE.twikooArticleSort){
+    case 'publish_desc': return list.sort((a,b)=>twikooTimestamp(b.postDate)-twikooTimestamp(a.postDate) || b.count-a.count);
+    case 'count_desc': return list.sort((a,b)=>b.count-a.count || (b.lastCommentAt||0)-(a.lastCommentAt||0));
+    case 'title_asc': return list.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
+    default: return list.sort((a,b)=>(b.lastCommentAt||0)-(a.lastCommentAt||0) || b.count-a.count || a.title.localeCompare(b.title,'zh-CN'));
+  }
+}
+
+async function renderInteractionsPage(){
+  STATE.page='interactions';
+  STATE.twikooMountSeq++;
+  document.getElementById('page-title').innerHTML='互动管理 <small id="inter-page-metrics">正在读取 Twikoo…</small>';
+  document.getElementById('topbar-actions').innerHTML=`
+    <button class="btn" onclick="openSelectedTwikooPage()">打开前台页面</button>
+    <button class="btn" onclick="refreshTwikooInteractions()">刷新返回</button>`;
+  const c=document.getElementById('main-content'); c.style.overflow='hidden';
+
+  if(!CFG.twikooEnvId){
+    c.style.overflow='auto';
+    c.innerHTML=`<div class="alert warning">未配置 Twikoo 环境 ID。请先前往 <strong>系统设置</strong> 填写 envId；非腾讯云部署请填写完整的 <span class="mono">https://...</span> 后端地址。</div>`;
+    return;
+  }
+
+  c.innerHTML=`
+    <div class="interactions-shell">
+      <aside class="inter-left">
+        <div class="inter-left-tools">
+          <select class="form-select" onchange="setTwikooArticleSort(this.value)" aria-label="文章排序">
+            <option value="comment_desc" ${STATE.twikooArticleSort==='comment_desc'?'selected':''}>按最近互动时间排序</option>
+            <option value="publish_desc" ${STATE.twikooArticleSort==='publish_desc'?'selected':''}>按文章发布时间排序</option>
+            <option value="count_desc" ${STATE.twikooArticleSort==='count_desc'?'selected':''}>按评论数量排序</option>
+            <option value="title_asc" ${STATE.twikooArticleSort==='title_asc'?'selected':''}>按文章标题排序</option>
+          </select>
+        </div>
+        <div class="inter-posts-scroll" id="inter-posts-container"><div class="loading"><div class="spinner"></div>正在读取文章与评论数…</div></div>
+      </aside>
+
+      <section class="inter-right" id="inter-right-panel">
+        <div class="inter-summary-bar">
+          <div class="inter-current">
+            <div class="inter-back-mark">←</div>
+            <div class="inter-current-copy">
+              <div class="inter-current-title" id="inter-current-title">全部互动</div>
+              <div class="inter-current-path" id="inter-current-path">全部文章</div>
+            </div>
+          </div>
+          <div class="inter-summary-chips">
+            <span class="inter-summary-chip" id="inter-comment-summary">0 条评论</span>
+            <span class="inter-summary-chip" id="inter-article-summary">0 篇文章</span>
+            <span class="inter-summary-chip ok">云端</span>
+          </div>
+        </div>
+
+        <div class="inter-filter-bar">
+          <select class="form-select" onchange="setTwikooCommentFilter(this.value)" aria-label="留言筛选">
+            <option value="all" ${STATE.twikooCommentFilter==='all'?'selected':''}>全部留言</option>
+            <option value="root" ${STATE.twikooCommentFilter==='root'?'selected':''}>只看主评论</option>
+            <option value="reply" ${STATE.twikooCommentFilter==='reply'?'selected':''}>只看回复</option>
+          </select>
+          <select class="form-select" onchange="setTwikooCommentSort(this.value)" aria-label="评论排序">
+            <option value="time_desc" ${STATE.twikooCommentSort==='time_desc'?'selected':''}>按时间倒序</option>
+            <option value="time_asc" ${STATE.twikooCommentSort==='time_asc'?'selected':''}>按时间正序</option>
+          </select>
+          <div class="search-box">${ICON_SEARCH}<input class="search-input" value="${escapeAttr(STATE.twikooSearch)}" placeholder="留言 / 用户昵称 / 页面路径" oninput="setTwikooCommentSearch(this.value)"></div>
+        </div>
+
+        <div class="inter-status-strip" id="inter-status"><span class="status-dot"></span><span>正在连接 Twikoo 后端…</span></div>
+        <div class="inter-comments-scroll" id="inter-comments-container">
+          ${location.protocol==='file:'?`<div class="alert warning inter-local-warning"><strong>当前通过 file:// 打开。</strong> 请部署到 HTTPS 域名或通过 localhost 访问，否则后端通常会拒绝 Origin 为 null 的请求。</div>`:''}
+          <div class="loading"><div class="spinner"></div>正在调取互动数据…</div>
+        </div>
+
+        <div class="inter-thread-drawer" id="inter-thread-drawer" hidden>
+          <div class="inter-thread-head">
+            <button class="btn icon ghost" onclick="closeTwikooThread()" title="返回评论工作台">←</button>
+            <div class="inter-thread-title"><strong id="inter-thread-title">完整评论线程</strong><span id="inter-thread-path">/</span></div>
+          </div>
+          <div class="inter-thread-body" id="inter-thread-body"><div class="inter-twikoo-host" id="twikoo-interaction-mount"></div></div>
+        </div>
+      </section>
+    </div>`;
+
+  try{
+    await loadTwikooPostData();
+    if(STATE.page!=='interactions') return;
+    renderTwikooDashboard();
+    const status=document.getElementById('inter-status');
+    if(status) status.innerHTML=`<span class="status-dot ok"></span><span>Twikoo 已连接 · 当前显示最近 ${STATE.twikooComments.length} 条公开互动索引</span>`;
+  }catch(error){
+    if(STATE.page!=='interactions') return;
+    renderTwikooPostsLeft();
+    renderTwikooFailure(error);
+  }
+}
+
+function renderTwikooDashboard(){
+  renderTwikooPostsLeft();
+  renderTwikooCurrentHeader();
+  renderTwikooCommentsRight();
+  const metrics=document.getElementById('inter-page-metrics');
+  if(metrics) metrics.textContent=`共 ${STATE.twikooCountsAreApproximate?'至少 ':''}${twikooTotalCommentCount()} 条评论 · ${STATE.twikooPostEntries.length} 篇文章`;
+}
+
+function setTwikooArticleSort(value){ STATE.twikooArticleSort=value; renderTwikooPostsLeft(); }
+function setTwikooCommentSort(value){ STATE.twikooCommentSort=value; STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
+function setTwikooCommentFilter(value){ STATE.twikooCommentFilter=value; STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
+function setTwikooCommentSearch(value){ STATE.twikooSearch=String(value||''); STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
+
+function renderTwikooPostsLeft(){
+  const box=document.getElementById('inter-posts-container');
+  if(!box) return;
+  const entries=sortedTwikooPostEntries();
+  const total=twikooTotalCommentCount();
+  let html=`
+    <div class="inter-post-item ${STATE.twikooSelectedPost==='all'?'active':''}" onclick="selectTwikooPost('all')">
+      <div class="inter-post-main"><div class="inter-post-title">全部文章的互动</div><div class="inter-post-meta"><span class="inter-post-date">最近评论聚合</span></div></div>
+      <div class="inter-post-count">${STATE.twikooCountsAreApproximate?'≥':''}${total}条</div>
+    </div>`;
+  if(!entries.length){
+    html+=`<div class="inter-post-empty">尚未索引到文章页面。<br>可检查 GitHub 文章目录与 Twikoo 路径是否一致。</div>`;
+  }else{
+    html+=entries.map(item=>{
+      const encoded=encodeURIComponent(item.path).replace(/'/g,'%27');
+      const time=item.lastCommentAt || item.postDate;
+      return `<div class="inter-post-item ${STATE.twikooSelectedPost===item.path?'active':''}" onclick="selectTwikooPost('${encoded}')" title="${escapeAttr(item.path)}">
+        <div class="inter-post-main">
+          <div class="inter-post-title">${escapeHTML(item.title)}</div>
+          <div class="inter-post-meta"><span class="inter-post-date">${escapeHTML(formatTwikooPostDate(time))}</span><span class="inter-post-path">${escapeHTML(item.path)}</span></div>
+        </div>
+        <div class="inter-post-count">${item.countApprox?'≥':''}${Number(item.count)||0}条</div>
+      </div>`;
+    }).join('');
+  }
+  box.innerHTML=html;
+}
+
+function selectTwikooPost(encodedPath){
+  STATE.twikooSelectedPost=encodedPath==='all' ? 'all' : normalizeTwikooPath(decodeURIComponent(encodedPath));
+  STATE.twikooVisibleLimit=40;
+  renderTwikooPostsLeft();
+  renderTwikooCurrentHeader();
+  renderTwikooCommentsRight();
+}
+
+function selectedTwikooEntry(){ return STATE.twikooPostEntries.find(item=>item.path===STATE.twikooSelectedPost) || null; }
+
+function renderTwikooCurrentHeader(){
+  const entry=selectedTwikooEntry();
+  const all=STATE.twikooSelectedPost==='all';
+  const title=document.getElementById('inter-current-title');
+  const path=document.getElementById('inter-current-path');
+  const commentSummary=document.getElementById('inter-comment-summary');
+  const articleSummary=document.getElementById('inter-article-summary');
+  if(title) title.textContent=all?'全部互动':(entry?.title||STATE.twikooSelectedPost);
+  if(path) path.textContent=all?'全部文章':STATE.twikooSelectedPost;
+  if(commentSummary) commentSummary.textContent=`${all?(STATE.twikooCountsAreApproximate?'≥':'')+twikooTotalCommentCount():(entry?.countApprox?'≥':'')+(entry?.count||0)} 条评论`;
+  if(articleSummary) articleSummary.textContent=`${STATE.twikooPostEntries.length} 篇文章`;
+}
+
+function filteredTwikooComments(){
+  let list=STATE.twikooComments.slice();
+  if(STATE.twikooSelectedPost!=='all') list=list.filter(comment=>normalizeTwikooPath(comment.url||'/')===STATE.twikooSelectedPost);
+  if(STATE.twikooCommentFilter==='root') list=list.filter(comment=>!twikooCommentIsReply(comment));
+  if(STATE.twikooCommentFilter==='reply') list=list.filter(comment=>twikooCommentIsReply(comment));
+  const q=STATE.twikooSearch.trim().toLowerCase();
+  if(q){
+    list=list.filter(comment=>[
+      comment.nick,comment.mail,comment.url,twikooCommentText(comment),twikooCommentRegion(comment),twikooCommentAgent(comment)
+    ].some(value=>String(value||'').toLowerCase().includes(q)));
+  }
+  list.sort((a,b)=>STATE.twikooCommentSort==='time_asc' ? twikooTimestamp(a.created)-twikooTimestamp(b.created) : twikooTimestamp(b.created)-twikooTimestamp(a.created));
+  return list;
+}
+
+function twikooActionIcon(type){
+  const icons={
+    reply:'<svg viewBox="0 0 24 24"><path d="M9 17l-5-5 5-5"/><path d="M4 12h10a6 6 0 016 6v1"/></svg>',
+    hide:'<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.7a2 2 0 002.7 2.7"/><path d="M9.9 4.2A10.8 10.8 0 0112 4c5.5 0 9 5 9 8a10.7 10.7 0 01-2.1 3.6"/><path d="M6.6 6.6C4.4 8 3 10.1 3 12c0 3 3.5 8 9 8 1.2 0 2.3-.2 3.3-.6"/></svg>',
+    delete:'<svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>',
+    open:'<svg viewBox="0 0 24 24"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5"/></svg>'
+  };
+  return icons[type]||'';
+}
+
+function renderTwikooCommentsRight(){
+  const box=document.getElementById('inter-comments-container');
+  if(!box) return;
+  const list=filteredTwikooComments();
+  const visible=list.slice(0,STATE.twikooVisibleLimit);
+  const selectedCount=STATE.twikooSelectedPost==='all' ? twikooTotalCommentCount() : (selectedTwikooEntry()?.count||0);
+  const diagnostics=STATE.twikooDiagnostics.length ? `<div class="inter-notice">${STATE.twikooDiagnostics.map(escapeHTML).join('<br>')}</div>` : '';
+  const coverage=selectedCount>list.length || STATE.twikooSelectedPost==='all'
+    ? `<div class="inter-notice">工作台列表来自 Twikoo 官方“最新评论”接口，当前载入最近 ${STATE.twikooComments.length} 条。</div>` : '';
+
+  if(!visible.length){
+    box.innerHTML=`${diagnostics}${coverage}<div class="empty-state"><div class="empty-icon">💬</div><p>未找到符合当前文章、筛选或搜索条件的评论</p><button class="btn sm primary" style="margin-top:12px" onclick="openTwikooThreadForSelected()">查看完整评论线程</button></div>`;
+    return;
+  }
+
+  box.innerHTML=`${diagnostics}${coverage}<div class="inter-comment-list">${visible.map(comment=>{
+    const path=normalizeTwikooPath(comment.url||'/');
+    const encodedPath=encodeURIComponent(path).replace(/'/g,'%27');
+    const text=twikooCommentText(comment) || '（无文本内容）';
+    const needle=encodeURIComponent(`${comment.nick||''} ${text.slice(0,32)}`).replace(/'/g,'%27');
+    const reply=twikooCommentIsReply(comment);
+    const region=twikooCommentRegion(comment);
+    const agent=twikooCommentAgent(comment);
+    return `<article class="inter-comment-card ${reply?'is-reply':''}">
+      <img class="comment-avatar" loading="lazy" referrerpolicy="no-referrer" src="${escapeAttr(safeAvatar(comment.avatar))}" alt="">
+      <div class="inter-comment-body">
+        <div class="inter-comment-head">
+          <div class="inter-comment-author"><strong>${escapeHTML(comment.nick||'匿名')}</strong>${reply?'<span class="inter-comment-badge">回复</span>':''}${comment.isSpam?'<span class="inter-comment-badge" style="background:#fff1f0;color:#d4380d">垃圾评论</span>':''}</div>
+          <div class="inter-comment-actions">
+            <button class="inter-action-btn" title="打开该文章评论区并回复" onclick="openTwikooReply('${encodedPath}')">${twikooActionIcon('reply')}</button>
+            <button class="inter-action-btn" title="打开前台页面" onclick="openTwikooPath('${encodedPath}')">${twikooActionIcon('open')}</button>
+          </div>
+        </div>
+        <div class="inter-comment-text">${escapeHTML(text)}</div>
+        <div class="inter-comment-meta">
+          <span>${escapeHTML(formatTwikooTime(comment.created))}</span>
+          ${region?`<span class="dot"></span><span>${escapeHTML(region)}</span>`:''}
+          ${agent?`<span class="dot"></span><span>${escapeHTML(agent)}</span>`:''}
+          <span class="dot"></span><span class="inter-comment-route" title="${escapeAttr(path)}">${escapeHTML(path)}</span>
+        </div>
+      </div>
+    </article>`;
+  }).join('')}</div>${list.length>visible.length?`<div class="inter-load-more"><button class="btn sm" onclick="loadMoreTwikooComments()">继续加载（剩余 ${list.length-visible.length} 条）</button></div>`:''}`;
+}
+
+function loadMoreTwikooComments(){ STATE.twikooVisibleLimit+=40; renderTwikooCommentsRight(); }
+
+function openTwikooThreadForSelected(){
+  const path=STATE.twikooSelectedPost==='all' ? '/' : STATE.twikooSelectedPost;
+  openTwikooThread(encodeURIComponent(path),'thread');
+}
+
+function openTwikooReply(encodedPath){
+  const path=normalizeTwikooPath(decodeURIComponent(encodedPath));
+  STATE.twikooSelectedPost=path;
+  renderTwikooPostsLeft(); renderTwikooCurrentHeader(); renderTwikooCommentsRight();
+  openTwikooThread(encodeURIComponent(path),'reply');
+}
+
+function openTwikooAdminForComment(action,encodedNeedle){
+  STATE.twikooPendingAdminSearch=decodeURIComponent(encodedNeedle||'');
+  toast(`正在打开 Twikoo 官方管理面板，请登录后执行${action}操作`,'warning');
+  openTwikooThread(encodeURIComponent('/'),'admin');
+}
+
+function openTwikooThread(encodedPath,mode='thread'){
+  const drawer=document.getElementById('inter-thread-drawer');
+  const mount=document.getElementById('twikoo-interaction-mount');
+  if(!drawer||!mount) return;
+  const path=normalizeTwikooPath(decodeURIComponent(encodedPath||encodeURIComponent('/')));
+  drawer.dataset.path=path;
+  drawer.dataset.mode=mode;
+  drawer.classList.toggle('admin-mode',mode==='admin');
+  drawer.hidden=false;
+  const entry=STATE.twikooPostEntries.find(item=>item.path===path);
+  const title=document.getElementById('inter-thread-title');
+  const pathEl=document.getElementById('inter-thread-path');
+  if(title) title.textContent=mode==='admin'?'Twikoo 官方管理面板':(entry?.title||'完整评论线程');
+  if(pathEl) pathEl.textContent=mode==='admin'?'登录后可回复、隐藏、删除和配置':path;
+  mountTwikooThread(false);
+}
+
+async function mountTwikooThread(showToast=false){
+  const drawer=document.getElementById('inter-thread-drawer');
+  const mount=document.getElementById('twikoo-interaction-mount');
+  if(!drawer||!mount||drawer.hidden) return;
+  const path=normalizeTwikooPath(drawer.dataset.path||'/');
+  const mode=drawer.dataset.mode||'thread';
+  const seq=++STATE.twikooMountSeq;
+  mount.innerHTML=`<div class="loading"><div class="spinner"></div>正在连接 ${escapeHTML(normalizedTwikooEnvId())}…</div>`;
+  try{
+    const sdk=await ensureTwikooSdk();
+    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
+    mount.innerHTML='';
+    await withInteractionTimeout(sdk.init(twikooPublicOptions({
+      el:'#twikoo-interaction-mount',
+      path,
+      lang:'zh-CN',
+      onCommentLoaded:()=>{
+        const status=document.getElementById('inter-status');
+        if(status) status.innerHTML='<span class="status-dot ok"></span><span>Twikoo 完整评论线程已加载</span>';
+      }
+    })),20000,'Twikoo 评论组件挂载');
+    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
+    if(mode==='reply') toast('完整评论线程已打开，请点击对应评论下方的“回复”','success');
+    if(mode==='admin') setTimeout(()=>openTwikooAdmin(true),180);
+    if(showToast) toast('Twikoo 已重新加载','success');
+  }catch(error){
+    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
+    mount.innerHTML=`<div class="alert danger" style="margin:0">挂载失败：${escapeHTML(twikooErrorMessage(error))}<div class="inter-diagnostic">${escapeHTML(twikooErrorHint(error))}<br>当前来源：<span class="inter-origin">${escapeHTML(twikooOrigin())}</span></div></div>`;
+    if(showToast) toast(`Twikoo 挂载失败：${twikooErrorMessage(error)}`,'error');
+  }
+}
+
+function closeTwikooThread(){
+  const drawer=document.getElementById('inter-thread-drawer');
+  if(!drawer) return;
+  const closeBtn=drawer.querySelector('.tk-admin-container .el-dialog__headerbtn, .tk-admin-container [aria-label="Close"], .tk-admin-container .el-icon-close');
+  if(closeBtn && typeof closeBtn.click==='function') closeBtn.click();
+  STATE.twikooMountSeq++;
+  clearTimeout(STATE.twikooAdminSearchTimer);
+  drawer.hidden=true;
+  drawer.classList.remove('admin-mode');
+  drawer.dataset.mode='thread';
+  const mount=document.getElementById('twikoo-interaction-mount');
+  if(mount) mount.innerHTML='';
+}
+
+function findVisibleTwikooPasswordInput(){
+  return [...document.querySelectorAll('#inter-thread-drawer input[type="password"], .tk-admin-container input[type="password"], input[type="password"]')]
+    .find(input=>input.offsetParent!==null && !input.disabled) || null;
+}
+
+function setNativeInputValue(input,value){
+  const descriptor=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+  if(descriptor?.set) descriptor.set.call(input,value); else input.value=value;
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+}
+
+function fillTwikooAdminPassword(attempt=0){
+  const input=findVisibleTwikooPasswordInput();
+  if(input){
+    if(CFG.twikooMasterPassword){
+      setNativeInputValue(input,CFG.twikooMasterPassword);
+      input.focus();
+      toast('已填入系统设置中保存的 Twikoo 密码，请点击登录','success');
+    }else{
+      input.focus();
+      toast('请输入 Twikoo 管理员密码','warning');
+    }
+    return true;
+  }
+  if(attempt<18) setTimeout(()=>fillTwikooAdminPassword(attempt+1),140);
+  return false;
+}
+
+function dockTwikooAdminPanel(attempt=0){
+  const drawer=document.getElementById('inter-thread-drawer');
+  const body=document.getElementById('inter-thread-body');
+  const panel=document.querySelector('.tk-admin-container');
+  if(drawer && body && panel){
+    panel.classList.add('inter-admin-docked');
+    if(!body.contains(panel)) body.appendChild(panel);
+    drawer.classList.add('admin-mode');
+    watchTwikooAdminSearch();
+    return true;
+  }
+  if(attempt<20) setTimeout(()=>dockTwikooAdminPanel(attempt+1),120);
+  return false;
+}
+
+function watchTwikooAdminSearch(attempt=0){
+  clearTimeout(STATE.twikooAdminSearchTimer);
+  const needle=STATE.twikooPendingAdminSearch.trim();
+  if(!needle) return;
+  const panel=document.querySelector('.tk-admin-container');
+  if(panel){
+    const input=[...panel.querySelectorAll('input:not([type="password"])')].find(el=>{
+      if(el.offsetParent===null || el.disabled) return false;
+      const hint=`${el.placeholder||''} ${el.getAttribute('aria-label')||''}`.toLowerCase();
+      return /搜索|search|评论|留言|昵称|用户/.test(hint);
+    });
+    if(input){
+      setNativeInputValue(input,needle);
+      STATE.twikooPendingAdminSearch='';
+      toast('已将目标评论关键词填入管理面板搜索框','success');
+      return;
+    }
+  }
+  if(attempt<80) STATE.twikooAdminSearchTimer=setTimeout(()=>watchTwikooAdminSearch(attempt+1),220);
+}
+
+function openTwikooAdmin(fillPassword=false){
+  const existingInput=findVisibleTwikooPasswordInput();
+  if(existingInput){
+    if(fillPassword) fillTwikooAdminPassword(); else existingInput.focus();
+    dockTwikooAdminPanel();
+    return;
+  }
+  const marker=document.querySelector('#twikoo-interaction-mount .tk-admin');
+  if(!marker){
+    toast('未找到 Twikoo 管理入口。请等待评论组件加载；若配置了隐藏暗号，请先在评论区输入暗号显示小齿轮。','warning');
+    return;
+  }
+  const target=marker.closest('button,a') || marker;
+  target.click();
+  setTimeout(()=>{
+    dockTwikooAdminPanel();
+    if(fillPassword) fillTwikooAdminPassword();
+  },80);
+}
+
+function renderTwikooFailure(error){
+  const box=document.getElementById('inter-comments-container');
+  const status=document.getElementById('inter-status');
+  if(status) status.innerHTML='<span class="status-dot err"></span><span>Twikoo 数据读取失败</span>';
+  if(!box) return;
+  box.innerHTML=`<div class="alert danger inter-error"><strong>Twikoo 获取失败：</strong>${escapeHTML(twikooErrorMessage(error))}<div class="inter-diagnostic">${escapeHTML(twikooErrorHint(error))}<br>envId：<span class="inter-origin">${escapeHTML(normalizedTwikooEnvId())}</span><br>当前来源：<span class="inter-origin">${escapeHTML(twikooOrigin())}</span></div><div class="inter-inline-actions">${isUrlTwikooEnv()?'<button class="btn sm" onclick="openTwikooBackend()">检查后端地址</button>':''}<button class="btn sm" onclick="refreshTwikooInteractions()">重新检测</button></div></div>`;
+}
+
+function openTwikooBackend(){ if(isUrlTwikooEnv()) window.open(normalizedTwikooEnvId(),'_blank','noopener'); }
+
+function openTwikooPath(encodedPath){
+  const base=String(CFG.blogUrl||'').trim();
+  if(!base){ toast('请先在系统设置中填写博客前台 URL','warning'); return; }
+  try{ window.open(new URL(normalizeTwikooPath(decodeURIComponent(encodedPath)),base).href,'_blank','noopener'); }
+  catch(e){ toast('博客 URL 格式不正确','error'); }
+}
+
+function openSelectedTwikooPage(){
+  const path=STATE.twikooSelectedPost==='all' ? '/' : STATE.twikooSelectedPost;
+  openTwikooPath(encodeURIComponent(path));
+}
+
+async function refreshTwikooInteractions(){
+  closeTwikooThread();
+  STATE.twikooComments=[];
+  STATE.twikooPostEntries=[];
+  STATE.twikooDiagnostics=[];
+  STATE.twikooVisibleLimit=40;
+  await renderInteractionsPage();
+}
+
+// ============================================================
+// 3. 订阅管理 (拖拽排序 + 暂存机制)
 // ============================================================
 async function renderFriendsPage(){
   STATE.page='friends';
@@ -1639,7 +2542,7 @@ function downloadFriendsJson() {
 }
 
 // ============================================================
-// 3. 运动记录管理
+// 4. 运动记录管理
 // ============================================================
 async function renderSportsPage(){
   STATE.page='sports';
@@ -1673,7 +2576,7 @@ function setSportsTypeFilter(type) {
 
 function changeSportsPage(page) {
   STATE.sportsPage = page;
-  renderSportsTableContainer(); // 必须调用重新渲染函数以刷新页面和分页器
+  renderSportsTableContainer();
 }
 
 function renderSportsTableContainer() {
@@ -1774,11 +2677,7 @@ function openSportsModal(startDateKey=null) {
   const isEdit = !!startDateKey;
   const item = isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {};
   const currentMinutes = isEdit ? parseTimeToMinutes(item.moving_time) : 30;
-
-  const fullDate = String(item.start_date_local || nowLocalString()).trim();
-  const parts = fullDate.split(' ');
-  const defaultDate = parts[0] || '';
-  const defaultTime = parts[1] || '12:00:00';
+  const fullDateStr = String(item.start_date_local || nowLocalString()).trim().replace(' ', 'T');
 
   const html = `
     <div class="modal-overlay">
@@ -1788,10 +2687,15 @@ function openSportsModal(startDateKey=null) {
           <button class="btn sm ghost" onclick="closeModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="fm-group"><label class="fm-label">运动日期</label><input class="fm-input" type="date" id="sp-date-part" value="${escapeAttr(defaultDate)}"></div>
-            <div class="fm-group"><label class="fm-label">运动时间</label><input class="fm-input" type="time" step="1" id="sp-time-part" value="${escapeAttr(defaultTime)}"></div>
+          <!-- 并称选择输入框 + 一键重置为当前时间 -->
+          <div class="fm-group">
+            <label class="fm-label">
+              <span>运动日期与时间</span>
+              <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('sp-datetime')">⚡ 现在</button>
+            </label>
+            <input class="fm-input" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
           </div>
+
           <div class="fm-group"><label class="fm-label">运动名称</label><input class="fm-input" id="sp-name" value="${escapeAttr(item.name || '登月计划')}"></div>
           <div class="fm-group">
             <label class="fm-label">运动类型 (Type)</label>
@@ -1827,15 +2731,14 @@ function deleteSportsData(startDateKey) {
 
 async function saveSportsData() {
   const name = document.getElementById('sp-name').value.trim();
-  const datePart = document.getElementById('sp-date-part').value.trim();
-  const timePart = document.getElementById('sp-time-part').value.trim() || '00:00:00';
-  const startDateLocal = `${datePart} ${timePart}`.trim();
+  const datetimeVal = document.getElementById('sp-datetime').value.trim();
+  const startDateLocal = datetimeVal ? datetimeVal.replace('T', ' ') : nowLocalString();
 
   const type = document.getElementById('sp-type').value.trim();
   const durationMin = parseFloat(document.getElementById('sp-duration').value) || 0;
   const hr = parseFloat(document.getElementById('sp-hr').value) || 0;
 
-  if (!datePart || !name) { toast("运动名称与日期不能为空", "error"); return; }
+  if (!datetimeVal || !name) { toast("运动名称与日期时间不能为空", "error"); return; }
 
   try {
     toast("正在保存更新运动 JSON...");
@@ -1847,7 +2750,7 @@ async function saveSportsData() {
     if (map[startDateLocal]) {
       map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr };
     } else {
-      const datePrefix = datePart.replace(/-/g, "");
+      const datePrefix = startDateLocal.slice(0, 10).replace(/-/g, "");
       const count = STATE.sportsData.filter(i => String(i.run_id).startsWith(datePrefix)).length;
       const run_id = parseInt(`${datePrefix}${String(count + 1).padStart(3, '0')}`);
       map[startDateLocal] = { run_id, name, moving_time: movingTime, type, start_date_local: startDateLocal, summary_polyline: "", average_heartrate: hr, source: "manual" };
@@ -1864,7 +2767,7 @@ async function saveSportsData() {
 }
 
 // ============================================================
-// 4. 足迹管理（单大地图模式 + 拖拽排序模式 + 暂存机制）
+// 5. 足迹管理（单大地图模式 + 拖拽排序模式 + 暂存机制）
 // ============================================================
 async function renderFootprintsPage(){
   STATE.page='footprints';
@@ -1955,13 +2858,19 @@ function switchFootprintMode(mode, index = null) {
   renderFootprintPanel();
 }
 
+function toggleFootprintDisplayMode() {
+  STATE.footprintDisplayMode = STATE.footprintDisplayMode === 'grid' ? 'table' : 'grid';
+  renderFootprintTableRows();
+}
+
 function renderFootprintListPanel(container) {
   container.innerHTML = `
     <div class="card" style="margin-bottom:0">
       <div class="card-header" style="flex-direction:column;align-items:stretch;gap:12px;margin-bottom:14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
           <div class="card-title" id="fp-list-title">全部足迹（共 ${STATE.footprintsData.length} 个）</div>
-          <div style="display:flex;gap:8px;align-items:center;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="btn sm" id="fp-view-toggle" onclick="toggleFootprintDisplayMode()">☷ 列表视图</button>
             <button class="btn sm primary" onclick="switchFootprintMode('edit', null)">＋ 新建足迹</button>
             <button class="btn sm" onclick="downloadFootprintsJson()">JSON 备份</button>            
           </div>
@@ -1978,6 +2887,22 @@ function renderFootprintListPanel(container) {
       </div>
 
       <div class="footprint-cards-grid" id="fp-cards-body"></div>
+
+      <div class="fp-list-table-wrap" id="fp-list-table-wrap" style="display:none;">
+        <table class="fp-list-table">
+          <thead>
+            <tr>
+              <th style="width:72px;">序号</th>
+              <th>地名</th>
+              <th style="width:130px;">打卡日期</th>
+              <th>描述</th>
+              <th style="width:220px;">标签</th>
+              <th style="width:190px;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="fp-list-body"></tbody>
+        </table>
+      </div>
     </div>`;
 }
 
@@ -2201,41 +3126,89 @@ function getFilteredFootprintData() {
 }
 
 function renderFootprintTableRows() {
-  const container = document.getElementById('fp-cards-body');
+  const cardsContainer = document.getElementById('fp-cards-body');
+  const tableWrap = document.getElementById('fp-list-table-wrap');
+  const tableBody = document.getElementById('fp-list-body');
   const titleEl = document.getElementById('fp-list-title');
-  if (!container) return;
+  const viewToggle = document.getElementById('fp-view-toggle');
+  if (!cardsContainer || !tableWrap || !tableBody) return;
 
   const filtered = getFilteredFootprintData();
+  const isTableView = STATE.footprintDisplayMode === 'table';
+  const isSorting = STATE.footprintsSortMode;
+
   if (titleEl) titleEl.textContent = `全部足迹（当前 ${filtered.length} / 共 ${STATE.footprintsData.length} 个）`;
+  if (viewToggle) {
+    viewToggle.textContent = isTableView ? '▦ 卡片视图' : '☷ 列表视图';
+    viewToggle.title = isTableView ? '切换为卡片展示' : '切换为列表展示';
+  }
+
+  cardsContainer.style.display = isTableView ? 'none' : 'grid';
+  tableWrap.style.display = isTableView ? 'block' : 'none';
 
   if (filtered.length === 0) {
-    container.innerHTML = `<div style="grid-column:1/-1;color:var(--text3);padding:32px;text-align:center;">未找到符合条件的足迹记录</div>`;
+    cardsContainer.innerHTML = isTableView ? '' : `<div style="grid-column:1/-1;color:var(--text3);padding:32px;text-align:center;">未找到符合条件的足迹记录</div>`;
+    tableBody.innerHTML = isTableView ? `<tr><td colspan="6" style="color:var(--text3);padding:32px;text-align:center;">未找到符合条件的足迹记录</td></tr>` : '';
     return;
   }
 
-  const isSorting = STATE.footprintsSortMode;
+  if (!isTableView) {
+    tableBody.innerHTML = '';
+    cardsContainer.innerHTML = filtered.map((item) => {
+      const originalIndex = STATE.footprintsData.indexOf(item);
+      const isSelected = STATE.selectedMapLocationName === item.name;
+      const colorClass = COLOR_PRESETS[originalIndex % COLOR_PRESETS.length];
 
-  container.innerHTML = filtered.map((item) => {
+      return `
+        <div class="fp-card ${isSelected ? 'is-selected' : ''}" 
+             id="fp-card-${originalIndex}" 
+             draggable="${isSorting ? 'true' : 'false'}"
+             ondragstart="onFootprintDragStart(event, ${originalIndex})"
+             ondragover="onFootprintDragOver(event)"
+             ondrop="onFootprintDrop(event, ${originalIndex})"
+             onclick="${isSorting ? '' : `onFootprintCardClick(${originalIndex})`}" 
+             style="${isSorting ? 'border-color:var(--accent);background:var(--accent-light);cursor:grab;' : ''}">
+          <div class="fp-num-badge fp-num-badge--${colorClass}">${originalIndex + 1}</div>
+          <div class="fp-name" title="${escapeAttr(item.name)}">${escapeHTML(item.name)}</div>
+        </div>
+      `;
+    }).join('');
+    return;
+  }
+
+  cardsContainer.innerHTML = '';
+  tableBody.innerHTML = filtered.map((item) => {
     const originalIndex = STATE.footprintsData.indexOf(item);
     const isSelected = STATE.selectedMapLocationName === item.name;
     const colorClass = COLOR_PRESETS[originalIndex % COLOR_PRESETS.length];
+    const description = item.description || '';
+    const tags = (item.categories || []).length
+      ? `<div class="tag-list fp-list-tags">${item.categories.map(c => `<span class="tag soft">${escapeHTML(c)}</span>`).join('')}</div>`
+      : '<span class="muted">—</span>';
+    const actions = isSorting
+      ? '<span class="muted">拖拽排序中</span>'
+      : `
+          <button class="btn sm" onclick="event.stopPropagation();openFootprintDetailModal(${originalIndex})">查看</button>
+          <button class="btn sm danger" onclick="event.stopPropagation();deleteFootprintItemLocal(${originalIndex})">删除</button>`;
 
     return `
-      <div class="fp-card ${isSelected ? 'is-selected' : ''}" 
-           id="fp-card-${originalIndex}" 
-           draggable="${isSorting ? 'true' : 'false'}"
-           ondragstart="onFootprintDragStart(event, ${originalIndex})"
-           ondragover="onFootprintDragOver(event)"
-           ondrop="onFootprintDrop(event, ${originalIndex})"
-           onclick="${isSorting ? '' : `onFootprintCardClick(${originalIndex})`}" 
-           style="${isSorting ? 'border-color:var(--accent);background:var(--accent-light);cursor:grab;' : ''}">
-        <div class="fp-num-badge fp-num-badge--${colorClass}">${originalIndex + 1}</div>
-        <div class="fp-name" title="${escapeAttr(item.name)}">${escapeHTML(item.name)}</div>
-      </div>
-    `;
+      <tr class="fp-list-row ${isSelected ? 'is-selected' : ''} ${isSorting ? 'is-sorting' : ''}"
+          id="fp-card-${originalIndex}"
+          draggable="${isSorting ? 'true' : 'false'}"
+          ondragstart="onFootprintDragStart(event, ${originalIndex})"
+          ondragover="onFootprintDragOver(event)"
+          ondrop="onFootprintDrop(event, ${originalIndex})"
+          onclick="${isSorting ? '' : `onFootprintCardClick(${originalIndex})`}" 
+          style="${isSorting ? 'cursor:grab;' : ''}">
+        <td><div class="fp-list-index"><div class="fp-num-badge fp-num-badge--${colorClass}">${originalIndex + 1}</div></div></td>
+        <td><div class="fp-list-name" title="${escapeAttr(item.name || '')}">${escapeHTML(item.name || '未命名')}</div></td>
+        <td><div class="fp-list-date">${item.date ? escapeHTML(item.date) : '<span class="muted">—</span>'}</div></td>
+        <td><div class="fp-list-desc" title="${escapeAttr(description)}">${description ? escapeHTML(description) : '<span class="muted">—</span>'}</div></td>
+        <td>${tags}</td>
+        <td><div class="fp-list-actions">${actions}</div></td>
+      </tr>`;
   }).join('');
 }
-
 let draggedFootprintIndex = null;
 function onFootprintDragStart(e, index) {
   draggedFootprintIndex = index;
@@ -2269,7 +3242,7 @@ function onFootprintCardClick(originalIndex) {
     }
   }
 
-  document.querySelectorAll('.fp-card').forEach(c => c.classList.remove('is-selected'));
+  document.querySelectorAll('.fp-card, .fp-list-row').forEach(c => c.classList.remove('is-selected'));
   const currentCard = document.getElementById(`fp-card-${originalIndex}`);
   if (currentCard) currentCard.classList.add('is-selected');
 
@@ -2473,7 +3446,6 @@ function scrollPopupPhotos(trackId, direction) {
   }
 }
 
-// 保留高德地图上的点击气泡展示 (Popup)
 function renderMapMarkers(map, locations) {
   if (STATE.allMapMarkers.length > 0) {
     STATE.allMapMarkers.forEach(m => m.setMap(null));
@@ -2670,7 +3642,7 @@ function renderAmapCustomControls(container, map) {
 }
 
 // ============================================================
-// 5. 图床 / 部署状态 / 系统设置
+// 6. 图床 / 部署状态 / 系统设置
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
@@ -2874,17 +3846,53 @@ async function copyText(text){
   catch(e){ prompt('复制失败，请手动复制：', text); }
 }
 async function uploadEditorR2Images(input){
-  const files=[...(input?.files||[])]; if(!files.length) return;
+  return uploadEditorR2FileList([...(input?.files||[])], input);
+}
+async function uploadEditorR2FileList(fileList, input=null){
+  const files=[...(fileList||[])];
+  if(!files.length) return;
+
+  const upload=document.querySelector('.editor-toolbar-upload');
+  if(upload?.dataset.uploading==='1'){
+    if(input) input.value='';
+    toast('图片正在上传，请稍候','warning');
+    return;
+  }
+  const icon=upload?.querySelector('.editor-toolbar-upload-icon');
+  const title=upload?.querySelector('.editor-toolbar-upload-title');
+  const sub=upload?.querySelector('.editor-toolbar-upload-sub');
+  const resetUpload=()=>{
+    if(!upload) return;
+    upload.dataset.uploading='0';
+    upload.classList.remove('is-uploading','is-dragover');
+    if(icon) icon.textContent='🖼️';
+    if(title) title.textContent='上传图片';
+    if(sub) sub.textContent='R2 图床 · 自动插入正文';
+  };
+
   try{
+    if(upload){
+      upload.dataset.uploading='1';
+      upload.classList.add('is-uploading');
+      if(icon) icon.textContent='↻';
+      if(title) title.textContent=`准备上传 0/${files.length}`;
+      if(sub) sub.textContent='正在处理图片，请稍候';
+    }
     toast(`开始处理并上传 ${files.length} 张图片到 R2…`);
-    for(const file of files){
+    for(let i=0;i<files.length;i++){
+      const file=files[i];
       if(!file.type.startsWith('image/') && !/\.heic$/i.test(file.name)) throw new Error(`${file.name} 不是支持的图片格式`);
+      if(title) title.textContent=`正在上传 ${i+1}/${files.length}`;
       const item=await r2UploadFile(file);
       insertIntoEditor(`\n![${item.originalName.replace(/\.[^.]+$/,'')}](${item.url})\n`);
     }
     toast('图片已上传并插入文章','success');
-  }catch(e){ toast(e.message,'error'); }
-  finally{ if(input) input.value=''; }
+  }catch(e){
+    toast(e.message,'error');
+  }finally{
+    if(input) input.value='';
+    resetUpload();
+  }
 }
 async function uploadMediaFiles(input){
   const files=[...(input?.files||[])]; if(!files.length) return;
@@ -3004,6 +4012,11 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">Branch / 默认分支</label><input class="setting-input" id="s-branch" value="${escapeAttr(CFG.branch||'main')}"></div>
         <div class="setting-group"><label class="setting-label">Posts Path / 文章根目录</label><input class="setting-input" id="s-posts" value="${escapeAttr(CFG.postsPath||'content/posts')}"></div>
       </div>
+      <div class="section-title">Twikoo 评论系统配置</div>
+      <div class="settings-grid">
+        <div class="setting-group"><label class="setting-label">Twikoo 环境 ID (envId)</label><input class="setting-input" id="s-twikoo-env" placeholder="例如: https://xxx.vercel.app" value="${escapeAttr(CFG.twikooEnvId||'')}"></div>
+        <div class="setting-group"><label class="setting-label">Twikoo 管理员密码 (masterPassword)</label><input class="setting-input" type="password" id="s-twikoo-pwd" value="${escapeAttr(CFG.twikooMasterPassword||'')}"></div>
+      </div>
       <div class="section-title">站点与部署扩展</div>
       <div class="settings-grid">
         <div class="setting-group"><label class="setting-label">博客前台网址</label><input class="setting-input" id="s-blog" value="${escapeAttr(CFG.blogUrl||'')}"></div>
@@ -3035,6 +4048,7 @@ function renderSettingsPage(){
 const SETTINGS_EXPORT_VERSION=1;
 const CFG_EXPORT_KEYS=[
   'token','owner','repo','branch','postsPath','blogUrl','vercelProjectId','vercelToken',
+  'twikooEnvId', 'twikooMasterPassword',
   'r2AccountId','r2Bucket','r2AccessKeyId','r2SecretAccessKey','r2PublicUrl','r2Prefix',
   'r2WebpEnabled','r2WebpQuality','r2ImageMaxSide'
 ];
@@ -3046,6 +4060,8 @@ function readSettingsFormIntoConfig(){
   CFG.token=byId('s-token').value.trim(); CFG.branch=byId('s-branch').value.trim()||'main';
   CFG.postsPath=cleanPath(byId('s-posts').value.trim()||'content/posts'); CFG.blogUrl=byId('s-blog').value.trim();
   CFG.vercelProjectId=byId('s-v-id').value.trim(); CFG.vercelToken=byId('s-v-token').value.trim();
+  CFG.twikooEnvId=byId('s-twikoo-env')?.value.trim()||'';
+  CFG.twikooMasterPassword=byId('s-twikoo-pwd')?.value.trim()||'';
   CFG.r2AccountId=byId('s-r2-account').value.trim(); CFG.r2Bucket=byId('s-r2-bucket').value.trim();
   CFG.r2AccessKeyId=byId('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=byId('s-r2-sk').value.trim();
   CFG.r2PublicUrl=byId('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(byId('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');
