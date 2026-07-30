@@ -196,9 +196,9 @@ input:checked+.slider:before{transform:translateX(18px)}
 .setting-label{font-size:12px;font-weight:700;color:var(--text2)}
 .setting-input{padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg)}
 .setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
-.section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:99px}
+.section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:9px}
 
-/* 图片风格网格订阅与足迹网格 (Grid Styles) */
+/* 图片风格网格友链与足迹网格 (Grid Styles) */
 .friends-grid, .footprint-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -414,44 +414,199 @@ input:checked+.slider:before{transform:translateX(18px)}
   .topbar-actions{margin-left:0;width:100%;justify-content:flex-start}
   .content{height:auto;min-height:calc(100vh - 120px);padding:16px}
 }
+/* ============================================================
+   Mobile experience enhancements
+   These rules only apply to tablets/phones and do not affect PC.
+   ============================================================ */
+@media (max-width:860px){
+  html{scroll-padding-bottom:calc(76px + env(safe-area-inset-bottom));}
+  body{min-width:320px;overflow-x:hidden;-webkit-text-size-adjust:100%;touch-action:manipulation;}
+  .app{width:100%;min-height:100dvh;padding-bottom:calc(68px + env(safe-area-inset-bottom));}
 
-/* 专门针对 768px 及以下小屏手机端的适配优化 */
-@media (max-width:768px){
-  .topbar{padding:10px 12px;gap:8px}
-  .topbar-actions{gap:6px;width:100%}
-  .topbar-actions .btn{flex:1;padding:6px 10px;font-size:12px}
-  .content{padding:12px}
-  .card{padding:14px;margin-bottom:14px}
-  
-  /* 编辑器在手机端全屏布局调整 */
-  .editor-wrap{margin:-12px;padding:12px;gap:12px}
-  .editor-title-panel{padding:12px}
-  .title-input{font-size:18px}
-  .desc-input{font-size:13px}
-  .editor-right{overflow-y:visible}
-  
-  /* 弹窗小屏全屏适配 */
-  .modal-overlay{padding:10px}
-  .modal-card{max-height:95vh;width:100%}
-  .modal-header{padding:12px 16px}
-  .modal-body{padding:14px}
-  .modal-footer{padding:10px 14px}
-  
-  /* 设置页面单列适配 */
-  .settings-grid{grid-template-columns:1fr}
-  .setting-group[style*="grid-column:span 2"],
-  .fm-group[style*="grid-column: span 2"]{grid-column:span 1 !important}
-  
-  /* 网格与足迹地图移动端自适应 */
-  .friends-grid, .footprint-cards-grid {grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;}
-  #main-footprint-map-wrapper{height: 300px;}
-  .reader-wrap{padding: 20px 16px;}
-  .reader-title{font-size: 22px;}
-  
-  /* 分页响应式优化 */
-  .pagination-wrap{flex-direction:column;align-items:stretch;text-align:center;}
-  .pagination-controls{justify-content:center;margin-top:6px;}
+  /* Replace the tall mobile header navigation with a thumb-friendly bottom bar. */
+  .sidebar{
+    position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;
+    border-right:none;border-bottom:none;border-top:1px solid var(--border);
+    background:rgba(255,255,255,.96);box-shadow:0 -8px 24px rgba(29,33,41,.08);
+    backdrop-filter:saturate(160%) blur(14px);z-index:100;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .sidebar-logo,.sidebar-footer,.nav-section{display:none;}
+  .sidebar-nav{
+    display:flex;align-items:stretch;height:68px;padding:5px 6px 4px;gap:2px;
+    overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+  .sidebar-nav::-webkit-scrollbar{display:none;}
+  .nav-item{
+    flex:1 0 68px;min-width:68px;max-width:96px;min-height:56px;
+    flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:6px 4px 5px;border-left:none;border-bottom:none;border-top:2px solid transparent;
+    border-radius:9px;font-size:10.5px;line-height:1.15;white-space:nowrap;
+  }
+  .nav-item svg{width:20px;height:20px;}
+  .nav-item.active{border-left:none;border-bottom:none;border-top-color:var(--accent);background:var(--accent-light);}
+
+  .main{width:100%;min-height:100dvh;overflow:visible;}
+  .topbar{
+    position:sticky;top:0;z-index:40;height:auto;min-height:56px;padding:10px 12px;
+    align-items:stretch;flex-direction:column;gap:8px;
+    background:rgba(255,255,255,.96);
+  }
+  .page-title{font-size:16px;min-height:24px;line-height:1.35;}
+  .page-title small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .topbar-actions{
+    width:100%;margin-left:0;justify-content:flex-start;flex-wrap:nowrap;gap:8px;
+    overflow-x:auto;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .topbar-actions::-webkit-scrollbar{display:none;}
+  .topbar-actions .btn{flex:0 0 auto;}
+  .content{height:auto;min-height:calc(100dvh - 56px);padding:12px;overflow:visible!important;}
+
+  /* Touch targets and iOS input zoom prevention. */
+  .btn{min-height:40px;padding:9px 13px;}
+  .btn.sm{min-height:36px;padding:8px 10px;}
+  .btn.icon{width:40px;height:40px;padding:0;}
+  input,select,textarea,.search-input,.form-select,.filter,.fm-input,.fm-textarea,.setting-input,.title-input,.desc-input{font-size:16px!important;}
+  select.filter,.form-select{min-height:42px;max-width:100%;}
+
+  .card{padding:14px;border-radius:10px;margin-bottom:12px;}
+  .card-header{align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+  .card-header>div:first-child{min-width:0;flex:1 1 180px;}
+  .card-title{font-size:14px;}
+  .management-shell{gap:12px;}
+
+  .segmented{
+    flex-wrap:nowrap;width:100%;overflow-x:auto;padding:1px 0 4px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  }
+  .segmented::-webkit-scrollbar{display:none;}
+  .seg-btn{flex:0 0 auto;min-height:38px;padding:8px 12px;}
+
+  .toolbar{align-items:stretch;gap:8px;margin-bottom:12px;}
+  .search-box{flex:1 0 100%;min-width:0;width:100%;}
+  .search-input{min-height:44px;}
+  .toolbar select,.toolbar .filter,.toolbar .form-select{flex:1 1 130px;min-width:0;}
+  .toolbar>.btn{flex:0 0 auto;}
+  .batch-bar{align-items:stretch;flex-direction:column;padding:10px;}
+  .batch-actions{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none;}
+  .batch-actions::-webkit-scrollbar{display:none;}
+
+  /* Keep full table information while making horizontal browsing smooth. */
+  .table-wrap{
+    margin:0 -14px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;scrollbar-width:thin;
+    background:linear-gradient(to right,var(--bg) 30%,rgba(255,255,255,0)),linear-gradient(to left,var(--bg) 30%,rgba(255,255,255,0));
+    background-position:left center,right center;background-repeat:no-repeat;background-size:28px 100%;
+  }
+  table{min-width:680px;}
+  th{padding:10px 12px;font-size:11px;}
+  td{padding:12px;font-size:12.5px;}
+  .article-title-cell{min-width:190px;max-width:300px;}
+  .article-title-link{max-width:260px;}
+  .article-path{max-width:280px;}
+  .pagination-wrap{margin:0 -14px -14px;padding:12px 14px;align-items:stretch;flex-direction:column;}
+  .pagination-controls{width:100%;justify-content:space-between;overflow-x:auto;}
+  .pagination-controls .btn{flex:0 0 auto;}
+
+  /* Editor becomes a single, natural document flow on small screens. */
+  .editor-wrap{
+    display:flex;flex-direction:column;height:auto;min-height:0;overflow:visible;
+    margin:-12px;padding:0 0 12px;gap:12px;background:var(--bg2);
+  }
+  .editor-left{height:auto;min-height:calc(100dvh - 130px);border-left:none;border-right:none;border-radius:0;overflow:visible;}
+  .editor-title-panel{padding:14px 14px 12px;}
+  .title-input{font-size:23px!important;margin-bottom:8px;}
+  .editor-left .EasyMDEContainer{display:block;overflow:visible;min-height:58dvh;}
+  .editor-toolbar{position:sticky;top:56px;z-index:25;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .editor-toolbar button{float:none!important;display:inline-block!important;}
+  .CodeMirror{height:58dvh!important;min-height:420px;padding:8px 12px;font-size:15px!important;}
+  .editor-preview-side{position:fixed!important;inset:0!important;z-index:120!important;width:100%!important;height:100dvh!important;border:none!important;}
+  .editor-right{height:auto;overflow:visible;padding:0 12px 4px;gap:12px;}
+  .fm-card{padding:14px;}
+  .fm-input,.fm-textarea{min-height:42px;}
+  .tags-input-wrap{min-height:44px;}
+
+  .reader-wrap{padding:20px 16px;border-radius:10px;}
+  .reader-header{margin-bottom:22px;padding-bottom:16px;}
+  .reader-title-row{flex-direction:column;gap:12px;}
+  .reader-title{font-size:25px;line-height:1.3;overflow-wrap:anywhere;}
+  .reader-title-actions{width:100%;justify-content:flex-start;padding-top:0;overflow-x:auto;flex-wrap:nowrap;}
+  .reader-desc{font-size:14px;}
+  .markdown-body{font-size:15px;overflow-wrap:anywhere;}
+  .markdown-body pre{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .markdown-body img{max-width:100%;height:auto;}
+
+  .settings-grid,.fp-form-grid{grid-template-columns:1fr;gap:12px;}
+  .section-title{margin:18px 0 10px;}
+  .friends-grid,.footprint-cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .friend-card,.fp-card{padding:11px;gap:10px;cursor:default;}
+  .media-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
+  .media-thumb{height:112px;}
+  .media-item-actions .btn{flex:1 1 auto;}
+  .media-drop{min-height:150px;padding:20px 14px;}
+
+  #main-footprint-map-wrapper{height:min(56dvh,390px);min-height:310px;border-radius:10px;}
+  .footprint-map__filters{
+    top:8px;left:8px;right:8px;max-width:none;flex-wrap:nowrap;overflow-x:auto;
+    border-radius:12px;padding:5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .footprint-map__filters::-webkit-scrollbar{display:none;}
+  .footprint-map__filter-btn{flex:0 0 auto;min-height:34px;padding:7px 10px;}
+  .footprint-popup{width:min(250px,calc(100vw - 70px));}
+  .footprint-photo-viewer__dialog,.footprint-photo-viewer__dialog img{max-width:94vw;}
+  .footprint-photo-viewer__dialog img{max-height:78dvh;}
+  .footprint-photo-viewer__close{top:-42px;right:0;width:38px;height:38px;}
+  .footprint-photo-viewer__nav{width:42px;height:46px;}
+  .footprint-photo-viewer__nav--prev{left:4px;}
+  .footprint-photo-viewer__nav--next{right:4px;}
+
+  /* Mobile dialogs use a bottom-sheet layout and remain above the bottom nav. */
+  .modal-overlay{align-items:flex-end;padding:0;z-index:200;}
+  .modal-card{
+    max-width:none;max-height:calc(94dvh - env(safe-area-inset-bottom));
+    border-left:none;border-right:none;border-bottom:none;border-radius:16px 16px 0 0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .modal-header{padding:15px 16px;}
+  .modal-body{padding:16px;gap:10px;}
+  .modal-footer{padding:12px 16px;overflow-x:auto;justify-content:flex-end;flex-wrap:nowrap;}
+  .modal-footer .btn{flex:0 0 auto;}
+
+  .toast-container{top:12px;max-width:none;width:calc(100% - 24px);}
+  .toast{padding:11px 13px;}
+  .loading{padding:48px 16px;}
+  .empty-state{padding:40px 16px;}
 }
+
+@media (max-width:520px){
+  .page-title small{display:none;}
+  .content{padding:10px;}
+  .card{padding:12px;margin-bottom:10px;}
+  .table-wrap{margin:0 -12px;}
+  .pagination-wrap{margin:0 -12px -12px;padding:10px 12px;}
+  .editor-wrap{margin:-10px;}
+  .editor-right{padding-left:10px;padding-right:10px;}
+  .topbar-actions .btn{min-height:38px;padding:8px 11px;}
+  .friends-grid,.footprint-cards-grid,.media-grid{grid-template-columns:1fr 1fr;}
+  .friend-card,.fp-card{align-items:flex-start;}
+  .friend-avatar{width:38px;height:38px;}
+  .media-thumb{height:104px;}
+}
+
+@media (max-width:380px){
+  .nav-item{flex-basis:62px;min-width:62px;font-size:10px;}
+  .friends-grid,.footprint-cards-grid,.media-grid{grid-template-columns:1fr;}
+  .toolbar select,.toolbar .filter,.toolbar .form-select{flex-basis:100%;}
+  .reader-wrap{padding:18px 13px;}
+  .reader-title{font-size:23px;}
+}
+
+@media (pointer:coarse){
+  .friend-card:hover,.fp-card:hover{transform:none;box-shadow:var(--shadow-soft);}
+  .nav-item,.btn,.seg-btn,.media-drop,.switch,.footprint-map__filter-btn{-webkit-tap-highlight-color:transparent;}
+}
+
 </style>
 </head>
 <body>
@@ -472,7 +627,7 @@ input:checked+.slider:before{transform:translateX(18px)}
       </div>
       <div class="nav-item" onclick="showPage('friends')" id="nav-friends">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        订阅管理
+        友链管理
       </div>
       <div class="nav-item" onclick="showPage('sports')" id="nav-sports">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -1239,21 +1394,21 @@ async function savePost(mode){
 function readLocalDraft(path){ return null; }
 
 // ============================================================
-// 2. 订阅管理 (拖拽排序 + 暂存机制)
+// 2. 友链管理 (拖拽排序 + 暂存机制)
 // ============================================================
 async function renderFriendsPage(){
   STATE.page='friends';
-  document.getElementById('page-title').innerHTML='订阅管理 <small>static/friends.json</small>';
+  document.getElementById('page-title').innerHTML='友链管理 <small>static/friends.json</small>';
   const sortBtnText = STATE.friendsSortMode ? '✨ 退出并应用排序' : '列表排序 ';
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="toggleFriendsSortMode()">${sortBtnText}</button>
     <button class="btn" onclick="checkFriendsAccessibility()">检查连通性</button>
     <button class="btn" onclick="renderFriendsPage()">刷新数据</button>
-    <button class="btn primary" onclick="openFriendsEditModal()">新增订阅</button>
+    <button class="btn primary" onclick="openFriendsEditModal()">新增友链</button>
     <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveAllFriendsToGithub()">保存到仓库</button>`;
   
   const c=document.getElementById('main-content');
-  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取订阅数据…</div>`;
+  c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取友链数据…</div>`;
 
   try {
     if (STATE.friendsData.length === 0) {
@@ -1264,19 +1419,19 @@ async function renderFriendsPage(){
     }
     renderFriendsGridContainer();
   } catch (e) {
-    c.innerHTML = `<div class="alert danger">读取订阅数据失败: ${escapeHTML(e.message)}<br>请检查 static/friends.json 是否在仓库路径下。</div>`;
+    c.innerHTML = `<div class="alert danger">读取友链数据失败: ${escapeHTML(e.message)}<br>请检查 static/friends.json 是否在仓库路径下。</div>`;
   }
 }
 
 function toggleFriendsSortMode() {
   STATE.friendsSortMode = !STATE.friendsSortMode;
   renderFriendsGridBody();
-  toast(STATE.friendsSortMode ? "已开启订阅自由拖拽排序模式（新顺序已暂存本地，确认无误后点击『保存到仓库』生效）" : "已退出排序模式", "info");
+  toast(STATE.friendsSortMode ? "已开启友链自由拖拽排序模式（新顺序已暂存本地，确认无误后点击『保存到仓库』生效）" : "已退出排序模式", "info");
 }
 
 async function checkFriendsAccessibility() {
   if (!STATE.friendsData || STATE.friendsData.length === 0) {
-    toast("没有可检测的订阅数据", "warning");
+    toast("没有可检测的友链数据", "warning");
     return;
   }
   toast("开始检测所有博客连通状态…", "info");
@@ -1346,7 +1501,7 @@ function renderFriendsGridContainer() {
       <div class="toolbar">
         <div class="search-box">
           ${ICON_SEARCH}
-          <input type="text" class="search-input" id="friends-search" placeholder="搜索订阅博主、网址…" value="${escapeAttr(STATE.friendsSearchKeyword)}" oninput="handleFriendsSearch(this.value)">
+          <input type="text" class="search-input" id="friends-search" placeholder="搜索友链博主、网址…" value="${escapeAttr(STATE.friendsSearchKeyword)}" oninput="handleFriendsSearch(this.value)">
         </div>
         <select class="form-select" id="friends-status-filter" style="min-width:140px;" onchange="handleFriendsStatusFilter(this.value)">
           <option value="all" ${STATE.friendsStatusFilter==='all'?'selected':''}>全部状态</option>
@@ -1381,7 +1536,7 @@ function renderFriendsGridBody() {
   if (countTitle) countTitle.textContent = `我的订阅（当前 ${filtered.length} / 共 ${STATE.friendsData.length} 人）`;
 
   if (filtered.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1;color:var(--text3);padding:36px;text-align:center;">未找到符合条件的订阅博主</div>`;
+    grid.innerHTML = `<div style="grid-column:1/-1;color:var(--text3);padding:36px;text-align:center;">未找到符合条件的友链博主</div>`;
     return;
   }
 
@@ -1434,7 +1589,7 @@ function onFriendDrop(e, targetIndex) {
   STATE.friendsData.splice(targetIndex, 0, item);
   draggedFriendIndex = null;
   renderFriendsGridBody();
-  toast("订阅新顺序已暂存本地，确认无误后请点击顶部『保存到仓库』", "success");
+  toast("友链新顺序已暂存本地，确认无误后请点击顶部『保存到仓库』", "success");
 }
 
 function openFriendActionModal(index) {
@@ -1529,7 +1684,7 @@ function openFriendsEditModal(index = null) {
     <div class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
-          <div>${isEdit ? '编辑订阅条目' : '新增订阅条目'}</div>
+          <div>${isEdit ? '编辑友链条目' : '新增友链条目'}</div>
           <button class="btn sm ghost" onclick="closeModal()">✕</button>
         </div>
         <div class="modal-body">
@@ -1609,12 +1764,12 @@ function saveFriendModalItem(index) {
 
 function deleteFriendItem(index) {
   const item = STATE.friendsData[index];
-  if (!confirm(`确定要删除订阅「${item[0] || '未命名'}」吗？`)) return;
+  if (!confirm(`确定要删除友链「${item[0] || '未命名'}」吗？`)) return;
 
   closeModal();
   STATE.friendsData.splice(index, 1);
   renderFriendsGridBody();
-  toast("订阅已从本地列表移除", "info");
+  toast("友链已从本地列表移除", "info");
 }
 
 async function saveAllFriendsToGithub() {
@@ -3118,10 +3273,24 @@ async function importSettingsFile(file){
   }
 }
 
+
+// Mobile-only navigation visibility enhancement.
+function keepActiveMobileNavVisible(){
+  if(window.matchMedia('(max-width: 860px)').matches){
+    const activeNav=document.querySelector('.sidebar-nav .nav-item.active');
+    if(activeNav) requestAnimationFrame(()=>activeNav.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}));
+  }
+}
+document.addEventListener('click', event=>{
+  if(event.target.closest('.sidebar-nav .nav-item')) setTimeout(keepActiveMobileNavVisible,0);
+});
+window.addEventListener('resize', keepActiveMobileNavVisible, {passive:true});
+
 // Lifecycle
 window.addEventListener('DOMContentLoaded', async()=>{
   loadCfg(); const active=await checkStatus();
   if(active) showPage('posts'); else { showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning'); }
+  setTimeout(keepActiveMobileNavVisible, 0);
 });
 </script>
 </body>
