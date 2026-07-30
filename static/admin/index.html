@@ -863,9 +863,26 @@ async function getFileContent(path){
 }
 
 async function putFile(path, content, sha, message){
-  const encoded=btoa(unescape(encodeURIComponent(content)));
-  const body={message, content:encoded, branch:CFG.branch}; if(sha) body.sha=sha;
-  return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {method:'PUT', body:JSON.stringify(body)});
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  
+  let realSha = sha;
+  // 无论有没有传 sha，在写入前都先尝试查询一次远程该文件最新的真实 sha，防冲突
+  try {
+    const freshFile = await ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${encodeURIComponent(CFG.branch)}`);
+    if (freshFile && freshFile.sha) {
+      realSha = freshFile.sha; // 强制校准为 GitHub 线上最新的 sha
+    }
+  } catch (e) {
+    // 若返回 404 说明是全新文件，忽略即可
+  }
+
+  const body = { message, content: encoded, branch: CFG.branch };
+  if (realSha) body.sha = realSha;
+
+  return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {
+    method: 'PUT',
+    body: JSON.stringify(body)
+  });
 }
 
 async function deleteFile(path, sha, message){
@@ -1470,11 +1487,33 @@ function collectEditorData(mode='draft'){
 
 async function savePost(mode){
   try{
-    const data=collectEditorData(mode); const content=buildFrontMatter(data.fm, data.body);
-    await putFile(data.path, content, STATE.editingPost?.sha, `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`);
-    STATE.postsLoaded = false;
-    toast('保存成功','success'); showPage('posts');
-  }catch(e){ toast(e.message,'error'); }
+    const data = collectEditorData(mode); 
+    const content = buildFrontMatter(data.fm, data.body);
+    
+    // 提交到 GitHub
+    const res = await putFile(
+      data.path, 
+      content, 
+      STATE.editingPost?.sha, 
+      `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`
+    );
+
+    // 写入成功后，立即用 GitHub 响应的新 sha 和新路径更新前端变量
+    if (res && res.content && res.content.sha) {
+      if (STATE.editingPost) {
+        STATE.editingPost.sha = res.content.sha;
+        STATE.editingPost.path = data.path;
+        STATE.editingPost.isNew = false;
+      }
+    }
+
+    STATE.dirty = false;
+    STATE.postsLoaded = false; // 标记文章列表需要重新从远程加载，防止首页列表持存旧 sha
+    toast('保存成功', 'success'); 
+    showPage('posts');
+  }catch(e){ 
+    toast(e.message, 'error'); 
+  }
 }
 
 function readLocalDraft(path){ return null; }
