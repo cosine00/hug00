@@ -2,7 +2,7 @@
 title: Hugo 管理的姿势
 author: 落落vici
 date: "2026-07-30 17:57:36"
-lastmod: "2026-07-30 18:01:41"
+lastmod: "2026-07-30 18:04:55"
 tags:
 slug: blog-manage
 draft: true
@@ -14,7 +14,7 @@ draft: true
 
 再然后 Obsidian 也不将仓库单独管理了，直接在日常笔记库中共用。
 
-再之后通过 Notion 管理。
+再之后通过 Notion 管理。。
 
 
 ![hugo01](https://img.hux.ink/image/2026/07/20260730174951-8mvdq-hugo01.webp)
