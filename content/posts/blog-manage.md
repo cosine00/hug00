@@ -2,10 +2,11 @@
 title: Hugo 管理的姿势
 author: 落落vici
 date: "2026-07-30 17:57:36"
-lastmod: "2026-07-30 18:35:00"
+lastmod: "2026-07-31 09:47:06"
 tags:
+  - 折腾
 slug: blog-manage
-draft: true
+draft: false
 ---
 
 作为一名代码小白，2023年年初开始瞎捣鼓这个 [hugo博客](https://hux.ink/posts/hello-hugo/)，最初写文章是通过登录 Github 网页，到仓库中通过 Add file 这种最原始的方式新建文件敲字提交保存。
@@ -14,7 +15,7 @@ draft: true
 
 再然后 Obsidian 也不将仓库单独管理了，直接在日常笔记库中共用。
 
-再之后通过 Notion 管理。。。
+再之后通过 Notion 管理。。。。
 
 
 ![hugo01](https://img.hux.ink/image/2026/07/20260730174951-8mvdq-hugo01.webp)
