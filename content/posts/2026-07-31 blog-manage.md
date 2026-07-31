@@ -2,7 +2,7 @@
 title: Hugo 静态博客管理的姿势
 author: 落落vici
 date: "2026-07-31 10:32:29"
-lastmod: "2026-07-31 11:03:24"
+lastmod: "2026-07-31 11:18:44"
 tags:
   - 折腾
 slug: blog-manage
@@ -11,7 +11,7 @@ draft: false
 
 2023 年年初开始瞎捣鼓这个 [hugo博客](https://hux.ink/posts/hello-hugo/)，写文经历了四个阶段。
 
-- **1.0原始时代** 直接登录 GitHub 网页，在仓库里通过 Add file 新建文件、敲字、提交，最原始但也最直接。。
+- **1.0原始时代** 直接登录 GitHub 网页，在仓库里通过 Add file 新建文件、敲字、提交，最原始但也最直接。
 
 - **2.0独立建库** 用上了Obsidian，作为一个单独库，[在Obsidian中写Hugo博客发布](https://hux.ink/posts/%E5%9C%A8obsidian%E4%B8%AD%E5%86%99hugo%E5%8D%9A%E5%AE%A2%E5%8F%91%E5%B8%83/)。
 
