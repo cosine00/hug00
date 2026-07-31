@@ -6,7 +6,7 @@ lastmod: "2026-07-31 09:47:06"
 tags:
   - 折腾
 slug: blog-manage
-draft: false
+draft: true
 ---
 
 作为一名代码小白，2023年年初开始瞎捣鼓这个 [hugo博客](https://hux.ink/posts/hello-hugo/)，最初写文章是通过登录 Github 网页，到仓库中通过 Add file 这种最原始的方式新建文件敲字提交保存。
