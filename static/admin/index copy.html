@@ -726,7 +726,7 @@ let CFG = {
 let STATE = {
   page: 'posts', posts: [], postsLoaded: false, searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
   postsPage: 1, footprintsPage: 1, sportsPage: 1, sportsTypeFilter: 'all',
-  selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null, postSavePromise: null,
+  selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null,
   sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
   friendsData: [], friendsSha: null, friendsSearchKeyword: '', friendsStatusFilter: 'all', friendsPage: 1, friendsStatus: {},
   editingFootprintIndex: null, footprintsMode: 'list', footprintDisplayMode: 'grid', mainMap: null, editMarker: null,
@@ -747,8 +747,6 @@ const ACT_JSON_PATH = "assets/act.json";
 const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
 const FRIENDS_JSON_PATH = "static/friends.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
-const POST_DRAFT_STORAGE_PREFIX = 'hugo_admin_post_draft_v1';
-const POST_AUTOSAVE_INTERVAL = 3 * 60 * 1000;
 
 const COLOR_PRESETS = ['sunset', 'ocean', 'violet', 'forest', 'amber', 'citrus'];
 
@@ -841,13 +839,7 @@ async function ghFetch(path, opts={}){
     ...opts,
     headers:{ 'Authorization': `Bearer ${CFG.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', ...(opts.headers||{}) }
   });
-  if(!res.ok){
-    const err=await res.json().catch(()=>({}));
-    const error=new Error(err.message||`GitHub API 错误：${res.status}`);
-    error.status=res.status;
-    error.data=err;
-    throw error;
-  }
+  if(!res.ok){ const err=await res.json().catch(()=>({})); throw new Error(err.message||`GitHub API 错误：${res.status}`); }
   return res.json();
 }
 
@@ -870,36 +862,27 @@ async function getFileContent(path){
   return {content:new TextDecoder().decode(bytes), sha:data.sha, path:data.path};
 }
 
-async function getRemoteFileSha(path){
-  try{
-    const freshFile=await ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${encodeURIComponent(CFG.branch)}`);
-    return freshFile?.sha || null;
-  }catch(e){
-    if(e.status===404) return null;
-    throw e;
-  }
-}
-
 async function putFile(path, content, sha, message){
-  const encoded=btoa(unescape(encodeURIComponent(content)));
-  const endpoint=`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`;
-
-  // 始终以“目标路径”当前的远程 SHA 为准。目标文件不存在时绝不沿用旧路径的 SHA。
-  const writeLatest=async()=>{
-    const remoteSha=await getRemoteFileSha(path);
-    const body={message, content:encoded, branch:CFG.branch};
-    if(remoteSha) body.sha=remoteSha;
-    return ghFetch(endpoint,{method:'PUT', body:JSON.stringify(body)});
-  };
-
-  try{
-    return await writeLatest();
-  }catch(e){
-    // 极小概率下，远程文件会在“读取 SHA”和“写入”之间发生变化；刷新后只重试一次。
-    const isShaConflict=e.status===409 || e.status===422 || /does not match|sha/i.test(String(e.message||''));
-    if(!isShaConflict) throw e;
-    return writeLatest();
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  
+  let realSha = sha;
+  // 无论有没有传 sha，在写入前都先尝试查询一次远程该文件最新的真实 sha，防冲突
+  try {
+    const freshFile = await ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${encodeURIComponent(CFG.branch)}`);
+    if (freshFile && freshFile.sha) {
+      realSha = freshFile.sha; // 强制校准为 GitHub 线上最新的 sha
+    }
+  } catch (e) {
+    // 若返回 404 说明是全新文件，忽略即可
   }
+
+  const body = { message, content: encoded, branch: CFG.branch };
+  if (realSha) body.sha = realSha;
+
+  return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {
+    method: 'PUT',
+    body: JSON.stringify(body)
+  });
 }
 
 async function deleteFile(path, sha, message){
@@ -957,11 +940,7 @@ function buildFrontMatter(fm, body){
 }
 
 function showPage(page){
-  if(STATE.page==='editor' && STATE.dirty){
-    if(!confirm('当前文章有尚未暂存的修改。离开前会自动保存为本地草稿，确定继续吗？')) return;
-    saveLocalDraft('leave',{silent:true});
-  }
-  stopPostAutosave();
+  if(STATE.page === 'editor' && STATE.dirty && !confirm('当前文章有未保存修改，确定离开编辑器吗？')) return;
   STATE.page=page; STATE.dirty=false;
   if(STATE.mde){ try{ STATE.mde.toTextArea(); }catch(e){} STATE.mde=null; }
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
@@ -1318,9 +1297,7 @@ function buildPublicUrl(fm, path){
 function openNewPost(){
   const draft=readLocalDraft('__new__');
   const useDraft=draft && confirm('检测到一份未提交的新文章本地草稿，是否恢复？');
-  STATE.editingPost=useDraft
-    ? {...draft, draftKey:'__new__', isNew:true}
-    : {fm:{title:'',author:'',date:nowLocalString(),description:'',tags:[],slug:'',draft:true},body:'\n\n❤',path:null,sha:null,isNew:true,draftKey:'__new__',originalPath:null};
+  STATE.editingPost=useDraft?draft:{fm:{title:'',author:'',date:nowLocalString(),description:'',tags:[],slug:'',draft:true},body:'\n\n❤',path:null,sha:null,isNew:true};
   STATE.activeTags=normalizeTags(STATE.editingPost.fm.tags); renderEditor();
 }
 
@@ -1329,14 +1306,13 @@ async function openEditPost(encodedPath){
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 读取源文件…</div>`;
   try{
     const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content); fm.tags=normalizeTags(fm.tags);
-    const local=readLocalDraft(path); let post={fm,body,path,sha:file.sha,isNew:false,draftKey:path,originalPath:path};
-    if(local && confirm('检测到此文章有未提交的本地草稿，是否恢复本地草稿？')) post={...local, sha:file.sha, isNew:false, draftKey:path, originalPath:path};
+    const local=readLocalDraft(path); let post={fm,body,path,sha:file.sha,isNew:false};
+    if(local && confirm('检测到此文章有未提交的本地草稿，是否恢复本地草稿？')) post={...local, sha:file.sha, isNew:false};
     STATE.editingPost=post; STATE.activeTags=normalizeTags(post.fm.tags); renderEditor();
   }catch(e){ toast(e.message,'error'); renderPostsPage(); }
 }
 
 function renderEditor(){
-  stopPostAutosave();
   STATE.page='editor'; STATE.dirty=false;
   const post=STATE.editingPost; const fm=post.fm || {};
   
@@ -1421,7 +1397,6 @@ function renderEditor(){
   });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
   refreshEditorMeta();
-  startPostAutosave();
 }
 
 function mountEditorToolbarUpload(){
@@ -1482,11 +1457,7 @@ function handleTagPush(e){
   }
 }
 function removeTagNode(el,val){ STATE.activeTags=STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); markDirty(); }
-function markDirty(){
-  STATE.dirty=true;
-  const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未暂存修改';
-  const autosave=document.getElementById('autosave-text'); if(autosave) autosave.textContent='等待下一次自动暂存';
-}
+function markDirty(){ STATE.dirty=true; const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未保存修改'; }
 function updateDraftTag(){ const el=document.getElementById('draft-tag'); const checked=document.getElementById('fm-draft')?.checked; if(el){ el.className=`tag ${checked?'draft':'published'}`; el.textContent=checked?'草稿':'发布'; } }
 function refreshEditorMeta(){
   const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
@@ -1499,183 +1470,53 @@ function getFormValue(id, fallback=''){
   return el && 'value' in el ? String(el.value).trim() : fallback;
 }
 
-function collectEditorData(mode='draft', options={}){
-  const requireTitle=options.requireTitle !== false;
+function collectEditorData(mode='draft'){
   const title=getFormValue('fm-title');
-  if(requireTitle && !title) throw new Error('文章标题不可为空');
-
-  const typedSlug=getFormValue('fm-slug');
-  const slug=typedSlug || (title ? slugify(title) : String(STATE.editingPost?.fm?.slug||''));
-  const defaultFileName=slug || 'new-post';
-  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${defaultFileName}.md`;
+  if(!title) throw new Error('文章标题不可为空');
+  const slug=getFormValue('fm-slug') || slugify(title);
+  const defaultPath=STATE.editingPost?.path || `${normalizePostsPath()}/${slug}.md`;
   let path=cleanPath(getFormValue('fm-path', defaultPath));
-  if(!path) path=`${normalizePostsPath()}/${defaultFileName}.md`;
   if(!path.endsWith('.md')) path += '.md';
 
-  const datetimeVal=getFormValue('fm-datetime');
-  const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ') : nowLocalString();
-  const fm={
-    ...(STATE.editingPost?.fm||{}),
-    title,
-    author:getFormValue('fm-author'),
-    date:fullDateStr,
-    lastmod:nowLocalString(),
-    description:getFormValue('fm-description'),
-    tags:[...STATE.activeTags],
-    slug,
-    draft:mode!=='publish'
-  };
-  return {fm, body:STATE.mde ? STATE.mde.value() : '', path};
-}
+  const datetimeVal = getFormValue('fm-datetime');
+  const fullDateStr = datetimeVal ? datetimeVal.replace('T', ' ') : nowLocalString();
 
-function getPostDraftId(post=STATE.editingPost){
-  return post?.draftKey || post?.originalPath || (post?.isNew ? '__new__' : post?.path) || '__new__';
-}
-
-function getPostDraftStorageKey(path){
-  const scope=[CFG.owner||'', CFG.repo||'', CFG.branch||'main'].map(v=>encodeURIComponent(String(v))).join(':');
-  return `${POST_DRAFT_STORAGE_PREFIX}:${scope}:${encodeURIComponent(path||'__new__')}`;
-}
-
-function setAutosaveText(message){
-  const el=document.getElementById('autosave-text');
-  if(el) el.textContent=message;
-}
-
-function formatAutosaveTime(value){
-  const date=value ? new Date(value) : new Date();
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('zh-CN',{hour12:false});
-}
-
-function saveLocalDraft(reason='manual', options={}){
-  if(STATE.page!=='editor' || !STATE.editingPost) return false;
-  try{
-    const data=collectEditorData('draft',{requireTitle:false});
-    const draftId=getPostDraftId();
-    const savedAt=new Date().toISOString();
-    const draft={
-      version:1,
-      savedAt,
-      fm:data.fm,
-      body:data.body,
-      path:data.path,
-      sha:STATE.editingPost.sha || null,
-      isNew:Boolean(STATE.editingPost.isNew),
-      draftKey:draftId,
-      originalPath:STATE.editingPost.originalPath || null
-    };
-    localStorage.setItem(getPostDraftStorageKey(draftId), JSON.stringify(draft));
-    Object.assign(STATE.editingPost, draft);
-    STATE.lastAutosaveAt=savedAt;
-    STATE.dirty=false;
-
-    const ds=document.getElementById('dirty-state');
-    if(ds) ds.textContent=reason==='auto' ? '已自动暂存' : '草稿已保存到本地';
-    setAutosaveText(`${reason==='auto'?'已自动暂存':'本地草稿已保存'} ${formatAutosaveTime(savedAt)}`);
-    if(reason==='manual' && !options.silent) toast('草稿已保存到当前浏览器，尚未提交到仓库','success');
-    return true;
-  }catch(e){
-    setAutosaveText('本地草稿保存失败');
-    if(!options.silent) toast(`草稿保存失败：${e.message}`,'error');
-    return false;
-  }
-}
-
-function stopPostAutosave(){
-  if(STATE.autosaveTimer){ clearInterval(STATE.autosaveTimer); STATE.autosaveTimer=null; }
-}
-
-function startPostAutosave(){
-  stopPostAutosave();
-  const restoredAt=STATE.editingPost?.savedAt;
-  if(restoredAt){
-    STATE.lastAutosaveAt=restoredAt;
-    setAutosaveText(`已恢复本地草稿 ${formatAutosaveTime(restoredAt)}`);
-  }else{
-    STATE.lastAutosaveAt=null;
-    setAutosaveText('每 3 分钟自动暂存到本地');
-  }
-  STATE.autosaveTimer=setInterval(()=>{
-    if(STATE.page==='editor' && STATE.dirty && !STATE.postSavePromise){
-      saveLocalDraft('auto',{silent:true});
-    }
-  },POST_AUTOSAVE_INTERVAL);
-}
-
-function readLocalDraft(path){
-  try{
-    const raw=localStorage.getItem(getPostDraftStorageKey(path));
-    if(!raw) return null;
-    const draft=JSON.parse(raw);
-    if(!draft || typeof draft!=='object' || !draft.fm) return null;
-    return {
-      ...draft,
-      fm:{...draft.fm, tags:normalizeTags(draft.fm.tags), draft:true},
-      body:String(draft.body||''),
-      path:draft.path || null,
-      draftKey:path || '__new__'
-    };
-  }catch(e){
-    return null;
-  }
-}
-
-function clearLocalDraft(path){
-  try{ localStorage.removeItem(getPostDraftStorageKey(path)); }catch(e){}
-}
-
-function setPostSaveBusy(busy){
-  const draftBtn=document.getElementById('btn-save-draft');
-  const publishBtn=document.getElementById('btn-publish');
-  if(draftBtn) draftBtn.disabled=busy;
-  if(publishBtn){
-    publishBtn.disabled=busy;
-    publishBtn.textContent=busy ? '正在发布…' : '发布/更新';
-  }
+  const fm={ ...(STATE.editingPost?.fm||{}), title, author:getFormValue('fm-author'), date:fullDateStr, lastmod:nowLocalString(), slug, draft: mode==='draft' };
+  return { fm, body:STATE.mde ? STATE.mde.value() : '', path };
 }
 
 async function savePost(mode){
-  if(mode!=='publish'){
-    saveLocalDraft('manual');
-    return;
-  }
-  if(STATE.postSavePromise) return STATE.postSavePromise;
+  try{
+    const data = collectEditorData(mode); 
+    const content = buildFrontMatter(data.fm, data.body);
+    
+    // 提交到 GitHub
+    const res = await putFile(
+      data.path, 
+      content, 
+      STATE.editingPost?.sha, 
+      `content: ${mode==='publish'?'publish':'save draft'} ${data.fm.title}`
+    );
 
-  const publishTask=(async()=>{
-    setPostSaveBusy(true);
-    try{
-      const data=collectEditorData('publish',{requireTitle:true});
-      const draftId=getPostDraftId();
-
-      // 发布前先在浏览器中保留一份草稿备份；远程提交成功后再清除。
-      saveLocalDraft('backup',{silent:true});
-      const content=buildFrontMatter(data.fm,data.body);
-      const res=await putFile(data.path,content,null,`content: publish ${data.fm.title}`);
-
-      if(STATE.editingPost){
-        STATE.editingPost.fm=data.fm;
-        STATE.editingPost.body=data.body;
-        STATE.editingPost.path=data.path;
-        STATE.editingPost.sha=res?.content?.sha || STATE.editingPost.sha;
-        STATE.editingPost.isNew=false;
+    // 写入成功后，立即用 GitHub 响应的新 sha 和新路径更新前端变量
+    if (res && res.content && res.content.sha) {
+      if (STATE.editingPost) {
+        STATE.editingPost.sha = res.content.sha;
+        STATE.editingPost.path = data.path;
+        STATE.editingPost.isNew = false;
       }
-
-      clearLocalDraft(draftId);
-      STATE.dirty=false;
-      STATE.postsLoaded=false;
-      toast('发布/更新成功，已正式提交到仓库','success');
-      showPage('posts');
-    }catch(e){
-      toast(`发布失败：${e.message}`,'error');
-    }finally{
-      STATE.postSavePromise=null;
-      setPostSaveBusy(false);
     }
-  })();
 
-  STATE.postSavePromise=publishTask;
-  return publishTask;
+    STATE.dirty = false;
+    STATE.postsLoaded = false; // 标记文章列表需要重新从远程加载，防止首页列表持存旧 sha
+    toast('保存成功', 'success'); 
+    showPage('posts');
+  }catch(e){ 
+    toast(e.message, 'error'); 
+  }
 }
+
+function readLocalDraft(path){ return null; }
 
 // ============================================================
 // 2. Twikoo 互动管理（截图式双栏评论工作台）
@@ -4333,10 +4174,6 @@ async function importSettingsFile(file){
 }
 
 // Lifecycle
-window.addEventListener('beforeunload',()=>{
-  if(STATE.page==='editor' && STATE.dirty) saveLocalDraft('unload',{silent:true});
-});
-
 window.addEventListener('DOMContentLoaded', async()=>{
   loadCfg(); const active=await checkStatus();
   if(active) showPage('posts'); else { showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning'); }
