@@ -561,6 +561,22 @@
         "旅行"
       ],
       "markerColor": "forest"
+    },
+    {
+      "name": "江门",
+      "coordinates": "113.106427,22.585293",
+      "provinceAdcode": "440000",
+      "description": "江门儿童公园，换个城市公园遛娃。",
+      "date": "2024-08-03",
+      "url": "",
+      "urlLabel": "",
+      "photos": [
+        "https://img.hux.ink/image/2026/08/20260802162305-w0cd6-img-2361.webp"
+      ],
+      "categories": [
+        "旅行"
+      ],
+      "markerColor": "forest"
     }
   ]
 }
