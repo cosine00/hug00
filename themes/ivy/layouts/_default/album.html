@@ -1,116 +1,558 @@
 {{ partial "header.html" . }}
-<div id="album" style="width: 100%;"></div>
+<div id="album" style="width: 100%;">
+  <div class="album-loading" role="status">正在加载相册…</div>
+</div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-      var memoUrl = "https://i.hux.ink:5233/"
-      var galleryUrl = memoUrl+"api/v1/memo?creatorId=1&rowStatus=NORMAL&tag=相册&limit=100"
-      fetch(galleryUrl).then(res => res.json()).then( resdata =>{
-          var result = '',resultAll="",data = resdata
-          for(var i=0;i < data.length;i++){
-              var galleryTitle = data[i].content.replace("#相册 ",'')
-              var titleLength = galleryTitle.length; // 获取标题长度
-              galleryTitle = galleryTitle.slice(0, Math.min(20, titleLength)); // 只保留前20个字符
-              var imgs = galleryTitle.match(/\!\[(.*?)\s*(.*?)\]\((.*?)\)/g)
-              //解析 content 内 md 格式图片
-              if(imgs){
-                imgs.forEach(item => {
-                  let img = item.replace(/!\[.*?\]\((.*?)\)/g,'$1'),
-                      time, title, tmp = item.replace(/!\[(.*?)\]\(.*?\)/g,'$1');
-                  if (tmp.indexOf(' ') != -1) {
-                      time = tmp.split(' ')[0];
-                      title = tmp.split(' ')[1];
-                  } else title = tmp
-                  result += `<div class="gallery-photo visible"><img class="photo-img" loading='lazy' decoding="async" src="${img}"></a>`;
-                  title ? result += `<span class="photo-title">${title}</span>` : '';
-                  time ? result += `<span class="photo-time">${time}</span>` : '';
-                  result += `</div>`;
-                });
-              }
-              //解析内置资源文件
-              if(data[i].resourceList && data[i].resourceList.length > 0){
-                var resourceList = data[i].resourceList;
-                for(var j=0;j < resourceList.length;j++){
-                  var galleryTime = new Date(resourceList[j].createdTs * 1000).toLocaleString()
-                  var restype = resourceList[j].type.slice(0,5);
-                  var resexlink = resourceList[j].externalLink
-                  var resLink = '',fileId=''
-                  if(resexlink){
-                    resLink = resexlink
-                  }else{
-                    fileId = resourceList[j].publicId || resourceList[j].filename
-                    resLink = memoUrl+'o/r/'+resourceList[j].id+'/'+fileId
-                  }
-                  if(restype == 'image'){
-                      result += '<div class="memos-photo"><img class="photo-img" loading="lazy" decoding="async" src="'+resLink+'"/><span class="photo-title">'+galleryTitle+'</span><span class="photo-time">'+galleryTime+'</span></div>'
-                  }
-                }
-              }
+  document.addEventListener("DOMContentLoaded", function () {
+    var memoUrl = "https://i.hux.ink:5233/"
+    var galleryUrl = memoUrl + "api/v1/memo?creatorId=1&rowStatus=NORMAL&tag=相册&limit=100"
+    var galleryDom = document.querySelector("#album")
+
+    var INITIAL_BATCH_SIZE = 12
+    var NEXT_BATCH_SIZE = 9
+    var allPhotos = []
+    var renderedCards = []
+    var renderedCount = 0
+    var columnCount = 0
+    var columns = []
+    var wrapper = null
+    var sentinel = null
+    var statusDom = null
+    var observer = null
+    var isRendering = false
+    var batchSequence = 0
+
+    // 宽高比采用“宽 / 高”。每次进入页面会重新随机，当前页面内保持不变。
+    var ratioPool = [0.72, 0.82, 0.95, 1, 1.16, 1.35, 1.55]
+
+    function randomNumber() {
+      if (window.crypto && window.crypto.getRandomValues) {
+        var values = new Uint32Array(1)
+        window.crypto.getRandomValues(values)
+        return values[0] / 4294967296
+      }
+      return Math.random()
+    }
+
+    function randomRatio() {
+      return ratioPool[Math.floor(randomNumber() * ratioPool.length)]
+    }
+
+    function getColumnCount() {
+      return window.matchMedia("(max-width: 899px)").matches ? 2 : 3
+    }
+
+    function createColumns(count) {
+      columnCount = count
+      columns = []
+      wrapper.innerHTML = ""
+
+      var fragment = document.createDocumentFragment()
+      for (var i = 0; i < count; i++) {
+        var column = document.createElement("div")
+        column.className = "album-column"
+        columns.push(column)
+        fragment.appendChild(column)
+      }
+      wrapper.appendChild(fragment)
+
+      // 改变窗口宽度时，按原始时间顺序重新分配到 2/3 列。
+      for (var j = 0; j < renderedCards.length; j++) {
+        columns[j % columnCount].appendChild(renderedCards[j])
+      }
+    }
+
+    function setupAlbumShell() {
+      galleryDom.innerHTML = ""
+
+      wrapper = document.createElement("div")
+      wrapper.className = "memos-photo-wrapper"
+      wrapper.setAttribute("aria-label", "相册")
+
+      sentinel = document.createElement("div")
+      sentinel.className = "album-load-sentinel"
+      sentinel.setAttribute("aria-hidden", "true")
+
+      statusDom = document.createElement("div")
+      statusDom.className = "album-load-status"
+      statusDom.setAttribute("role", "status")
+      statusDom.setAttribute("aria-live", "polite")
+
+      galleryDom.appendChild(wrapper)
+      galleryDom.appendChild(sentinel)
+      galleryDom.appendChild(statusDom)
+      createColumns(getColumnCount())
+    }
+
+    function truncateTitle(text, maxLength) {
+      return Array.from(String(text || "").trim()).slice(0, maxLength).join("")
+    }
+
+    function cleanGalleryTitle(content) {
+      return truncateTitle(
+        String(content || "")
+          .replace(/^#相册\s*/, "")
+          .replace(/!\[.*?\]\(.*?\)/g, "")
+          .trim(),
+        25
+      )
+    }
+
+    function collectPhotos(responseData) {
+      var data = Array.isArray(responseData)
+        ? responseData
+        : (responseData && Array.isArray(responseData.data) ? responseData.data : [])
+      var photos = []
+
+      for (var i = 0; i < data.length; i++) {
+        var memo = data[i] || {}
+        var content = String(memo.content || "")
+        var galleryTitle = cleanGalleryTitle(content)
+
+        // 解析 content 内的 Markdown 图片。图片顺序保持接口返回顺序。
+        var imagePattern = /!\[(.*?)\]\((.*?)\)/g
+        var match
+        while ((match = imagePattern.exec(content)) !== null) {
+          var altText = String(match[1] || "").trim()
+          var imageUrl = String(match[2] || "").trim()
+          var time = ""
+          var title = altText
+
+          if (/\s/.test(altText)) {
+            var firstSpace = altText.search(/\s/)
+            time = altText.slice(0, firstSpace).trim()
+            title = altText.slice(firstSpace).trim()
           }
-          var galleryDom = document.querySelector('#album');
-          var galleryBefore = `<div class="memos-photo-wrapper">`
-          var galleryAfter = `</div>`
-          resultAll = galleryBefore + result + galleryAfter
-          galleryDom.innerHTML = resultAll
-          //图片灯箱
-          window.ViewImage && ViewImage.init('.gallery-photo img')
-          //相对时间
-          window.Lately && Lately.init({ target: '.photo-time'});
-      });
-  });
-  </script>
-  <script src="/js/marked.min.js"></script>
-  <script src="/js/view-image.min.js"></script>
-  <script src="/js/lately.min.js"></script>
-  
-  <style>
+
+          if (imageUrl) {
+            photos.push({
+              src: imageUrl,
+              title: title,
+              time: time,
+              className: "album-source-markdown",
+              ratio: randomRatio()
+            })
+          }
+        }
+
+        // 解析 Memos 内置资源文件。
+        var resourceList = Array.isArray(memo.resourceList) ? memo.resourceList : []
+        for (var j = 0; j < resourceList.length; j++) {
+          var resource = resourceList[j] || {}
+          var resourceType = String(resource.type || "")
+          if (resourceType.slice(0, 5) !== "image") continue
+
+          var resourceLink = resource.externalLink || ""
+          if (!resourceLink) {
+            var fileId = resource.publicId || resource.filename || ""
+            resourceLink = memoUrl + "o/r/" + resource.id + "/" + fileId
+          }
+
+          var createdTime = resource.createdTs
+            ? new Date(resource.createdTs * 1000).toLocaleString()
+            : ""
+
+          photos.push({
+            src: resourceLink,
+            title: galleryTitle,
+            time: createdTime,
+            className: "album-source-resource",
+            ratio: randomRatio()
+          })
+        }
+      }
+
+      return photos
+    }
+
+    function createPhotoCard(photo, index, batchClass) {
+      var card = document.createElement("figure")
+      card.className = "album-photo-card " + photo.className
+      card.style.setProperty("--photo-ratio", String(photo.ratio))
+      card.style.setProperty("--reveal-delay", Math.min(index % NEXT_BATCH_SIZE, 5) * 35 + "ms")
+
+      var image = document.createElement("img")
+      image.className = "photo-img " + batchClass
+      image.alt = photo.title || "相册图片"
+      image.decoding = "async"
+      image.loading = index < 6 ? "eager" : "lazy"
+      if (index < 3) image.setAttribute("fetchpriority", "high")
+
+      image.addEventListener("load", function () {
+        card.classList.add("is-loaded")
+      }, { once: true })
+
+      image.addEventListener("error", function () {
+        card.classList.add("is-error")
+        image.alt = "图片加载失败"
+      }, { once: true })
+
+      image.src = photo.src
+      if (image.complete) {
+        if (image.naturalWidth > 0) card.classList.add("is-loaded")
+        else card.classList.add("is-error")
+      }
+
+      card.appendChild(image)
+
+      if (photo.title) {
+        var title = document.createElement("span")
+        title.className = "photo-title"
+        // 只保留前 20 个字符；CSS 允许换行完整显示，不添加省略号。
+        title.textContent = truncateTitle(photo.title, 25)
+        title.setAttribute("aria-label", photo.title)
+        card.appendChild(title)
+      }
+
+      if (photo.time) {
+        var time = document.createElement("span")
+        time.className = "photo-time"
+        time.textContent = photo.time
+        card.appendChild(time)
+      }
+
+      var errorText = document.createElement("span")
+      errorText.className = "photo-error"
+      errorText.textContent = "图片加载失败"
+      card.appendChild(errorText)
+
+      return card
+    }
+
+    function initializeNewPlugins(batchClass) {
+      if (window.ViewImage) {
+        ViewImage.init("." + batchClass)
+      }
+
+      if (window.Lately) {
+        Lately.init({ target: ".photo-time" })
+      }
+    }
+
+    function updateStatus() {
+      if (!statusDom) return
+
+      if (renderedCount >= allPhotos.length) {
+        statusDom.textContent = "已加载全部图片"
+        sentinel.classList.add("is-finished")
+        if (observer) observer.disconnect()
+      } else {
+        statusDom.textContent = "继续向下滚动加载更多"
+      }
+    }
+
+    function renderNextBatch(batchSize) {
+      if (isRendering || renderedCount >= allPhotos.length) return
+      isRendering = true
+
+      var end = Math.min(renderedCount + batchSize, allPhotos.length)
+      batchSequence += 1
+      var batchClass = "album-lightbox-batch-" + batchSequence
+      for (var i = renderedCount; i < end; i++) {
+        var card = createPhotoCard(allPhotos[i], i, batchClass)
+        renderedCards.push(card)
+        columns[i % columnCount].appendChild(card)
+      }
+
+      renderedCount = end
+      initializeNewPlugins(batchClass)
+      updateStatus()
+      isRendering = false
+    }
+
+    function setupProgressiveLoading() {
+      if (!("IntersectionObserver" in window)) {
+        // 旧浏览器退化为一次加载全部，但卡片高度仍提前确定，不会堆叠。
+        renderNextBatch(allPhotos.length)
+        return
+      }
+
+      observer = new IntersectionObserver(function (entries) {
+        if (entries[0] && entries[0].isIntersecting) {
+          renderNextBatch(NEXT_BATCH_SIZE)
+        }
+      }, {
+        root: null,
+        rootMargin: "450px 0px",
+        threshold: 0
+      })
+
+      observer.observe(sentinel)
+    }
+
+    function handleResize() {
+      var nextColumnCount = getColumnCount()
+      if (nextColumnCount !== columnCount) {
+        createColumns(nextColumnCount)
+      }
+    }
+
+    fetch(galleryUrl)
+      .then(function (response) {
+        if (!response.ok) throw new Error("相册接口请求失败：" + response.status)
+        return response.json()
+      })
+      .then(function (responseData) {
+        allPhotos = collectPhotos(responseData)
+        setupAlbumShell()
+
+        if (!allPhotos.length) {
+          statusDom.textContent = "暂时没有可展示的图片"
+          sentinel.classList.add("is-finished")
+          return
+        }
+
+        renderNextBatch(INITIAL_BATCH_SIZE)
+        setupProgressiveLoading()
+        window.addEventListener("resize", handleResize, { passive: true })
+      })
+      .catch(function (error) {
+        console.error(error)
+        galleryDom.innerHTML = '<div class="album-error" role="alert">相册加载失败，请稍后刷新重试。</div>'
+      })
+  })
+</script>
+<script src="/js/marked.min.js"></script>
+<script src="/js/view-image.min.js"></script>
+<script src="/js/lately.min.js"></script>
+
+<style>
   .memos-photo-wrapper {
-    grid-template-columns: repeat(3,minmax(0,1fr));
-    margin-top: .5rem;
     display: grid;
-     width: 100%;
-    gap: .5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    width: 100%;
+    margin-top: .65rem;
+    gap: .7rem;
   }
-  .memos-photo{
+
+  .album-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: .7rem;
+  }
+
+  .album-photo-card {
     position: relative;
+    display: block;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    aspect-ratio: var(--photo-ratio, 1);
     overflow: hidden;
-    border-radius: .25rem;
-    height: 194px;
+    border: 0;
+    border-radius: .65rem;
+    background: rgba(127, 127, 127, .12);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    box-sizing: border-box;
+    line-height: 0;
+    contain: layout paint style;
+    opacity: 0;
+    animation: albumCardReveal .45s ease var(--reveal-delay, 0ms) forwards;
   }
-  .memos-photo>img {
-    min-height: 100%;
-    width: auto;
-    min-width: 100%;
+
+  /* 固定比例占位，图片未加载时卡片也已经拥有最终高度，因此不会堆叠和下坠。 */
+  .album-photo-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(127, 127, 127, .08) 20%,
+      rgba(127, 127, 127, .18) 40%,
+      rgba(127, 127, 127, .08) 60%
+    );
+    background-size: 220% 100%;
+    animation: albumPlaceholder 1.4s linear infinite;
+    transition: opacity .3s ease;
+  }
+
+  .album-photo-card.is-loaded::before,
+  .album-photo-card.is-error::before {
+    opacity: 0;
+    animation: none;
+  }
+
+  .album-photo-card > .photo-img {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
     cursor: pointer;
-    -o-object-fit: cover;
-    object-fit: cover;
-    height: auto;
-    animation: fadeIn 1s;
-    transition: all .4s ease-in-out;
+    object-fit: cover !important;
+    object-position: center center;
+    vertical-align: top;
+    opacity: 0;
+    transform: scale(1.015);
+    transition: opacity .35s ease, transform .35s ease, filter .35s ease;
   }
-  .memos-photo span.photo-title,.memos-photo span.photo-time{background: rgba(0, 0, 0, 0.3);padding:0px 8px;font-size:0.9rem;color: #fff;display:none;animation: fadeIn 1s;}
-  .memos-photo span.photo-title{position:absolute;bottom:4px;left:4px;}
-  .memos-photo span.photo-time{position:absolute;top:4px;left:4px;font-size:0.8rem;}
-  .memos-photo:hover span.photo-title,.memos-photo:hover span.photo-time{display:block !important;}
-  @keyframes fadeIn{
-    0% {opacity: 0;}
-     100% {opacity: 1;}
+
+  .album-photo-card.is-loaded > .photo-img {
+    opacity: 1;
   }
-  @media screen and (min-width:480px) and (max-width: 899px) {
-    .memos-photo-wrapper{
-      grid-template-columns: repeat(3,minmax(0,1fr));
+
+  .album-photo-card:hover > .photo-img {
+    transform: scale(1.035);
+    filter: brightness(.94);
+  }
+
+  /* 恢复原版悬停文字样式：半透明黑底、左侧定位、无圆角和模糊。 */
+  .album-photo-card .photo-title,
+  .album-photo-card .photo-time {
+    position: absolute;
+    left: 4px;
+    z-index: 3;
+    display: block;
+    max-width: calc(100% - 8px);
+    box-sizing: border-box;
+    padding: 0 8px;
+    border-radius: 0;
+    color: #fff;
+    background: rgba(0, 0, 0, .3);
+    font-size: .9rem;
+    line-height: 1.5;
+    visibility: hidden;
+    opacity: 0;
+    transform: none;
+    transition: opacity .2s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .album-photo-card .photo-title {
+    right: auto;
+    bottom: 4px;
+    width: auto;
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-overflow: clip;
+    text-align: left !important;
+  }
+
+  .album-photo-card .photo-time {
+    top: 4px;
+    bottom: auto;
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-size: .8rem;
+  }
+
+  .album-photo-card:hover .photo-title,
+  .album-photo-card:hover .photo-time {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .photo-error {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    place-items: center;
+    padding: 1rem;
+    color: rgba(127, 127, 127, .9);
+    font-size: .85rem;
+    text-align: center;
+  }
+
+  .album-photo-card.is-error .photo-error {
+    display: grid;
+  }
+
+  .album-load-sentinel {
+    width: 100%;
+    height: 1px;
+  }
+
+  .album-load-sentinel.is-finished {
+    display: none;
+  }
+
+  .album-load-status,
+  .album-loading,
+  .album-error {
+    padding: 1rem 0;
+    color: rgba(127, 127, 127, .9);
+    font-size: .85rem;
+    text-align: center;
+  }
+
+  @keyframes albumCardReveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes albumPlaceholder {
+    from { background-position: 100% 0; }
+    to { background-position: -120% 0; }
+  }
+
+  @media screen and (max-width: 899px) {
+    .memos-photo-wrapper {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem;
     }
-    .memos-photo{
-      height: 201px;
+
+    .album-column {
+      gap: .55rem;
+    }
+
+    .album-photo-card {
+      border-radius: .5rem;
     }
   }
+
   @media only screen and (max-width: 479px) {
-    .memos-photo-wrapper{
-      grid-template-columns: repeat(2,minmax(0,1fr));
+    .memos-photo-wrapper {
+      gap: .42rem;
     }
-    .memos-photo{
-      height: 171px;
+
+    .album-column {
+      gap: .42rem;
+    }
+
+    .album-photo-card {
+      border-radius: .42rem;
+    }
+
+  }
+
+  @media (hover: none) {
+    .album-photo-card .photo-title,
+    .album-photo-card .photo-time {
+      display: none;
     }
   }
-  </style>
-  
+
+  @media (prefers-reduced-motion: reduce) {
+    .album-photo-card,
+    .album-photo-card::before,
+    .album-photo-card > .photo-img,
+    .album-photo-card .photo-title,
+    .album-photo-card .photo-time {
+      animation: none;
+      transition: none;
+    }
+
+    .album-photo-card {
+      opacity: 1;
+    }
+  }
+</style>

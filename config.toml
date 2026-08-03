@@ -34,9 +34,13 @@ footnotereturnlinkcontents = "↩"
   url="/exercise/"
   weight="5"
   [[menu.main]]
+  name="花园"
+  url="https://clip.hux.ink/"
+  weight="6"
+  [[menu.main]]
   name="关于"
   url="/about/"
-  weight="6"
+  weight="7"
  
   
   
