@@ -5,8 +5,8 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // static/memos.json 在 Hugo 构建后位于站点根路径；relURL 同时兼容子路径部署。
-    var galleryJsonUrl = '{{ "memos.json" | relURL }}'
+    var memoUrl = "https://i.hux.ink:5233/"
+    var galleryUrl = memoUrl + "api/v1/memo?creatorId=1&rowStatus=NORMAL&tag=相册&limit=100"
     var galleryDom = document.querySelector("#album")
 
     var INITIAL_BATCH_SIZE = 12
@@ -103,15 +103,6 @@
       var data = Array.isArray(responseData)
         ? responseData
         : (responseData && Array.isArray(responseData.data) ? responseData.data : [])
-
-      // 本地 JSON 包含全部 memos，只展示 tags 中精确包含“相册”的条目。
-      data = data.filter(function (memo) {
-        var tags = memo && Array.isArray(memo.tags) ? memo.tags : []
-        return tags.some(function (tag) {
-          return String(tag || "").trim() === "相册"
-        })
-      })
-
       var photos = []
 
       for (var i = 0; i < data.length; i++) {
@@ -119,7 +110,7 @@
         var content = String(memo.content || "")
         var galleryTitle = cleanGalleryTitle(content)
 
-        // 解析 JSON 条目 content 内的 Markdown 图片，保持原始顺序。
+        // 解析 content 内的 Markdown 图片。图片顺序保持接口返回顺序。
         var imagePattern = /!\[(.*?)\]\((.*?)\)/g
         var match
         while ((match = imagePattern.exec(content)) !== null) {
@@ -152,9 +143,11 @@
           var resourceType = String(resource.type || "")
           if (resourceType.slice(0, 5) !== "image") continue
 
-          // 只使用 JSON 中已有的 externalLink；没有外链的资源直接忽略。
-          var resourceLink = String(resource.externalLink || "").trim()
-          if (!resourceLink) continue
+          var resourceLink = resource.externalLink || ""
+          if (!resourceLink) {
+            var fileId = resource.publicId || resource.filename || ""
+            resourceLink = memoUrl + "o/r/" + resource.id + "/" + fileId
+          }
 
           var createdTime = resource.createdTs
             ? new Date(resource.createdTs * 1000).toLocaleString()
@@ -295,9 +288,9 @@
       }
     }
 
-    fetch(galleryJsonUrl)
+    fetch(galleryUrl)
       .then(function (response) {
-        if (!response.ok) throw new Error("相册 JSON 请求失败：" + response.status)
+        if (!response.ok) throw new Error("相册接口请求失败：" + response.status)
         return response.json()
       })
       .then(function (responseData) {
@@ -316,7 +309,7 @@
       })
       .catch(function (error) {
         console.error(error)
-        galleryDom.innerHTML = '<div class="album-error" role="alert">相册数据加载失败，请确认 static/memos.json 已随站点发布。</div>'
+        galleryDom.innerHTML = '<div class="album-error" role="alert">相册加载失败，请稍后刷新重试。</div>'
       })
   })
 </script>
