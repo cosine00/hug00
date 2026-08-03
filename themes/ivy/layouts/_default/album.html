@@ -118,6 +118,9 @@
         var memo = data[i] || {}
         var content = String(memo.content || "")
         var galleryTitle = cleanGalleryTitle(content)
+        var memoCreatedTime = memo.createdTs
+          ? new Date(memo.createdTs * 1000).toLocaleString()
+          : ""
 
         // 解析 JSON 条目 content 内的 Markdown 图片，保持原始顺序。
         var imagePattern = /!\[(.*?)\]\((.*?)\)/g
@@ -125,12 +128,10 @@
         while ((match = imagePattern.exec(content)) !== null) {
           var altText = String(match[1] || "").trim()
           var imageUrl = String(match[2] || "").trim()
-          var time = ""
           var title = altText
 
           if (/\s/.test(altText)) {
             var firstSpace = altText.search(/\s/)
-            time = altText.slice(0, firstSpace).trim()
             title = altText.slice(firstSpace).trim()
           }
 
@@ -138,7 +139,7 @@
             photos.push({
               src: imageUrl,
               title: title,
-              time: time,
+              time: memoCreatedTime,
               className: "album-source-markdown",
               ratio: randomRatio()
             })
@@ -156,14 +157,10 @@
           var resourceLink = String(resource.externalLink || "").trim()
           if (!resourceLink) continue
 
-          var createdTime = resource.createdTs
-            ? new Date(resource.createdTs * 1000).toLocaleString()
-            : ""
-
           photos.push({
             src: resourceLink,
             title: galleryTitle,
-            time: createdTime,
+            time: memoCreatedTime,
             className: "album-source-resource",
             ratio: randomRatio()
           })
