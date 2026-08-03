@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💫Counting Stars</title>
+<title>✨Counting Stars</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
 <style>
@@ -895,9 +897,9 @@ tbody tr:hover td{background:#f8fbf9!important}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes previewRise{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-/* 整篇文章预览 */
+/* 整篇文章预览：复刻前台 Counting Stars 阅读版式 */
 .article-preview-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(9,18,14,.72);backdrop-filter:blur(14px);animation:fadeIn .18s ease-out}
-.article-preview-shell{width:min(1500px,100%);height:min(94vh,980px);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.28);border-radius:22px;background:#edf2ef;box-shadow:0 40px 110px rgba(0,0,0,.35);animation:previewRise .22s ease-out}
+.article-preview-shell{width:min(1540px,100%);height:min(95vh,1020px);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.28);border-radius:22px;background:#edf2ef;box-shadow:0 40px 110px rgba(0,0,0,.35);animation:previewRise .22s ease-out}
 .article-preview-toolbar{height:62px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 18px;background:rgba(255,255,255,.95);border-bottom:1px solid #dbe4df;backdrop-filter:blur(18px);flex-shrink:0}
 .preview-toolbar-title{display:flex;align-items:center;gap:10px;min-width:0}
 .preview-toolbar-icon{width:31px;height:31px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(135deg,#daf2e6,#ecf9f2);color:var(--accent-dark);font-size:13px;box-shadow:inset 0 0 0 1px #cbe7d8}
@@ -912,9 +914,9 @@ tbody tr:hover td{background:#f8fbf9!important}
 .preview-close-btn{width:34px;height:34px;border:0;border-radius:10px;background:#f1f4f2;color:#63706a;font-size:22px;line-height:1;cursor:pointer;transition:.15s}
 .preview-close-btn:hover{background:#feecef;color:var(--danger);transform:rotate(3deg)}
 .preview-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;padding:18px;overflow:hidden;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.75),transparent 34%),#e8eeeb}
-.preview-device{height:100%;display:flex;flex-direction:column;overflow:hidden;border:1px solid #cfd9d4;border-radius:14px;background:#fff;box-shadow:0 22px 52px rgba(21,41,31,.16);transition:width .25s ease,max-width .25s ease,border-radius .25s ease}
-.preview-device.is-desktop{width:100%;max-width:1280px}
-.preview-device.is-tablet{width:820px;max-width:100%}
+.preview-device{height:100%;display:flex;flex-direction:column;overflow:hidden;border:1px solid #cfd9d4;border-radius:14px;background:#fff;box-shadow:0 22px 52px rgba(21,41,31,.16);transition:width .25s ease,max-width .25s ease,border-radius .25s ease;container-type:inline-size}
+.preview-device.is-desktop{width:100%;max-width:1360px}
+.preview-device.is-tablet{width:860px;max-width:100%}
 .preview-device.is-mobile{width:390px;max-width:100%;border-radius:24px}
 .preview-browser-bar{height:43px;display:flex;align-items:center;gap:12px;padding:0 13px;background:#f7f9f8;border-bottom:1px solid #e4eae7;flex-shrink:0}
 .preview-browser-dots{display:flex;gap:5px}
@@ -926,35 +928,115 @@ tbody tr:hover td{background:#f8fbf9!important}
 .preview-draft-badge.is-draft{background:var(--warning-light);color:#a95f09}
 .preview-draft-badge.is-published{background:var(--success-light);color:#237f4a}
 .preview-scroll-area{flex:1;min-height:0;overflow-y:auto;background:#fff}
-.preview-article{width:min(860px,calc(100% - 64px));margin:0 auto;padding:58px 0 80px}
-.preview-article-header{padding-bottom:28px;margin-bottom:32px;border-bottom:1px solid #e8ecea}
-.preview-article-kicker{font-size:9.5px;font-weight:850;letter-spacing:.17em;color:var(--accent);margin-bottom:13px}
-.preview-article h1{font-size:38px;line-height:1.22;letter-spacing:-.035em;color:#18231e;margin:0 0 16px;word-break:break-word}
-.preview-article-header>p{font-size:15.5px;line-height:1.72;color:#65716b;margin:0 0 18px}
-.preview-article-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;color:#89958f;font-size:11.5px}
-.preview-article-meta i{width:3px;height:3px;border-radius:50%;background:#b9c4bf}
-.preview-article-tags{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:14px}
-.preview-tag{padding:5px 8px;border-radius:999px;background:#edf7f2;color:#277a55;font-size:10.5px;font-weight:700}
-.preview-no-tags{color:#a0aaa5;font-size:10.5px}
-.preview-markdown{font-size:16px;line-height:1.86;color:#27322d;word-break:break-word}
-.preview-markdown h1,.preview-markdown h2,.preview-markdown h3,.preview-markdown h4{letter-spacing:-.02em;color:#18231e;scroll-margin-top:20px}
-.preview-markdown h2{margin-top:2.2em;padding-bottom:.42em;border-bottom:1px solid #e8ecea}
-.preview-markdown p{margin:1em 0}
-.preview-markdown blockquote{border-left:4px solid #75b99a;background:#f2f8f5;color:#55635c;border-radius:0 10px 10px 0;padding:12px 16px}
-.preview-markdown code{background:#edf2ef;border-radius:5px;color:#305e49}
-.preview-markdown pre{border:1px solid #dce5e0;border-radius:12px;background:#15231c;color:#e8f5ee;box-shadow:0 8px 24px rgba(15,31,23,.09)}
-.preview-markdown pre code{background:transparent;color:inherit}
-.preview-markdown img{display:block;max-width:100%;height:auto;margin:24px auto;border-radius:13px;box-shadow:0 12px 30px rgba(20,39,30,.12)}
-.preview-markdown table{display:table;min-width:0;border:1px solid #dfe6e2;border-radius:10px;overflow:hidden}
-.preview-markdown th,.preview-markdown td{text-align:left;background:transparent!important}
+
+/* 前台页面骨架 */
+.preview-front-page{
+  --preview-ink:#262626;
+  --preview-soft:#4c4c4c;
+  --preview-hand:'LXGW WenKai Screen','LXGW WenKai','霞鹜文楷','Kaiti SC','STKaiti','KaiTi','Comic Sans MS',cursive;
+  min-height:100%;display:grid;grid-template-columns:350px minmax(0,1fr);background:#fff;color:var(--preview-ink);
+  font-family:var(--preview-hand);font-weight:500;-webkit-font-smoothing:antialiased;
+}
+.preview-front-sidebar{min-height:100%;padding:42px 34px 38px;border-right:2px solid #252525;display:flex;flex-direction:column;align-items:center;background:#fff}
+.preview-front-brand{display:grid;gap:0;text-align:center;font-family:'Comic Sans MS','Bradley Hand',var(--preview-hand);font-size:40px;line-height:1.05;font-weight:400;letter-spacing:.015em;color:#050505;white-space:nowrap}
+.preview-front-brand-line{display:flex;align-items:center;justify-content:center;gap:9px}
+.preview-brand-planet{position:relative;width:61px;height:38px;display:inline-block;flex-shrink:0;transform:translateY(2px)}
+.preview-brand-planet::before{content:"";position:absolute;left:6px;top:7px;width:45px;height:24px;border:5px solid #009cc6;border-radius:50%;background:#050505;box-shadow:0 0 0 2px #050505}
+.preview-brand-planet::after{content:"";position:absolute;left:1px;top:16px;width:57px;height:11px;border:4px solid #009cc6;border-top-color:transparent;border-left-color:transparent;border-radius:50%;transform:rotate(-8deg)}
+.preview-brand-star{position:absolute;z-index:2;color:#ffe000;font-family:Arial,sans-serif;font-size:22px;line-height:1;text-shadow:-1px -1px 0 #050505,1px -1px 0 #050505,-1px 1px 0 #050505,1px 1px 0 #050505}
+.preview-brand-star.one{right:7px;top:-2px}.preview-brand-star.two{left:5px;bottom:-1px;font-size:20px}
+.preview-front-motto{margin:58px 0 28px;text-align:center;font-size:15px;line-height:1.9;font-style:italic;color:#333}
+.preview-front-nav{width:100%;display:grid;justify-items:end;gap:13px;padding-right:12px;font-size:14px}
+.preview-front-nav span{display:flex;align-items:center;gap:11px;white-space:nowrap}
+.preview-front-nav i{width:7px;height:7px;border-radius:50%;background:#373737;display:block}
+.preview-front-sidebar-note{margin-top:auto;padding-top:34px;color:#999;font-size:11px;letter-spacing:.08em}
+
+.preview-front-main{min-width:0;padding:46px 46px 34px;background:#fff}
+.preview-front-article{width:min(930px,100%);min-height:100%;margin:0 auto;display:flex;flex-direction:column}
+.preview-front-header{text-align:center}
+.preview-front-title{margin:0;color:#343434;font-family:var(--preview-hand);font-size:30px;font-weight:500;line-height:1.3;letter-spacing:.02em;word-break:break-word}
+.preview-front-meta{margin-top:29px;color:#3e3e3e;font-size:15px;line-height:1.5}
+.preview-front-rule{width:min(440px,56%);height:1px;margin:43px auto 42px;background:#454545}
+.preview-front-body.markdown-body{flex:1;padding:0!important;background:transparent!important;color:#303030!important;font-family:var(--preview-hand)!important;font-size:15px!important;line-height:1.8!important;font-weight:500;word-break:break-word}
+.preview-front-body.markdown-body>*:first-child{margin-top:0!important}
+.preview-front-body.markdown-body p{margin:0 0 1.42em!important}
+.preview-front-body.markdown-body h1,.preview-front-body.markdown-body h2,.preview-front-body.markdown-body h3,.preview-front-body.markdown-body h4{font-family:var(--preview-hand)!important;color:#222!important;font-weight:700!important;border:0!important;padding:0!important}
+.preview-front-body.markdown-body h2{font-size:1.42em!important;margin:1.9em 0 .8em!important}
+.preview-front-body.markdown-body h3{font-size:1.2em!important;margin:1.6em 0 .65em!important}
+.preview-front-body.markdown-body a{color:#252525!important;text-decoration:none!important;border-bottom:1px dashed #555}
+.preview-front-body.markdown-body strong{font-weight:800;color:#171717}
+.preview-front-body.markdown-body em{font-style:italic}
+.preview-front-body.markdown-body blockquote{margin:1.45em 0!important;padding:.1em 0 .1em 1.1em!important;border-left:2px solid #333!important;background:transparent!important;color:#555!important}
+.preview-front-body.markdown-body ul,.preview-front-body.markdown-body ol{padding-left:1.45em!important;margin:1em 0 1.4em!important}
+.preview-front-body.markdown-body li+li{margin-top:.35em!important}
+.preview-front-body.markdown-body code{padding:.12em .32em!important;border-radius:3px!important;background:#f3f3f3!important;color:#222!important;font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;font-size:.82em!important}
+.preview-front-body.markdown-body pre{margin:1.5em 0!important;padding:16px 18px!important;border:1px solid #ddd!important;border-radius:2px!important;background:#f8f8f8!important;color:#292929!important;box-shadow:none!important;overflow:auto}
+.preview-front-body.markdown-body pre code{padding:0!important;background:transparent!important;color:inherit!important}
+.preview-front-body.markdown-body img{display:block;max-width:100%;height:auto;margin:1.7em auto!important;border-radius:0!important;box-shadow:none!important}
+.preview-front-body.markdown-body hr{height:1px!important;margin:2.2em auto!important;border:0!important;background:#555!important}
+.preview-front-body.markdown-body table{display:table!important;width:100%!important;min-width:0!important;margin:1.5em 0!important;border-collapse:collapse!important;border:1px solid #555!important;border-radius:0!important;overflow:visible!important}
+.preview-front-body.markdown-body th,.preview-front-body.markdown-body td{padding:8px 10px!important;border:1px solid #777!important;background:#fff!important;color:#2d2d2d!important;text-align:left!important}
+.preview-front-footer{margin-top:42px;padding-bottom:8px}
+.preview-front-tags{min-height:28px;display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:68px;font-size:15px}
+.preview-front-tag{display:inline-block;color:#252525;border-bottom:1px dashed #555;line-height:1.35}
+.preview-front-no-tags{color:#aaa;font-size:14px}
+.preview-front-neighbors{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;font-size:14px;font-weight:800}
+.preview-front-neighbor{min-width:0}
+.preview-front-neighbor.next{text-align:right}
+.preview-front-neighbor a,.preview-front-neighbor span{display:inline-flex;align-items:center;gap:7px;max-width:100%;color:#111;text-decoration:none}
+.preview-front-neighbor a:hover .preview-front-neighbor-title{border-bottom-style:solid}
+.preview-front-neighbor-title{min-width:0;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-bottom:1px dashed #555;line-height:1.45}
+.preview-front-neighbor.is-empty{color:#aaa;font-weight:500}
+.preview-front-bottom-rule{width:min(440px,56%);height:1px;margin:62px auto 0;background:#454545}
+
+/* 平板预览仍保留前台双栏，但压缩边栏 */
+.preview-device.is-tablet .preview-front-page{grid-template-columns:235px minmax(0,1fr)}
+.preview-device.is-tablet .preview-front-sidebar{padding:34px 22px 30px}
+.preview-device.is-tablet .preview-front-brand{font-size:34px}
+.preview-device.is-tablet .preview-brand-planet{transform:scale(.78) translateY(2px);transform-origin:left center;margin-right:-10px}
+.preview-device.is-tablet .preview-front-motto{margin:44px 0 24px;font-size:13px}
+.preview-device.is-tablet .preview-front-nav{font-size:13px;gap:11px}
+.preview-device.is-tablet .preview-front-main{padding:39px 30px 30px}
+.preview-device.is-tablet .preview-front-title{font-size:27px}
+.preview-device.is-tablet .preview-front-meta{font-size:14px;margin-top:21px}
+.preview-device.is-tablet .preview-front-rule{margin:34px auto 34px}
+.preview-device.is-tablet .preview-front-body.markdown-body{font-size:14px!important;line-height:1.78!important}
+.preview-device.is-tablet .preview-front-tags{margin-bottom:54px;font-size:14px}
+.preview-device.is-tablet .preview-front-neighbors{font-size:13px}
+
+/* 手机预览对应前台移动版：品牌栏置顶，正文单列 */
 .preview-device.is-mobile .preview-browser-dots{display:none}
 .preview-device.is-mobile .preview-browser-bar{gap:7px;padding:0 9px}
 .preview-device.is-mobile .preview-draft-badge{display:none}
-.preview-device.is-mobile .preview-article{width:calc(100% - 32px);padding:34px 0 54px}
-.preview-device.is-mobile .preview-article h1{font-size:28px}
-.preview-device.is-mobile .preview-article-header>p{font-size:14px}
-.preview-device.is-mobile .preview-markdown{font-size:14.5px;line-height:1.78}
-.preview-device.is-tablet .preview-article{width:min(720px,calc(100% - 48px));padding-top:46px}
+.preview-device.is-mobile .preview-front-page{display:block;min-height:100%}
+.preview-device.is-mobile .preview-front-sidebar{min-height:auto;padding:23px 17px 18px;border-right:0;border-bottom:1.5px solid #282828}
+.preview-device.is-mobile .preview-front-brand{display:flex;align-items:center;gap:8px;font-size:27px;line-height:1}
+.preview-device.is-mobile .preview-front-brand-line{display:flex;gap:7px}
+.preview-device.is-mobile .preview-brand-planet{width:44px;height:29px;transform:scale(.7);transform-origin:left center;margin-right:-13px}
+.preview-device.is-mobile .preview-front-motto,.preview-device.is-mobile .preview-front-sidebar-note{display:none}
+.preview-device.is-mobile .preview-front-nav{margin-top:17px;padding:0;display:flex;justify-content:center;gap:12px;font-size:11px;overflow:hidden}
+.preview-device.is-mobile .preview-front-nav span{gap:0}.preview-device.is-mobile .preview-front-nav i{display:none}
+.preview-device.is-mobile .preview-front-main{padding:29px 19px 23px}
+.preview-device.is-mobile .preview-front-title{font-size:24px;line-height:1.35}
+.preview-device.is-mobile .preview-front-meta{margin-top:17px;font-size:13px}
+.preview-device.is-mobile .preview-front-rule{width:72%;margin:28px auto}
+.preview-device.is-mobile .preview-front-body.markdown-body{font-size:14px!important;line-height:1.78!important}
+.preview-device.is-mobile .preview-front-tags{margin:30px 0 40px;font-size:13px}
+.preview-device.is-mobile .preview-front-neighbors{grid-template-columns:1fr;gap:19px;font-size:12px}
+.preview-device.is-mobile .preview-front-neighbor.next{text-align:left}
+.preview-device.is-mobile .preview-front-neighbor-title{max-width:270px}
+.preview-device.is-mobile .preview-front-bottom-rule{width:72%;margin-top:42px}
+
+@container (max-width:720px){
+  .preview-device:not(.is-mobile) .preview-front-page{grid-template-columns:205px minmax(0,1fr)}
+  .preview-device:not(.is-mobile) .preview-front-sidebar{padding:30px 18px}
+  .preview-device:not(.is-mobile) .preview-front-brand{font-size:32px}
+  .preview-device:not(.is-mobile) .preview-front-motto{font-size:12px;margin:38px 0 22px}
+  .preview-device:not(.is-mobile) .preview-front-nav{font-size:12px}
+  .preview-device:not(.is-mobile) .preview-front-main{padding:34px 24px}
+  .preview-device:not(.is-mobile) .preview-front-title{font-size:26px}
+  .preview-device:not(.is-mobile) .preview-front-body.markdown-body{font-size:14px!important}
+}
 
 @media (max-width:1220px){
   .overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -1085,6 +1167,7 @@ tbody tr:hover td{background:#f8fbf9!important}
 <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js" integrity="sha512-VjmsArkf8Vv2yyvbXCyVxp+R3n4N2WyS1GEQ+YQxa7Hu0tx836WpY4nW9/T1W5JBmvuIsxkVH/DlHgp7NEMjDw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
 // 高德地图前台配置凭证
@@ -1828,7 +1911,7 @@ function renderEditor(){
           </div>
         </div>
         <textarea id="mde-area"></textarea>
-        <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic" multiple onchange="uploadEditorR2Images(this)">
+        <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic,.heif" multiple onchange="uploadEditorR2Images(this)">
       </div>
       <div class="editor-right">
         <div class="fm-card">
@@ -1900,7 +1983,7 @@ function articlePreviewSnapshot(){
   const title=data.fm.title || '未命名文章';
   const description=data.fm.description || getExcerpt(data.body,'') || '这篇文章暂时还没有摘要。';
   const author=data.fm.author || '未署名';
-  const date=formatDate(data.fm.date || nowLocalString());
+  const date=formatDateShort(data.fm.date || nowLocalString());
   const words=countWords(data.body);
   const minutes=readMinutes(data.body);
   const rawHtml=window.marked && typeof window.marked.parse==='function'
@@ -1920,8 +2003,38 @@ function articlePreviewSnapshot(){
 }
 
 function previewTagMarkup(tags){
-  if(!tags.length) return '<span class="preview-no-tags">暂无标签</span>';
-  return tags.map(tag=>`<span class="preview-tag"># ${escapeHTML(tag)}</span>`).join('');
+  if(!tags.length) return '<span class="preview-front-no-tags">暂无标签</span>';
+  return tags.map(tag=>`<span class="preview-front-tag">#${escapeHTML(tag)}</span>`).join('');
+}
+
+function articlePreviewNeighbors(data){
+  const posts=STATE.posts
+    .filter(post=>!post.isTrash && !post.draft)
+    .slice()
+    .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  const currentPath=String(data.path || STATE.editingPost?.originalPath || STATE.editingPost?.path || '');
+  const currentSlug=String(data.fm?.slug || '');
+  let index=posts.findIndex(post=>post.path===currentPath);
+  if(index<0 && currentSlug) index=posts.findIndex(post=>post.slug===currentSlug);
+  if(index>=0){
+    return {previous:posts[index+1] || null,next:posts[index-1] || null};
+  }
+  const currentDate=String(data.fm?.date || '');
+  const previous=posts.find(post=>!currentDate || String(post.date||'')<currentDate) || posts[0] || null;
+  const next=[...posts].reverse().find(post=>currentDate && String(post.date||'')>currentDate) || null;
+  return {previous,next};
+}
+
+function previewNeighborMarkup(post,direction){
+  const isPrevious=direction==='previous';
+  if(!post){
+    return `<span class="preview-front-neighbor is-empty">${isPrevious?'← 暂无上一篇':'暂无下一篇 →'}</span>`;
+  }
+  const url=buildPublicUrl({slug:post.slug || ''},post.path || '');
+  const title=escapeHTML(post.title || post.fileName || '未命名文章');
+  return isPrevious
+    ? `<a href="${escapeAttr(url)}" target="_blank" rel="noopener"><b aria-hidden="true">←</b><span class="preview-front-neighbor-title">${title}</span></a>`
+    : `<a href="${escapeAttr(url)}" target="_blank" rel="noopener"><span class="preview-front-neighbor-title">${title}</span><b aria-hidden="true">→</b></a>`;
 }
 
 function renderArticlePreviewContent(){
@@ -1929,19 +2042,25 @@ function renderArticlePreviewContent(){
   if(!modal || STATE.page!=='editor') return;
   try{
     const data=articlePreviewSnapshot();
-    const title=document.getElementById('preview-article-title');
-    const desc=document.getElementById('preview-article-description');
-    const body=document.getElementById('preview-article-body');
-    const meta=document.getElementById('preview-article-meta');
-    const tags=document.getElementById('preview-article-tags');
+    const title=document.getElementById('preview-front-title');
+    const body=document.getElementById('preview-front-body');
+    const meta=document.getElementById('preview-front-meta');
+    const tags=document.getElementById('preview-front-tags');
+    const previous=document.getElementById('preview-front-previous');
+    const next=document.getElementById('preview-front-next');
     const path=document.getElementById('preview-path-text');
     const draft=document.getElementById('preview-draft-badge');
+    const neighbors=articlePreviewNeighbors(data);
     if(title) title.textContent=data.title;
-    if(desc) desc.textContent=data.description;
     if(body) body.innerHTML=data.html;
-    if(meta) meta.innerHTML=`<span>${escapeHTML(data.author)}</span><i></i><span>${escapeHTML(data.date)}</span><i></i><span>${data.words} 字</span><i></i><span>约 ${data.minutes} 分钟</span>`;
+    if(meta) meta.textContent=`${data.author} / ${formatDateShort(data.fm.date || data.date)}`;
     if(tags) tags.innerHTML=previewTagMarkup(data.tags);
-    if(path) path.textContent=data.path;
+    if(previous) previous.innerHTML=previewNeighborMarkup(neighbors.previous,'previous');
+    if(next) next.innerHTML=previewNeighborMarkup(neighbors.next,'next');
+    if(path){
+      try{ path.textContent=buildPublicUrl(data.fm,data.path); }
+      catch(e){ path.textContent=data.path; }
+    }
     if(draft){
       draft.className=`preview-draft-badge ${data.fm.draft?'is-draft':'is-published'}`;
       draft.textContent=data.fm.draft?'草稿预览':'发布预览';
@@ -1986,7 +2105,7 @@ function openArticlePreview(){
         <div class="article-preview-toolbar">
           <div class="preview-toolbar-title">
             <span class="preview-toolbar-icon">◉</span>
-            <div><strong>文章预览</strong><small>实时呈现当前编辑内容，不会提交到仓库</small></div>
+            <div><strong>前台样式预览</strong><small>按 Counting Stars 前台阅读版式实时呈现，当前内容不会提交到仓库</small></div>
           </div>
           <div class="preview-toolbar-actions">
             <div class="preview-viewport-switch" aria-label="预览设备宽度">
@@ -2006,16 +2125,42 @@ function openArticlePreview(){
               <span class="preview-draft-badge" id="preview-draft-badge"></span>
             </div>
             <div class="preview-scroll-area">
-              <article class="preview-article">
-                <header class="preview-article-header">
-                  <div class="preview-article-kicker">COUNTING STARS · ARTICLE</div>
-                  <h1 id="preview-article-title"></h1>
-                  <p id="preview-article-description"></p>
-                  <div class="preview-article-meta" id="preview-article-meta"></div>
-                  <div class="preview-article-tags" id="preview-article-tags"></div>
-                </header>
-                <div class="markdown-body preview-markdown" id="preview-article-body"></div>
-              </article>
+              <div class="preview-front-page">
+                <aside class="preview-front-sidebar" aria-label="前台侧边栏预览">
+                  <div class="preview-front-brand" aria-label="Counting Stars">
+                    <span>Counting</span>
+                    <span class="preview-front-brand-line">Stars
+                      <span class="preview-brand-planet" aria-hidden="true">
+                        <b class="preview-brand-star one">★</b><b class="preview-brand-star two">★</b>
+                      </span>
+                    </span>
+                  </div>
+                  <p class="preview-front-motto">⚡⚡⚡欲买桂花同载酒，终<br>不似，少年游。</p>
+                  <nav class="preview-front-nav" aria-label="前台栏目预览">
+                    <span>哔哔 <i></i></span><span>归档 <i></i></span><span>光影 <i></i></span>
+                    <span>足迹 <i></i></span><span>悦动 <i></i></span><span>关于 <i></i></span>
+                  </nav>
+                  <span class="preview-front-sidebar-note">COUNTING STARS</span>
+                </aside>
+                <main class="preview-front-main">
+                  <article class="preview-front-article">
+                    <header class="preview-front-header">
+                      <h1 class="preview-front-title" id="preview-front-title"></h1>
+                      <div class="preview-front-meta" id="preview-front-meta"></div>
+                      <div class="preview-front-rule"></div>
+                    </header>
+                    <div class="markdown-body preview-front-body" id="preview-front-body"></div>
+                    <footer class="preview-front-footer">
+                      <div class="preview-front-tags" id="preview-front-tags"></div>
+                      <nav class="preview-front-neighbors" aria-label="上一篇与下一篇">
+                        <div class="preview-front-neighbor previous" id="preview-front-previous"></div>
+                        <div class="preview-front-neighbor next" id="preview-front-next"></div>
+                      </nav>
+                      <div class="preview-front-bottom-rule"></div>
+                    </footer>
+                  </article>
+                </main>
+              </div>
             </div>
           </div>
         </div>
@@ -4111,7 +4256,7 @@ function renderFootprintEditForm(container) {
           <div class="fm-label">
             <span>照片 URL (每行一个)</span>
             <button class="btn sm ghost" type="button" style="color:var(--blue);padding:0;" onclick="document.getElementById('fp-photos-upload-input')?.click()">⚡ 上传图片到 R2 图床</button>
-            <input type="file" id="fp-photos-upload-input" accept="image/*,.heic" multiple style="display:none;" onchange="uploadFootprintPhotosToR2(this)">
+            <input type="file" id="fp-photos-upload-input" accept="image/*,.heic,.heif" multiple style="display:none;" onchange="uploadFootprintPhotosToR2(this)">
           </div>
           <textarea class="fm-textarea" id="fp-input-photos" placeholder="https://..." style="min-height:70px;">${escapeHTML((item.photos || []).join('\n'))}</textarea>
         </div>
@@ -4872,7 +5017,8 @@ async function r2UploadFile(file){
   return {
     key, url:r2ObjectUrl(key), name:uploadFile.name, originalName:prepared.originalName,
     size:uploadFile.size, originalSize:prepared.originalSize, type:contentType,
-    optimized:prepared.optimized, width:prepared.width, height:prepared.height
+    optimized:prepared.optimized, width:prepared.width, height:prepared.height,
+    convertedFromHeic:prepared.convertedFromHeic === true
   };
 }
 async function r2ListObjects(){
@@ -4907,9 +5053,15 @@ function r2ImageMaxSide(){
   if(!Number.isFinite(n) || n<=0) return 1920;
   return Math.min(6000, Math.max(800, n));
 }
+function r2IsHeicFile(file){
+  const type=String(file?.type||'').toLowerCase();
+  const name=String(file?.name||'').toLowerCase();
+  return /image\/hei[cf]/i.test(type) || /\.(heic|heif)$/i.test(name);
+}
 function r2CanOptimizeImage(file){
   const type=String(file?.type||'').toLowerCase();
   const name=String(file?.name||'').toLowerCase();
+  if(r2IsHeicFile(file)) return true;
   if(!type.startsWith('image/')) return false;
   if(type.includes('svg') || type.includes('gif') || /\.(svg|gif)$/i.test(name)) return false;
   return true;
@@ -4918,12 +5070,40 @@ function r2ReplaceFileExt(name, ext){
   const safe=String(name||'image').replace(/\.[^.\/]+$/,'');
   return `${safe || 'image'}${ext}`;
 }
+async function r2DecodeHeicFile(file){
+  const converter=typeof window.heic2any==='function'
+    ? window.heic2any
+    : (typeof heic2any==='function' ? heic2any : null);
+  if(!converter){
+    throw new Error('HEIC 转换组件未成功加载，请检查网络或刷新页面后重试');
+  }
+
+  let converted;
+  try{
+    converted=await converter({blob:file, toType:'image/jpeg', quality:0.94});
+  }catch(error){
+    const message=error?.message || String(error || '未知解码错误');
+    throw new Error(`HEIC 解码失败：${message}`);
+  }
+
+  // HEIC 容器可能包含多张图；图床上传默认取第一张静态画面。
+  const blob=Array.isArray(converted) ? converted[0] : converted;
+  if(!(blob instanceof Blob) || !blob.size){
+    throw new Error('HEIC 解码结果为空');
+  }
+
+  return new File(
+    [blob],
+    r2ReplaceFileExt(file.name, '.jpg'),
+    {type:'image/jpeg', lastModified:file.lastModified || Date.now()}
+  );
+}
 function r2LoadImage(file){
   return new Promise((resolve,reject)=>{
     const url=URL.createObjectURL(file);
     const img=new Image();
     img.onload=()=>{ URL.revokeObjectURL(url); resolve(img); };
-    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败（可能是受保护的 HEIC 格式或文件损坏）：${file.name}`)); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error(`图片读取失败或文件已损坏：${file.name}`)); };
     img.src=url;
   });
 }
@@ -4932,32 +5112,51 @@ function r2CanvasToBlob(canvas, type, quality){
 }
 async function prepareR2UploadFile(file){
   const original={file, originalName:file.name, originalSize:file.size, optimized:false, width:0, height:0};
-  if(!r2WebpEnabled() || !r2CanOptimizeImage(file)) return original;
+  const isHeic=r2IsHeicFile(file);
+
+  // 普通图片遵循 WebP 开关；HEIC/HEIF 为保证浏览器可预览，始终转为 WebP。
+  if(!isHeic && (!r2WebpEnabled() || !r2CanOptimizeImage(file))) return original;
+  if(!r2CanOptimizeImage(file)) return original;
 
   try{
-    const img=await r2LoadImage(file);
+    const sourceFile=isHeic ? await r2DecodeHeicFile(file) : file;
+    const img=await r2LoadImage(sourceFile);
     const maxSide=r2ImageMaxSide();
-    let width=img.naturalWidth || img.width;
-    let height=img.naturalHeight || img.height;
-    if(!width || !height) return original;
+    const width=img.naturalWidth || img.width;
+    const height=img.naturalHeight || img.height;
+    if(!width || !height) throw new Error('无法取得图片尺寸');
 
     const scale=Math.min(1, maxSide / Math.max(width, height));
     const targetW=Math.max(1, Math.round(width * scale));
     const targetH=Math.max(1, Math.round(height * scale));
 
     const canvas=document.createElement('canvas');
-    canvas.width=targetW; canvas.height=targetH;
+    canvas.width=targetW;
+    canvas.height=targetH;
     const ctx=canvas.getContext('2d', {alpha:true});
+    if(!ctx) throw new Error('浏览器无法创建图片转换画布');
     ctx.drawImage(img, 0, 0, targetW, targetH);
 
     const blob=await r2CanvasToBlob(canvas, 'image/webp', r2WebpQuality());
-    if(!blob) return original;
+    if(!blob || !blob.size) throw new Error('浏览器未能生成 WebP 文件');
 
     const webpName=r2ReplaceFileExt(file.name, '.webp');
     const webpFile=new File([blob], webpName, {type:'image/webp', lastModified:Date.now()});
-    return {file:webpFile, originalName:file.name, originalSize:file.size, optimized:true, width:targetW, height:targetH};
-  }catch(e){
-    console.warn('图片压缩转换失败，保留原文件上传：', e);
+    return {
+      file:webpFile,
+      originalName:file.name,
+      originalSize:file.size,
+      optimized:true,
+      width:targetW,
+      height:targetH,
+      convertedFromHeic:isHeic
+    };
+  }catch(error){
+    if(isHeic){
+      const message=error?.message || String(error || '未知转换错误');
+      throw new Error(`${file.name} 转换为 WebP 失败：${message}。已取消上传，原始 HEIC/HEIF 文件不会上传。`);
+    }
+    console.warn('图片压缩转换失败，保留原文件上传：', error);
     return original;
   }
 }
@@ -4966,7 +5165,7 @@ function r2UploadSummary(item){
   const ratio=item.originalSize ? Math.max(0, Math.round((1 - item.size / item.originalSize) * 100)) : 0;
   const sizeLine=`${formatBytes(item.originalSize)} → ${formatBytes(item.size)}${ratio>0 ? `，减少 ${ratio}%` : ''}`;
   const dimLine=item.width&&item.height ? ` · ${item.width}×${item.height}` : '';
-  return `WebP ${sizeLine}${dimLine}`;
+  return `${item.convertedFromHeic ? 'HEIC → WebP' : 'WebP'} ${sizeLine}${dimLine}`;
 }
 function insertIntoEditor(text){
   if(!STATE.mde) return false;
@@ -5014,8 +5213,8 @@ async function uploadEditorR2FileList(fileList, input=null){
     toast(`开始处理并上传 ${files.length} 张图片到 R2…`);
     for(let i=0;i<files.length;i++){
       const file=files[i];
-      if(!file.type.startsWith('image/') && !/\.heic$/i.test(file.name)) throw new Error(`${file.name} 不是支持的图片格式`);
-      if(title) title.textContent=`正在上传 ${i+1}/${files.length}`;
+      if(!file.type.startsWith('image/') && !/\.(heic|heif)$/i.test(file.name)) throw new Error(`${file.name} 不是支持的图片格式`);
+      if(title) title.textContent=r2IsHeicFile(file) ? `正在转换并上传 ${i+1}/${files.length}` : `正在上传 ${i+1}/${files.length}`;
       const item=await r2UploadFile(file);
       insertIntoEditor(`\n![${item.originalName.replace(/\.[^.]+$/,'')}](${item.url})\n`);
     }
@@ -5075,9 +5274,9 @@ function renderMediaPage(){
     <div class="card" style="max-width:980px">
       <div class="card-header"><div><div class="card-title">上传到 R2</div><div class="card-desc">上传成功后会生成可直接粘贴到 Markdown 的图片链接。</div></div><span class="tag soft">${escapeHTML(r2PrefixNow())}</span></div>
       <label class="media-drop" for="media-file-input">
-        <input type="file" id="media-file-input" accept="image/*,.heic" multiple onchange="uploadMediaFiles(this)">
+        <input type="file" id="media-file-input" accept="image/*,.heic,.heif" multiple onchange="uploadMediaFiles(this)">
         <div class="media-drop-title">点击选择图片，或拖到这里后再选择</div>
-        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF / HEIC；默认会在浏览器本地压缩并转成 WebP，再上传到 R2。</div>
+        <div class="media-drop-desc">建议上传 JPG / PNG / WebP / AVIF / HEIC / HEIF；图片会在浏览器本地处理后上传。HEIC / HEIF 会先解码并强制转换为可预览的 WebP。</div>
       </label>
       <div id="media-upload-result" style="margin-top:14px"></div>
     </div>
@@ -5174,7 +5373,7 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">上传路径前缀</label><input class="setting-input" id="s-r2-prefix" placeholder="images/{yyyy}/{mm}" value="${escapeAttr(CFG.r2Prefix||'images/{yyyy}/{mm}')}"></div>
         <div class="setting-group"><label class="setting-label">WebP 质量 <span class="muted">0.5 - 0.95</span></label><input class="setting-input" id="s-r2-webp-quality" placeholder="0.82" value="${escapeAttr(CFG.r2WebpQuality ?? 0.82)}"></div>
         <div class="setting-group"><label class="setting-label">最大边长 <span class="muted">px</span></label><input class="setting-input" id="s-r2-max-side" placeholder="1920" value="${escapeAttr(CFG.r2ImageMaxSide || 1920)}"></div>
-        <div class="setting-group" style="grid-column:span 2"><label class="switch-wrap"><span class="switch"><input type="checkbox" id="s-r2-webp-enabled" ${CFG.r2WebpEnabled === false ? '' : 'checked'}><span class="slider"></span></span><span>上传图片前自动压缩并转换成 WebP；SVG / GIF 会保留原格式。</span></label></div>
+        <div class="setting-group" style="grid-column:span 2"><label class="switch-wrap"><span class="switch"><input type="checkbox" id="s-r2-webp-enabled" ${CFG.r2WebpEnabled === false ? '' : 'checked'}><span class="slider"></span></span><span>上传图片前自动压缩并转换成 WebP；SVG / GIF 保留原格式，HEIC / HEIF 为保证可预览会始终转换为 WebP。</span></label></div>
       </div>
       <div class="section-title">设置备份与迁移</div>
       <div class="alert info">导出文件会包含 GitHub Token、Vercel Token、R2 Access Key 和 Secret。请只保存在自己的安全设备中，不要发给他人。</div>
