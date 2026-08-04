@@ -2,9 +2,8 @@
 
 {{/*
   Build-time rendering: parse static/memos.json during the Hugo build.
-  A memo is included when:
-  1. tags contains Clip or 壹言, or
-  2. content contains a literal #Clip or #壹言 marker.
+  A memo is included only when its tags contain Clip, or its content contains
+  a literal #Clip marker.
 */}}
 {{ $jsonPath := "static/memos.json" }}
 {{ $raw := readFile $jsonPath }}
@@ -20,11 +19,11 @@
   {{ $hasSelectedTag := false }}
   {{ range $memo.tags }}
     {{ $normalizedTag := lower (trim (printf "%v" .) " \t\r\n") }}
-    {{ if or (eq $normalizedTag "clip") (eq $normalizedTag "壹言") }}
+    {{ if eq $normalizedTag "clip" }}
       {{ $hasSelectedTag = true }}
     {{ end }}
   {{ end }}
-  {{ $hasSelectedMarker := gt (len (findRE `(?i)#(clip|壹言)([[:space:]#，。,.!?！？]|$)` $rawContent 1)) 0 }}
+  {{ $hasSelectedMarker := gt (len (findRE `(?i)#clip([[:space:]#，。,.!?！？]|$)` $rawContent 1)) 0 }}
   {{ if or $hasSelectedTag $hasSelectedMarker }}
     {{ $clips = $clips | append $memo }}
   {{ end }}
@@ -38,7 +37,7 @@
     </div>
   {{ else if eq (len $clips) 0 }}
     <div class="hux-clip-message" role="status">
-      已成功读取 memos.json，但没有找到 Clip 或壹言条目。
+      已成功读取 memos.json，但没有找到 Clip 条目。
     </div>
   {{ else }}
     <div class="hux-clip-tools" role="search">
@@ -90,20 +89,14 @@
       </div>
     </div>
 
-    <div class="hux-clip-grid" aria-label="Clip 与壹言摘录">
+    <div class="hux-clip-grid" aria-label="Clip 摘录">
       {{ range $clips }}
         {{ $memo := . }}
         {{ $content := printf "%v" $memo.content }}
-        {{ $isYiyanEntry := gt (len (findRE `#壹言([[:space:]#，。,.!?！？]|$)` $content 1)) 0 }}
-        {{ range $memo.tags }}
-          {{ if eq (lower (trim (printf "%v" .) " \t\r\n")) "壹言" }}
-            {{ $isYiyanEntry = true }}
-          {{ end }}
-        {{ end }}
 
         {{/*
           Remove every memo tag from the rendered body. Tags are still kept in
-          $otherTags and shown once as pills below the content, and remain searchable.
+          $metaTags and shown once as pills below the content, and remain searchable.
         */}}
         {{ range $memo.tags }}
           {{ $tagText := trim (printf "%v" .) " \t\r\n" }}
@@ -112,8 +105,8 @@
           {{ end }}
         {{ end }}
 
-        {{/* Fallback for markers absent from tags. */}}
-        {{ $content = replaceRE `(?i)#(clip|壹言)([[:space:]#，。,.!?！？]|$)` "$2" $content }}
+        {{/* Fallback for a Clip marker absent from tags. */}}
+        {{ $content = replaceRE `(?i)#clip([[:space:]#，。,.!?！？]|$)` "$1" $content }}
         {{ $content = replaceRE `[ \t]+\n` "\n" $content }}
         {{ $content = trim $content " \t\r\n" }}
 
@@ -129,7 +122,7 @@
         {{ $markdownLinks := findRE `\[[^\]]+\]\(https?://[^)\s]+\)` $content 1 }}
         {{ if gt (len $markdownLinks) 0 }}
           {{ $firstLink := index $markdownLinks 0 }}
-          {{ $linkText = replaceRE `^\[([^\]]+)\]\(.*\)$` "$1" $firstLink | markdownify | plainify }}
+          {{ $linkText = replaceRE `^\[([^\]]+)\]\(.*\)$` "$1" $firstLink | markdownify | plainify | htmlUnescape }}
           {{ $linkText = trim $linkText " \t\r\n" }}
           {{ $targetURL = replaceRE `^\[[^\]]+\]\((https?://[^)\s]+)\)$` "$1" $firstLink }}
           {{ $targetURL = trim $targetURL " \t\r\n" }}
@@ -151,25 +144,17 @@
 
         {{/*
           Meta tags sit beside the date. Clip remains the page-level category and is
-          hidden; 壹言 is shown explicitly, together with any additional memo tags.
+          hidden; any additional memo tags are displayed and remain searchable.
         */}}
         {{ $metaTags := slice }}
-        {{ $hasYiyanTag := false }}
         {{ $searchParts := slice $content $linkText }}
         {{ range $memo.tags }}
           {{ $tagText := trim (printf "%v" .) " \t\r\n" }}
           {{ $searchParts = $searchParts | append $tagText }}
           {{ $normalizedTag := lower $tagText }}
-          {{ if eq $normalizedTag "壹言" }}
-            {{ $hasYiyanTag = true }}
-          {{ end }}
           {{ if and $tagText (ne $normalizedTag "clip") }}
             {{ $metaTags = $metaTags | append $tagText }}
           {{ end }}
-        {{ end }}
-        {{ if and $isYiyanEntry (not $hasYiyanTag) }}
-          {{ $metaTags = $metaTags | append "壹言" }}
-          {{ $searchParts = $searchParts | append "壹言" }}
         {{ end }}
         {{ $searchText := lower (delimit $searchParts " ") }}
 
@@ -246,6 +231,8 @@
     --hux-clip-border: rgba(110, 104, 92, .22);
     --hux-clip-muted: rgba(90, 85, 76, .66);
     --hux-clip-bg: rgba(255, 255, 255, .3);
+    --hux-clip-accent: rgba(156, 39, 176, .82);
+    --hux-clip-accent-soft: rgba(156, 39, 176, .16);
     --hux-clip-gap: .85rem;
     --hux-clip-row: 8px;
   }
@@ -425,15 +412,34 @@
   .hux-clip-grid.is-timeline .hux-clip-card::before {
     content: "";
     position: absolute;
-    top: 1.22rem;
-    left: -1.56rem;
+    top: 1.16rem;
+    left: -1.59rem;
     z-index: 3;
-    width: .64rem;
-    height: .64rem;
-    border: 2px solid var(--hux-clip-bg);
+    width: .72rem;
+    height: .72rem;
+    border: 2px solid rgba(255, 255, 255, .88);
     border-radius: 50%;
-    background: rgba(110, 104, 92, .62);
-    box-shadow: 0 0 0 1px var(--hux-clip-border);
+    background: var(--hux-clip-accent);
+    box-shadow:
+      0 0 0 1px rgba(156, 39, 176, .32),
+      0 1px 4px rgba(0, 0, 0, .16);
+    transform: scale(.82);
+    transition:
+      transform .22s ease,
+      background-color .22s ease,
+      border-color .22s ease,
+      box-shadow .22s ease;
+  }
+
+  .hux-clip-grid.is-timeline .hux-clip-card:hover::before,
+  .hux-clip-grid.is-timeline .hux-clip-card:focus-within::before {
+    border-color: rgba(255, 255, 255, .98);
+    background: rgba(156, 39, 176, 1);
+    box-shadow:
+      0 0 0 4px var(--hux-clip-accent-soft),
+      0 0 14px rgba(156, 39, 176, .52),
+      0 2px 5px rgba(0, 0, 0, .16);
+    transform: scale(1.18);
   }
 
   .hux-clip-grid.is-timeline .hux-clip-card.is-span-3 .hux-clip-card-body {
@@ -690,7 +696,8 @@
   @media (prefers-reduced-motion: reduce) {
     .hux-clip-card,
     .hux-clip-id,
-    .hux-clip-view-button { transition: none; }
+    .hux-clip-view-button,
+    .hux-clip-grid.is-timeline .hux-clip-card::before { transition: none; }
     .hux-clip-card:hover { transform: none; }
   }
 </style>
