@@ -1,0 +1,989 @@
+{{ partial "header.html" . }}
+
+{{/*
+  Build-time rendering: parse static/memos.json during the Hugo build.
+  A memo is included when:
+  1. tags contains Clip or 壹言, or
+  2. content contains a literal #Clip or #壹言 marker.
+*/}}
+{{ $jsonPath := "static/memos.json" }}
+{{ $raw := readFile $jsonPath }}
+{{ $memos := slice }}
+{{ if $raw }}
+  {{ $memos = $raw | transform.Unmarshal }}
+{{ end }}
+
+{{ $clips := slice }}
+{{ range $memos }}
+  {{ $memo := . }}
+  {{ $rawContent := printf "%v" $memo.content }}
+  {{ $hasSelectedTag := false }}
+  {{ range $memo.tags }}
+    {{ $normalizedTag := lower (strings.TrimSpace (printf "%v" .)) }}
+    {{ if or (eq $normalizedTag "clip") (eq $normalizedTag "壹言") }}
+      {{ $hasSelectedTag = true }}
+    {{ end }}
+  {{ end }}
+  {{ $hasSelectedMarker := gt (len (findRE `(?i)#(clip|壹言)([[:space:]#，。,.!?！？]|$)` $rawContent 1)) 0 }}
+  {{ if or $hasSelectedTag $hasSelectedMarker }}
+    {{ $clips = $clips | append $memo }}
+  {{ end }}
+{{ end }}
+{{ $clips = sort $clips "createdTs" "desc" }}
+
+<div id="hux-clip-root" class="hux-clip-root" data-render-mode="hugo-build-time">
+  {{ if not $raw }}
+    <div class="hux-clip-message hux-clip-error" role="alert">
+      无法读取 <code>{{ $jsonPath }}</code>。请确认 memos.json 位于项目根目录的 static 文件夹中。
+    </div>
+  {{ else if eq (len $clips) 0 }}
+    <div class="hux-clip-message" role="status">
+      已成功读取 memos.json，但没有找到 Clip 或壹言条目。
+    </div>
+  {{ else }}
+    <div class="hux-clip-tools" role="search">
+      <label class="hux-clip-search-wrap" for="hux-clip-search">
+        <span class="hux-clip-search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="hux-clip-search"
+          class="hux-clip-search"
+          type="search"
+          inputmode="search"
+          autocomplete="off"
+          placeholder="搜索摘录、链接或标签…"
+          aria-label="搜索摘录"
+        >
+        <button class="hux-clip-clear" type="button" aria-label="清空搜索" hidden>×</button>
+      </label>
+      <span class="hux-clip-count" aria-live="polite">{{ len $clips }} 条</span>
+      <div class="hux-clip-view-switch" role="group" aria-label="布局方式">
+        <button
+          class="hux-clip-view-button is-active"
+          type="button"
+          data-view="card"
+          aria-label="卡片布局"
+          title="卡片布局"
+          aria-pressed="true"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
+        </button>
+        <button
+          class="hux-clip-view-button"
+          type="button"
+          data-view="timeline"
+          aria-label="时间线布局"
+          title="时间线布局"
+          aria-pressed="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="6" r="1.35"></circle>
+            <circle cx="5" cy="12" r="1.35"></circle>
+            <circle cx="5" cy="18" r="1.35"></circle>
+            <path d="M9 6h11M9 12h11M9 18h11"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="hux-clip-grid" aria-label="Clip 与壹言摘录">
+      {{ range $clips }}
+        {{ $memo := . }}
+        {{ $content := printf "%v" $memo.content }}
+        {{ $isYiyanEntry := gt (len (findRE `#壹言([[:space:]#，。,.!?！？]|$)` $content 1)) 0 }}
+        {{ range $memo.tags }}
+          {{ if eq (lower (strings.TrimSpace (printf "%v" .))) "壹言" }}
+            {{ $isYiyanEntry = true }}
+          {{ end }}
+        {{ end }}
+
+        {{/*
+          Remove every memo tag from the rendered body. Tags are still kept in
+          $otherTags and shown once as pills below the content, and remain searchable.
+        */}}
+        {{ range $memo.tags }}
+          {{ $tagText := strings.TrimSpace (printf "%v" .) }}
+          {{ if $tagText }}
+            {{ $content = replace $content (printf "#%s" $tagText) "" }}
+          {{ end }}
+        {{ end }}
+
+        {{/* Fallback for markers absent from tags. */}}
+        {{ $content = replaceRE `(?i)#(clip|壹言)([[:space:]#，。,.!?！？]|$)` "$2" $content }}
+        {{ $content = replaceRE `[ \t]+\n` "\n" $content }}
+        {{ $content = strings.TrimSpace $content }}
+
+        {{/* Extract the first link. Only linked entries receive a bold title. */}}
+        {{ $targetURL := "" }}
+        {{ $linkText := "" }}
+        {{ $bodyContent := $content }}
+
+        {{ $markdownLinks := findRESubmatch `\[([^\]]+)\]\((https?://[^)\s]+)\)` $content 1 }}
+        {{ if gt (len $markdownLinks) 0 }}
+          {{ $firstLink := index $markdownLinks 0 }}
+          {{ $linkText = index $firstLink 1 | markdownify | plainify | strings.TrimSpace }}
+          {{ $targetURL = index $firstLink 2 | strings.TrimSpace }}
+          {{ $bodyContent = replaceRE `\[([^\]]+)\]\((https?://[^)\s]+)\)` "" $bodyContent 1 }}
+        {{ else }}
+          {{ $bareURLs := findRE `https?://[^\s<>()]+` $content 1 }}
+          {{ if gt (len $bareURLs) 0 }}
+            {{ $targetURL = replaceRE `[.,;:!?，。；：！？]+$` "" (index $bareURLs 0) }}
+            {{ $linkText = $targetURL }}
+            {{ $bodyContent = replaceRE `https?://[^\s<>()]+` "" $bodyContent 1 }}
+          {{ end }}
+        {{ end }}
+
+        {{ $bodyContent = replaceRE `[ \t]+\n` "\n" $bodyContent }}
+        {{ $bodyContent = replaceRE `\n{3,}` "\n\n" $bodyContent }}
+        {{ $bodyContent = strings.TrimSpace $bodyContent }}
+        {{ $plainBody := $bodyContent | markdownify | plainify | strings.TrimSpace }}
+
+        {{/*
+          Meta tags sit beside the date. Clip remains the page-level category and is
+          hidden; 壹言 is shown explicitly, together with any additional memo tags.
+        */}}
+        {{ $metaTags := slice }}
+        {{ $hasYiyanTag := false }}
+        {{ $searchParts := slice $content $linkText }}
+        {{ range $memo.tags }}
+          {{ $tagText := strings.TrimSpace (printf "%v" .) }}
+          {{ $searchParts = $searchParts | append $tagText }}
+          {{ $normalizedTag := lower $tagText }}
+          {{ if eq $normalizedTag "壹言" }}
+            {{ $hasYiyanTag = true }}
+          {{ end }}
+          {{ if and $tagText (ne $normalizedTag "clip") }}
+            {{ $metaTags = $metaTags | append $tagText }}
+          {{ end }}
+        {{ end }}
+        {{ if and $isYiyanEntry (not $hasYiyanTag) }}
+          {{ $metaTags = $metaTags | append "壹言" }}
+          {{ $searchParts = $searchParts | append "壹言" }}
+        {{ end }}
+        {{ $searchText := lower (delimit $searchParts " ") }}
+
+        {{/* Initial span is a no-JavaScript fallback; JS randomizes it per refresh. */}}
+        {{ $textByteLength := add (len $plainBody) (len $linkText) }}
+        {{ $spanClass := "" }}
+        {{ if ge $textByteLength 1200 }}
+          {{ $spanClass = " is-span-3" }}
+        {{ else if ge $textByteLength 450 }}
+          {{ $spanClass = " is-span-2" }}
+        {{ end }}
+
+        <article
+          class="hux-clip-card{{ $spanClass }}{{ if $targetURL }} has-link{{ end }}"
+          data-clip-id="{{ $memo.id }}"
+          data-search="{{ $searchText }}"
+          data-text-length="{{ add (len $plainBody) (len $linkText) }}"
+        >
+          {{ if $targetURL }}
+            <a
+              class="hux-clip-card-hitarea"
+              href="{{ $targetURL | safeURL }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="打开链接：{{ $linkText }}"
+            ></a>
+          {{ end }}
+
+          <div class="hux-clip-card-meta">
+            <div class="hux-clip-card-meta-left">
+              <time datetime="{{ dateFormat "2006-01-02" (int $memo.createdTs) }}">
+                {{ upper (dateFormat "Jan 2, 2006" (int $memo.createdTs)) }}
+              </time>
+              {{ range $metaTags }}
+                <span class="hux-clip-meta-tag">#{{ . }}</span>
+              {{ end }}
+            </div>
+            <span class="hux-clip-id">#{{ $memo.id }}</span>
+          </div>
+
+          {{ if $targetURL }}
+            <h3 class="hux-clip-card-title">
+              <span class="hux-clip-external" aria-hidden="true">↗</span>
+              <span>{{ $linkText }}</span>
+            </h3>
+          {{ end }}
+
+          {{ if $bodyContent }}
+            <div class="hux-clip-card-body">
+              {{ $bodyContent | markdownify }}
+            </div>
+          {{ end }}
+
+        </article>
+      {{ end }}
+    </div>
+
+    <div class="hux-clip-no-results" role="status" hidden>没有找到匹配的条目</div>
+  {{ end }}
+</div>
+
+<style>
+  #hux-clip-root.hux-clip-root {
+    position: relative;
+    display: block;
+    clear: none !important;
+    float: none !important;
+    left: auto !important;
+    width: 100%;
+    max-width: 100%;
+    margin: .75rem 0 2rem;
+    padding: 0;
+    transform: none !important;
+    box-sizing: border-box;
+    color: inherit;
+    --hux-clip-border: rgba(110, 104, 92, .22);
+    --hux-clip-muted: rgba(90, 85, 76, .66);
+    --hux-clip-bg: rgba(255, 255, 255, .3);
+    --hux-clip-gap: .85rem;
+    --hux-clip-row: 8px;
+  }
+
+  #hux-clip-root * { box-sizing: border-box; }
+
+  .hux-clip-tools {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    width: min(100%, 48rem);
+    margin: 0 auto 1rem;
+  }
+
+  .hux-clip-search-wrap {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .hux-clip-search-icon {
+    position: absolute;
+    left: .72rem;
+    z-index: 1;
+    color: var(--hux-clip-muted);
+    font-size: .94rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .hux-clip-search {
+    display: block;
+    width: 100%;
+    height: 2.4rem;
+    margin: 0 !important;
+    padding: 0 2.35rem 0 2rem !important;
+    border: 1px solid var(--hux-clip-border) !important;
+    border-radius: .62rem !important;
+    outline: none;
+    background: var(--hux-clip-bg) !important;
+    color: inherit !important;
+    font: inherit;
+    font-size: .84rem !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .hux-clip-search::-webkit-search-cancel-button { display: none; }
+
+  .hux-clip-search:focus {
+    border-color: rgba(90, 85, 76, .48) !important;
+    box-shadow: 0 0 0 3px rgba(110, 104, 92, .08) !important;
+  }
+
+  .hux-clip-clear {
+    position: absolute;
+    right: .48rem;
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(127, 127, 127, .1);
+    color: var(--hux-clip-muted);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .hux-clip-count {
+    flex: 0 0 auto;
+    min-width: 3rem;
+    color: var(--hux-clip-muted);
+    font-size: .76rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .hux-clip-view-switch {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: .12rem;
+    padding: .16rem;
+    border: 1px solid var(--hux-clip-border);
+    border-radius: 999px;
+    background: var(--hux-clip-bg);
+  }
+
+  .hux-clip-view-button {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    outline: none;
+    background: transparent;
+    color: var(--hux-clip-muted);
+    cursor: pointer;
+    transition: color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+
+  .hux-clip-view-button svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hux-clip-view-button:hover {
+    color: inherit;
+    transform: translateY(-1px);
+  }
+
+  .hux-clip-view-button.is-active {
+    background: rgba(127, 127, 127, .1);
+    color: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+  }
+
+  .hux-clip-view-button:focus-visible {
+    box-shadow: 0 0 0 2px rgba(156, 39, 176, .16);
+  }
+
+  .hux-clip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    align-items: start;
+    width: 100%;
+    gap: var(--hux-clip-gap);
+  }
+
+  .hux-clip-grid.is-enhanced { grid-auto-rows: var(--hux-clip-row); }
+
+  .hux-clip-grid.is-timeline {
+    position: relative;
+    display: block;
+    width: min(100%, 52rem);
+    margin: 0 auto;
+    padding-left: 1.7rem;
+  }
+
+  .hux-clip-grid.is-timeline::before {
+    content: "";
+    position: absolute;
+    top: .45rem;
+    bottom: .45rem;
+    left: .54rem;
+    width: 1px;
+    background: var(--hux-clip-border);
+  }
+
+  .hux-clip-grid.is-timeline .hux-clip-card {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100%;
+    margin: 0 0 .85rem;
+    overflow: visible;
+  }
+
+  .hux-clip-grid.is-timeline .hux-clip-card::before {
+    content: "";
+    position: absolute;
+    top: 1.22rem;
+    left: -1.56rem;
+    z-index: 3;
+    width: .64rem;
+    height: .64rem;
+    border: 2px solid var(--hux-clip-bg);
+    border-radius: 50%;
+    background: rgba(110, 104, 92, .62);
+    box-shadow: 0 0 0 1px var(--hux-clip-border);
+  }
+
+  .hux-clip-grid.is-timeline .hux-clip-card.is-span-3 .hux-clip-card-body {
+    column-count: 1;
+    column-rule: 0;
+  }
+
+  .hux-clip-card {
+    position: relative;
+    display: block;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 1rem 1.05rem 1.08rem;
+    overflow: hidden;
+    border: 1px solid var(--hux-clip-border);
+    border-radius: .75rem;
+    background: var(--hux-clip-bg);
+    color: inherit;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .02);
+    transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease, background-color .28s ease;
+  }
+
+  .hux-clip-card[hidden] { display: none !important; }
+  .hux-clip-card.is-span-2 { grid-column-end: span 2; }
+  .hux-clip-card.is-span-3 { grid-column: 1 / -1; }
+  .hux-clip-card.has-link { cursor: pointer; }
+
+  .hux-clip-card:hover {
+    transform: translateY(-2px);
+    border: 1px solid rgba(156, 39, 176, 0.2) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .045),
+                0 0 0 3px rgba(156, 39, 176, .035);
+  }
+
+  .hux-clip-card-hitarea {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    border-radius: inherit;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hux-clip-card-hitarea:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -3px;
+  }
+
+  .hux-clip-card.has-link > :not(.hux-clip-card-hitarea) {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hux-clip-card.has-link .hux-clip-card-body a {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+  }
+
+  .hux-clip-card-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .6rem;
+    margin: 0 0 .75rem;
+    color: var(--hux-clip-muted);
+    font-size: .76rem;
+    font-weight: 500;
+    letter-spacing: .045em;
+    line-height: 1.3;
+  }
+
+  .hux-clip-card-meta-left {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .32rem;
+    min-width: 0;
+  }
+
+  .hux-clip-card-meta time {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .hux-clip-meta-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.35rem;
+    padding: .08rem .38rem;
+    border: 1px solid var(--hux-clip-border);
+    border-radius: 999px;
+    letter-spacing: 0;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .hux-clip-id {
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+
+  .hux-clip-card:hover .hux-clip-id { opacity: .72; }
+
+  .hux-clip-card-title {
+    display: flex;
+    align-items: flex-start;
+    gap: .48rem;
+    margin: 0 0 .62rem;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .hux-clip-external {
+    flex: 0 0 auto;
+    margin-top: .05em;
+    color: var(--hux-clip-muted);
+    font-size: .88rem;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .hux-clip-card-body {
+    color: inherit;
+    font-size: .92rem;
+    font-weight: 400;
+    line-height: 1.68;
+    overflow: visible;
+    overflow-wrap: anywhere;
+  }
+
+  .hux-clip-card.is-span-3 .hux-clip-card-body {
+    column-count: 2;
+    column-gap: 1.65rem;
+    column-rule: 1px solid rgba(110, 104, 92, .12);
+  }
+
+  .hux-clip-card-body > :first-child { margin-top: 0; }
+  .hux-clip-card-body > :last-child { margin-bottom: 0; }
+
+  .hux-clip-card-body p,
+  .hux-clip-card-body ul,
+  .hux-clip-card-body ol,
+  .hux-clip-card-body blockquote,
+  .hux-clip-card-body pre { margin: 0 0 .65rem; }
+
+  .hux-clip-card-body ul,
+  .hux-clip-card-body ol { padding-left: 1.25rem; }
+
+  .hux-clip-card-body blockquote {
+    padding-left: .8rem;
+    border-left: 2px solid var(--hux-clip-border);
+    color: inherit;
+    opacity: .86;
+  }
+
+  .hux-clip-card-body pre {
+    max-width: 100%;
+    padding: .65rem;
+    overflow-x: auto;
+    border-radius: .4rem;
+    background: rgba(127, 127, 127, .08);
+  }
+
+  .hux-clip-card-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: .65rem 0;
+    border-radius: .45rem;
+  }
+
+  .hux-clip-card-body a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .hux-clip-highlight {
+    padding: .02em .12em;
+    border-radius: .18em;
+    background: rgba(255, 211, 61, .56);
+    color: inherit;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .hux-clip-message,
+  .hux-clip-no-results {
+    padding: 1.2rem;
+    border: 1px solid var(--hux-clip-border);
+    border-radius: .7rem;
+    color: var(--hux-clip-muted);
+    font-size: .9rem;
+    text-align: center;
+  }
+
+  .hux-clip-no-results { margin-top: .8rem; }
+  .hux-clip-error { color: #a33; }
+
+  @media screen and (max-width: 1099px) {
+    .hux-clip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .72rem; }
+    .hux-clip-card.is-span-3 { grid-column: 1 / -1; }
+    .hux-clip-card.is-span-3 .hux-clip-card-body { column-count: 1; column-rule: 0; }
+  }
+
+  @media screen and (max-width: 599px) {
+    #hux-clip-root.hux-clip-root { margin-top: .55rem; }
+    .hux-clip-tools {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-bottom: .75rem;
+    }
+    .hux-clip-search-wrap { flex-basis: calc(100% - 7.7rem); }
+    .hux-clip-search { height: 2.35rem; }
+    .hux-clip-count { order: 3; width: 100%; min-width: 0; font-size: .72rem; text-align: center; }
+    .hux-clip-view-button { width: 1.9rem; height: 1.9rem; }
+    .hux-clip-grid { grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+    .hux-clip-grid.is-timeline { padding-left: 1.45rem; }
+    .hux-clip-grid.is-timeline .hux-clip-card::before { left: -1.36rem; }
+    .hux-clip-card,
+    .hux-clip-card.is-span-2,
+    .hux-clip-card.is-span-3 {
+      grid-column: 1 / -1;
+      padding: .9rem .95rem 1rem;
+      border-radius: .62rem;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    #hux-clip-root.hux-clip-root {
+      --hux-clip-border: rgba(255, 255, 255, .14);
+      --hux-clip-muted: rgba(230, 226, 218, .6);
+      --hux-clip-bg: rgba(255, 255, 255, .025);
+    }
+    .hux-clip-card.is-span-3 .hux-clip-card-body { column-rule-color: rgba(255, 255, 255, .1); }
+    .hux-clip-highlight { background: rgba(255, 203, 61, .42); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hux-clip-card,
+    .hux-clip-id,
+    .hux-clip-view-button { transition: none; }
+    .hux-clip-card:hover { transform: none; }
+  }
+</style>
+
+
+<script>
+  (function () {
+    var root = document.getElementById("hux-clip-root")
+    if (!root || root.dataset.clipInitialized === "true") return
+    root.dataset.clipInitialized = "true"
+
+    var grid = root.querySelector(".hux-clip-grid")
+    if (!grid) return
+
+    var searchInput = root.querySelector(".hux-clip-search")
+    var clearButton = root.querySelector(".hux-clip-clear")
+    var countDom = root.querySelector(".hux-clip-count")
+    var noResults = root.querySelector(".hux-clip-no-results")
+    var cards = Array.prototype.slice.call(grid.querySelectorAll(".hux-clip-card"))
+    var chronologicalCards = cards.slice()
+    var cardLayoutOrder = cards.slice()
+    var viewButtons = Array.prototype.slice.call(root.querySelectorAll(".hux-clip-view-button"))
+    var currentView = "card"
+    var resizeTimer = null
+    var searchTimer = null
+
+    function randomNumber() {
+      if (window.crypto && window.crypto.getRandomValues) {
+        var values = new Uint32Array(1)
+        window.crypto.getRandomValues(values)
+        return values[0] / 4294967296
+      }
+      return Math.random()
+    }
+
+    function shuffleCards() {
+      for (var i = cards.length - 1; i > 0; i--) {
+        var j = Math.floor(randomNumber() * (i + 1))
+        var temp = cards[i]
+        cards[i] = cards[j]
+        cards[j] = temp
+      }
+      cards.forEach(function (card) {
+        card._clipRandom = randomNumber()
+        grid.appendChild(card)
+      })
+      cardLayoutOrder = cards.slice()
+    }
+
+    function getColumnCount() {
+      var template = window.getComputedStyle(grid).gridTemplateColumns
+      if (!template || template === "none") return 1
+      return template.trim().split(/\s+/).length
+    }
+
+    function getTextLength(card) {
+      var value = parseInt(card.getAttribute("data-text-length"), 10)
+      if (Number.isFinite(value) && value > 0) return value
+      var title = card.querySelector(".hux-clip-card-title")
+      var body = card.querySelector(".hux-clip-card-body")
+      return (title ? title.textContent.trim().length : 0) + (body ? body.textContent.trim().length : 0)
+    }
+
+    function chooseColumnSpan(card, columnCount) {
+      var textLength = getTextLength(card)
+      var r = typeof card._clipRandom === "number" ? card._clipRandom : randomNumber()
+      var span = 1
+
+      if (columnCount >= 3) {
+        if (textLength >= 650) {
+          span = r < 0.72 ? 3 : 2
+        } else if (textLength >= 300) {
+          span = r < 0.28 ? 3 : 2
+        } else if (textLength >= 130) {
+          span = r < 0.48 ? 2 : 1
+        } else {
+          span = r < 0.14 ? 2 : 1
+        }
+      } else if (columnCount === 2) {
+        if (textLength >= 320) {
+          span = 2
+        } else if (textLength >= 140) {
+          span = r < 0.58 ? 2 : 1
+        }
+      }
+
+      span = Math.max(1, Math.min(span, columnCount))
+      card.classList.toggle("is-span-2", span === 2)
+      card.classList.toggle("is-span-3", span === 3)
+      card.style.gridColumn = ""
+      card.style.gridColumnStart = "auto"
+      card.style.gridColumnEnd = span === 1 ? "auto" : "span " + span
+      if (span === columnCount && columnCount > 1) card.style.gridColumn = "1 / -1"
+    }
+
+    function visibleCards() {
+      return cards.filter(function (card) { return !card.hidden })
+    }
+
+    function measureRows() {
+      var styles = window.getComputedStyle(grid)
+      var rowHeight = parseFloat(styles.getPropertyValue("grid-auto-rows")) || 8
+      var rowGap = parseFloat(styles.getPropertyValue("row-gap")) || 0
+      var activeCards = visibleCards()
+
+      cards.forEach(function (card) { card.style.gridRowEnd = "auto" })
+      grid.getBoundingClientRect()
+
+      activeCards.forEach(function (card) {
+        var naturalHeight = card.scrollHeight
+        var rowSpan = Math.max(1, Math.ceil((naturalHeight + rowGap) / (rowHeight + rowGap)))
+        card.style.gridRowEnd = "span " + rowSpan
+      })
+    }
+
+    function restoreOrder(order) {
+      order.forEach(function (card) { grid.appendChild(card) })
+    }
+
+    function clearGridMeasurements() {
+      cards.forEach(function (card) {
+        card.style.gridColumn = ""
+        card.style.gridColumnStart = ""
+        card.style.gridColumnEnd = ""
+        card.style.gridRowEnd = ""
+      })
+    }
+
+    function layoutCards() {
+      if (currentView === "timeline") {
+        grid.classList.remove("is-enhanced")
+        grid.classList.add("is-timeline")
+        clearGridMeasurements()
+        restoreOrder(chronologicalCards)
+        return
+      }
+
+      grid.classList.remove("is-timeline")
+      restoreOrder(cardLayoutOrder)
+      grid.classList.add("is-enhanced")
+      var columnCount = getColumnCount()
+      visibleCards().forEach(function (card) { chooseColumnSpan(card, columnCount) })
+      window.requestAnimationFrame(measureRows)
+    }
+
+    function setView(view) {
+      currentView = view === "timeline" ? "timeline" : "card"
+      viewButtons.forEach(function (button) {
+        var active = button.getAttribute("data-view") === currentView
+        button.classList.toggle("is-active", active)
+        button.setAttribute("aria-pressed", active ? "true" : "false")
+      })
+      layoutCards()
+    }
+
+    function scheduleLayout() {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(layoutCards, 70)
+    }
+
+    function normalize(value) {
+      return String(value || "").toLocaleLowerCase().trim()
+    }
+
+    function clearHighlights(card) {
+      Array.prototype.forEach.call(card.querySelectorAll("mark.hux-clip-highlight"), function (mark) {
+        var parent = mark.parentNode
+        if (!parent) return
+        parent.replaceChild(document.createTextNode(mark.textContent || ""), mark)
+        parent.normalize()
+      })
+    }
+
+    function escapeRegExp(value) {
+      return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    }
+
+    function highlightTerms(card, terms) {
+      if (!terms.length) return
+
+      var targets = card.querySelectorAll(".hux-clip-card-title, .hux-clip-card-body, .hux-clip-meta-tag")
+      var pattern = terms
+        .filter(Boolean)
+        .sort(function (a, b) { return b.length - a.length })
+        .map(escapeRegExp)
+        .join("|")
+
+      if (!pattern) return
+      var matcher = new RegExp("(" + pattern + ")", "giu")
+
+      Array.prototype.forEach.call(targets, function (target) {
+        var walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, {
+          acceptNode: function (node) {
+            if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT
+            var parent = node.parentElement
+            if (!parent || parent.closest("mark.hux-clip-highlight")) return NodeFilter.FILTER_REJECT
+            if (/^(SCRIPT|STYLE|CODE|PRE)$/i.test(parent.tagName)) return NodeFilter.FILTER_REJECT
+            return NodeFilter.FILTER_ACCEPT
+          }
+        })
+
+        var nodes = []
+        while (walker.nextNode()) nodes.push(walker.currentNode)
+
+        nodes.forEach(function (node) {
+          var value = node.nodeValue || ""
+          matcher.lastIndex = 0
+          if (!matcher.test(value)) return
+          matcher.lastIndex = 0
+
+          var fragment = document.createDocumentFragment()
+          var lastIndex = 0
+          value.replace(matcher, function (match, _group, offset) {
+            if (offset > lastIndex) fragment.appendChild(document.createTextNode(value.slice(lastIndex, offset)))
+            var mark = document.createElement("mark")
+            mark.className = "hux-clip-highlight"
+            mark.textContent = match
+            fragment.appendChild(mark)
+            lastIndex = offset + match.length
+            return match
+          })
+          if (lastIndex < value.length) fragment.appendChild(document.createTextNode(value.slice(lastIndex)))
+          node.parentNode.replaceChild(fragment, node)
+        })
+      })
+    }
+
+    function applySearch() {
+      var query = normalize(searchInput ? searchInput.value : "")
+      var terms = query ? query.split(/\s+/).filter(Boolean) : []
+      var matched = 0
+
+      cards.forEach(function (card) {
+        clearHighlights(card)
+        var haystack = normalize(card.getAttribute("data-search"))
+        var isMatch = terms.every(function (term) { return haystack.indexOf(term) !== -1 })
+        card.hidden = !isMatch
+        if (isMatch) {
+          matched += 1
+          highlightTerms(card, terms)
+        }
+      })
+
+      if (clearButton) clearButton.hidden = !query
+      if (countDom) countDom.textContent = query ? matched + " / " + cards.length + " 条" : cards.length + " 条"
+      if (noResults) noResults.hidden = matched !== 0
+      scheduleLayout()
+    }
+
+    function scheduleSearch() {
+      window.clearTimeout(searchTimer)
+      searchTimer = window.setTimeout(applySearch, 80)
+    }
+
+    shuffleCards()
+    setView("card")
+
+    viewButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        setView(button.getAttribute("data-view"))
+      })
+    })
+
+    if (searchInput) {
+      searchInput.addEventListener("input", scheduleSearch)
+      searchInput.addEventListener("search", applySearch)
+    }
+
+    if (clearButton && searchInput) {
+      clearButton.addEventListener("click", function () {
+        searchInput.value = ""
+        applySearch()
+        searchInput.focus()
+      })
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (!searchInput) return
+      var target = event.target
+      var isTyping = target && (/^(INPUT|TEXTAREA|SELECT)$/).test(target.tagName)
+      if (event.key === "/" && !isTyping) {
+        event.preventDefault()
+        searchInput.focus()
+      } else if (event.key === "Escape" && document.activeElement === searchInput && searchInput.value) {
+        searchInput.value = ""
+        applySearch()
+      }
+    })
+
+    window.addEventListener("load", layoutCards, { once: true })
+    window.addEventListener("resize", scheduleLayout, { passive: true })
+
+    cards.forEach(function (card) {
+      Array.prototype.forEach.call(card.querySelectorAll("img"), function (image) {
+        if (!image.complete) image.addEventListener("load", scheduleLayout, { once: true })
+      })
+    })
+
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCards)
+  })()
+</script>

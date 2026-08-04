@@ -34,8 +34,8 @@ footnotereturnlinkcontents = "↩"
   url="/exercise/"
   weight="5"
   [[menu.main]]
-  name="花园"
-  url="https://clip.hux.ink/"
+  name="断章"
+  url="/clip/"
   weight="6"
   [[menu.main]]
   name="关于"
