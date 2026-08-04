@@ -200,7 +200,7 @@
 
           <div class="hux-clip-card-meta">
             <div class="hux-clip-card-meta-left">
-              <time class="hux-clip-date" data-created-ts="{{ $memo.createdTs }}">{{ $memo.createdTs }}</time>
+              <time class="hux-clip-date" data-created-ts="{{ printf "%.0f" $memo.createdTs }}">{{ printf "%.0f" $memo.createdTs }}</time>
               {{ range $metaTags }}
                 <span class="hux-clip-meta-tag">#{{ . }}</span>
               {{ end }}
@@ -721,7 +721,7 @@
       var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
       var dateNodes = root.querySelectorAll(".hux-clip-date[data-created-ts]")
       Array.prototype.forEach.call(dateNodes, function (node) {
-        var seconds = parseInt(node.getAttribute("data-created-ts"), 10)
+        var seconds = parseFloat(node.getAttribute("data-created-ts"))
         if (!isFinite(seconds)) return
         var date = new Date(seconds * 1000)
         if (isNaN(date.getTime())) return
