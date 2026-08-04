@@ -122,12 +122,16 @@
         {{ $linkText := "" }}
         {{ $bodyContent := $content }}
 
-        {{ $markdownLinks := findRESubmatch `\[([^\]]+)\]\((https?://[^)\s]+)\)` $content 1 }}
+        {{/*
+          Compatibility note: use findRE + replaceRE instead of findRESubmatch.
+          This works with older Hugo versions used by some Vercel builds.
+        */}}
+        {{ $markdownLinks := findRE `\[[^\]]+\]\(https?://[^)\s]+\)` $content 1 }}
         {{ if gt (len $markdownLinks) 0 }}
           {{ $firstLink := index $markdownLinks 0 }}
-          {{ $linkText = index $firstLink 1 | markdownify | plainify | strings.TrimSpace }}
-          {{ $targetURL = index $firstLink 2 | strings.TrimSpace }}
-          {{ $bodyContent = replaceRE `\[([^\]]+)\]\((https?://[^)\s]+)\)` "" $bodyContent 1 }}
+          {{ $linkText = replaceRE `^\[([^\]]+)\]\(.*\)$` "$1" $firstLink | markdownify | plainify | strings.TrimSpace }}
+          {{ $targetURL = replaceRE `^\[[^\]]+\]\((https?://[^)\s]+)\)$` "$1" $firstLink | strings.TrimSpace }}
+          {{ $bodyContent = replace $bodyContent $firstLink "" 1 }}
         {{ else }}
           {{ $bareURLs := findRE `https?://[^\s<>()]+` $content 1 }}
           {{ if gt (len $bareURLs) 0 }}
