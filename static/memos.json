@@ -1271,7 +1271,7 @@
   },
   {
     "id": 1043,
-    "content": "「人生并不是无数次可重复实验的平均数，它常常被几次重大的事件所改写。」  #壹言",
+    "content": "『人生并不是无数次可重复实验的平均数，它常常被几次重大的事件所改写。』  #壹言",
     "createdTs": 1775780947,
     "resourceList": [],
     "tags": [
@@ -11902,10 +11902,13 @@
   },
   {
     "id": 176,
-    "content": "「变化的是我们，而不是时间。时间不过是个坐标轴。」",
+    "content": "「变化的是我们，而不是时间。时间不过是个坐标轴。」#壹言 #Clip ",
     "createdTs": 1703981971,
     "resourceList": [],
-    "tags": []
+    "tags": [
+      "壹言",
+      "Clip"
+    ]
   },
   {
     "id": 175,
@@ -12470,10 +12473,12 @@
   },
   {
     "id": 125,
-    "content": "把《世界尽头与冷酷仙境》加入了书架，这回慢些读，不赶。",
+    "content": "#Clip 我并不是不愿意做事，而是不愿意在此刻做这件最让我抗拒的事。\n[结构化拖延](https://zhangluyao.com/structuredprocrastination/)",
     "createdTs": 1700669399,
     "resourceList": [],
-    "tags": []
+    "tags": [
+      "Clip"
+    ]
   },
   {
     "id": 124,
@@ -13775,10 +13780,12 @@
   },
   {
     "id": 24,
-    "content": "Omnivore支持直接添加RSS feed订阅了，把inoreader里面的一些源转移了过来。",
+    "content": "#Clip 信息的新鲜度，不等于信息的价值。\n\n我们经常下意识地认为：\n- 最新的事情更重要；\n- 正在发生的事情必须马上知道；\n- 大家都在讨论的事情值得关注；\n- 没有跟上更新，就会错过什么。\n\n[永无止境的现在](https://perell.com/essay/never-ending-now/)",
     "createdTs": 1695371096,
     "resourceList": [],
-    "tags": []
+    "tags": [
+      "Clip"
+    ]
   },
   {
     "id": 23,
