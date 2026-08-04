@@ -19,7 +19,7 @@
   {{ $rawContent := printf "%v" $memo.content }}
   {{ $hasSelectedTag := false }}
   {{ range $memo.tags }}
-    {{ $normalizedTag := lower (strings.TrimSpace (printf "%v" .)) }}
+    {{ $normalizedTag := lower (trim (printf "%v" .) " \t\r\n") }}
     {{ if or (eq $normalizedTag "clip") (eq $normalizedTag "壹言") }}
       {{ $hasSelectedTag = true }}
     {{ end }}
@@ -96,7 +96,7 @@
         {{ $content := printf "%v" $memo.content }}
         {{ $isYiyanEntry := gt (len (findRE `#壹言([[:space:]#，。,.!?！？]|$)` $content 1)) 0 }}
         {{ range $memo.tags }}
-          {{ if eq (lower (strings.TrimSpace (printf "%v" .))) "壹言" }}
+          {{ if eq (lower (trim (printf "%v" .) " \t\r\n")) "壹言" }}
             {{ $isYiyanEntry = true }}
           {{ end }}
         {{ end }}
@@ -106,7 +106,7 @@
           $otherTags and shown once as pills below the content, and remain searchable.
         */}}
         {{ range $memo.tags }}
-          {{ $tagText := strings.TrimSpace (printf "%v" .) }}
+          {{ $tagText := trim (printf "%v" .) " \t\r\n" }}
           {{ if $tagText }}
             {{ $content = replace $content (printf "#%s" $tagText) "" }}
           {{ end }}
@@ -115,7 +115,7 @@
         {{/* Fallback for markers absent from tags. */}}
         {{ $content = replaceRE `(?i)#(clip|壹言)([[:space:]#，。,.!?！？]|$)` "$2" $content }}
         {{ $content = replaceRE `[ \t]+\n` "\n" $content }}
-        {{ $content = strings.TrimSpace $content }}
+        {{ $content = trim $content " \t\r\n" }}
 
         {{/* Extract the first link. Only linked entries receive a bold title. */}}
         {{ $targetURL := "" }}
@@ -123,14 +123,16 @@
         {{ $bodyContent := $content }}
 
         {{/*
-          Compatibility note: use findRE + replaceRE instead of findRESubmatch.
-          This works with older Hugo versions used by some Vercel builds.
+          Hugo 0.92 compatibility: use findRE + replaceRE instead of findRESubmatch,
+          and use legacy trim instead of strings.TrimSpace.
         */}}
         {{ $markdownLinks := findRE `\[[^\]]+\]\(https?://[^)\s]+\)` $content 1 }}
         {{ if gt (len $markdownLinks) 0 }}
           {{ $firstLink := index $markdownLinks 0 }}
-          {{ $linkText = replaceRE `^\[([^\]]+)\]\(.*\)$` "$1" $firstLink | markdownify | plainify | strings.TrimSpace }}
-          {{ $targetURL = replaceRE `^\[[^\]]+\]\((https?://[^)\s]+)\)$` "$1" $firstLink | strings.TrimSpace }}
+          {{ $linkText = replaceRE `^\[([^\]]+)\]\(.*\)$` "$1" $firstLink | markdownify | plainify }}
+          {{ $linkText = trim $linkText " \t\r\n" }}
+          {{ $targetURL = replaceRE `^\[[^\]]+\]\((https?://[^)\s]+)\)$` "$1" $firstLink }}
+          {{ $targetURL = trim $targetURL " \t\r\n" }}
           {{ $bodyContent = replace $bodyContent $firstLink "" 1 }}
         {{ else }}
           {{ $bareURLs := findRE `https?://[^\s<>()]+` $content 1 }}
@@ -143,8 +145,9 @@
 
         {{ $bodyContent = replaceRE `[ \t]+\n` "\n" $bodyContent }}
         {{ $bodyContent = replaceRE `\n{3,}` "\n\n" $bodyContent }}
-        {{ $bodyContent = strings.TrimSpace $bodyContent }}
-        {{ $plainBody := $bodyContent | markdownify | plainify | strings.TrimSpace }}
+        {{ $bodyContent = trim $bodyContent " \t\r\n" }}
+        {{ $plainBody := $bodyContent | markdownify | plainify }}
+        {{ $plainBody = trim $plainBody " \t\r\n" }}
 
         {{/*
           Meta tags sit beside the date. Clip remains the page-level category and is
@@ -154,7 +157,7 @@
         {{ $hasYiyanTag := false }}
         {{ $searchParts := slice $content $linkText }}
         {{ range $memo.tags }}
-          {{ $tagText := strings.TrimSpace (printf "%v" .) }}
+          {{ $tagText := trim (printf "%v" .) " \t\r\n" }}
           {{ $searchParts = $searchParts | append $tagText }}
           {{ $normalizedTag := lower $tagText }}
           {{ if eq $normalizedTag "壹言" }}
@@ -197,9 +200,7 @@
 
           <div class="hux-clip-card-meta">
             <div class="hux-clip-card-meta-left">
-              <time datetime="{{ dateFormat "2006-01-02" (int $memo.createdTs) }}">
-                {{ upper (dateFormat "Jan 2, 2006" (int $memo.createdTs)) }}
-              </time>
+              <time class="hux-clip-date" data-created-ts="{{ $memo.createdTs }}">{{ $memo.createdTs }}</time>
               {{ range $metaTags }}
                 <span class="hux-clip-meta-tag">#{{ . }}</span>
               {{ end }}
@@ -715,6 +716,21 @@
     var currentView = "card"
     var resizeTimer = null
     var searchTimer = null
+
+    function formatClipDates() {
+      var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+      var dateNodes = root.querySelectorAll(".hux-clip-date[data-created-ts]")
+      Array.prototype.forEach.call(dateNodes, function (node) {
+        var seconds = parseInt(node.getAttribute("data-created-ts"), 10)
+        if (!isFinite(seconds)) return
+        var date = new Date(seconds * 1000)
+        if (isNaN(date.getTime())) return
+        node.setAttribute("datetime", date.toISOString())
+        node.textContent = monthNames[date.getUTCMonth()] + " " + date.getUTCDate() + ", " + date.getUTCFullYear()
+      })
+    }
+
+    formatClipDates()
 
     function randomNumber() {
       if (window.crypto && window.crypto.getRandomValues) {
