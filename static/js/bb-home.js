@@ -147,6 +147,23 @@ let allMemos = [];
 let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 10;
 
+// 不展示包含以下标签的哔哔。
+// 标签比较时会自动忽略首尾空格、开头的 # 号以及英文字母大小写。
+const hiddenMemoTags = new Set(['相册', 'clip']);
+
+function shouldHideMemo(item) {
+  if (!item || !Array.isArray(item.tags)) return false;
+
+  return item.tags.some(tag => {
+    const normalizedTag = String(tag)
+      .trim()
+      .replace(/^#/, '')
+      .toLowerCase();
+
+    return hiddenMemoTags.has(normalizedTag);
+  });
+}
+
 function renderMemosPaged(memos, page) {
   let end = (page + 1) * pageSize;
   let showMemos = memos.slice(0, end);
@@ -322,6 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bbDom) {
     bbDom.innerHTML = `<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div>`;
     fetch(bbMemo.memos).then(res => res.json()).then(data => {
+      // 必须先过滤，再执行置顶逻辑，避免被隐藏的条目进入首页或被置顶。
+      data = Array.isArray(data)
+        ? data.filter(item => !shouldHideMemo(item))
+        : [];
       
       // --- 置顶逻辑开始 ---
       // 查找第一条包含 'Now' 或 'now' 标签的 memo 索引（因为本身是倒序，第一条即最近一条）

@@ -169,6 +169,23 @@ let parsedDates = {};
 let currentYear = 'all';
 let currentMonth = 'all';
 
+// 不展示包含以下标签的哔哔。
+// 标签比较时会自动忽略首尾空格、开头的 # 号以及英文字母大小写。
+const hiddenMemoTags = new Set(['相册', 'clip']);
+
+function shouldHideMemo(item) {
+  if (!item || !Array.isArray(item.tags)) return false;
+
+  return item.tags.some(tag => {
+    const normalizedTag = String(tag)
+      .trim()
+      .replace(/^#/, '')
+      .toLowerCase();
+
+    return hiddenMemoTags.has(normalizedTag);
+  });
+}
+
 function initFiltersData() {
   parsedDates = {};
   allMemos.forEach(m => {
@@ -423,7 +440,10 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(bbMemo.memos)
       .then(res => res.json())
       .then(data => {
-        allMemos = data;
+        // 在生成年份、月份、标签筛选和分页数据之前，先排除隐藏标签条目。
+        allMemos = Array.isArray(data)
+          ? data.filter(item => !shouldHideMemo(item))
+          : [];
         currentFilteredMemos = [...allMemos]; 
         
         initFiltersData(); 
