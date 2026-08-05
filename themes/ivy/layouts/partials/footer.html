@@ -39,6 +39,27 @@
       }
     });
     </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var backToTop = document.getElementById('backToTop');
+        if (!backToTop) {
+          return;
+        }
+        function updateBackToTop() {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+          if (scrollTop > 120) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }
+        updateBackToTop();
+        window.addEventListener('scroll', updateBackToTop, { passive: true });
+        backToTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    </script>
   {{ partial "foot_custom.html" . }}
   <hr>
   {{ partial "comments.html" . }}

@@ -62,10 +62,34 @@
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
     {{ partial "head_custom.html" . }}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var backToTop = document.getElementById('backToTop');
+        if (!backToTop) return;
+        function updateBackToTop() {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+          if (scrollTop > 120) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }
+        updateBackToTop();
+        window.addEventListener('scroll', updateBackToTop, { passive: true });
+        backToTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    </script>
   </head>
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}
   <body class="{{ if .IsHome }}home{{ else }}{{ $.Scratch.Get "section" }}{{ end }}">
+    <button id="backToTop" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </button>
     <header class="masthead">
       {{ partial "tagline.html" . }}
       {{ partial "menu.html" . }}
