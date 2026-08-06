@@ -191,38 +191,142 @@
     }
   }
 
+  /* Back to top: minimalist typographic link */
   .back-to-top {
     position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    width: 3rem;
-    height: 3rem;
-    border: none;
-    border-radius: 50%;
-    background: rgba(114, 118, 179, 0.65);
-    color: #fff;
+    right: clamp(1rem, 2vw, 1.5rem);
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+
+    width: auto;
+    height: auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.55rem 0.2rem 0.45rem;
+
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.38);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(0, 0, 0, 0.72);
+    box-shadow: none;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    gap: 0.35rem;
+
+    font: inherit;
+    font-size: 0.68rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    cursor: pointer;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-    transform: translateY(8px);
+    transform: translateY(6px);
+
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease,
+      transform 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+
     z-index: 999;
   }
-  .back-to-top:hover {
-    background: rgba(0, 0, 0, 0.8);
+
+  .back-to-top::before {
+    content: "↑";
+    font-size: 0.95rem;
+    line-height: 1;
+    letter-spacing: 0;
   }
+
+  .back-to-top::after {
+    content: "TOP";
+  }
+
   .back-to-top.visible {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
   }
-  .back-to-top svg {
-    width: 1.25rem;
-    height: 1.25rem;
-    stroke: rgba(31, 41, 55, 0.9);
+
+  .back-to-top:hover {
+    color: #000;
+    border-bottom-color: #000;
+    transform: translateY(-2px);
   }
+
+  .back-to-top:active {
+    transform: translateY(0);
+  }
+
+  .back-to-top:focus-visible {
+    outline: 1px dashed #000;
+    outline-offset: 5px;
+  }
+
+  /* The arrow is generated with CSS, so the original SVG is hidden. */
+  .back-to-top svg {
+    display: none;
+  }
+
+  @media screen and (max-width: 960px) {
+    .back-to-top {
+      right: 0.85rem;
+      bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+      font-size: 0.64rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top,
+    .back-to-top.visible,
+    .back-to-top:hover,
+    .back-to-top:active {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  @media print {
+    .back-to-top {
+      display: none;
+    }
+  }
+
+/* 页脚：后台 Home 图标 + RSS 三弧线图标 */
+.copyright a[href$="index.xml"]::before {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.32em;
+  vertical-align: -0.08em;
+
+  background-color: currentColor;
+  opacity: 0.72;
+
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+
+/* RSS：常见三条弧形图标 */
+.copyright a[href$="index.xml"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 3v3a13 13 0 0 1 13 13h3A16 16 0 0 0 5 3Zm0 6v3a7 7 0 0 1 7 7h3A10 10 0 0 0 5 9Zm2 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 3v3a13 13 0 0 1 13 13h3A16 16 0 0 0 5 3Zm0 6v3a7 7 0 0 1 7 7h3A10 10 0 0 0 5 9Zm2 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z'/%3E%3C/svg%3E");
+}
+
+.copyright a:hover::before {
+  opacity: 1;
+}
