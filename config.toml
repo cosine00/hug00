@@ -51,6 +51,18 @@ footnotereturnlinkcontents = "↩"
 [params]
   # description about this website
   description = "🌩️🌩️🌩️欲买桂花同载酒，终不似，少年游。"
+  mottoPrefix = " "
+  mottos = [
+  "❄️ 晚来天欲雪，能饮一杯无？",
+  "🏡 此心安处是吾乡。",
+  "✨ 醉后不知天在水，满船清梦压星河。",
+  "☁️ 行到水穷处，坐看云起时。",
+  "☕ 且将新火试新茶，诗酒趁年华。",
+  "🌩️ 欲买桂花同载酒，终不似，少年游。",
+  "🍂 人生如逆旅，我亦是行人。",
+  "⛵ 小舟从此逝，江海寄余生。",
+  "🌗 当时明月在，曾照彩云归。"
+  ]
   footer = "&copy; [Counting Stars💫](https://hux.ink/admin) | [Since 2023](https://hux.ink/index.xml)"
   highlightjsCDN = "//cdn.bootcss.com"
   highlightjsLang = ["r", "yaml", "tex"]
