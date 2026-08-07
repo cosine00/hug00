@@ -2,7 +2,12 @@
   'use strict';
 
   const MAP_SELECTOR = '.footprint-map';
-  const MAP_STYLES = { light: 'amap://styles/whitesmoke', dark: 'amap://styles/dark' };
+  const MAP_STYLES = {
+    paper: 'amap://styles/whitesmoke',
+    night: 'amap://styles/dark',
+    sepia: 'amap://styles/macaron',
+    mist: 'amap://styles/fresh'
+  };
   const FILTER_ALL = 'all';
   const MARKER_SIZE = 22;
   const MARKER_PRESETS = ['sunset', 'ocean', 'violet', 'forest', 'amber', 'citrus'];
@@ -36,8 +41,10 @@
     return isNaN(date.getTime()) ? String(raw) : dateFormatter.format(date);
   };
 
-  const getCurrentTheme = () => 
-    document.documentElement.classList.contains('dark') ? MAP_STYLES.dark : MAP_STYLES.light;
+  const getCurrentTheme = () => {
+    const theme = document.documentElement.dataset.theme || 'paper';
+    return MAP_STYLES[theme] || MAP_STYLES.paper;
+  };
 
   function init() {
     document.querySelectorAll(MAP_SELECTOR).forEach(bootstrapMap);
@@ -659,7 +666,7 @@
       });
     });
 
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
   }
 
   if (document.readyState === 'loading') {

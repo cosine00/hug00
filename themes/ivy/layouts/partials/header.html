@@ -61,6 +61,16 @@
     {{ partial "head_highlightjs" . }}
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
+    <link rel="stylesheet" href="{{ "/css/palettes.css" | relURL }}" />
+    <script>
+      (function () {
+        var allowed = ['paper', 'night', 'sepia', 'mist'];
+        var saved = localStorage.getItem('blog-palette');
+        var palette = allowed.indexOf(saved) > -1 ? saved : 'paper';
+        document.documentElement.dataset.theme = palette;
+        document.documentElement.style.colorScheme = palette === 'night' ? 'dark' : 'light';
+      }());
+    </script>
     {{ partial "head_custom.html" . }}
     <script>
       document.addEventListener('DOMContentLoaded', function () {
@@ -81,6 +91,7 @@
         });
       });
     </script>
+    <script defer src="{{ "/js/palette-switcher.js" | relURL }}"></script>
   </head>
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}
@@ -101,4 +112,3 @@
       {{ partial "meta.html" . }}
       </header>
       {{ end }}
-      

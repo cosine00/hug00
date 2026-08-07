@@ -41,31 +41,20 @@
   startDate = echarts.format.formatTime('yyyy-MM-dd', startDate);
   endDate = echarts.format.formatTime('yyyy-MM-dd', endDate);
   
-  // 检测浏览器主题模式并选择颜色方案
-  var prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function readHeatmapTheme() {
+    var styles = getComputedStyle(document.documentElement);
+    return {
+      backgroundColor: styles.getPropertyValue('--page-bg').trim(),
+      fangkuaicolor: styles.getPropertyValue('--heatmap-empty').trim(),
+      gaoliangcolor: [styles.getPropertyValue('--heatmap-active').trim()],
+      riqiColor: styles.getPropertyValue('--muted').trim(),
+      textbrcolor: styles.getPropertyValue('--surface-raised').trim(),
+      textColor: styles.getPropertyValue('--text').trim(),
+      xiankuangcolor: 'rgba(0, 0, 0, 0)'
+    };
+  }
 
-  // 定义明亮模式下的颜色方案
-  var lightTheme = {
-      backgroundColor: '#FFFFFF',
-      fangkuaicolor:'#F4F4F4',
-      gaoliangcolor: ['#ffd0b6'],
-      riqiColor: '#999',
-      textbrcolor: '#FFF',
-      xiankuangcolor:'rgba(0, 0, 0, 0.0)',
-  };
-
-  // 定义暗黑模式下的颜色方案
-  var darkTheme = {
-      backgroundColor: '#2f2f2f',
-      fangkuaicolor:'#282325',
-      gaoliangcolor: ['#b25f2f'],
-      riqiColor: '#666',
-      textbrcolor: '#332D2F',
-      xiankuangcolor:'rgba(0, 0, 0, 0.0)',
-  };
-
-  var Mode = localStorage.getItem("theme") || ''
-  var currentTheme = Mode == 'dark' ? darkTheme : lightTheme;
+  var currentTheme = readHeatmapTheme();
 
   option = {
     tooltip: {
@@ -132,6 +121,25 @@
   };
   
   myChart.setOption(option);
+  window.addEventListener('blogpalettechange', function () {
+    currentTheme = readHeatmapTheme();
+    myChart.setOption({
+      backgroundColor: 'transparent',
+      tooltip: {
+        backgroundColor: currentTheme.textbrcolor,
+        textStyle: { color: currentTheme.textColor }
+      },
+      visualMap: { inRange: { color: currentTheme.gaoliangcolor } },
+      calendar: {
+        itemStyle: {
+          color: currentTheme.fangkuaicolor,
+          borderColor: currentTheme.backgroundColor
+        },
+        monthLabel: { textStyle: { color: currentTheme.riqiColor } },
+        dayLabel: { textStyle: { color: currentTheme.riqiColor } }
+      }
+    });
+  });
   myChart.on('click', function(params) {
     if (params.componentType === 'series') {
       // open the first post on the day

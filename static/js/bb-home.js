@@ -48,13 +48,13 @@ const allCSS = `
 /* 💬 极简气泡药丸胶囊 */
 .comment-pill-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 2px 8px; /* display: none !important;修改为隐藏，!important 确保强制生效 不隐藏的时候改回 display: inline-flex;*/ 
-  background: #ffffff; color: #555; border-radius: 14px; 
+  background: var(--pill-shell, var(--surface, #ffffff)); color: var(--muted, #555); border-radius: 14px;
   font-size: 13px; cursor: pointer; transition: all 0.2s;
-  border: 1px solid #e1e4e8; height: 26px; box-sizing: border-box; 
+  border: 1px solid var(--border, #e1e4e8); height: 26px; box-sizing: border-box;
   line-height: 1; vertical-align: middle; min-width: 26px;
 }
-.comment-pill-btn:hover { background: #f6f8fa; border-color: #d1d5da; color: #42b983; }
-.dark-theme .comment-pill-btn { background: #2d333b; color: #adbac7; border-color: #444c56; }
+.comment-pill-btn:hover { background: var(--pill-hover, #f6f8fa); border-color: var(--border-strong, #d1d5da); color: var(--accent-hover, #42b983); }
+.dark-theme .comment-pill-btn { background: var(--pill-shell, #2d333b); color: var(--muted, #adbac7); border-color: var(--border, #444c56); }
 /* --- 恢复正文内部 Markdown 列表的默认样式 --- */
 .bb-timeline .bb-cont ul {
   list-style-type: disc; /* 恢复无序列表的圆点 */

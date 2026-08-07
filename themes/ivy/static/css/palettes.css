@@ -1,0 +1,322 @@
+/* Unified palettes. Component styles consume these semantic tokens. */
+:root,
+:root[data-theme="paper"] {
+  --page-bg: #fafafa;
+  --surface: #ffffff;
+  --surface-soft: #f3f4f2;
+  --surface-raised: #ffffff;
+  --text: #2f3332;
+  --text-strong: #171a19;
+  --muted: #707673;
+  --faint: #9ba09d;
+  --border: #dedfdb;
+  --border-strong: #b9bdb9;
+  --accent: #357a63;
+  --accent-hover: #245d4b;
+  --accent-soft: #e1eee8;
+  --accent-contrast: #ffffff;
+  --code-bg: #f0f2ef;
+  --code-border: #d9ddd9;
+  --quote: #59645f;
+  --shadow: rgba(30, 39, 35, .12);
+  --overlay: rgba(15, 22, 19, .72);
+  --selection: #cbe4d9;
+  --pill-shell: #f1f5f2;
+  --pill-hover: #e5ede8;
+  --pill-active: #5f8e7b;
+  --pill-active-text: #ffffff;
+  --heatmap-empty: #edf1ee;
+  --heatmap-active: #4f896f;
+  --background-card-color: var(--surface);
+  --background-card-border-color: var(--border);
+  --text-info-color: var(--muted);
+  --exercise-text-highlight-color: var(--accent);
+  --hux-clip-bg: var(--surface);
+  --hux-clip-muted: var(--muted);
+  --hux-clip-border: var(--border);
+  --hux-clip-accent: var(--accent);
+}
+
+:root[data-theme="night"] {
+  --page-bg: #17191d;
+  --surface: #202329;
+  --surface-soft: #272b31;
+  --surface-raised: #2b2f36;
+  --text: #d7d9dc;
+  --text-strong: #f1f2f3;
+  --muted: #a2a7ae;
+  --faint: #777e87;
+  --border: #383d45;
+  --border-strong: #505761;
+  --accent: #72c7a5;
+  --accent-hover: #98ddc1;
+  --accent-soft: #263d35;
+  --accent-contrast: #12231d;
+  --code-bg: #111318;
+  --code-border: #383e47;
+  --quote: #b5bac0;
+  --shadow: rgba(0, 0, 0, .38);
+  --overlay: rgba(0, 0, 0, .8);
+  --selection: #315d4d;
+  --pill-shell: #23272c;
+  --pill-hover: #2c3335;
+  --pill-active: #548f78;
+  --pill-active-text: #eef8f3;
+  --heatmap-empty: #252a2f;
+  --heatmap-active: #69b493;
+}
+
+:root[data-theme="sepia"] {
+  --page-bg: #f4efe4;
+  --surface: #fbf7ed;
+  --surface-soft: #ece4d4;
+  --surface-raised: #fffaf0;
+  --text: #4a4237;
+  --text-strong: #2e2922;
+  --muted: #796e5e;
+  --faint: #9c907e;
+  --border: #d8cdb9;
+  --border-strong: #b8a98f;
+  --accent: #9a633a;
+  --accent-hover: #744727;
+  --accent-soft: #ead8c3;
+  --accent-contrast: #fffaf0;
+  --code-bg: #ebe3d5;
+  --code-border: #d5c8b4;
+  --quote: #6c5e4c;
+  --shadow: rgba(75, 57, 36, .14);
+  --overlay: rgba(43, 34, 24, .74);
+  --selection: #ead2af;
+  --pill-shell: #eee6d8;
+  --pill-hover: #e4d8c5;
+  --pill-active: #a97955;
+  --pill-active-text: #fffaf2;
+  --heatmap-empty: #e9e1d3;
+  --heatmap-active: #9d6842;
+}
+
+:root[data-theme="mist"] {
+  --page-bg: #edf3f6;
+  --surface: #f8fbfc;
+  --surface-soft: #e2ebef;
+  --surface-raised: #ffffff;
+  --text: #33454d;
+  --text-strong: #1d3039;
+  --muted: #667c86;
+  --faint: #91a2aa;
+  --border: #cedce2;
+  --border-strong: #aabfc8;
+  --accent: #477f95;
+  --accent-hover: #2f657b;
+  --accent-soft: #d6e7ee;
+  --accent-contrast: #ffffff;
+  --code-bg: #e2ebef;
+  --code-border: #c7d7de;
+  --quote: #536c77;
+  --shadow: rgba(40, 70, 82, .13);
+  --overlay: rgba(20, 39, 48, .74);
+  --selection: #c5dfe9;
+  --pill-shell: #e3edf1;
+  --pill-hover: #d5e3e9;
+  --pill-active: #628da0;
+  --pill-active-text: #ffffff;
+  --heatmap-empty: #dfe9ed;
+  --heatmap-active: #4d8399;
+}
+
+html { background: var(--page-bg); transition: background-color .2s ease; }
+body { background: var(--page-bg); color: var(--text); transition: background-color .2s ease, color .2s ease; }
+::selection { background: var(--selection); color: var(--text-strong); }
+a { color: var(--text-strong); border-color: var(--border-strong); }
+a:hover { color: var(--accent-hover); }
+h1, h2, h3, h4, h5, h6, strong, th { color: var(--text-strong); }
+hr, table, th, td { border-color: var(--border); }
+blockquote { color: var(--quote); }
+blockquote::before { color: var(--accent); }
+code { background: var(--code-bg); color: var(--text-strong); }
+pre, pre code, .highlight, .hljs { background: var(--code-bg) !important; color: var(--text) !important; border-color: var(--code-border); box-shadow: none; }
+#TableOfContents, .tabs, .panel, .input:checked + .label { background: var(--surface); color: var(--text); }
+.label { background: var(--surface-soft); color: var(--muted); }
+.label:hover { background: var(--accent-soft); color: var(--text-strong); }
+input, textarea, select, button { color: var(--text); }
+input, textarea, select { background: var(--surface); border-color: var(--border); }
+img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(--shadow); }
+
+/* Markdown links keep the original marker-like underline, recoloured per palette. */
+.post-content a:not(:has(img)),
+.main > p a:not(:has(img)),
+.main > ul a:not(:has(img)),
+.main > ol a:not(:has(img)),
+.main > blockquote a:not(:has(img)) {
+  color: var(--accent-hover);
+  background-image: linear-gradient(
+    transparent 0%,
+    transparent calc(50% - 9px),
+    var(--accent-soft) calc(50% - 9px),
+    var(--accent-soft) 100%
+  );
+}
+.post-content a:not(:has(img)):hover,
+.main > p a:not(:has(img)):hover,
+.main > ul a:not(:has(img)):hover,
+.main > ol a:not(:has(img)):hover,
+.main > blockquote a:not(:has(img)):hover {
+  color: var(--text-strong);
+  background-image: linear-gradient(
+    transparent 0%,
+    transparent calc(50% - 9px),
+    var(--accent-soft) calc(50% - 9px),
+    var(--accent-soft) 100%
+  );
+}
+
+/* Menu palette control */
+.palette-menu { list-style: none; }
+.palette-trigger {
+  display: inline-flex; align-items: center; justify-content: center; width: 2.1rem; height: 2.1rem;
+  padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted);
+  cursor: pointer; transform: rotate(var(--palette-rotation, 0deg));
+  transition: color .2s ease, background-color .2s ease, transform .35s cubic-bezier(.4, 0, .2, 1);
+}
+.palette-trigger svg { width: 1.2rem; height: 1.2rem; display: block; transform: rotate(-25deg); }
+.palette-trigger:hover { background: var(--accent-soft); color: var(--accent-hover); }
+.palette-trigger:focus-visible { outline: 1px dashed var(--accent); outline-offset: 3px; }
+
+/* Cards, lists, media pages and archive controls */
+.post-preview, .db-card, .archive-card, .book-card, .movie-card, .runCard, .statsCard, .calendarCard,
+.insightCard, .hux-clip-card, [class*="cardContainer"] { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; box-shadow: 0 1px 5px var(--shadow); }
+.post-preview--date, .rating-average, .iibjPt, .runName, .runDate, .distUnit, .pagetitle,
+.ttName, .ttNum small, .detailHeader, .detailLabel, .datafrom, .hugo-audio-shortcode .audio-caption { color: var(--muted) !important; }
+.scroll-btn, .archive-header, .filter-header { color: var(--muted); }
+.filter-btn.active, .archive-filter.active, .exercise-tabs .active { background: var(--accent) !important; color: var(--accent-contrast) !important; }
+.tag-span, .datacont .tag-span { color: var(--accent) !important; }
+
+/* Shared year selector across BB, archives and exercise. */
+#memos-year-nav, #archive-year-nav, #year-nav-container, #month-nav-container, .controlsArea {
+  background: var(--page-bg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+#memos-year-nav .button, #archive-year-nav .button, #year-nav .button {
+  background: transparent !important;
+  color: var(--muted) !important;
+  border: 1px solid transparent;
+}
+#memos-year-nav .button:hover, #archive-year-nav .button:hover, #year-nav .button:hover {
+  background: var(--pill-hover) !important;
+  color: var(--text-strong) !important;
+}
+#memos-year-nav .button.selected, #archive-year-nav .button.selected, #year-nav .button.selected {
+  background: var(--pill-active) !important;
+  color: var(--pill-active-text) !important;
+  border-color: var(--pill-active) !important;
+}
+#month-nav-container .button, .controlsArea .filterPill {
+  background: transparent !important;
+  color: var(--muted) !important;
+}
+#month-nav-container .button:hover, .controlsArea .filterPill:hover:not(.activePill) {
+  background: var(--pill-hover) !important;
+  color: var(--text-strong) !important;
+}
+#month-nav-container .button.selected, .controlsArea .filterPill.activePill {
+  background: var(--pill-active) !important;
+  color: var(--pill-active-text) !important;
+}
+
+/* Emaction is a web component; variables cross its shadow-DOM boundary. */
+emoji-reaction {
+  --start-smile-border-color: var(--border);
+  --start-smile-border-color-hover: var(--accent);
+  --start-smile-bg-color: var(--surface-soft);
+  --start-smile-svg-fill-color: var(--muted);
+  --reaction-got-not-reacted-bg-color: var(--surface);
+  --reaction-got-not-reacted-bg-color-hover: var(--accent-soft);
+  --reaction-got-not-reacted-border-color: var(--border);
+  --reaction-got-not-reacted-text-color: var(--text);
+  --reaction-got-reacted-bg-color: var(--accent-soft);
+  --reaction-got-reacted-bg-color-hover: var(--surface-soft);
+  --reaction-got-reacted-border-color: var(--accent);
+  --reaction-got-reacted-text-color: var(--accent-hover);
+  --reaction-available-popup-bg-color: var(--surface-raised);
+  --reaction-available-popup-border-color: var(--border);
+  --reaction-available-popup-box-shadow: 0 4px 16px var(--shadow);
+  --reaction-available-emoji-reacted-bg-color: var(--accent-soft);
+  --reaction-available-emoji-bg-color-hover: var(--surface-soft);
+}
+
+/* Clip defines local defaults in its template; reconnect them to the active palette. */
+html #hux-clip-root.hux-clip-root {
+  --hux-clip-border: var(--border);
+  --hux-clip-muted: var(--muted);
+  --hux-clip-bg: color-mix(in srgb, var(--surface) 58%, transparent);
+  --hux-clip-accent: var(--accent);
+  --hux-clip-accent-soft: var(--accent-soft);
+}
+#hux-clip-root .hux-clip-date { color: var(--muted) !important; }
+#hux-clip-root .hux-clip-meta-tag {
+  color: var(--accent-hover) !important;
+  background: var(--accent-soft) !important;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
+}
+#hux-clip-root .hux-clip-grid.is-timeline .hux-clip-card::before {
+  background: var(--accent) !important;
+  border-color: var(--page-bg) !important;
+  box-shadow: 0 0 0 1px var(--accent), 0 1px 4px var(--shadow) !important;
+}
+#hux-clip-root .hux-clip-grid.is-timeline .hux-clip-card:hover::before,
+#hux-clip-root .hux-clip-grid.is-timeline .hux-clip-card:focus-within::before {
+  background: var(--accent-hover) !important;
+  border-color: var(--page-bg) !important;
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 0 14px var(--shadow) !important;
+}
+
+/* Timeline / memo page */
+.timeline ul li { background: var(--border-strong) !important; }
+.timeline ul li::after { background: var(--accent) !important; outline-color: var(--page-bg) !important; }
+.timeline ul li .datatime, .load button { background: var(--accent) !important; color: var(--accent-contrast) !important; }
+.timeline ul li p, .bb-timeline p { color: var(--text) !important; }
+.bb-source a { background: var(--surface-soft) !important; color: var(--text-strong) !important; }
+
+/* Exercise calendar contains generated inline colours, so override them here. */
+.runTooltip, .runDetailCard { background: color-mix(in srgb, var(--surface-raised) 95%, transparent) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.runDetailCard .detailValue, .dateNum, .monthlyInsights strong, .calendarCard strong { color: var(--text-strong) !important; }
+.monthlyInsights > div, #calendar-board-container > div, #global-stats > div { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; }
+#global-stats > div [style*="color: #333"], #calendar-board-container > div [style*="color: #333"] { color: var(--text-strong) !important; }
+#global-stats > div [style*="color: #999"], #calendar-board-container > div [style*="color: #999"],
+#calendar-board-container > div [style*="color: #bbb"] { color: var(--muted) !important; }
+.map-placeholder { background: var(--surface-soft) !important; border: 1px solid var(--border) !important; border-radius: 25px; padding: 3px; box-shadow: 0 2px 10px var(--shadow); }
+#map-wrapper, #mapbox-container { background: var(--surface-soft) !important; border-color: var(--border) !important; }
+#map-wrapper { box-shadow: inset 0 0 0 1px var(--border); }
+.dayCell:not(.hasRun) .dateNum { color: var(--faint) !important; }
+.shareBtn { background: var(--surface-raised) !important; color: var(--muted) !important; }
+
+/* Comments and third-party widgets */
+.tk-comments, .tk-submit, .tk-comment, .tk-content, .OwO-body { color: var(--text) !important; }
+.el-input__inner, .el-textarea__inner, .el-button, .tk-meta-input .el-input-group__prepend,
+.OwO .OwO-body, .OwO .OwO-body .OwO-bar, .OwO .OwO-body .OwO-items .OwO-item { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.el-loading-mask { background: var(--page-bg) !important; }
+.tk-action-count, .tk-nick, .tk-time, .tk-extras { color: var(--muted) !important; }
+
+/* Footprint map chrome; map tiles and photographs deliberately stay untouched. */
+.footprint-map, .footprint-map__canvas { background: var(--surface-soft) !important; border-color: var(--border) !important; }
+.footprint-map__custom-controls { background: var(--surface-raised) !important; box-shadow: 0 2px 10px var(--shadow) !important; }
+.footprint-map__custom-controls button { background: var(--surface-raised) !important; color: var(--text) !important; border-color: var(--border) !important; }
+.footprint-map__loading, .footprint-map__error, .footprint-map__filters, .footprint-popup { background: color-mix(in srgb, var(--surface-raised) 92%, transparent) !important; color: var(--text) !important; }
+.footprint-map__filter-btn, .footprint-popup__meta { color: var(--muted) !important; }
+.footprint-map__filter-btn.is-active, .footprint-popup__link { background: var(--accent) !important; color: var(--accent-contrast) !important; }
+.footprint-photo-viewer { background: var(--overlay); }
+
+.back-to-top { color: var(--muted); border-color: var(--border-strong); }
+.back-to-top:hover { color: var(--accent-hover); border-color: var(--accent); }
+.back-to-top:focus-visible { outline-color: var(--accent); }
+
+@media screen and (max-width: 960px) {
+  .masthead .menu a { background: var(--text-strong); color: var(--page-bg); border-color: var(--text-strong); border-radius: 5px; padding: 5px 10px; }
+  .masthead .menu .active a { background: transparent; border-color: var(--text-strong); color: var(--text-strong); }
+  .palette-menu { display: inline-block; margin: 5px 0 0 3px; vertical-align: middle; }
+  .palette-trigger { width: 2.25rem; height: 2.25rem; color: var(--text-strong); border: 1px solid var(--border-strong); }
+}
+
+@media (prefers-reduced-motion: reduce) { html, body { transition: none; } }
+@media print { .palette-menu { display: none !important; } html, body { background: #fff !important; color: #000 !important; } }

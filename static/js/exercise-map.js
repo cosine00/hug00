@@ -21,19 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const getMapStyleUrl = () => {
     const theme = document.documentElement.getAttribute('data-theme');
-    let isDark = false;
-    
-    if (theme === 'dark') {
-      isDark = true;
-    } else if (theme === 'light') {
-      isDark = false;
-    } else {
-      isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    return isDark 
-      ? 'mapbox://styles/mapbox/dark-v11'
-      : 'mapbox://styles/mapbox/light-v11';
+    const styles = {
+      paper: 'mapbox://styles/mapbox/light-v11',
+      night: 'mapbox://styles/mapbox/dark-v11',
+      sepia: 'mapbox://styles/mapbox/outdoors-v12',
+      mist: 'mapbox://styles/mapbox/streets-v12'
+    };
+    if (styles[theme]) return styles[theme];
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? styles.night
+      : styles.paper;
   };
 
   const map = new mapboxgl.Map({
@@ -169,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const injectCustomLayers = () => {
-    const isDark = document.documentElement.classList.contains('dark');
+    const isDark = document.documentElement.dataset.theme === 'night';
     
     try {
       if (!map.getSource('mapbox-dem')) {
