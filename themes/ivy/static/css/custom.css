@@ -330,3 +330,173 @@
 .copyright a:hover::before {
   opacity: 1;
 }
+
+/* Article images use the same compact entrance as image memos. */
+.post-content .post-image-source,
+.post-content .post-image-source-block {
+  display: none !important;
+}
+
+.post-content .post-image-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent, var(--link-color, #42b983));
+  font: inherit;
+  line-height: 1;
+  vertical-align: -.12em;
+  cursor: zoom-in;
+  isolation: isolate;
+  opacity: .82;
+  transition: color .18s ease, opacity .18s ease, transform .18s ease;
+}
+
+.post-content .post-image-trigger svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.post-content .post-image-trigger:hover,
+.post-content .post-image-trigger:focus-visible {
+  color: var(--accent-hover, var(--accent, #42b983));
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.post-content .post-image-trigger:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.post-content .post-image-count {
+  position: absolute;
+  left: .68em;
+  top: -.52em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25em;
+  height: 1.25em;
+  padding: 0 .22em;
+  box-sizing: border-box;
+  border: 1px solid var(--background, #fff);
+  border-radius: 999px;
+  background: var(--accent, #42b983);
+  color: #fff;
+  font: 600 .52em/1 system-ui, sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .14);
+  pointer-events: none;
+}
+
+.post-content .post-image-preview {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  z-index: 30;
+  width: min(320px, calc(100vw - 48px));
+  padding: 5px;
+  border: 1px solid var(--border, #dfe3e6);
+  border-radius: 10px;
+  background: var(--background, #fff);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(5px) scale(.985);
+  transform-origin: left bottom;
+  transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
+}
+
+.post-content .post-image-preview img {
+  display: block !important;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  max-height: 360px;
+  margin: 0;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .post-content .post-image-trigger:hover .post-image-preview,
+  .post-content .post-image-trigger:focus-visible .post-image-preview {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition-delay: .16s, .16s, 0s;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .post-content .post-image-preview { display: none; }
+}
+
+/* Keep the lightbox controls legible over white and other pale images. */
+.view-image .view-image-tools {
+  box-sizing: border-box;
+  max-width: 430px !important;
+  padding: 7px 9px !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: rgba(20, 26, 23, .42) !important;
+  border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .08);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  backdrop-filter: blur(20px) saturate(120%);
+}
+
+.view-image .view-image-btn {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: rgba(8, 12, 10, .32) !important;
+  border: 0;
+  box-shadow: none;
+  transition: background .18s ease, transform .18s ease;
+}
+
+.view-image .view-image-btn:hover,
+.view-image .view-image-btn:focus-visible {
+  background: rgba(8, 12, 10, .58) !important;
+  transform: scale(1.06);
+}
+
+.view-image .view-image-btn svg,
+.view-image .view-image-btn svg path {
+  stroke: #fff !important;
+}
+
+.view-image .view-image-btn svg rect {
+  display: none;
+  fill: none !important;
+  stroke: none !important;
+}
+
+.view-image .view-image-tools__count {
+  min-width: 52px;
+  width: auto !important;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(8, 12, 10, .25);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .65);
+}

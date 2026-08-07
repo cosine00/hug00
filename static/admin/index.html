@@ -918,6 +918,7 @@ tbody tr:hover td{background:#f8fbf9!important}
 .preview-device.is-desktop{width:100%;max-width:1360px}
 .preview-device.is-tablet{width:860px;max-width:100%}
 .preview-device.is-mobile{width:390px;max-width:100%;border-radius:24px}
+.preview-front-frame{display:block;width:100%;height:100%;min-height:100%;border:0;background:#fff}
 .preview-browser-bar{height:43px;display:flex;align-items:center;gap:12px;padding:0 13px;background:#f7f9f8;border-bottom:1px solid #e4eae7;flex-shrink:0}
 .preview-browser-dots{display:flex;gap:5px}
 .preview-browser-dots i{width:8px;height:8px;border-radius:50%;background:#d7dfdb}
@@ -1124,6 +1125,9 @@ tbody tr:hover td{background:#f2f8f5!important}
   .sidebar{width:100%}
   .sidebar-nav{padding:0 8px 10px}
   .nav-item{margin:0;border-radius:9px}
+  /* The mobile navigation can be taller than the old fixed 88px offset.
+     Keep the action bar in normal flow so it never covers page content. */
+  .topbar{position:relative;top:auto;z-index:20}
   .content{height:auto;padding:16px}
   .editor-wrap{margin:-16px;padding:16px;min-height:auto}
   .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -3187,26 +3191,74 @@ function gardenPreviewNeighborMarkup(post,direction){
     : `<a href="${escapeAttr(url)}" target="_blank" rel="noopener"><span class="preview-front-neighbor-title">${title}</span><b aria-hidden="true">→</b></a>`;
 }
 
+function gardenBuildFrontendPreviewDocument(data,neighbors){
+  const savedPalette=localStorage.getItem('blog-palette');
+  const palette=['paper','night','sepia','mist'].includes(savedPalette) ? savedPalette : 'paper';
+  const tags=data.tags.length
+    ? `<div class="post-tags"><i class="fa fa-tags"></i> ${data.tags.map(tag=>`#<a href="#">${escapeHTML(tag)}</a>&nbsp;`).join('')}</div><p>&nbsp;</p>`
+    : '';
+  const neighbor=(post,direction)=>{
+    const isPrevious=direction==='previous';
+    if(!post) return '';
+    const label=escapeHTML(post.title || post.fileName || '未命名文章');
+    return isPrevious ? `&larr; <a href="#">${label}</a>` : `<a href="#">${label}</a> &rarr;`;
+  };
+  const title=escapeHTML(data.title);
+  const author=escapeHTML(data.author);
+  const date=escapeHTML(formatDateShort(data.fm.date || data.date));
+  return `<!doctype html>
+<html lang="zh-CN" data-theme="${palette}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base href="/" target="_blank">
+  <title>${title} - 前台预览</title>
+  <link rel="stylesheet" href="/css/custom.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/palettes.css">
+  <style>html{min-height:100%;background:var(--page-bg,#fff)}body{min-height:calc(100vh - 60px)}a[href="#"]{cursor:default}.post-nav:empty{display:none}</style>
+</head>
+<body class="posts">
+  <header class="masthead">
+    <h1><a href="/">Counting Stars✨</a></h1>
+    <p class="tagline">欲买桂花同载酒，终不似，少年游。</p>
+    <nav class="menu">
+      <input id="menu-check" type="checkbox" hidden>
+      <label id="menu-label" for="menu-check" class="unselectable" hidden><span class="icon close-icon">×</span><span class="icon open-icon">☰</span><span class="text">Menu</span></label>
+      <ul><li><a href="/bb/">哔哔</a></li><li><a href="/archives/">归档</a></li><li><a href="/album/">光影</a></li><li><a href="/footprints/">足迹</a></li><li><a href="/exercise/">悦动</a></li><li><a href="/clip/">断章</a></li><li><a href="/about/">关于</a></li></ul>
+    </nav>
+  </header>
+  <article class="main">
+    <header class="title"><h1>${title}</h1><h3>${author} / ${date}</h3><hr></header>
+    <div class="post-content">${data.html}</div>
+    ${tags}
+    <footer>
+      <nav class="post-nav"><span class="nav-prev">${neighbor(neighbors.previous,'previous')}</span><span class="nav-next">${neighbor(neighbors.next,'next')}</span></nav>
+    </footer>
+  </article>
+  <script src="/js/view-image.js"><\/script>
+  <script defer src="/js/post-image-trigger.js"><\/script>
+</body>
+</html>`;
+}
+
 function gardenRenderArticlePreviewContent(){
   const modal=document.getElementById('article-preview-modal');
   if(!modal || GARDEN_STATE.page!=='editor') return;
   try{
     const data=gardenArticlePreviewSnapshot();
-    const title=document.getElementById('preview-front-title');
-    const body=document.getElementById('preview-front-body');
-    const meta=document.getElementById('preview-front-meta');
-    const tags=document.getElementById('preview-front-tags');
-    const previous=document.getElementById('preview-front-previous');
-    const next=document.getElementById('preview-front-next');
     const path=document.getElementById('preview-path-text');
     const draft=document.getElementById('preview-draft-badge');
     const neighbors=gardenArticlePreviewNeighbors(data);
-    if(title) title.textContent=data.title;
-    if(body) body.innerHTML=data.html;
-    if(meta) meta.textContent=`${data.author} / ${formatDateShort(data.fm.date || data.date)}`;
-    if(tags) tags.innerHTML=gardenPreviewTagMarkup(data.tags);
-    if(previous) previous.innerHTML=gardenPreviewNeighborMarkup(neighbors.previous,'previous');
-    if(next) next.innerHTML=gardenPreviewNeighborMarkup(neighbors.next,'next');
+    const scrollArea=modal.querySelector('.preview-scroll-area');
+    let frame=document.getElementById('preview-front-frame');
+    if(scrollArea && !frame){
+      scrollArea.innerHTML='<iframe class="preview-front-frame" id="preview-front-frame" title="最新前台样式文章预览"></iframe>';
+      frame=document.getElementById('preview-front-frame');
+    }
+    if(frame) frame.srcdoc=gardenBuildFrontendPreviewDocument(data,neighbors);
     if(path){
       try{ path.textContent=gardenBuildPublicUrl(data.fm,data.path); }
       catch(e){ path.textContent=data.path; }
