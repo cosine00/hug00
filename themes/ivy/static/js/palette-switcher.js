@@ -11,6 +11,7 @@
   var root = document.documentElement;
   var trigger = document.querySelector('.palette-trigger');
   if (!trigger) return;
+  var tooltip = trigger.querySelector('.control-tooltip');
   var initialIndex = order.indexOf(root.dataset.theme);
   var rotation = Math.max(0, initialIndex) * 90;
   trigger.style.setProperty('--palette-rotation', rotation + 'deg');
@@ -18,6 +19,7 @@
   function applyPalette(name, persist) {
     if (!palettes[name]) name = 'paper';
     var palette = palettes[name];
+    trigger.dataset.palettePosition = (name === 'night' || name === 'mist') ? 'vertical' : 'horizontal';
     root.dataset.theme = name;
     root.style.colorScheme = palette.dark ? 'dark' : 'light';
     root.classList.toggle('dark', palette.dark);
@@ -25,7 +27,7 @@
     document.body.classList.toggle('dark-theme', palette.dark);
     var themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.content = palette.color;
-    trigger.title = palette.label;
+    if (tooltip) tooltip.textContent = palette.label;
     trigger.setAttribute('aria-label', '当前色调：' + palette.label + '，点击切换');
     if (persist) localStorage.setItem('blog-palette', name);
     window.dispatchEvent(new CustomEvent('blogpalettechange', {

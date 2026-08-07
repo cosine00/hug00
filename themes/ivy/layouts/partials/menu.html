@@ -15,11 +15,14 @@
       </li>
     {{ end }}
     <li class="palette-menu">
-      <button class="palette-trigger" type="button" aria-label="切换色调" title="切换色调">
+      <button class="palette-trigger" type="button" aria-label="切换色调" data-tooltip="明亮" data-tooltip-position="right">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
           <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/>
         </svg>
+        <span class="palette-tooltip-orbit" aria-hidden="true">
+          <span class="control-tooltip">明亮</span>
+        </span>
       </button>
     </li>
     {{ partial "menu_extra.html" . }}

@@ -44,7 +44,7 @@
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'post-image-trigger';
-    button.title = '查看图片';
+    button.dataset.tooltip = '查看图片';
     button.setAttribute('aria-label', '查看' + images.length + '张图片');
     button.innerHTML = ICON +
       (images.length > 1 ? '<span class="post-image-count">+' + (images.length - 1) + '</span>' : '') +

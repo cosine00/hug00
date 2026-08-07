@@ -308,6 +308,13 @@ input:checked+.slider:before{transform:translateX(18px)}
 .setting-input{padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg)}
 .setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .section-title{font-size:14px;font-weight:800;color:var(--accent);margin:24px 0 12px;border-left:4px solid var(--accent);padding-left:10px}
+.quick-command-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.quick-command{display:flex;align-items:center;gap:12px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(145deg,#fff,#f8fbf9);box-shadow:var(--shadow-soft)}
+.quick-command-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);font-size:19px;font-weight:800}
+.quick-command-main{min-width:0;flex:1}
+.quick-command-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
+.quick-command-status{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quick-command .btn{flex:0 0 auto}
 
 /* 图片风格网格订阅与足迹网格 (Grid Styles) */
 .friends-grid, .footprint-cards-grid {
@@ -670,6 +677,8 @@ input:checked+.slider:before{transform:translateX(18px)}
   
   /* 设置页面单列适配 */
   .settings-grid{grid-template-columns:1fr}
+  .quick-command-grid{grid-template-columns:1fr}
+  .quick-command{padding:12px}
   .setting-group[style*="grid-column:span 2"],
   .fm-group[style*="grid-column: span 2"]{grid-column:span 1 !important}
   
@@ -1540,7 +1549,10 @@ async function ghFetch(path, opts={}){
     error.data=err;
     throw error;
   }
-  return res.json();
+  if(res.status===204) return null;
+  const responseText=await res.text();
+  if(!responseText) return null;
+  return JSON.parse(responseText);
 }
 
 async function ghGraphQL(query, variables={}){
@@ -6646,6 +6658,39 @@ function renderMediaPage(){
 // ============================================================
 // Deploy
 // ============================================================
+const QUICK_WORKFLOWS=[
+  {file:'douban.yml', label:'获取豆瓣', icon:'豆'},
+  {file:'fetch-friend-circle.yml', label:'获取朋友圈', icon:'友'},
+  {file:'fetch-memos.yml', label:'获取 Memos', icon:'M'},
+  {id:'workouts', label:'运动更新', icon:'跑', url:'https://workouts-page-self.vercel.app/api/trigger?token=now'}
+];
+
+function workflowRunLabel(run){
+  if(!run) return '暂无运行记录';
+  const state=run.status==='completed'
+    ? ({success:'成功',failure:'失败',cancelled:'已取消',skipped:'已跳过'}[run.conclusion]||'已完成')
+    : ({queued:'排队中',in_progress:'运行中',waiting:'等待中',requested:'已请求',pending:'等待中'}[run.status]||run.status);
+  return `${state} · ${new Date(run.created_at).toLocaleString()}`;
+}
+
+function renderQuickCommands(runsByFile={}){
+  return `<div class="card">
+    <div class="card-header"><div><div class="card-title">快捷指令</div><div class="card-desc">手动运行仓库中的数据同步任务。触发后可前往 GitHub Actions 查看详细进度。</div></div></div>
+    <div class="quick-command-grid">
+      ${QUICK_WORKFLOWS.map(item=>{
+        const commandId=item.file||item.id;
+        const run=item.file ? runsByFile[item.file] : null;
+        const status=item.url ? '外部一键执行指令' : (run instanceof Error ? '无法读取运行状态' : workflowRunLabel(run));
+        return `<div class="quick-command" data-workflow="${escapeAttr(commandId)}">
+          <div class="quick-command-icon">${escapeHTML(item.icon)}</div>
+          <div class="quick-command-main"><div class="quick-command-name">${escapeHTML(item.label)}</div><div class="quick-command-status">${escapeHTML(status)}</div></div>
+          <button class="btn primary sm" onclick="triggerQuickWorkflow('${escapeAttr(commandId)}',this)">执行</button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
 async function renderDeployPage(){
   document.getElementById('page-title').innerHTML='部署状态 <small>GitHub / Vercel</small>';
   document.getElementById('topbar-actions').innerHTML=`<button class="btn primary" onclick="triggerRedeploy()">强制触发重新构建</button>`;
@@ -6658,14 +6703,53 @@ async function renderDeployPage(){
       if(vRes.ok){ const vData=await vRes.json(); const d=vData.deployments?.[0]; if(d) vStatus=`<span class="tag ${d.state==='READY'?'published':'draft'}" style="font-size:13px;padding:7px 12px">${escapeHTML(d.state)} · ${new Date(d.createdAt).toLocaleString()}</span>`; }
       else vStatus=`<span class="tag draft">Vercel 鉴权或项目 ID 异常</span>`;
     }
-    const commits=await ghFetch('/commits?per_page=8');
+    const [commits, ...workflowResults]=await Promise.all([
+      ghFetch('/commits?per_page=8'),
+      ...QUICK_WORKFLOWS.filter(item=>item.file).map(item=>ghFetch(`/actions/workflows/${encodeURIComponent(item.file)}/runs?per_page=1`).catch(error=>error))
+    ]);
+    const runsByFile={};
+    QUICK_WORKFLOWS.filter(item=>item.file).forEach((item,index)=>{
+      const result=workflowResults[index];
+      runsByFile[item.file]=result instanceof Error ? result : (result.workflow_runs?.[0]||null);
+    });
     c.innerHTML=`
       <div class="card"><div class="card-header"><div><div class="card-title">Vercel 云端构建状态</div><div class="card-desc">保存文章后，Vercel 通常会按 GitHub 集成自动构建。</div></div>${vStatus}</div></div>
+      ${renderQuickCommands(runsByFile)}
       <div class="card"><div class="card-header"><div><div class="card-title">最近提交记录</div><div class="card-desc">用于确认文章保存是否已经落到 GitHub。</div></div></div>
       <div class="table-wrap"><table><thead><tr><th>SHA</th><th>提交信息</th><th>作者</th><th>时间</th></tr></thead><tbody>
       ${commits.map(cm=>`<tr><td><span class="mono">${cm.sha.slice(0,7)}</span></td><td>${escapeHTML(cm.commit.message)}</td><td>${escapeHTML(cm.commit.author.name)}</td><td class="muted nowrap">${new Date(cm.commit.author.date).toLocaleString()}</td></tr>`).join('')}
       </tbody></table></div></div>`;
   }catch(e){ c.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; }
+}
+
+async function triggerQuickWorkflow(file, button){
+  const item=QUICK_WORKFLOWS.find(workflow=>(workflow.file||workflow.id)===file);
+  if(!item) return;
+  if(!confirm(`确定立即执行“${item.label}”吗？`)) return;
+  if(item.url){
+    window.open(item.url,'_blank','noopener,noreferrer');
+    toast(`${item.label}指令已打开`,'success');
+    return;
+  }
+  const card=button.closest('.quick-command');
+  const status=card?.querySelector('.quick-command-status');
+  button.disabled=true;
+  button.textContent='触发中…';
+  try{
+    await ghFetch(`/actions/workflows/${encodeURIComponent(file)}/dispatches`,{
+      method:'POST',
+      body:JSON.stringify({ref:CFG.branch||'main'})
+    });
+    button.textContent='已触发';
+    if(status) status.textContent='指令已提交，等待 GitHub 排队';
+    toast(`${item.label}已触发`,'success');
+    setTimeout(()=>{ button.disabled=false; button.textContent='再次执行'; },2500);
+  }catch(e){
+    button.disabled=false;
+    button.textContent='重试';
+    if(status) status.textContent='触发失败';
+    toast(e.status===403 ? 'Token 缺少 Actions 写入权限' : e.message,'error');
+  }
 }
 
 async function triggerRedeploy(){

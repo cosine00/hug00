@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/css/custom.css"></link>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" media="print" onload="this.media='all'">
     <script type="text/javascript" src="/js/view-image.js"></script>
+    <script defer src="/js/poster-review.js"></script>
     <script>
     //图片灯箱
     window.ViewImage && ViewImage.init('.main img:not(.avatar,.tk-avatar-img)')
@@ -96,10 +97,11 @@
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}
   <body class="{{ if .IsHome }}home{{ else }}{{ $.Scratch.Get "section" }}{{ end }}">
-    <button id="backToTop" class="back-to-top" type="button" aria-label="返回顶部" title="返回顶部">
+    <button id="backToTop" class="back-to-top" type="button" aria-label="返回顶部" data-tooltip="返回顶部" data-tooltip-position="left">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
+      <span class="control-tooltip" aria-hidden="true">返回顶部</span>
     </button>
     <header class="masthead">
       {{ partial "tagline.html" . }}

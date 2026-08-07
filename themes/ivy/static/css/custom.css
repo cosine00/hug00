@@ -446,6 +446,150 @@
   .post-content .post-image-preview { display: none; }
 }
 
+/* Custom pill label for BB and article image entrances. */
+.bb-image-trigger[data-tooltip]::after,
+.post-content .post-image-trigger[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  z-index: 42;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  min-height: 24px;
+  padding: 3px 9px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent, #42b983) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface, #fff) 92%, transparent);
+  color: var(--text, #36413c);
+  box-shadow: 0 6px 18px rgba(18, 34, 27, .12), inset 0 1px 0 rgba(255, 255, 255, .5);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  font: 600 11px/1 system-ui, sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-4px, -50%) scale(.96);
+  transform-origin: left center;
+  transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bb-image-trigger[data-tooltip]:hover::after,
+  .bb-image-trigger[data-tooltip]:focus-visible::after,
+  .post-content .post-image-trigger[data-tooltip]:hover::after,
+  .post-content .post-image-trigger[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -50%) scale(1);
+    transition-delay: .08s, .08s, 0s;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .bb-image-trigger[data-tooltip]::after,
+  .post-content .post-image-trigger[data-tooltip]::after { display: none; }
+}
+
+/* Dynamic pill labels for the current palette and back-to-top controls. */
+.palette-trigger {
+  position: relative;
+  overflow: visible;
+}
+
+.back-to-top { overflow: visible; }
+
+.palette-trigger .control-tooltip,
+.back-to-top .control-tooltip {
+  position: absolute;
+  top: 50%;
+  z-index: 520;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  min-height: 25px;
+  padding: 3px 10px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent, #42b983) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface, #fff) 92%, transparent);
+  color: var(--text, #36413c);
+  box-shadow: 0 6px 18px rgba(18, 34, 27, .12), inset 0 1px 0 rgba(255, 255, 255, .5);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  font: 600 11px/1 system-ui, sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
+}
+
+.palette-trigger .palette-tooltip-orbit {
+  position: absolute;
+  left: calc(50% + 39px);
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.palette-trigger .control-tooltip {
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  rotate: calc(0deg - var(--palette-rotation, 0deg));
+  scale: .96;
+  transform: translateX(-4px);
+  transform-origin: center;
+  transition: opacity .16s ease, rotate .35s cubic-bezier(.4, 0, .2, 1), scale .16s ease, transform .16s ease, visibility 0s linear .16s;
+}
+
+.palette-trigger[data-palette-position="vertical"] .control-tooltip {
+  min-width: 25px;
+  min-height: 0;
+  padding: 8px 3px;
+  line-height: 1.05;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: .08em;
+}
+
+.back-to-top .control-tooltip {
+  right: calc(100% + 9px);
+  transform: translate(4px, -50%) scale(.96);
+  transform-origin: right center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .palette-trigger:hover .control-tooltip,
+  .palette-trigger:focus-visible .control-tooltip {
+    opacity: 1;
+    visibility: visible;
+    scale: 1;
+    transform: translateX(0);
+    transition-delay: .08s, 0s, .08s, .08s, 0s;
+  }
+
+  .back-to-top:hover .control-tooltip,
+  .back-to-top:focus-visible .control-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -50%) scale(1);
+    transition-delay: .08s, .08s, 0s;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .palette-trigger .control-tooltip,
+  .back-to-top .control-tooltip { display: none; }
+}
+
 /* Keep the lightbox controls legible over white and other pale images. */
 .view-image .view-image-tools {
   box-sizing: border-box;
@@ -499,4 +643,85 @@
   font-weight: 650;
   letter-spacing: .04em;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .65);
+}
+
+/* Books / Movies: soft floating review capsule. */
+.HPRth[data-review]:not([data-review=""]) {
+  isolation: isolate;
+}
+
+.HPRth[data-review]:not([data-review=""]) img {
+  transition: transform .28s ease, filter .28s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .HPRth[data-review]:not([data-review=""]):hover img,
+  .HPRth[data-review].is-review-active img {
+    transform: scale(1.025);
+    filter: brightness(.9) saturate(.94);
+  }
+}
+
+.poster-review-tooltip {
+  --review-arrow-x: 50%;
+  position: fixed;
+  z-index: 480;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 11px 17px 12px;
+  box-sizing: border-box;
+  color: var(--text-strong, #25312c);
+  background: color-mix(in srgb, var(--surface, #fff) 91%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent, #42b983) 20%, transparent);
+  border-radius: 20px;
+  box-shadow: 0 14px 38px rgba(18, 34, 27, .16), 0 3px 10px rgba(18, 34, 27, .08), inset 0 1px 0 rgba(255, 255, 255, .55);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.65;
+  letter-spacing: .01em;
+  text-align: left;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(5px) scale(.975);
+  transform-origin: center bottom;
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+
+.poster-review-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-delay: .08s, .08s, 0s;
+}
+
+.poster-review-tooltip::after {
+  content: "";
+  position: absolute;
+  left: var(--review-arrow-x);
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border: inherit;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.poster-review-tooltip.is-above::after {
+  bottom: -6px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.poster-review-tooltip.is-below::after {
+  top: -6px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster-review-tooltip { transition: none; }
 }

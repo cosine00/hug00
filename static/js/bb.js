@@ -195,7 +195,7 @@ function renderMemoImageTrigger(item) {
   if (!images.length) return '';
   const first = escapeMemoAttr(images[0]);
   const count = images.length > 1 ? `<span class="bb-image-count">+${images.length - 1}</span>` : '';
-  return `<button class="attach-btn bb-image-trigger" type="button" data-id="${escapeMemoAttr(item.id)}" aria-label="查看${images.length}张图片" title="查看图片"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"></path></svg>${count}<span class="bb-image-preview" aria-hidden="true"><img class="bb-image-preview-image" src="${first}" alt="" loading="lazy" decoding="async"></span></button>`;
+  return `<button class="attach-btn bb-image-trigger" type="button" data-id="${escapeMemoAttr(item.id)}" data-tooltip="查看图片" aria-label="查看${images.length}张图片"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"></path></svg>${count}<span class="bb-image-preview" aria-hidden="true"><img class="bb-image-preview-image" src="${first}" alt="" loading="lazy" decoding="async"></span></button>`;
 }
 
 function appendMemoImageTrigger(content, trigger) {
