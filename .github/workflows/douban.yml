@@ -11,7 +11,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install pandas requests
+
+    # 删除旧 CSV 前，先把其中已经修复的 NeoDB 海报地址写入持久缓存。
+    - name: Seed NeoDB Poster Cache
+      run: |
+        python .github/scripts/update_poster.py --seed-cache
+
     - name: delete old file
       run: |
         rm -rf ./assets/data/douban
@@ -32,16 +46,6 @@ jobs:
         format: csv
         dir: ./assets/data/douban
 
-    # --- 这里是关键：在数据生成后，提交之前进行加工 ---
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-
-    - name: Install dependencies
-      run: |
-        pip install pandas requests
-    
     # 核心解决：使用 sudo 强行获取文件所有权并开放权限
     - name: Take ownership and set permissions
       run: |
@@ -57,4 +61,4 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         message: 'chore: sync douban data and fix posters'
-        add: './assets/data/douban'
+        add: './assets/data/douban ./.github/cache/douban-poster-cache.json'
