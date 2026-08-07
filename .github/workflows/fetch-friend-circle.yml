@@ -1,0 +1,37 @@
+name: Fetch Friend Circle
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"
+  push:
+    paths:
+      - "static/friends.json"
+      - ".github/scripts/fetch-friend-circle.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-friend-circle
+  cancel-in-progress: false
+
+jobs:
+  fetch-friend-circle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch RSS and Atom feeds
+        run: python .github/scripts/fetch-friend-circle.py
+
+      - name: Commit generated feed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update friend circle feed"
+          file_pattern: "assets/rss.json"

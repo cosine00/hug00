@@ -1259,9 +1259,7 @@ let CFG = {
   twikooEnvId: '', twikooMasterPassword: '',
   r2AccountId: '', r2Bucket: '', r2AccessKeyId: '', r2SecretAccessKey: '',
   r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}',
-  r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920,
-  friendCircleOwner: '', friendCircleRepo: 'Friend-Circle-Lite',
-  friendCircleBranch: 'main', friendCircleJsonPath: 'all.json'
+  r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920
 };
 
 // 简悦花园：固定读取 cosine00/clip 仓库 main 分支下的 content 目录。
@@ -4401,10 +4399,10 @@ function stripFeedHtml(value){
 
 function friendCircleSourceConfig(){
   return {
-    owner:String(CFG.friendCircleOwner || CFG.owner || '').trim(),
-    repo:String(CFG.friendCircleRepo || 'Friend-Circle-Lite').trim(),
-    branch:String(CFG.friendCircleBranch || 'main').trim(),
-    path:cleanPath(String(CFG.friendCircleJsonPath || 'all.json').trim()) || 'all.json'
+    owner:String(CFG.owner || '').trim(),
+    repo:String(CFG.repo || '').trim(),
+    branch:String(CFG.branch || 'main').trim(),
+    path:'assets/rss.json'
   };
 }
 
@@ -4485,14 +4483,14 @@ function renderFriendsActivityBody(visibleItems=null,hasMore=null){
   const more=hasMore === null ? STATE.friendsFeedVisibleLimit < STATE.friendsFeedItems.length : hasMore;
 
   if(STATE.friendsFeedLoading && items.length===0){
-    return `<div class="loading"><div class="spinner"></div>正在读取 Friend-Circle-Lite 的 all.json…</div>`;
+    return `<div class="loading"><div class="spinner"></div>正在读取本仓库生成的订阅近况…</div>`;
   }
 
   if(!items.length){
     const message=STATE.friendsFeedError
       ? `读取失败：${STATE.friendsFeedError}`
       : STATE.friendsFeedLoaded
-        ? 'all.json 中暂时没有可展示的文章记录。'
+        ? 'rss.json 中暂时没有可展示的文章记录。'
         : '尚未读取订阅近况 JSON。';
     return `<div class="empty-state"><div class="empty-icon">🗞️</div>${escapeHTML(message)}<div class="friends-activity-retry" style="margin-top:14px;"><button class="btn" onclick="loadFriendsActivityFeed(true)">重新读取 JSON</button></div></div>`;
   }
@@ -4784,10 +4782,10 @@ function openFriendActionModal(index) {
     </div>`;
 
   document.getElementById('modal-container').innerHTML = html;
-  fetchFriendRssFeed(url);
+  fetchFriendRssFeed(url, item[3] || '');
 }
 
-async function fetchFriendRssFeed(siteUrl) {
+async function fetchFriendRssFeed(siteUrl, explicitFeedUrl = '') {
   const box = document.getElementById('rss-feed-box');
   if (!box) return;
 
@@ -4797,19 +4795,38 @@ async function fetchFriendRssFeed(siteUrl) {
   }
 
   try {
-    const cleanUrl = siteUrl.replace(/\/$/, '');
-    const rssApi = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanUrl + '/index.xml')}`;
-    
-    let res = await fetch(rssApi);
-    let data = await res.json();
+    const cleanUrl = siteUrl.replace(/\/+$/, '');
+    const feedCandidates = [...new Set([
+      explicitFeedUrl.trim(),
+      `${cleanUrl}/index.xml`,
+      `${cleanUrl}/feed`,
+      `${cleanUrl}/feed/`,
+      `${cleanUrl}/atom.xml`,
+      `${cleanUrl}/feed.xml`,
+      `${cleanUrl}/rss.xml`,
+      `${cleanUrl}/rss`,
+      `${cleanUrl}/blog/feed/rss/`,
+      `${cleanUrl}/blog/feed/`,
+      `${cleanUrl}/feeds/posts/default`
+    ].filter(Boolean))];
 
-    if (data.status !== 'ok') {
-      const altFeedApi = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanUrl + '/feed')}`;
-      res = await fetch(altFeedApi);
-      data = await res.json();
+    let data = null;
+    for (const feedUrl of feedCandidates) {
+      try {
+        const endpoint = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+        const res = await fetch(endpoint);
+        if (!res.ok) continue;
+        const candidateData = await res.json();
+        if (candidateData.status === 'ok' && Array.isArray(candidateData.items) && candidateData.items.length > 0) {
+          data = candidateData;
+          break;
+        }
+      } catch (_) {
+        // A single unavailable candidate must not stop the remaining probes.
+      }
     }
 
-    if (data.status === 'ok' && data.items && data.items.length > 0) {
+    if (data) {
       const items = data.items.slice(0, 5);
       box.innerHTML = items.map(item => `
         <div class="rss-item" style="margin-bottom:8px;">
@@ -4853,6 +4870,10 @@ function openFriendsEditModal(index = null) {
             </div>
             <input class="fm-input" id="fr-avatar" value="${escapeAttr(item[2] || '')}" placeholder="例: https://cravatar.cn/avatar/...">
           </div>
+          <div class="fm-group">
+            <label class="fm-label">RSS / Atom 地址 <span class="muted">可选，留空时自动发现</span></label>
+            <input class="fm-input" id="fr-feed" value="${escapeAttr(item[3] || '')}" placeholder="例: https://example.com/atom.xml">
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn" onclick="closeModal()">取消</button>
@@ -4893,6 +4914,7 @@ function saveFriendModalItem(index) {
   const name = document.getElementById('fr-name').value.trim();
   const url = document.getElementById('fr-url').value.trim();
   const avatar = document.getElementById('fr-avatar').value.trim();
+  const feedUrl = document.getElementById('fr-feed').value.trim();
 
   if (!name || !url) {
     toast("博客名称与网址不能为空", "error");
@@ -4900,6 +4922,7 @@ function saveFriendModalItem(index) {
   }
 
   const newItem = [name, url, avatar];
+  if (feedUrl) newItem.push(feedUrl);
 
   if (index !== null) {
     STATE.friendsData[index] = newItem;
@@ -6502,13 +6525,7 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">Posts Path / 文章根目录</label><input class="setting-input" id="s-posts" value="${escapeAttr(CFG.postsPath||'content/posts')}"></div>
       </div>
       <div class="section-title">订阅近况 JSON 数据源</div>
-      <div class="alert info">“近况”会直接读取另一个 GitHub 仓库定时生成的 JSON。Owner 留空时自动使用上方主仓库 Owner；公开仓库无需额外权限，私有仓库需要当前 Token 具备该仓库 Contents 读取权限。</div>
-      <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">JSON 仓库 Owner <span class="muted">留空沿用主 Owner</span></label><input class="setting-input" id="s-fc-owner" placeholder="${escapeAttr(CFG.owner||'GitHub 用户名')}" value="${escapeAttr(CFG.friendCircleOwner||'')}"></div>
-        <div class="setting-group"><label class="setting-label">JSON 仓库名</label><input class="setting-input" id="s-fc-repo" value="${escapeAttr(CFG.friendCircleRepo||'Friend-Circle-Lite')}"></div>
-        <div class="setting-group"><label class="setting-label">JSON 分支</label><input class="setting-input" id="s-fc-branch" value="${escapeAttr(CFG.friendCircleBranch||'main')}"></div>
-        <div class="setting-group"><label class="setting-label">JSON 文件路径</label><input class="setting-input" id="s-fc-path" value="${escapeAttr(CFG.friendCircleJsonPath||'all.json')}"></div>
-      </div>
+      <div class="alert info">订阅近况固定读取当前主仓库的 <code>assets/rss.json</code>，该文件由 GitHub Actions 根据 <code>static/friends.json</code> 自动生成，无需配置外部 Friend-Circle-Lite 仓库。</div>
       <div class="section-title">Twikoo 评论系统配置</div>
       <div class="settings-grid">
         <div class="setting-group"><label class="setting-label">Twikoo 环境 ID (envId)</label><input class="setting-input" id="s-twikoo-env" placeholder="例如: https://xxx.vercel.app" value="${escapeAttr(CFG.twikooEnvId||'')}"></div>
@@ -6547,8 +6564,7 @@ const CFG_EXPORT_KEYS=[
   'token','owner','repo','branch','postsPath','blogUrl','vercelProjectId','vercelToken',
   'twikooEnvId', 'twikooMasterPassword',
   'r2AccountId','r2Bucket','r2AccessKeyId','r2SecretAccessKey','r2PublicUrl','r2Prefix',
-  'r2WebpEnabled','r2WebpQuality','r2ImageMaxSide',
-  'friendCircleOwner','friendCircleRepo','friendCircleBranch','friendCircleJsonPath'
+  'r2WebpEnabled','r2WebpQuality','r2ImageMaxSide'
 ];
 
 function readSettingsFormIntoConfig(){
@@ -6557,10 +6573,6 @@ function readSettingsFormIntoConfig(){
   CFG.owner=byId('s-owner').value.trim(); CFG.repo=byId('s-repo').value.trim();
   CFG.token=byId('s-token').value.trim(); CFG.branch=byId('s-branch').value.trim()||'main';
   CFG.postsPath=cleanPath(byId('s-posts').value.trim()||'content/posts'); CFG.blogUrl=byId('s-blog').value.trim();
-  CFG.friendCircleOwner=byId('s-fc-owner')?.value.trim()||'';
-  CFG.friendCircleRepo=byId('s-fc-repo')?.value.trim()||'Friend-Circle-Lite';
-  CFG.friendCircleBranch=byId('s-fc-branch')?.value.trim()||'main';
-  CFG.friendCircleJsonPath=cleanPath(byId('s-fc-path')?.value.trim()||'all.json');
   CFG.vercelProjectId=byId('s-v-id').value.trim(); CFG.vercelToken=byId('s-v-token').value.trim();
   CFG.twikooEnvId=byId('s-twikoo-env')?.value.trim()||'';
   CFG.twikooMasterPassword=byId('s-twikoo-pwd')?.value.trim()||'';

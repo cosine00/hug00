@@ -1,11 +1,12 @@
 {{ partial "header.html" . }}
 
+{{- $friendCircleData := resources.Get "rss.json" | resources.Copy "rss.json" -}}
 <div id="friend-circle-lite-root"></div>
 <script>
     if (typeof UserConfig === 'undefined') {
         var UserConfig = {
-            // 填写你的fc Lite地址
-            private_api_url: 'https://fc.hux.ink/',
+            // GitHub Actions 生成、由 Hugo 从 assets 发布的本地数据
+            data_url: '{{ $friendCircleData.RelPermalink }}',
             // 点击加载更多时，一次最多加载几篇文章，默认20
             page_turning_number: 20,
             // 头像加载失败时，默认头像地址
@@ -14,4 +15,4 @@
     }
 </script>
 <link rel="stylesheet" href="/js/fclite.min.css">
-<script src="/js/friendcircle.js"></script>
+<script src="/js/friendcircle-local.js"></script>

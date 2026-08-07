@@ -43,78 +43,13 @@
 
 #friend-circle-lite-root {
     width: 100%;
-}
-
-#random-article {
-    display: flex;
-    position: relative;
-    width: 100%;
-    margin: 8px 0;
-    background-color: var(--container-bg-color);
-    border-radius: 10px;
-    border:1px solid var(--border-color);
-    height: 210px;
-    transition: border 0.3s;
-}
-
-.random-container {
-    position: relative;
-    margin: 20px;
-    width: 90%;
-    height: 170px;
-}
-
-.random-container:hover .random-title {
-    font-size: 32px;
-}
-
-.random-author {
-    font-size: 14px;
-    color: var(--author-color);
-    margin-bottom: 10px;
-}
-
-.random-container-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-.random-title {
-    margin-bottom: 10px;
-    font-size: 30px;
-    transition: font-size 0.3s ease-in-out;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.random-button-container {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.random-button-container a {
-    margin-right: 10px;
-    color: #aaaaaa !important;
-    text-decoration: none !important;
-}
-
-.random-link-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    background-color: var(--hover-color);
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease-in-out;
+    --text-color: var(--text, #2f3332);
+    --author-color: var(--muted, #707673);
+    --background-color: var(--page-bg, #fafafa);
+    --container-bg-color: var(--surface, #fff);
+    --border-color: var(--border, #dedfdb);
+    --hover-color: var(--accent, #357a63);
+    --shadow-color: var(--shadow, rgba(30, 39, 35, .12));
 }
 
 .modal {
@@ -257,44 +192,56 @@
 
 .articles-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
     width: 100%;
+}
+
+@media screen and (max-width: 680px) {
+    .articles-container {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
 }
 
 .card {
     background-color: var(--container-bg-color);
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 14px;
+    padding: 23px 30px 20px;
     border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 150px;
-    transition: border 0.3s;
+    min-height: 142px;
+    box-shadow: 0 5px 15px color-mix(in srgb, var(--shadow-color) 58%, transparent);
+    transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
 }
 
-.card:hover,
-#random-article:hover {
+.card:hover {
     border: 1px solid var(--hover-color);
 }
 
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 24px color-mix(in srgb, var(--shadow-color) 82%, transparent);
+}
+
 .card-title {
-    z-index: 1;
-    font-size: 17px;
+    z-index: 2;
+    font-size: 1rem;
     color: var(--text-color);
     font-weight: 520;
     cursor: pointer;
-    margin-bottom: 10px;
-    line-height: 1.5;
-    max-height: 4.5em;
+    margin: 0 46px 42px 0;
+    line-height: 1.55;
+    max-height: 3.1em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     transition: color 0.3s;
 }
@@ -306,64 +253,96 @@
 
 .card-author,
 .card-date {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--author-color);
-    padding: 5px;
-    line-height: 15px;
+    line-height: 24px;
 }
 
 .card-author:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: var(--hover-color);
 }
 
 .card-author {
+    position: absolute;
+    z-index: 2;
+    left: 30px;
+    bottom: 20px;
     cursor: pointer;
-    background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: 15px;
     display: flex;
-    padding-right: 10px;
     width: fit-content;
+    max-width: calc(58% - 30px);
     align-items: center;
-    transition: box-shadow 0.2s;
+    gap: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color .2s ease;
 }
 
 #friend-circle-lite-root .card-author img {
     border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    margin: 0 2px !important;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    margin: 0 !important;
     object-fit: cover;
 }
 
 .card-date {
     position: absolute;
     z-index: 1;
-    bottom: 10px;
+    bottom: 20px;
     cursor: default;
-    right: 10px;
+    right: 30px;
     display: flex;
     align-items: center;
 }
 
-#friend-circle-lite-root .card-bg {
-    cursor: default;
-    z-index: 0;
-    border-radius: 50% !important;
-    margin: 0 !important;
+.card-sequence {
     position: absolute;
-    bottom: -20px;
-    right: -16px;
-    width: 140px;
-    height: 140px;
-    opacity: 0.4;
-    transition: transform 0.6s ease, bottom 0.3s ease, right 0.3s ease;
+    z-index: 1;
+    top: -15px;
+    right: 13px;
+    color: var(--border-color);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 68px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
 }
 
-#friend-circle-lite-root .card:hover .card-bg {
-    transform: scale(1.1);
-    bottom: -10px;
-    right: -8px;
+@media screen and (max-width: 680px) {
+    .card {
+        min-height: 132px;
+        padding: 19px 20px 17px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-right: 38px;
+        margin-bottom: 40px;
+    }
+
+    .card-author {
+        left: 20px;
+        bottom: 17px;
+        max-width: 48%;
+        font-size: 13px;
+    }
+
+    .card-date {
+        right: 20px;
+        bottom: 17px;
+        font-size: 12px;
+    }
+
+    .card-sequence {
+        top: -10px;
+        right: 10px;
+        font-size: 54px;
+    }
 }
 
 #load-more-btn {
