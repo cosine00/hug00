@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const styles = {
       paper: 'mapbox://styles/mapbox/light-v11',
       night: 'mapbox://styles/mapbox/dark-v11',
-      sepia: 'mapbox://styles/mapbox/outdoors-v12',
-      mist: 'mapbox://styles/mapbox/streets-v12'
+      sepia: 'mapbox://styles/mapbox/light-v11',
+      mist: 'mapbox://styles/mapbox/light-v11'
     };
     if (styles[theme]) return styles[theme];
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -48,18 +48,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
   map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
 
+  const MAP_PALETTES = {
+    sepia: {
+      land: '#f4efe4', water: '#d5dfda', park: '#e4e3cf', building: '#e8ded0',
+      road: '#fffaf0', roadEdge: '#d3c6b2', boundary: '#b7a990', label: '#655b4d', halo: '#faf5eb'
+    },
+    mist: {
+      land: '#edf3f6', water: '#ccdee6', park: '#dbe8e2', building: '#dce6ea',
+      road: '#f9fcfd', roadEdge: '#c5d5dc', boundary: '#aabfc8', label: '#526b76', halo: '#f6fafb'
+    }
+  };
+
+  const applyMapPalette = () => {
+    const palette = MAP_PALETTES[document.documentElement.dataset.theme];
+    if (!palette || !map.isStyleLoaded()) return;
+
+    const layers = map.getStyle()?.layers || [];
+    layers.forEach(layer => {
+      const key = `${layer.id} ${layer['source-layer'] || ''}`.toLowerCase();
+      const setPaint = (name, value) => {
+        try { map.setPaintProperty(layer.id, name, value); } catch (_) { /* property not supported by this layer */ }
+      };
+
+      if (layer.type === 'background') {
+        setPaint('background-color', palette.land);
+      } else if (layer.type === 'fill') {
+        if (key.includes('water')) setPaint('fill-color', palette.water);
+        else if (/(park|landuse|landcover|vegetation|wood)/.test(key)) setPaint('fill-color', palette.park);
+        else if (/(building|structure)/.test(key)) setPaint('fill-color', palette.building);
+        else setPaint('fill-color', palette.land);
+      } else if (layer.type === 'line') {
+        if (/(road|street|motorway|path|pedestrian|bridge|tunnel)/.test(key)) {
+          setPaint('line-color', /(case|casing|outline)/.test(key) ? palette.roadEdge : palette.road);
+        } else if (/(boundary|admin)/.test(key)) {
+          setPaint('line-color', palette.boundary);
+        } else if (/(water|river|stream)/.test(key)) {
+          setPaint('line-color', palette.water);
+        }
+      } else if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
+        setPaint('text-color', palette.label);
+        setPaint('text-halo-color', palette.halo);
+        setPaint('text-halo-width', 1);
+      }
+    });
+  };
+
   const mapWrapper = document.getElementById('map-wrapper');
   if (mapWrapper && window.ResizeObserver) {
     new ResizeObserver(() => { requestAnimationFrame(() => map.resize()); }).observe(mapWrapper);
   }
 
   let currentMapStyle = getMapStyleUrl();
+  let currentMapTheme = document.documentElement.dataset.theme;
   const updateMapTheme = () => {
     const newStyle = getMapStyleUrl();
-    if (newStyle !== currentMapStyle) {
+    const newTheme = document.documentElement.dataset.theme;
+    const leavingCustomPalette = Boolean(MAP_PALETTES[currentMapTheme] && !MAP_PALETTES[newTheme]);
+    if (newStyle !== currentMapStyle || (newTheme !== currentMapTheme && leavingCustomPalette)) {
       currentMapStyle = newStyle;
-      map.setStyle(newStyle); 
+      // A full reload is required when returning to paper/night; Mapbox's style
+      // diff can otherwise retain paint properties changed by sepia or mist.
+      map.setStyle(newStyle, leavingCustomPalette ? { diff: false } : undefined);
+    } else if (newTheme !== currentMapTheme) {
+      applyMapPalette();
     }
+    currentMapTheme = newTheme;
   };
 
   const themeObserver = new MutationObserver(updateMapTheme);
@@ -167,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const injectCustomLayers = () => {
     const isDark = document.documentElement.dataset.theme === 'night';
+    const mapPalette = MAP_PALETTES[document.documentElement.dataset.theme];
     
     try {
       if (!map.getSource('mapbox-dem')) {
@@ -182,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'type': 'fill-extrusion', 
           'minzoom': 14,
           'paint': { 
-            'fill-extrusion-color': isDark ? '#1C1C1E' : '#eaeaf1', 
+            'fill-extrusion-color': isDark ? '#1C1C1E' : (mapPalette?.building || '#eaeaf1'),
             'fill-extrusion-height': ['get', 'height'], 
             'fill-extrusion-base': ['get', 'min_height'],
             'fill-extrusion-opacity': 0.6 
@@ -304,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   map.on('style.load', () => {
+    applyMapPalette();
     injectCustomLayers(); 
     
     if (activeRunId && window.KoobaiRun.ui) {

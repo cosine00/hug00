@@ -7,13 +7,13 @@
   display: inline-block;
   padding: 5px 16px;              /* 按钮内边距，上下 5px，左右 16px */
   font-size: 1.0rem;              /* 稍微缩小字号，让它看起来更像一个精致的标签/按钮 */
-  color: #090c23 !important;         /* 按钮文字颜色 */
-  background-color: var(--background-card-color, #ffffff); /* 按钮背景色，跟随你的卡片白 */
-  border: 2px solid var(--background-card-border-color, #42b983); /* 边框线 */
+  color: var(--accent-hover, #245d4b) !important;
+  background-color: var(--accent-soft, #e1eee8);
+  border: 1px solid color-mix(in srgb, var(--accent, #357a63) 42%, var(--border, #d8ddd9));
   text-decoration: none !important;/* 去掉默认的下划线 */
   border-radius: 9999px;          /* 完美的跑道圆/胶囊形状 */  
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02); /* 微弱的投影，增加立体感 */
-  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px var(--shadow, rgba(0,0,0,.08));
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
   
   /* 关键：拉开与下方年份导航的距离，保持和下方一样的视觉呼吸感 */
   margin-bottom: 20px;            
@@ -21,10 +21,24 @@
 
 /* 鼠标悬停时的动态效果 */
 .pagetitle a:hover {
-  background-color: #42b983;
-  border-color: #dcdcdc;
-  color: #fff !important;
+  background-color: var(--accent, #357a63);
+  border-color: var(--accent, #357a63);
+  color: var(--accent-contrast, #fff) !important;
+  box-shadow: 0 4px 12px var(--shadow, rgba(0,0,0,.12));
   transform: translateY(-1px);    /* 微微悬浮效果 */
+}
+
+.pagetitle a:focus-visible {
+  outline: 2px solid var(--accent, #357a63);
+  outline-offset: 3px;
+}
+
+.pagetitle a:active {
+  background-color: var(--accent-hover, #245d4b);
+  border-color: var(--accent-hover, #245d4b);
+  color: var(--accent-contrast, #fff) !important;
+  box-shadow: 0 1px 3px var(--shadow, rgba(0,0,0,.08));
+  transform: translateY(0);
 }
 
 /* ====================== 1. 顶部年份导航胶囊与动态箭头 ====================== */

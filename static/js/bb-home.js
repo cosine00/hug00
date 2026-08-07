@@ -96,6 +96,18 @@ const allCSS = `
   border-color: rgba(88, 166, 255, 0.4);
 }
 
+/* Compact image entrance placed directly after memo content. */
+.bb-cont:has(.bb-image-trigger){overflow:visible;}
+.bb-image-trigger{position:relative;display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;margin:0;padding:0;border:0;background:transparent;color:var(--accent,var(--link-color,#42b983));font:inherit;line-height:1;vertical-align:-.12em;cursor:zoom-in;isolation:isolate;opacity:.82;transition:color .18s ease,opacity .18s ease,transform .18s ease;}
+.bb-image-trigger svg{display:block;width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.bb-image-trigger:hover,.bb-image-trigger:focus-visible{color:var(--accent-hover,var(--accent,#42b983));opacity:1;transform:translateY(-1px);}
+.bb-image-trigger:focus-visible{outline:1px solid currentColor;outline-offset:2px;border-radius:2px;}
+.bb-image-count{position:absolute;left:.68em;top:-.52em;display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;height:1.25em;padding:0 .22em;box-sizing:border-box;border:1px solid var(--surface,var(--background,#fff));border-radius:999px;background:var(--accent,#42b983);color:var(--accent-contrast,#fff);font:600 .52em/1 system-ui,sans-serif;letter-spacing:-.02em;box-shadow:0 1px 3px rgba(0,0,0,.14);pointer-events:none;}
+.bb-image-preview{position:absolute;left:0;bottom:calc(100% + 10px);z-index:30;width:min(320px,calc(100vw - 48px));padding:5px;border:1px solid var(--border,#dfe3e6);border-radius:10px;background:var(--surface,#fff);box-shadow:0 12px 32px rgba(0,0,0,.2);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(5px) scale(.985);transform-origin:left bottom;transition:opacity .16s ease,transform .16s ease,visibility 0s linear .16s;}
+.bb-image-preview img{display:block;width:100%;height:auto;max-width:none;max-height:360px;margin:0;border-radius:6px;background:var(--surface-muted,var(--surface,#fff));object-fit:contain;}
+@media (hover:hover) and (pointer:fine){.bb-image-trigger:hover .bb-image-preview,.bb-image-trigger:focus-visible .bb-image-preview{opacity:1;visibility:visible;transform:translateY(0) scale(1);transition-delay:.16s,.16s,0s;}}
+@media (hover:none),(pointer:coarse){.bb-image-preview{display:none;}}
+
 /* --- 优化标签药丸：去掉下划线并增加悬停动效 --- */
 .tag-span {
   transition: all 0.2s ease; /* 增加平滑过渡动画 */
@@ -147,6 +159,34 @@ let allMemos = [];
 let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 10;
 
+function getMemoImageUrls(item) {
+  if (!item || !Array.isArray(item.resourceList)) return [];
+  return item.resourceList.map(res => {
+    const url = res && (res.externalLink || res.publicUrl || res.filename || '');
+    const type = String(res && res.type || '').toLowerCase();
+    return url && (type.startsWith('image') || /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(url)) ? url : '';
+  }).filter(Boolean);
+}
+
+function escapeMemoAttr(value) {
+  return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderMemoImageTrigger(item) {
+  const images = getMemoImageUrls(item);
+  if (!images.length) return '';
+  const first = escapeMemoAttr(images[0]);
+  const count = images.length > 1 ? `<span class="bb-image-count">+${images.length - 1}</span>` : '';
+  return `<button class="attach-btn bb-image-trigger" type="button" data-id="${escapeMemoAttr(item.id)}" aria-label="查看${images.length}张图片" title="查看图片"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"></path></svg>${count}<span class="bb-image-preview" aria-hidden="true"><img class="bb-image-preview-image" src="${first}" alt="" loading="lazy" decoding="async"></span></button>`;
+}
+
+function appendMemoImageTrigger(content, trigger) {
+  if (!trigger) return content;
+  const lastParagraph = content.lastIndexOf('</p>');
+  if (lastParagraph !== -1) return content.slice(0, lastParagraph) + `&nbsp;&nbsp;${trigger}` + content.slice(lastParagraph);
+  return content + `&nbsp;&nbsp;${trigger}`;
+}
+
 // 不展示包含以下标签的哔哔。
 // 标签比较时会自动忽略首尾空格、开头的 # 号以及英文字母大小写。
 const hiddenMemoTags = new Set(['相册', 'clip']);
@@ -175,17 +215,12 @@ function renderMemosPaged(memos, page) {
     let dateStr = date.toLocaleString();
     let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
     
-    let attachBtn = '';
-    if (item.resourceList && item.resourceList.length > 0) {
-      // 1. 删除了 datacount 类，彻底解决 CSS 冲突
-      // 2. 加上了 style="position: absolute; right: 0; bottom: 0;" 保持右下角定位
-      // 3. 将 svg 尺寸调整为 width="14" height="14"
-      attachBtn = `<span class="attach-btn comment-pill-btn" style="position: absolute; right: 0; bottom: 0;" data-id="${item.id}" title="查看图片"><svg t="1717750000000" viewBox="0 0 1024 1024" width="14" height="14"><path d="M464 896c-8.8 0-17.6-3.6-24-10.4-13.2-13.2-13.2-34.8 0-48l70.4-70.4C617.6 755.2 704 650.4 704 528c0-123.2-100.8-224-224-224S256 404.8 256 528c0 122.4 86.4 227.2 193.6 289.6l70.4 70.4c13.2 13.2 13.2 34.8 0 48-6.4 6.8-15.2 10.4-24 10.4z" fill="currentColor"/></svg>查看图片</span>`;
-    }
+    let attachBtn = renderMemoImageTrigger(item);
 
     let contentText = item.content.replace(/#[^\s#]+/g, '').trim();
     // 1. 直接解析去除了标签的纯文本
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
+    content = appendMemoImageTrigger(content, attachBtn);
 
     result += `
       <li>
@@ -206,7 +241,6 @@ function renderMemosPaged(memos, page) {
             ${item.isPinned ? '' : `&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>`}
             ${tags}
             ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
-            ${attachBtn}
           </div>
           
           <div class="item-attach attach-${item.id} d-none"></div>
@@ -257,7 +291,7 @@ function renderMemosPaged(memos, page) {
     }
   });
 
-  if (window.ViewImage) ViewImage.init('.bb-cont img');
+  if (window.ViewImage) ViewImage.init('.bb-cont img:not(.bb-image-preview-image)');
   if (window.Lately) Lately.init({ target: '.datatime' });
 
   // --- 首页修复逻辑 ---
@@ -277,9 +311,8 @@ function renderMemosPaged(memos, page) {
         temp.style.display = 'none'; 
         document.body.appendChild(temp);
         
-        memo.resourceList.forEach(res => {
-          let link = res.externalLink || res.publicUrl || res.filename || '';
-          if (link.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        getMemoImageUrls(memo).forEach(link => {
+          if (link) {
             let img = document.createElement('img'); 
             img.src = link; 
             img.setAttribute('data-view-image', ''); 
