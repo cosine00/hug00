@@ -1,6 +1,6 @@
 {{ partial "header.html" . }}
 
-{{- $friendCircleData := resources.Get "rss.json" | resources.Copy "rss.json" -}}
+{{- $friendCircleData := resources.Get "rss.json" -}}
 <div id="friend-circle-lite-root"></div>
 <script>
     if (typeof UserConfig === 'undefined') {
