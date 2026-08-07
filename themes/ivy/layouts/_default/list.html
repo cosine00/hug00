@@ -7,14 +7,16 @@
 {{ else }}
 {{ $.Scratch.Set "pages" .Pages }}
 {{ end }}
-<ul>
+<div class="archive-posts taxonomy-posts">
   {{ range (where ($.Scratch.Get "pages") "Section" "!=" "") }}
-  <li>
-    <span class="date">{{ .Date.Format "2006/01/02" }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-  </li>
+  <div class="archive-entry">
+    <li class="archive-entry-title">
+      <span class="post-date">{{ .Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>&nbsp;&nbsp;&nbsp;
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </li>
+  </div>
   {{ end }}
-</ul>
+</div>
 
 {{ partial "footer-cus.html" . }}
 
