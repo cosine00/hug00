@@ -86,6 +86,7 @@
       if (group.blocks.indexOf(block) === -1) group.blocks.push(block);
       group.images.push(image);
       image.classList.add('post-image-source');
+      image.hidden = true;
     });
 
     groups.forEach(function (group) {
@@ -100,8 +101,9 @@
         group.firstBlock.parentNode.insertBefore(holder, group.firstBlock);
       }
       group.blocks.forEach(function (block) {
-        if (block !== group.images[0] && !hasReadableText(block)) {
+        if (!hasReadableText(block)) {
           block.classList.add('post-image-source-block');
+          block.hidden = true;
         }
       });
     });

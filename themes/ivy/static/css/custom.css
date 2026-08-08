@@ -277,9 +277,7 @@
 
   @media screen and (max-width: 960px) {
     .back-to-top {
-      right: 0.85rem;
-      bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
-      font-size: 0.64rem;
+      display: none !important;
     }
   }
 
@@ -333,7 +331,9 @@
 
 /* Article images use the same compact entrance as image memos. */
 .post-content .post-image-source,
-.post-content .post-image-source-block {
+.post-content .post-image-source-block,
+.post-content .post-image-source[hidden],
+.post-content .post-image-source-block[hidden] {
   display: none !important;
 }
 
