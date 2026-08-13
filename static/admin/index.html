@@ -210,6 +210,10 @@ input:checked+.slider:before{transform:translateX(18px)}
 .inter-filter-bar .form-select,.inter-filter-bar .search-input{height:38px;}
 .inter-filter-bar .search-box{min-width:0;}
 .inter-status-strip{padding:7px 16px;border-bottom:1px solid var(--border);font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:8px;background:#fbfcfe;min-height:34px;flex-shrink:0;}
+.inter-memo-context{padding:12px 16px;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0;}
+.inter-memo-card{position:relative;padding:15px 16px;border:1px solid #dce5ef;border-radius:10px;background:#fff;box-shadow:0 3px 12px rgba(40,59,82,.06);}
+.inter-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}.inter-memo-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#52647b}.inter-memo-id{padding:2px 7px;border-radius:999px;background:#edf3fa;color:#557493;font:10px ui-monospace,SFMono-Regular,Menlo,monospace}.inter-memo-time{font-size:10.5px;color:var(--text3)}
+.inter-memo-content{max-height:220px;overflow:auto;color:var(--text);font-size:13px;line-height:1.75;word-break:break-word}.inter-memo-content>:first-child{margin-top:0}.inter-memo-content>:last-child{margin-bottom:0}.inter-memo-content p,.inter-memo-content ul,.inter-memo-content ol{margin:6px 0}.inter-memo-content a{color:var(--accent);text-decoration:underline}.inter-memo-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.inter-memo-tag{padding:2px 7px;border-radius:999px;background:#eef6f2;color:#397560;font-size:10px}.inter-memo-images{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.inter-memo-images img{width:72px;height:72px;border-radius:7px;object-fit:cover;border:1px solid var(--border)}
 .inter-status-strip .status-dot{width:7px;height:7px;}
 .inter-comments-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable;background:#fcfdff;}
 .inter-notice{margin:12px 16px 0;padding:10px 12px;border:1px solid #cfe0ff;border-radius:8px;background:#f4f8ff;color:#44658f;font-size:11.5px;line-height:1.55;}
@@ -275,6 +279,7 @@ input:checked+.slider:before{transform:translateX(18px)}
   .inter-comment-card{padding:14px 12px;}
   .inter-comment-card.is-reply{padding-left:28px;}
   .inter-comment-actions{opacity:1;}
+  .inter-memo-context{padding:9px}.inter-memo-card{padding:12px}.inter-memo-head{align-items:flex-start}.inter-memo-content{max-height:260px}
 }
 
 /* R2 media library */
@@ -1427,7 +1432,8 @@ let STATE = {
   twikooDiagnostics: [], twikooCountsAreApproximate: false,
   twikooArticleSort: 'comment_desc', twikooCommentSort: 'time_desc',
   twikooCommentFilter: 'all', twikooVisibleLimit: 40,
-  twikooPendingAdminSearch: '', twikooAdminSearchTimer: null
+  twikooPendingAdminSearch: '', twikooAdminSearchTimer: null,
+  twikooMemos: null, twikooMemosPromise: null, twikooMemoRenderSeq: 0
 };
 
 let GARDEN_STATE = {
@@ -4088,6 +4094,7 @@ async function renderInteractionsPage(){
         </div>
 
         <div class="inter-status-strip" id="inter-status"><span class="status-dot"></span><span>正在连接 Twikoo 后端…</span></div>
+        <div class="inter-memo-context" id="inter-memo-context" hidden></div>
         <div class="inter-comments-scroll" id="inter-comments-container">
           ${location.protocol==='file:'?`<div class="alert warning inter-local-warning"><strong>当前通过 file:// 打开。</strong> 请部署到 HTTPS 域名或通过 localhost 访问，否则后端通常会拒绝 Origin 为 null 的请求。</div>`:''}
           <div class="loading"><div class="spinner"></div>正在调取互动数据…</div>
@@ -4119,6 +4126,7 @@ async function renderInteractionsPage(){
 function renderTwikooDashboard(){
   renderTwikooPostsLeft();
   renderTwikooCurrentHeader();
+  renderTwikooMemoContext();
   renderTwikooCommentsRight();
   const metrics=document.getElementById('inter-page-metrics');
   if(metrics) metrics.textContent=`共 ${STATE.twikooCountsAreApproximate?'至少 ':''}${twikooTotalCommentCount()} 条评论 · ${STATE.twikooPostEntries.length} 篇文章`;
@@ -4162,6 +4170,7 @@ function selectTwikooPost(encodedPath){
   STATE.twikooVisibleLimit=40;
   renderTwikooPostsLeft();
   renderTwikooCurrentHeader();
+  renderTwikooMemoContext();
   renderTwikooCommentsRight();
 }
 
@@ -4178,6 +4187,64 @@ function renderTwikooCurrentHeader(){
   if(path) path.textContent=all?'全部文章':STATE.twikooSelectedPost;
   if(commentSummary) commentSummary.textContent=`${all?(STATE.twikooCountsAreApproximate?'≥':'')+twikooTotalCommentCount():(entry?.countApprox?'≥':'')+(entry?.count||0)} 条评论`;
   if(articleSummary) articleSummary.textContent=`${STATE.twikooPostEntries.length} 篇文章`;
+}
+
+function twikooMemoIdFromPath(path){
+  const match=normalizeTwikooPath(path).match(/^\/memos\/(\d+)\/?$/i);
+  return match ? Number(match[1]) : null;
+}
+
+async function loadTwikooMemos(){
+  if(Array.isArray(STATE.twikooMemos)) return STATE.twikooMemos;
+  if(STATE.twikooMemosPromise) return STATE.twikooMemosPromise;
+  STATE.twikooMemosPromise=fetch('/memos.json',{cache:'no-cache'})
+    .then(response=>{ if(!response.ok) throw new Error(`memos.json ${response.status}`); return response.json(); })
+    .then(data=>{
+      const list=Array.isArray(data) ? data : (Array.isArray(data?.memos) ? data.memos : []);
+      STATE.twikooMemos=list;
+      return list;
+    })
+    .finally(()=>{ STATE.twikooMemosPromise=null; });
+  return STATE.twikooMemosPromise;
+}
+
+function twikooMemoResourceUrl(resource){
+  const value=String(resource?.externalLink || resource?.externalUrl || resource?.url || '').trim();
+  return /^https?:\/\//i.test(value) ? value : '';
+}
+
+function renderTwikooMemoCard(memo){
+  const created=Number(memo?.createdTs||0)*1000;
+  const content=String(memo?.content||'').trim();
+  const rendered=window.marked?.parse ? DOMPurify.sanitize(marked.parse(content)) : escapeHTML(content).replace(/\n/g,'<br>');
+  const tags=Array.isArray(memo?.tags) ? memo.tags.filter(Boolean) : [];
+  const images=(Array.isArray(memo?.resourceList)?memo.resourceList:[])
+    .map(resource=>({url:twikooMemoResourceUrl(resource),name:resource?.filename||'BB 图片'})).filter(item=>item.url);
+  return `<div class="inter-memo-card">
+    <div class="inter-memo-head"><div class="inter-memo-title"><span>BB 条目原文</span><span class="inter-memo-id">#${escapeHTML(memo.id)}</span></div><span class="inter-memo-time">${escapeHTML(formatTwikooPostDate(created))}</span></div>
+    <div class="inter-memo-content">${rendered||'（该条目没有文本内容）'}</div>
+    ${tags.length?`<div class="inter-memo-tags">${tags.map(tag=>`<span class="inter-memo-tag">#${escapeHTML(tag)}</span>`).join('')}</div>`:''}
+    ${images.length?`<div class="inter-memo-images">${images.map(item=>`<a href="${escapeAttr(item.url)}" target="_blank" rel="noopener"><img src="${escapeAttr(item.url)}" alt="${escapeAttr(item.name)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join('')}</div>`:''}
+  </div>`;
+}
+
+async function renderTwikooMemoContext(){
+  const box=document.getElementById('inter-memo-context');
+  if(!box) return;
+  const memoId=STATE.twikooSelectedPost==='all' ? null : twikooMemoIdFromPath(STATE.twikooSelectedPost);
+  const seq=++STATE.twikooMemoRenderSeq;
+  if(memoId===null){ box.hidden=true; box.innerHTML=''; return; }
+  box.hidden=false;
+  box.innerHTML='<div class="loading" style="padding:6px"><div class="spinner"></div>正在读取 BB 条目原文…</div>';
+  try{
+    const memos=await loadTwikooMemos();
+    if(seq!==STATE.twikooMemoRenderSeq || !document.body.contains(box)) return;
+    const memo=memos.find(item=>Number(item?.id)===memoId);
+    box.innerHTML=memo ? renderTwikooMemoCard(memo) : `<div class="alert warning" style="margin:0">未在 memos.json 中找到 BB 条目 #${memoId}，可能尚未同步到博客仓库。</div>`;
+  }catch(error){
+    if(seq!==STATE.twikooMemoRenderSeq || !document.body.contains(box)) return;
+    box.innerHTML=`<div class="alert danger" style="margin:0">BB 条目读取失败：${escapeHTML(twikooErrorMessage(error))}</div>`;
+  }
 }
 
 function filteredTwikooComments(){
@@ -4260,7 +4327,7 @@ function openTwikooThreadForSelected(){
 function openTwikooReply(encodedPath){
   const path=normalizeTwikooPath(decodeURIComponent(encodedPath));
   STATE.twikooSelectedPost=path;
-  renderTwikooPostsLeft(); renderTwikooCurrentHeader(); renderTwikooCommentsRight();
+  renderTwikooPostsLeft(); renderTwikooCurrentHeader(); renderTwikooMemoContext(); renderTwikooCommentsRight();
   openTwikooThread(encodeURIComponent(path),'reply');
 }
 
