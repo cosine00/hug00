@@ -349,16 +349,31 @@
           <div class="cardContent">
             <div class="leftInfo">
               <div class="runName">{{ .name }}</div>
+
               <div class="runDistance" style="color: {{ $theme.color }}">
-               {{ if in (slice "StairStepper" "Stair" "RopeSkipping" "Workout") .type }}
-                 <span style="font-size: 1.1rem;">{{ .moving_time }}</span>
-               {{ else }}
-                {{ printf "%.2f" (div (math.Floor (div .distance 10.0)) 100.0) }}<span class="distUnit">km</span>
-              {{ end }}
-             </div>
+                {{ if in (slice "Stair" "RopeSkipping" "Workout") .type }}
+
+                  {{ $timeParts := split .moving_time ":" }}
+                  {{ $hours := int (float (index $timeParts 0)) }}
+                  {{ $minutes := int (float (index $timeParts 1)) }}
+                  {{ $totalMinutes := add (mul $hours 60) $minutes }}
+
+                  {{ $totalMinutes }}
+                  <span class="distUnit">min</span>                
+
+                {{ else }}
+
+                  {{ printf "%.2f" (div (math.Floor (div .distance 10.0)) 100.0) }}
+                  <span class="distUnit">km</span>
+
+                {{ end }}
+              </div>
             </div>
+
             <div class="rightInfo">
-              <time class="runDate">{{ substr .start_date_local 5 5 }} {{ substr .start_date_local 11 5 }}</time>
+              <time class="runDate">
+                {{ substr .start_date_local 5 5 }} {{ substr .start_date_local 11 5 }}
+              </time>
             </div>
           </div>
 

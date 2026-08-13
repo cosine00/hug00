@@ -54,7 +54,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:31:00",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-27 19:23:46",
+    "start_date_local": "2026-07-27 19:23",
     "summary_polyline": "",
     "average_heartrate": 145,
     "source": "admin"
@@ -64,7 +64,7 @@
     "name": "HIIT",
     "moving_time": "0:20:04",
     "type": "Workout",
-    "start_date_local": "2026-07-26 11:03:00",
+    "start_date_local": "2026-07-26 11:03",
     "average_heartrate": 131,
     "source": "manual"
   },
@@ -73,7 +73,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:36:27",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-25 18:30:00",
+    "start_date_local": "2026-07-25 18:30",
     "average_heartrate": 142,
     "source": "manual"
   },
@@ -82,7 +82,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:31:42",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-23 19:43:00",
+    "start_date_local": "2026-07-23 19:43",
     "summary_polyline": "",
     "average_heartrate": 141,
     "source": "manual"
@@ -92,7 +92,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:24:04",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-22 19:28:00",
+    "start_date_local": "2026-07-22 19:28",
     "summary_polyline": "",
     "average_heartrate": 143,
     "source": "manual"
@@ -102,7 +102,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:24:21",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-21 19:27:00",
+    "start_date_local": "2026-07-21 19:27",
     "summary_polyline": "",
     "average_heartrate": 139,
     "source": "manual"
@@ -112,7 +112,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:21:59",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-20 19:57:00",
+    "start_date_local": "2026-07-20 19:57",
     "summary_polyline": "",
     "average_heartrate": 135,
     "source": "manual"
@@ -122,7 +122,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:35:00",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-07 19:19:17",
+    "start_date_local": "2026-07-07 19:19",
     "summary_polyline": "",
     "average_heartrate": 138,
     "source": "manual"
@@ -132,7 +132,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:47:43",
     "type": "RopeSkipping",
-    "start_date_local": "2026-07-02 19:24:00",
+    "start_date_local": "2026-07-02 19:24",
     "summary_polyline": "",
     "average_heartrate": 136,
     "source": "manual"
@@ -142,7 +142,7 @@
     "name": "登月计划",
     "moving_time": "0:42:20",
     "type": "Stair",
-    "start_date_local": "2026-05-19 18:50:25",
+    "start_date_local": "2026-05-19 18:50",
     "summary_polyline": "",
     "average_heartrate": 136.3,
     "source": "manual"
@@ -152,7 +152,7 @@
     "name": "登月计划",
     "moving_time": "0:42:05",
     "type": "Stair",
-    "start_date_local": "2026-04-09 19:58:36",
+    "start_date_local": "2026-04-09 19:58",
     "summary_polyline": "",
     "average_heartrate": 128.7,
     "source": "manual"
@@ -162,7 +162,7 @@
     "name": "登月计划",
     "moving_time": "1:36:25",
     "type": "Stair",
-    "start_date_local": "2026-03-25 05:24:28",
+    "start_date_local": "2026-03-25 05:24",
     "summary_polyline": "",
     "average_heartrate": 134.8,
     "source": "manual"
@@ -172,7 +172,7 @@
     "name": "登月计划",
     "moving_time": "1:09:34",
     "type": "Stair",
-    "start_date_local": "2026-03-24 06:00:44",
+    "start_date_local": "2026-03-24 06:00",
     "summary_polyline": "",
     "average_heartrate": 136.3,
     "source": "manual"
@@ -182,7 +182,7 @@
     "name": "登月计划",
     "moving_time": "0:35:27",
     "type": "Stair",
-    "start_date_local": "2026-03-23 19:31:10",
+    "start_date_local": "2026-03-23 19:31",
     "summary_polyline": "",
     "average_heartrate": 138.6,
     "source": "manual"
@@ -192,7 +192,7 @@
     "name": "登月计划",
     "moving_time": "1:31:15",
     "type": "Stair",
-    "start_date_local": "2026-03-21 06:22:20",
+    "start_date_local": "2026-03-21 06:22",
     "summary_polyline": "",
     "average_heartrate": 135.2,
     "source": "manual"
@@ -202,7 +202,7 @@
     "name": "登月计划",
     "moving_time": "0:50:46",
     "type": "Stair",
-    "start_date_local": "2026-03-19 19:19:49",
+    "start_date_local": "2026-03-19 19:19",
     "summary_polyline": "",
     "average_heartrate": 134.7,
     "source": "manual"
@@ -212,7 +212,7 @@
     "name": "登月计划",
     "moving_time": "0:45:38",
     "type": "Stair",
-    "start_date_local": "2026-03-11 06:17:22",
+    "start_date_local": "2026-03-11 06:17",
     "summary_polyline": "",
     "average_heartrate": 142.5,
     "source": "manual"
@@ -222,7 +222,7 @@
     "name": "登月计划",
     "moving_time": "0:16:13",
     "type": "Stair",
-    "start_date_local": "2026-02-24 20:02:40",
+    "start_date_local": "2026-02-24 20:02",
     "summary_polyline": "",
     "average_heartrate": 133.6,
     "source": "manual"
@@ -232,7 +232,7 @@
     "name": "登月计划",
     "moving_time": "0:35:42",
     "type": "Stair",
-    "start_date_local": "2026-01-11 20:23:55",
+    "start_date_local": "2026-01-11 20:23",
     "summary_polyline": "",
     "average_heartrate": 143.9,
     "source": "manual"
@@ -242,7 +242,7 @@
     "name": "登月计划",
     "moving_time": "1:03:37",
     "type": "Stair",
-    "start_date_local": "2025-12-16 18:54:37",
+    "start_date_local": "2025-12-16 18:54",
     "summary_polyline": "",
     "average_heartrate": 137.2,
     "source": "manual"
@@ -252,7 +252,7 @@
     "name": "登月计划",
     "moving_time": "0:31:39",
     "type": "Stair",
-    "start_date_local": "2025-12-15 19:18:07",
+    "start_date_local": "2025-12-15 19:18",
     "summary_polyline": "",
     "average_heartrate": 137.1,
     "source": "manual"
@@ -262,7 +262,7 @@
     "name": "登月计划",
     "moving_time": "1:04:33",
     "type": "Stair",
-    "start_date_local": "2025-12-11 06:05:40",
+    "start_date_local": "2025-12-11 06:05",
     "summary_polyline": "",
     "average_heartrate": 141.2,
     "source": "manual"
@@ -272,7 +272,7 @@
     "name": "登月计划",
     "moving_time": "0:40:32",
     "type": "Stair",
-    "start_date_local": "2025-12-05 19:27:33",
+    "start_date_local": "2025-12-05 19:27",
     "summary_polyline": "",
     "average_heartrate": 129.2,
     "source": "manual"
@@ -282,7 +282,7 @@
     "name": "登月计划",
     "moving_time": "1:23:10",
     "type": "Stair",
-    "start_date_local": "2025-12-04 19:14:33",
+    "start_date_local": "2025-12-04 19:14",
     "summary_polyline": "",
     "average_heartrate": 136.9,
     "source": "manual"
@@ -292,7 +292,7 @@
     "name": "登月计划",
     "moving_time": "1:15:58",
     "type": "Stair",
-    "start_date_local": "2025-12-03 19:16:15",
+    "start_date_local": "2025-12-03 19:16",
     "summary_polyline": "",
     "average_heartrate": 130.1,
     "source": "manual"
@@ -302,7 +302,7 @@
     "name": "登月计划",
     "moving_time": "1:09:46",
     "type": "Stair",
-    "start_date_local": "2025-12-02 19:04:27",
+    "start_date_local": "2025-12-02 19:04",
     "summary_polyline": "",
     "average_heartrate": 131,
     "source": "manual"
@@ -312,7 +312,7 @@
     "name": "登月计划",
     "moving_time": "1:18:54",
     "type": "Stair",
-    "start_date_local": "2025-12-01 18:50:58",
+    "start_date_local": "2025-12-01 18:50",
     "summary_polyline": "",
     "average_heartrate": 125.4,
     "source": "manual"
@@ -322,7 +322,7 @@
     "name": "登月计划",
     "moving_time": "1:09:25",
     "type": "Stair",
-    "start_date_local": "2025-11-26 06:06:12",
+    "start_date_local": "2025-11-26 06:06",
     "summary_polyline": "",
     "average_heartrate": 140.9,
     "source": "manual"
@@ -332,7 +332,7 @@
     "name": "登月计划",
     "moving_time": "0:50:25",
     "type": "Stair",
-    "start_date_local": "2025-11-25 06:23:05",
+    "start_date_local": "2025-11-25 06:23",
     "summary_polyline": "",
     "average_heartrate": 138.2,
     "source": "manual"
@@ -342,7 +342,7 @@
     "name": "登月计划",
     "moving_time": "1:15:21",
     "type": "Stair",
-    "start_date_local": "2025-11-24 20:07:31",
+    "start_date_local": "2025-11-24 20:07",
     "summary_polyline": "",
     "average_heartrate": 138.2,
     "source": "manual"
@@ -352,7 +352,7 @@
     "name": "登月计划",
     "moving_time": "0:41:18",
     "type": "Stair",
-    "start_date_local": "2025-11-20 19:59:00",
+    "start_date_local": "2025-11-20 19:59",
     "summary_polyline": "",
     "average_heartrate": 133.6,
     "source": "manual"
@@ -362,7 +362,7 @@
     "name": "登月计划",
     "moving_time": "1:11:43",
     "type": "Stair",
-    "start_date_local": "2025-11-18 19:55:42",
+    "start_date_local": "2025-11-18 19:55",
     "summary_polyline": "",
     "average_heartrate": 144.7,
     "source": "manual"
@@ -372,7 +372,7 @@
     "name": "登月计划",
     "moving_time": "0:40:06",
     "type": "Stair",
-    "start_date_local": "2025-11-17 19:08:05",
+    "start_date_local": "2025-11-17 19:08",
     "summary_polyline": "",
     "average_heartrate": 133.8,
     "source": "manual"
@@ -382,7 +382,7 @@
     "name": "登月计划",
     "moving_time": "1:02:39",
     "type": "Stair",
-    "start_date_local": "2025-11-06 20:09:03",
+    "start_date_local": "2025-11-06 20:09",
     "summary_polyline": "",
     "average_heartrate": 143.3,
     "source": "manual"
@@ -392,7 +392,7 @@
     "name": "登月计划",
     "moving_time": "1:00:02",
     "type": "Stair",
-    "start_date_local": "2025-10-23 19:29:44",
+    "start_date_local": "2025-10-23 19:29",
     "summary_polyline": "",
     "average_heartrate": 133.6,
     "source": "manual"
@@ -402,7 +402,7 @@
     "name": "登月计划",
     "moving_time": "1:00:32",
     "type": "Stair",
-    "start_date_local": "2025-10-15 20:18:51",
+    "start_date_local": "2025-10-15 20:18",
     "summary_polyline": "",
     "average_heartrate": 137.7,
     "source": "manual"
@@ -412,7 +412,7 @@
     "name": "登月计划",
     "moving_time": "0:36:06",
     "type": "Stair",
-    "start_date_local": "2025-10-13 20:20:38",
+    "start_date_local": "2025-10-13 20:20",
     "summary_polyline": "",
     "average_heartrate": 144.1,
     "source": "manual"
@@ -422,7 +422,7 @@
     "name": "登月计划",
     "moving_time": "1:11:39",
     "type": "Stair",
-    "start_date_local": "2025-10-11 20:31:25",
+    "start_date_local": "2025-10-11 20:31",
     "summary_polyline": "",
     "average_heartrate": 140.7,
     "source": "manual"
@@ -432,7 +432,7 @@
     "name": "登月计划",
     "moving_time": "0:40:05",
     "type": "Stair",
-    "start_date_local": "2025-10-10 20:27:45",
+    "start_date_local": "2025-10-10 20:27",
     "summary_polyline": "",
     "average_heartrate": 133.7,
     "source": "manual"
@@ -442,7 +442,7 @@
     "name": "登月计划",
     "moving_time": "0:43:16",
     "type": "Stair",
-    "start_date_local": "2025-09-20 18:47:59",
+    "start_date_local": "2025-09-20 18:47",
     "summary_polyline": "",
     "average_heartrate": 142.5,
     "source": "manual"
@@ -452,7 +452,7 @@
     "name": "登月计划",
     "moving_time": "1:05:09",
     "type": "Stair",
-    "start_date_local": "2025-09-07 06:53:52",
+    "start_date_local": "2025-09-07 06:53",
     "summary_polyline": "",
     "average_heartrate": 133.2,
     "source": "manual"
@@ -462,7 +462,7 @@
     "name": "登月计划",
     "moving_time": "1:16:39",
     "type": "Stair",
-    "start_date_local": "2025-09-06 06:53:04",
+    "start_date_local": "2025-09-06 06:53",
     "summary_polyline": "",
     "average_heartrate": 138.8,
     "source": "manual"
@@ -472,7 +472,7 @@
     "name": "登月计划",
     "moving_time": "0:35:35",
     "type": "Stair",
-    "start_date_local": "2025-08-19 19:03:41",
+    "start_date_local": "2025-08-19 19:03",
     "summary_polyline": "",
     "average_heartrate": 138.6,
     "source": "manual"
