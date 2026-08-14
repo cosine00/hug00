@@ -141,7 +141,7 @@
       "updated": "2026-08-11 07:36:00",
       "excerpt": "该文章为「Crypto 101」系列的第一篇文章。查看目录➡️本文从一个没有市场时如何买房子的思想实验入手，构建了一个虚拟的苹果市场，说明市场如何通过买卖双方的供需关系决定价格，以及消息和预期为...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 12
     },
     {
@@ -153,7 +153,7 @@
       "updated": "2026-08-11 07:34:00",
       "excerpt": "你好！很高兴与你在空中见面。一直以来，我致力于将子夜集打造成一个温馨的小空间，可以存放我的思想和成长轨迹。我对于小窝的定位是一个生活类/思想类的博客。不少读者对我的思考比较感兴趣，因此阅读我的博...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 13
     },
     {
@@ -333,7 +333,7 @@
       "updated": "2026-08-07 13:52:00",
       "excerpt": "内容预警本文包含性少数群体（LGBTQ+）、家庭、出柜等内容，若对以上话题感到不适，您可以阅读小站的其他文章。若您愿意了解这个故事，请往下阅读。我背负了一条命案。每一个未出柜的性少数群体都背负着...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 28
     },
     {
@@ -645,7 +645,7 @@
       "updated": "2026-08-01 04:47:00",
       "excerpt": "我打算出一个新的月更系列，名字就叫作「该月阅读推荐」。起因是我发现自己平时阅读量还蛮大的，但是很多东西读完了也没有形成一个系统的知识体系，读完就忘记了，也没有一个地方去贮存到底读了什么。于是，我...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 54
     },
     {
@@ -1245,7 +1245,7 @@
       "updated": "2026-07-19 11:50:00",
       "excerpt": "因为最近经历了一些事情，我也思考了一些关于自爱的话题，得到了一些阶段性的答案。遂写了这一篇博客，分享一些自己的感受。愿与诸君共勉。- 01 -爱永远会流向不缺爱的人。乍一看，这好像是一句鸡汤；然...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 104
     },
     {
@@ -1341,7 +1341,7 @@
       "updated": "2026-07-16 10:19:00",
       "excerpt": "本文包含一个价值 768 TRX，折合美元约 $253，人民币约 1712 元 的故事。试试结构化写作今天尝试了一种新的方法记录。以前写 free writing 或做 free associa...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 112
     },
     {
@@ -1689,7 +1689,7 @@
       "updated": "2026-07-06 07:11:18",
       "excerpt": "又换域名了，想着还是简单写一个小文章来说一下这个事情。因为之前 bboreo.com 那个名字不好记也不好读，所以我把博客的新域名变成了一个又好记又好读，而且包括了我自己的名字在里面的域名：le...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 141
     },
     {
@@ -1881,7 +1881,7 @@
       "updated": "2026-07-03 02:02:55",
       "excerpt": "这是我写过最满意的一篇文字。当然，这句话就是为了吸引你点进来看这篇文章，我可不是标题党，我是简介党哈哈哈哈。又是一篇长文。说实话，我已经在尽量避免过早地使用这个标题——向死而生——因为这是一个对...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 157
     },
     {
@@ -1965,7 +1965,7 @@
       "updated": "2026-06-30 07:12:00",
       "excerpt": "[fold title=\"引用提示\" open=true][orange]请注意！这不是一篇原创文章。[/orange]本文是笔者在澳门参加了 Al Brooks 实盘交易大会中，基于 6 月 ...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 164
     },
     {
@@ -2049,7 +2049,7 @@
       "updated": "2026-06-28 07:15:00",
       "excerpt": "10 万字了！22年开始写博客，如今终于突破了 10 万字。这是一个说大不大，说小不小的里程碑。10 万字，可能是一篇中篇小说的长度，是 30 多篇 3000 多字的随笔，是 50 多篇 200...",
       "site_url": "https://leoreo.me/",
-      "feed_url": "https://leoreo.me/feed/",
+      "feed_url": "https://leoreo.me/feed/atom/",
       "floor": 171
     },
     {
@@ -7206,6 +7206,6 @@
     "active_num": 54,
     "error_num": 6,
     "article_num": 600,
-    "last_updated_time": "2026-08-14 03:11:24 UTC"
+    "last_updated_time": "2026-08-14 05:53:07 UTC"
   }
 }
