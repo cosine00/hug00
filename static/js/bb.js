@@ -357,7 +357,7 @@ function renderMemosPaged(memos, page) {
   let html = `<section class="bb-timeline"><ul>${result}</ul></section>`;
   
   if (end < memos.length) {
-    html += `<div class="bb-load"><button id="bb-load-more">加载更多</button></div>`;
+    html += `<div class="bb-load"><button id="bb-load-more">哔个不停</button></div>`;
   }
   document.querySelector(bbMemo.domId).innerHTML = html;
 

@@ -238,7 +238,7 @@
       if (!statusDom) return
 
       if (renderedCount >= allPhotos.length) {
-        statusDom.textContent = "已加载全部图片"
+        statusDom.textContent = "静候下一束光"
         sentinel.classList.add("is-finished")
         if (observer) observer.disconnect()
       } else {

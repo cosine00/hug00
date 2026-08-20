@@ -85,7 +85,7 @@
 
 .scroll-btn {
   cursor: pointer;
-  color: #dcdcdc; 
+  color: #dcdcdc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,6 +111,277 @@
 .cardList { display: grid; grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 768px) { .cardList { grid-template-columns: repeat(2, 1fr); } }
 
+.globalSportStats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+  z-index: 1;
+}
+.globalSportStat {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 5px 3px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+.globalSportStat:not(.is-static):hover {
+  border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.globalSportStat:not(.is-static):active { transform: scale(.97); }
+.globalSportStat.is-active {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--background-card-color, #fff));
+}
+.globalSportLabel { color: var(--muted, #999); font-size: 10px; line-height: 1.2; }
+.globalSportValue { color: var(--text-strong, #333); font-size: 14px; font-weight: 600; line-height: 1.25; }
+.globalSportValue small { margin-left: 1px; color: var(--muted, #999); font-size: 9px; font-weight: 400; }
+.globalSportStat.is-active .globalSportLabel,
+.globalSportStat.is-active .globalSportValue { color: var(--accent); }
+.globalSportStat.is-static { cursor: default; }
+
+.monthlyDashboard {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.25fr) minmax(0, 1.75fr);
+  gap: 12px;
+  align-items: stretch;
+  height: 330px;
+  min-height: 0;
+  overflow: hidden;
+}
+.calendarCard {
+  position: relative;
+  container-type: inline-size;
+  order: 2;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  padding: 12px 14px 62px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.calendarCard > div:first-child { margin-bottom: 7px !important; }
+.calendarCard .grid { gap: 1px 2px !important; }
+.calendarCard .dayCell { height: 31px !important; }
+.monthlyInsights {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.monthlyInsights .insightCard {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+.monthlyInsights .insightHeader {
+  flex: 0 0 auto;
+  margin-bottom: 0 !important;
+}
+.monthlyInsights .insightContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.monthlyInsights .punchCard,
+.monthlyInsights .zoneChart {
+  flex: 1;
+  width: 100%;
+  height: auto !important;
+  min-height: 58px;
+  gap: 6px !important;
+  align-items: flex-end;
+  padding-top: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border, #e5e5e5) 72%, transparent);
+  box-sizing: border-box;
+}
+.monthlyInsights .barWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+.monthlyInsights .punchHole {
+  border-radius: 6px 6px 2px 2px;
+  background: color-mix(in srgb, var(--accent) var(--bar-strength, 38%), var(--surface)) !important;
+  box-shadow: none;
+  opacity: 1 !important;
+}
+.monthlyInsights .punchHole.isEmpty,
+.monthlyInsights .zoneBar.isEmpty {
+  visibility: hidden;
+  height: 0 !important;
+  box-shadow: none;
+}
+.monthlyInsights .zoneBar {
+  border-radius: 6px 6px 2px 2px;
+  background: color-mix(in srgb, var(--zone-color, var(--accent)) var(--bar-strength, 38%), var(--surface)) !important;
+  box-shadow: none;
+}
+.monthlyInsights .insightLabels {
+  flex: 0 0 auto;
+  margin-top: 9px !important;
+  padding: 0 1px 2px;
+}
+.yearHeatmapCard {
+  display: flex;
+  order: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+  padding: 14px 15px;
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 16px;
+  background: var(--background-card-color, #fff);
+  box-shadow: 0 1px 5px var(--shadow, rgba(0,0,0,.08));
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.yearHeatmapHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--text-strong, #333);
+  font-size: .85rem;
+  font-weight: 650;
+}
+.yearHeatmapHeader small { color: var(--muted, #999); font-size: .62rem; font-weight: 400; }
+.yearHeatmapContinuous {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.yearHeatGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--heat-cols, 20), var(--heat-cell, 8px));
+  grid-auto-rows: var(--heat-cell, 8px);
+  gap: 3px;
+  align-content: center;
+  justify-content: center;
+}
+.yearHeatCell,
+.yearHeatmapLegend i {
+  display: block;
+  border-radius: 2px;
+  background: var(--heatmap-empty, #eef0f5);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.yearHeatCell { width: var(--heat-cell, 8px); height: var(--heat-cell, 8px); }
+.yearHeatCell {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+}
+.yearHeatCell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.yearHeatCell.is-blank { visibility: hidden; }
+.yearHeatCell.level-1, .yearHeatmapLegend .level-1 { background: color-mix(in srgb, var(--heatmap-active) 32%, var(--heatmap-empty)); }
+.yearHeatCell.level-2, .yearHeatmapLegend .level-2 { background: color-mix(in srgb, var(--heatmap-active) 50%, var(--heatmap-empty)); }
+.yearHeatCell.level-3, .yearHeatmapLegend .level-3 { background: color-mix(in srgb, var(--heatmap-active) 68%, var(--heatmap-empty)); }
+.yearHeatCell.level-4, .yearHeatmapLegend .level-4 { background: color-mix(in srgb, var(--heatmap-active) 86%, var(--heatmap-empty)); }
+.yearHeatmapCard.is-filtering .yearHeatCell.level-0 { opacity: .42; }
+.yearHeatmapCard.is-filtering .yearHeatCell:not(.level-0) {
+  animation: heatmapToneIn .32s ease both;
+}
+@keyframes heatmapToneIn {
+  from { opacity: .28; }
+  to { opacity: 1; }
+}
+.yearHeatCell:not(.is-blank):hover { position: relative; z-index: 2; transform: scale(1.45); box-shadow: 0 1px 5px var(--shadow, rgba(0,0,0,.18)); }
+.yearHeatmapLegend { display: flex; align-items: center; justify-content: flex-end; gap: 3px; margin-top: 10px; color: var(--muted, #999); font-size: .54rem; }
+.yearHeatmapLegend i { width: 8px; height: 8px; aspect-ratio: auto; }
+.monthStats {
+  display: flex;
+  height: 48px;
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  left: 14px;
+  margin-top: 0;
+  padding-top: 7px;
+  border-top: 1px dashed var(--border, #eee);
+  color: var(--muted, #999);
+  overflow: hidden;
+  font-size: clamp(10px, 1.5cqw, 12px);
+  line-height: 1.25;
+  white-space: nowrap;
+  text-align: left;
+  box-sizing: border-box;
+}
+.monthStatsTrack {
+  display: inline-flex;
+  min-width: max-content;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(2px, .4cqw, 6px);
+  margin-inline: auto;
+  will-change: transform;
+}
+.monthStatsRow { display: contents; }
+.monthStats strong { color: var(--text-strong, #333); }
+.exercise-load-more-wrap {
+  margin: 2em 0 1em;
+  text-align: center;
+}
+.exercise-load-more-wrap[hidden] {
+  display: none !important;
+}
+.exercise-load-more-wrap .button-load {
+  padding: 8px 24px;
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 767px) {
+  .monthlyDashboard { grid-template-columns: 1fr; height: auto; }
+  .monthlyInsights { grid-template-rows: none; grid-template-columns: 1fr; }
+  .yearHeatmapCard { min-height: 380px; height: auto; }
+  .calendarCard { height: auto; overflow: visible; }
+  .calendarCard { padding: 16px !important; }
+  .calendarCard > div:first-child { margin-bottom: 12px !important; }
+  .calendarCard .grid { gap: 2px !important; }
+  .calendarCard .dayCell { height: 38px !important; }
+  .monthStats {
+    display: grid;
+    height: auto;
+    gap: 8px;
+    position: static;
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 11px;
+    white-space: normal;
+    text-align: center;
+  }
+  .monthStatsTrack {
+    display: grid;
+    min-width: 0;
+    gap: 8px;
+    transform: none !important;
+  }
+  .monthStatsRow { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+}
+
 .runCard { display: flex; align-items: center; padding: 16px 20px; position: relative; }
 .iconRing {
   width: 42px; height: 42px; margin-right: 18px; border-radius: 50%;
@@ -123,7 +394,7 @@
 #map-wrapper { width: 100%; height: 100%; border-radius: 24px; overflow: hidden; z-index: 10; transition: all 0.4s ease; }
 #map-wrapper.is-floating {
     position: fixed !important; top: 20px; right: 20px; width: 320px !important; height: 200px !important;
-    z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid #32D74B;
+    z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid var(--accent, #6870a8);
 }
 
 /* ====================== 4. 气泡弹窗与底部图表必需样式 ====================== */
@@ -225,7 +496,7 @@
   position: absolute; top: -50px; left: 0; width: 36px; height: 36px; background: #fff; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; border: none; color: #666; transition: all 0.2s;
 }
-.shareBtn:hover { transform: scale(1.1); color: #32D74B; }
+.shareBtn:hover { transform: scale(1.1); color: var(--accent, #6870a8); }
 
 /* ====================== 7. 新增特性样式（成就徽章与动态图标） ====================== */
 .card-achievement-pill { font-size: 0.65rem; padding: 1px 5px; border-radius: 9999px; margin-left: 6px; font-weight: 500; vertical-align: middle; display: inline-block; white-space: nowrap;}
@@ -341,6 +612,7 @@
         
         <div class="runCard item-year-{{ $y }} item-month-{{ $m }}" 
              data-run-id="{{ .run_id }}" 
+             data-run-type="{{ .type }}"
              onclick="window.KoobaiRun.map.flyTo('{{ .run_id }}')" 
              style="cursor: pointer; {{ if ne $y (index $years 0) }}display: none;{{ end }}">
           
@@ -417,6 +689,9 @@
 
         </div>
       {{ end }}
+    </div>
+    <div class="exercise-load-more-wrap" id="exercise-load-more-wrap" hidden>
+      <button type="button" class="button-load" onclick="window.KoobaiRun.ui.loadMoreRuns()">继续扑腾</button>
     </div>
   </div>
 </div>

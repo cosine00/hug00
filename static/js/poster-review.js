@@ -7,6 +7,7 @@
   var tooltip;
   var activePoster;
   var hideTimer;
+  var triggerSelector = '.HPRth[data-review]:not([data-review=""]), .yearHeatCell[data-review]:not([data-review=""])';
 
   function ensureTooltip() {
     if (tooltip) return tooltip;
@@ -50,6 +51,7 @@
     activePoster = poster;
     activePoster.classList.add('is-review-active');
     var tip = ensureTooltip();
+    tip.classList.toggle('is-heatmap-tooltip', poster.classList.contains('yearHeatCell'));
     tip.textContent = review;
     placeTooltip(poster);
     requestAnimationFrame(function () { tip.classList.add('is-visible'); });
@@ -65,12 +67,12 @@
   }
 
   document.addEventListener('pointerover', function (event) {
-    var poster = event.target.closest('.HPRth[data-review]:not([data-review=""])');
+    var poster = event.target.closest(triggerSelector);
     if (poster && !poster.contains(event.relatedTarget)) show(poster);
   });
 
   document.addEventListener('pointerout', function (event) {
-    var poster = event.target.closest('.HPRth[data-review]:not([data-review=""])');
+    var poster = event.target.closest(triggerSelector);
     if (poster && !poster.contains(event.relatedTarget)) hide();
   });
 

@@ -11,22 +11,22 @@
   --faint: #9ba09d;
   --border: #dedfdb;
   --border-strong: #b9bdb9;
-  --accent: #357a63;
-  --accent-hover: #245d4b;
-  --accent-soft: #e1eee8;
+  --accent: #6870a8;
+  --accent-hover: #4f578f;
+  --accent-soft: #e8e9f3;
   --accent-contrast: #ffffff;
   --code-bg: #f0f2ef;
   --code-border: #d9ddd9;
   --quote: #59645f;
   --shadow: rgba(30, 39, 35, .12);
   --overlay: rgba(15, 22, 19, .72);
-  --selection: #cbe4d9;
-  --pill-shell: #f1f5f2;
-  --pill-hover: #e5ede8;
-  --pill-active: #5f8e7b;
+  --selection: #dcdff0;
+  --pill-shell: #f2f2f7;
+  --pill-hover: #e8e9f1;
+  --pill-active: #737aa7;
   --pill-active-text: #ffffff;
-  --heatmap-empty: #edf1ee;
-  --heatmap-active: #4f896f;
+  --heatmap-empty: #eef0f5;
+  --heatmap-active: #7078aa;
   --background-card-color: var(--surface);
   --background-card-border-color: var(--border);
   --text-info-color: var(--muted);
@@ -67,61 +67,61 @@
 }
 
 :root[data-theme="sepia"] {
-  --page-bg: #f4efe4;
-  --surface: #fbf7ed;
-  --surface-soft: #ece4d4;
-  --surface-raised: #fffaf0;
-  --text: #4a4237;
-  --text-strong: #2e2922;
-  --muted: #796e5e;
-  --faint: #9c907e;
-  --border: #d8cdb9;
-  --border-strong: #b8a98f;
-  --accent: #9a633a;
-  --accent-hover: #744727;
-  --accent-soft: #ead8c3;
-  --accent-contrast: #fffaf0;
-  --code-bg: #ebe3d5;
-  --code-border: #d5c8b4;
-  --quote: #6c5e4c;
-  --shadow: rgba(75, 57, 36, .14);
-  --overlay: rgba(43, 34, 24, .74);
-  --selection: #ead2af;
-  --pill-shell: #eee6d8;
-  --pill-hover: #e4d8c5;
-  --pill-active: #a97955;
-  --pill-active-text: #fffaf2;
-  --heatmap-empty: #e9e1d3;
-  --heatmap-active: #9d6842;
+  --page-bg: #eef0f2;
+  --surface: #f9fafb;
+  --surface-soft: #e2e5e8;
+  --surface-raised: #ffffff;
+  --text: #3d4247;
+  --text-strong: #202428;
+  --muted: #687078;
+  --faint: #959ca3;
+  --border: #d0d5d9;
+  --border-strong: #abb2b8;
+  --accent: #6f7b86;
+  --accent-hover: #4f5b65;
+  --accent-soft: #dde2e6;
+  --accent-contrast: #ffffff;
+  --code-bg: #e5e8eb;
+  --code-border: #cbd1d6;
+  --quote: #596168;
+  --shadow: rgba(38, 45, 51, .13);
+  --overlay: rgba(24, 29, 33, .76);
+  --selection: #d7dde2;
+  --pill-shell: #e7eaed;
+  --pill-hover: #dce1e5;
+  --pill-active: #78848e;
+  --pill-active-text: #ffffff;
+  --heatmap-empty: #e3e6e9;
+  --heatmap-active: #74808a;
 }
 
 :root[data-theme="mist"] {
-  --page-bg: #edf3f6;
-  --surface: #f8fbfc;
-  --surface-soft: #e2ebef;
-  --surface-raised: #ffffff;
-  --text: #33454d;
-  --text-strong: #1d3039;
-  --muted: #667c86;
-  --faint: #91a2aa;
-  --border: #cedce2;
-  --border-strong: #aabfc8;
-  --accent: #477f95;
-  --accent-hover: #2f657b;
-  --accent-soft: #d6e7ee;
-  --accent-contrast: #ffffff;
-  --code-bg: #e2ebef;
-  --code-border: #c7d7de;
-  --quote: #536c77;
-  --shadow: rgba(40, 70, 82, .13);
-  --overlay: rgba(20, 39, 48, .74);
-  --selection: #c5dfe9;
-  --pill-shell: #e3edf1;
-  --pill-hover: #d5e3e9;
-  --pill-active: #628da0;
+  --page-bg: #f8f2ef;
+  --surface: #fffaf8;
+  --surface-soft: #f2e5e0;
+  --surface-raised: #fffdfc;
+  --text: #4a3d39;
+  --text-strong: #2d2421;
+  --muted: #7e6b64;
+  --faint: #a6928b;
+  --border: #e1d1cb;
+  --border-strong: #c2aaa1;
+  --accent: #b66f61;
+  --accent-hover: #8f5147;
+  --accent-soft: #f2ddd7;
+  --accent-contrast: #fffaf8;
+  --code-bg: #f0e5e1;
+  --code-border: #ddcbc5;
+  --quote: #735f58;
+  --shadow: rgba(94, 57, 48, .13);
+  --overlay: rgba(48, 32, 28, .74);
+  --selection: #f0cfc5;
+  --pill-shell: #f4e8e3;
+  --pill-hover: #ecd9d2;
+  --pill-active: #bd796b;
   --pill-active-text: #ffffff;
-  --heatmap-empty: #dfe9ed;
-  --heatmap-active: #4d8399;
+  --heatmap-empty: #f0e5e1;
+  --heatmap-active: #b77365;
 }
 
 html { background: var(--page-bg); transition: background-color .2s ease; }
@@ -189,7 +189,20 @@ img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(
 .ttName, .ttNum small, .detailHeader, .detailLabel, .datafrom, .hugo-audio-shortcode .audio-caption { color: var(--muted) !important; }
 .scroll-btn, .archive-header, .filter-header { color: var(--muted); }
 .filter-btn.active, .archive-filter.active, .exercise-tabs .active { background: var(--accent) !important; color: var(--accent-contrast) !important; }
-.tag-span, .datacont .tag-span { color: var(--accent) !important; }
+.tag-span,
+.datacont .tag-span,
+.bb-cont .tag-span {
+  color: var(--accent-hover) !important;
+  background: color-mix(in srgb, var(--accent) 4%, transparent) !important;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important;
+}
+.tag-span.tag-filter:hover,
+.datacont .tag-span:hover,
+.bb-cont .tag-span:hover {
+  color: var(--accent-hover) !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
 
 /* Shared year selector across BB, archives and exercise. */
 #memos-year-nav, #archive-year-nav, #year-nav-container, #month-nav-container, .controlsArea {
@@ -259,6 +272,14 @@ html #hux-clip-root.hux-clip-root {
   background: var(--accent-soft) !important;
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
 }
+#hux-clip-root .hux-clip-search:hover {
+  border-color: color-mix(in srgb, var(--accent) 44%, var(--border)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 8%, transparent) !important;
+}
+#hux-clip-root .hux-clip-search:focus {
+  border-color: color-mix(in srgb, var(--accent) 68%, var(--border)) !important;
+  box-shadow: 0 0 0 3px var(--accent-soft) !important;
+}
 #hux-clip-root .hux-clip-grid.is-timeline .hux-clip-card::before {
   background: var(--accent) !important;
   border-color: var(--page-bg) !important;
@@ -274,9 +295,71 @@ html #hux-clip-root.hux-clip-root {
 /* Timeline / memo page */
 .timeline ul li { background: var(--border-strong) !important; }
 .timeline ul li::after { background: var(--accent) !important; outline-color: var(--page-bg) !important; }
-.timeline ul li .datatime, .load button { background: var(--accent) !important; color: var(--accent-contrast) !important; }
+.timeline ul li .datatime { background: var(--accent) !important; color: var(--accent-contrast) !important; }
+.load button,
+#load .load-btn,
+.bb-load button,
+button.button-load {
+  background: var(--surface-soft) !important;
+  color: var(--accent-hover) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--border)) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 1px 4px var(--shadow) !important;
+  font-style: normal;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.load button:hover,
+#load .load-btn:hover,
+.bb-load button:hover,
+button.button-load:hover {
+  background: var(--accent) !important;
+  color: var(--accent-contrast) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 3px 10px var(--shadow) !important;
+  transform: translateY(-1px);
+}
+.load button:focus-visible,
+#load .load-btn:focus-visible,
+.bb-load button:focus-visible,
+button.button-load:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.load button:disabled,
+#load .load-btn:disabled,
+.bb-load button:disabled,
+button.button-load:disabled,
+button.button-load.noclick {
+  background: var(--surface-soft) !important;
+  color: var(--faint) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+  transform: none;
+  cursor: default;
+}
 .timeline ul li p, .bb-timeline p { color: var(--text) !important; }
 .bb-source a { background: var(--surface-soft) !important; color: var(--text-strong) !important; }
+#bber .bb-cont blockquote,
+#bber blockquote {
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface)) !important;
+  color: var(--quote) !important;
+  border-left: 4px solid color-mix(in srgb, var(--accent) 62%, var(--border)) !important;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+#bber .bb-cont blockquote::before,
+#bber blockquote::before {
+  color: var(--accent) !important;
+}
+#bber .bb-cont blockquote p,
+#bber blockquote p {
+  color: var(--quote) !important;
+}
+#bber .bb-cont blockquote a,
+#bber blockquote a {
+  color: var(--accent-hover) !important;
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--border)) !important;
+}
 
 /* Exercise calendar contains generated inline colours, so override them here. */
 .runTooltip, .runDetailCard { background: color-mix(in srgb, var(--surface-raised) 95%, transparent) !important; border-color: var(--border) !important; color: var(--text) !important; }

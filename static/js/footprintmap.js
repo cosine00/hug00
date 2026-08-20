@@ -5,8 +5,8 @@
   const MAP_STYLES = {
     paper: 'amap://styles/whitesmoke',
     night: 'amap://styles/dark',
-    sepia: 'amap://styles/macaron',
-    mist: 'amap://styles/fresh'
+    sepia: 'amap://styles/whitesmoke',
+    mist: 'amap://styles/whitesmoke'
   };
   const FILTER_ALL = 'all';
   const MARKER_SIZE = 22;

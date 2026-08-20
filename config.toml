@@ -24,23 +24,19 @@ footnotereturnlinkcontents = "↩"
   [[menu.main]]
   name="光影"
   url="/album/"
-  weight="3"
-  [[menu.main]]
-  name="足迹"
-  url="/footprints/"
-  weight="4"
+  weight="3"  
   [[menu.main]]
   name="悦动"
   url="/exercise/"
-  weight="5"
+  weight="4"
   [[menu.main]]
   name="断章"
   url="/clip/"
-  weight="6"
+  weight="5"
   [[menu.main]]
   name="关于"
   url="/about/"
-  weight="7"
+  weight="6"
  
   
   

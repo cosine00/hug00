@@ -50,12 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const MAP_PALETTES = {
     sepia: {
-      land: '#f4efe4', water: '#d5dfda', park: '#e4e3cf', building: '#e8ded0',
-      road: '#fffaf0', roadEdge: '#d3c6b2', boundary: '#b7a990', label: '#655b4d', halo: '#faf5eb'
+      land: '#eef0f2', water: '#d8e0e5', park: '#e3e7e2', building: '#e0e3e5',
+      road: '#fafbfc', roadEdge: '#cbd1d6', boundary: '#abb2b8', label: '#596168', halo: '#f9fafb'
     },
     mist: {
-      land: '#edf3f6', water: '#ccdee6', park: '#dbe8e2', building: '#dce6ea',
-      road: '#f9fcfd', roadEdge: '#c5d5dc', boundary: '#aabfc8', label: '#526b76', halo: '#f6fafb'
+      land: '#f8f2ef', water: '#dedee8', park: '#e8e7dc', building: '#efe0db',
+      road: '#fffaf8', roadEdge: '#ddcbc5', boundary: '#c2aaa1', label: '#735f58', halo: '#fffaf8'
     }
   };
 

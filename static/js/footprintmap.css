@@ -453,6 +453,15 @@
     display: none !important;
 }
 
+/* Tone down AMap's built-in ocean colour without muting markers or popups. */
+html[data-theme="sepia"] .footprint-map__canvas .amap-layer {
+    filter: grayscale(.72) saturate(.32) brightness(1.035);
+}
+
+html[data-theme="mist"] .footprint-map__canvas .amap-layer {
+    filter: sepia(.08) saturate(.4) brightness(1.035);
+}
+
 /* AMap Controls Dark Mode */
 .amap-scale-text,
 .amap-scalecontrol {

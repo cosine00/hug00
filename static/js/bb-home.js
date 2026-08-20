@@ -253,7 +253,7 @@ function renderMemosPaged(memos, page) {
     `;
   });
   
-  document.querySelector(bbMemo.domId).innerHTML = `<section class="bb-timeline"><ul>${result}</ul></section>` + (end < memos.length ? `<div class="bb-load"><button id="bb-load-more">加载更多</button></div>` : "");
+  document.querySelector(bbMemo.domId).innerHTML = `<section class="bb-timeline"><ul>${result}</ul></section>` + (end < memos.length ? `<div class="bb-load"><button id="bb-load-more">更多哔话</button></div>` : "");
 
   const doToggle = (memoId, envId) => {
     const wrapper = document.querySelector(`.twikoo-wrapper-${memoId}`);

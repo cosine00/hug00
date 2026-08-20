@@ -98,6 +98,9 @@
       const firstYearBtn = document.querySelector('#year-nav .button');
       this.currentYear = firstYearBtn ? firstYearBtn.getAttribute('data-year') : "2026";
       this.listMonth = 'All';
+      this.activityFilter = 'All';
+      this.runPageSize = 12;
+      this.visibleRunCount = this.runPageSize;
       this.setSmartMonth(); 
       this.replaceIconsWithTracks();
     }
@@ -142,12 +145,86 @@
 
     setListMonth(monthStr) {
       this.listMonth = monthStr;
-      this.renderMonthFilterUI(); 
-      document.querySelectorAll('.runCard').forEach(card => {
+      this.visibleRunCount = this.runPageSize;
+      this.renderMonthFilterUI();
+      this.renderRunList();
+      requestAnimationFrame(() => this.centerActiveMonthPill());
+    }
+
+    centerActiveMonthPill() {
+      const bar = document.getElementById('month-filter-bar');
+      const active = bar?.querySelector('.activePill');
+      if (!bar || !active) return;
+      const barRect = bar.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      const activeCenter = activeRect.left - barRect.left + bar.scrollLeft + activeRect.width / 2;
+      bar.scrollTo({
+        left: Math.max(0, activeCenter - bar.clientWidth / 2),
+        behavior: 'smooth'
+      });
+    }
+
+    renderRunList() {
+      const cards = Array.from(document.querySelectorAll('#run-list .runCard'));
+      const matchingCards = cards.filter(card => {
         const isYearMatch = this.currentYear === 'All' || card.classList.contains(`item-year-${this.currentYear}`);
         const isMonthMatch = this.listMonth === 'All' || card.classList.contains(`item-month-${this.listMonth}`);
-        card.style.display = (isYearMatch && isMonthMatch) ? 'flex' : 'none';
+        const isActivityMatch = this.matchesActivityFilter(card.getAttribute('data-run-type'));
+        return isYearMatch && isMonthMatch && isActivityMatch;
       });
+
+      cards.forEach(card => { card.style.display = 'none'; });
+      matchingCards.slice(0, this.visibleRunCount).forEach(card => { card.style.display = 'flex'; });
+
+      const loadMoreWrap = document.getElementById('exercise-load-more-wrap');
+      if (loadMoreWrap) loadMoreWrap.hidden = matchingCards.length <= this.visibleRunCount;
+    }
+
+    matchesActivityFilter(type, filter = this.activityFilter) {
+      if (filter === 'run') return RUN_TYPES.has(type);
+      if (filter === 'walk') return WALK_TYPES.has(type);
+      if (filter === 'ride') return RIDE_TYPES.has(type);
+      if (filter === 'indoor') return STAIR_TYPES.has(type) || INDOOR_TYPES.has(type);
+      return true;
+    }
+
+    toggleActivityFilter(filter) {
+      this.activityFilter = this.activityFilter === filter ? 'All' : filter;
+      this.visibleRunCount = this.runPageSize;
+      this.renderCalendar(this.computeEngineData());
+      this.renderRunList();
+    }
+
+    startMonthStatsScroll(container) {
+      const track = container?.querySelector('.monthStatsTrack');
+      if (!track) return;
+      const distance = Math.max(0, track.scrollWidth - container.clientWidth);
+      if (distance < 2) return;
+      this.stopMonthStatsScroll(container);
+      const duration = Math.max(2200, Math.min(7000, distance * 24));
+      container._statsAnimation = track.animate(
+        [{ transform: 'translateX(0)' }, { transform: `translateX(-${distance}px)` }],
+        { duration, delay: 250, easing: 'linear', fill: 'forwards' }
+      );
+    }
+
+    stopMonthStatsScroll(container) {
+      if (container?._statsAnimation) {
+        container._statsAnimation.cancel();
+        container._statsAnimation = null;
+      }
+    }
+
+    loadMoreRuns() {
+      this.visibleRunCount += this.runPageSize;
+      this.renderRunList();
+    }
+
+    selectHeatDate(date) {
+      const month = date.slice(5, 7);
+      this.calMonthIndex = Number(month) - 1;
+      this.renderCalendar(this.computeEngineData());
+      this.setListMonth(month);
     }
 
     highlightRunInUI(runId) {
@@ -211,7 +288,7 @@
       const statsTitle = isAll ? '人生总里程' : '年度总里程';
 
       const filteredRuns = isAll ? this.allRuns : this.allRuns.filter(r => r.start_date_local?.startsWith(this.currentYear));
-      const monthMap = new Map(), dateStats = new Map(), datesSet = new Set();
+      const monthMap = new Map(), yearRunsByDate = new Map(), datesSet = new Set();
       
       let totalDist = 0, rideDist = 0, runDist = 0, walkDist = 0, stairDuration = 0;
       const cityDataMap = new Map(); 
@@ -242,6 +319,8 @@
         monthMap.get(month).runs.push(r);
         if (!monthMap.get(month).runsByDate.has(dateStr)) monthMap.get(month).runsByDate.set(dateStr, []);
         monthMap.get(month).runsByDate.get(dateStr).push(r);
+        if (!yearRunsByDate.has(dateStr)) yearRunsByDate.set(dateStr, []);
+        yearRunsByDate.get(dateStr).push(r);
 
         totalDist += distNum; datesSet.add(utcTimestamp);
         const weekIdx = Math.max(0, Math.min(totalWeeks - 1, Math.floor((utcTimestamp - firstDayUTC) / 86400000 / 7)));
@@ -401,6 +480,7 @@
           totalDist, rideDist, runDist, walkDist, stairDuration, activeDays: datesSet.size, maxStreak, sparklineData, sortedCities,
           achieve: { calRideYId, calRideMIds, calRwYId, calRwMIds, calStairYId, calStairMIds, calRwYPaceId, calRwPaceMIds, calRidePaceId, calRidePaceMIds }
         },
+        yearly: { runsByDate: yearRunsByDate },
         monthly: { 
           total: mTotal, rideDist: mRide, runDist: mRun, walkDist: mWalk, stairDuration: mStairDur, runsByDate: currentMonthData.runsByDate,
           totalRunsCount: currentMonthData.runs.length,
@@ -494,8 +574,8 @@
             const maxVal = Math.max(...engine.global.sparklineData, 1);
             const points = engine.global.sparklineData.map((v, i) => `${(i/Math.max(engine.global.sparklineData.length-1, 1))*200},${40 - (v/maxVal)*30}`);
             path = `
-              <path d="M 0,40 L ${points.join(' L ')} L 200,40 Z" fill="rgba(50, 215, 75, 0.08)" stroke="none" />
-              <path d="M ${points.join(' L ')}" fill="none" stroke="rgba(50, 215, 75, 0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 0,40 L ${points.join(' L ')} L 200,40 Z" fill="color-mix(in srgb, var(--accent) 10%, transparent)" stroke="none" />
+              <path d="M ${points.join(' L ')}" fill="none" stroke="color-mix(in srgb, var(--accent) 45%, transparent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             `;
         }
 
@@ -503,25 +583,25 @@
           <div style="padding: 16px 20px; position: relative; text-align: center; overflow: hidden; display: flex; flex-direction: column; align-items: center; background: #fff; border-radius: 16px; border: 1px solid #e5e5e5; margin-bottom: 15px;">
             <div style="font-size: 12px; color: #999; margin-bottom: 2px; z-index: 1; letter-spacing: 1px;">${engine.statsTitle}</div>
             <div style="display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 12px; z-index: 1;">
-              <span style="font-size: 40px; font-weight: 800; color: #32D74B; line-height: 1;">${engine.global.totalDist.toFixed(2)}</span>
+              <span style="font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1;">${engine.global.totalDist.toFixed(2)}</span>
               <span style="font-size: 13px; color: #999; font-weight: 600; text-transform: uppercase;">KM</span>
             </div>
 
             <div style="position: relative; width: 100%; margin-bottom: 12px;">
               <svg style="position: absolute; bottom: 0; left: -20px; width: calc(100% + 40px); height: 60px; z-index: 0; pointer-events: none;" viewBox="0 0 200 40" preserveAspectRatio="none">${path}</svg>
-              <div style="width: 100%; height: 1px; background: rgba(50, 215, 75, 0.15); position: relative; z-index: 1;"></div>
+              <div style="width: 100%; height: 1px; background: color-mix(in srgb, var(--accent) 18%, transparent); position: relative; z-index: 1;"></div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; width: 100%; z-index: 1;">
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">跑步</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.runDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">健走</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.walkDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">骑行</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.rideDist.toFixed(0)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">km</small></div></div>
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">扑腾</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.stairDuration.toFixed(1)}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">h</small></div></div>
-              <div style="text-align: center;"><div style="color:#999; font-size:10px; margin-bottom:2px;">出勤</div><div style="font-size:14px; font-weight:600; color: #333;">${engine.global.activeDays}<small style="font-size:9px; font-weight:400; color:#999; margin-left:1px;">天</small></div></div>              
+            <div class="globalSportStats">
+              <button type="button" class="globalSportStat ${this.activityFilter === 'run' ? 'is-active' : ''}" aria-pressed="${this.activityFilter === 'run'}" onclick="window.KoobaiRun.ui.toggleActivityFilter('run')"><span class="globalSportLabel">跑步</span><span class="globalSportValue">${engine.global.runDist.toFixed(0)}<small>km</small></span></button>
+              <button type="button" class="globalSportStat ${this.activityFilter === 'walk' ? 'is-active' : ''}" aria-pressed="${this.activityFilter === 'walk'}" onclick="window.KoobaiRun.ui.toggleActivityFilter('walk')"><span class="globalSportLabel">健走</span><span class="globalSportValue">${engine.global.walkDist.toFixed(0)}<small>km</small></span></button>
+              <button type="button" class="globalSportStat ${this.activityFilter === 'ride' ? 'is-active' : ''}" aria-pressed="${this.activityFilter === 'ride'}" onclick="window.KoobaiRun.ui.toggleActivityFilter('ride')"><span class="globalSportLabel">骑行</span><span class="globalSportValue">${engine.global.rideDist.toFixed(0)}<small>km</small></span></button>
+              <button type="button" class="globalSportStat ${this.activityFilter === 'indoor' ? 'is-active' : ''}" aria-pressed="${this.activityFilter === 'indoor'}" onclick="window.KoobaiRun.ui.toggleActivityFilter('indoor')"><span class="globalSportLabel">扑腾</span><span class="globalSportValue">${engine.global.stairDuration.toFixed(1)}<small>h</small></span></button>
+              <div class="globalSportStat is-static"><span class="globalSportLabel">出勤</span><span class="globalSportValue">${engine.global.activeDays}<small>天</small></span></div>
             </div>
 
             ${engine.global.sortedCities && engine.global.sortedCities.length > 0 ? `
-            <div style="width: 100%; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(50, 215, 75, 0.2); text-align: center; font-size: 11.5px; z-index: 1; display: flex; justify-content: center; line-height: 1.6;">
+            <div style="width: 100%; margin-top: 14px; padding-top: 12px; border-top: 1px dashed color-mix(in srgb, var(--accent) 22%, transparent); text-align: center; font-size: 11.5px; z-index: 1; display: flex; justify-content: center; line-height: 1.6;">
               <div style="max-width: 95%; word-break: break-all;">
                 <span style="color: #d732ab; margin-right: 6px; font-weight: 700; font-size: 12px;">
                   <svg style="width:12px; height:12px; display:inline-block; vertical-align:-2px; margin-right:2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>足迹
@@ -590,42 +670,75 @@
           </div>`;
       }).join('');
 
-      const insights = engine.monthly.insights;
-      
-      const timeBlocksHtml = insights.timeBlocks.map((count, i) => {
-        const heightRatio = insights.maxTimeBlockCount > 0 ? (count / insights.maxTimeBlockCount) : 0;
-        const bgStyle = count > 0 ? `style="background-color: rgba(50, 215, 75, ${0.3 + 0.7 * heightRatio})"` : '';
-        return `
-          <div class="barWrapper">
-            <div class="punchHole" ${bgStyle}></div>
-            <div class="runTooltip">
-              <div class="ttItem" style="display: flex; gap: 12px; justify-content: center; margin-bottom: 0;">
-                <span class="ttName" style="font-size: 0.75rem; color: #666;">${insights.personas[i].time}</span>
-                <span class="ttNum">${count} <small>次</small></span>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
-
-      const maxHrCount = Math.max(...insights.hrCounts); 
-      const hrZonesHtml = insights.hrCounts.map((count, i) => {
-        const info = insights.hrZonesInfo[i];
-        const percent = maxHrCount > 0 ? Math.max(12, (count / maxHrCount) * 100) : 12;
-        const bgStyle = count > 0 ? `background-color: ${info.color}` : '';
-        return `
-          <div class="zoneCol">
-            <div class="zoneBar" style="height: ${percent}%; ${bgStyle}"></div>
-            <div class="runTooltip">
-              <div class="ttItem" style="display: flex; gap: 12px; justify-content: center; margin-bottom: 0;">
-                <span class="ttName" style="color: ${info.color}; font-size: 0.75rem;">${info.range} <small>BPM</small></span>
-                <span class="ttNum">${count} <small>次</small></span>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
+      const parseDurationMinutes = value => {
+        const parts = String(value || '0').split(':').map(Number);
+        if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
+        if (parts.length === 2) return parts[0] + parts[1] / 60;
+        return 0;
+      };
+      const heatStats = new Map();
+      engine.yearly.runsByDate.forEach((runs, date) => {
+        const scopedRuns = runs.filter(run => this.matchesActivityFilter(run.type));
+        if (!scopedRuns.length) return;
+        const distance = scopedRuns.reduce((sum, run) => sum + (Number(run.distance) || 0) / 1000, 0);
+        const minutes = scopedRuns.reduce((sum, run) => sum + parseDurationMinutes(run.moving_time), 0);
+        heatStats.set(date, { count: scopedRuns.length, distance, minutes, load: distance + minutes / 8, runs: scopedRuns });
+      });
+      const loads = Array.from(heatStats.values()).map(item => item.load).sort((a, b) => a - b);
+      const heatLevel = load => {
+        if (!load || loads.length === 0) return 0;
+        const rank = loads.filter(value => value <= load).length / loads.length;
+        return Math.max(1, Math.min(4, Math.ceil(rank * 4)));
+      };
+      const activityLabel = type => {
+        if (RIDE_TYPES.has(type)) return '骑行';
+        if (RUN_TYPES.has(type)) return '跑步';
+        if (WALK_TYPES.has(type)) return '健走';
+        if (STAIR_TYPES.has(type) || INDOOR_TYPES.has(type)) return '扑腾';
+        const labels = { Swim: '游泳', WaterSport: '水上运动', Hike: '徒步' };
+        return labels[type] || type || '运动';
+      };
+      const trimNumber = value => Number(value.toFixed(2)).toString();
+      const yearStart = new Date(engine.displayYear, 0, 1);
+      const yearEnd = new Date(engine.displayYear, 11, 31);
+      const heatCells = [];
+      for (let cursor = new Date(yearStart); cursor <= yearEnd; cursor.setDate(cursor.getDate() + 1)) {
+        const date = `${engine.displayYear}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+        const stat = heatStats.get(date);
+        const level = stat ? heatLevel(stat.load) : 0;
+        const dayRuns = stat?.runs || [];
+        const runDetails = dayRuns.map(run => {
+          const label = activityLabel(run.type);
+          if (STAIR_TYPES.has(run.type) || INDOOR_TYPES.has(run.type)) {
+            return `${label} ${Math.round(parseDurationMinutes(run.moving_time))} 分钟`;
+          }
+          return `${label} ${trimNumber((Number(run.distance) || 0) / 1000)} 公里`;
+        });
+        const detail = runDetails.length
+          ? `${date}\n${runDetails.join('\n')}`
+          : (cursor.getDay() === 1 ? date : '');
+        const review = detail.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+        const reviewAttr = review ? ` data-review="${review}"` : '';
+        const ariaLabel = detail ? detail.replace(/\n/g, '，') : date;
+        heatCells.push(`<button type="button" class="yearHeatCell level-${level}"${reviewAttr} aria-label="${ariaLabel}" onclick="window.KoobaiRun.ui.selectHeatDate('${date}')"></button>`);
+      }
+      const yearHeatmapHtml = `<div class="yearHeatGrid">${heatCells.join('')}</div>`;
+      const now = new Date();
+      const isFutureMonth = Number(engine.displayYear) > now.getFullYear()
+        || (Number(engine.displayYear) === now.getFullYear() && this.calMonthIndex > now.getMonth());
+      const filteredHeatColors = {
+        run: colorFromType('Run'),
+        walk: colorFromType('Walk'),
+        ride: colorFromType('Ride'),
+        indoor: colorFromType('RopeSkipping')
+      };
+      const filteredHeatStyle = this.activityFilter === 'All'
+        ? ''
+        : ` style="--heatmap-active: ${filteredHeatColors[this.activityFilter]}"`;
 
       container.innerHTML = `
-        <div style="background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e5e5; margin-bottom: 12px;">
+        <div class="monthlyDashboard">
+        <div class="calendarCard" style="background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e5e5;">
           <div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 12px;">
             <button onclick="window.KoobaiRun.ui.setCalMonth(-1)" style="border:none; background:none; cursor:pointer; font-size:18px; color:#999;">&lsaquo;</button>
             <span style="font-size: 16px; font-weight: 700; color: #333;">${engine.displayYear}-${String(this.calMonthIndex + 1).padStart(2, '0')}</span>
@@ -637,39 +750,58 @@
           <div class="grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
             ${gridHtml}
           </div>
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #eee; text-align: center; font-size: 11px; color: #999; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-            <span>本月运动<strong style="color: #333;">${engine.monthly.totalRunsCount}</strong>次，总里程 <strong style="color: #333;">${engine.monthly.total.toFixed(2)}</strong> km</span>
-            <span>跑步 <strong style="color: #333;">${engine.monthly.runDist.toFixed(2)}</strong> km</span>
-            <span>健走 <strong style="color: #333;">${engine.monthly.walkDist.toFixed(2)}</strong> km</span>
-            <span>骑行 <strong style="color: #333;">${engine.monthly.rideDist.toFixed(2)}</strong> km</span>
-            <span>扑腾 <strong style="color: #333;">${engine.monthly.stairDuration.toFixed(1)}</strong> h</span>
+          <div class="monthStats" onmouseenter="window.KoobaiRun.ui.startMonthStatsScroll(this)" onmouseleave="window.KoobaiRun.ui.stopMonthStatsScroll(this)">
+            <div class="monthStatsTrack">
+            ${isFutureMonth ? '<span class="monthStatsWaiting">静待花开</span>' : `
+            <div class="monthStatsRow">
+              <span>本月运动<strong>${engine.monthly.totalRunsCount}</strong>次，总里程 <strong>${engine.monthly.total.toFixed(2)}</strong> km</span>
+              ${engine.monthly.runDist > 0 ? `<span>跑步 <strong>${engine.monthly.runDist.toFixed(2)}</strong> km</span>` : ''}
+              ${engine.monthly.walkDist > 0 ? `<span>健走 <strong>${engine.monthly.walkDist.toFixed(2)}</strong> km</span>` : ''}
+            </div>
+            ${engine.monthly.rideDist > 0 || engine.monthly.stairDuration > 0 ? `<div class="monthStatsRow">
+              ${engine.monthly.rideDist > 0 ? `<span>骑行 <strong>${engine.monthly.rideDist.toFixed(2)}</strong> km</span>` : ''}
+              ${engine.monthly.stairDuration > 0 ? `<span>扑腾 <strong>${engine.monthly.stairDuration.toFixed(1)}</strong> h</span>` : ''}
+            </div>` : ''}
+            `}
+            </div>
           </div>
         </div>
 
-        <div class="monthlyInsights" style="display: flex; gap: 10px;">
-          <div class="insightCard" style="flex: 1; background: #fff; border-radius: 16px; padding: 12px 16px; border: 1px solid #e5e5e5;">
-            <div class="insightHeader" style="font-size: 0.75rem; color: #999; margin-bottom: 10px;"><span class="insightTitle">${insights.peakPersona}</span></div>
-            <div class="insightContent">
-              <div class="punchCard" style="display: flex; gap: 4px; height: 15px;">${timeBlocksHtml}</div>
-              <div class="insightLabels timeLabels" style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.55rem; color: #999; opacity: 0.6;">
-                <span style="text-align: left;">00:00</span>
-                <span style="text-align: center; flex: 1;">12:00</span>
-                <span style="text-align: right;">24:00</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="insightCard" style="flex: 1; background: #fff; border-radius: 16px; padding: 12px 16px; border: 1px solid #e5e5e5;">
-            <div class="insightHeader" style="font-size: 0.75rem; color: #999; margin-bottom: 10px;"><span class="insightTitle">${insights.hasActivities ? insights.hrMaxZone.title : '等待记录'}</span></div>
-            <div class="insightContent">
-              <div class="zoneChart" style="display: flex; gap: 10px; height: 15px; align-items: flex-end;">${hrZonesHtml}</div>
-              <div class="insightLabels zoneLabels" style="display: flex; justify-content: space-between; gap: 10px; margin-top: 4px; font-size: 0.55rem; color: #999; opacity: 0.6;">
-                ${insights.hrZonesInfo.map(i => `<span style="flex: 1; text-align: center; min-width: 0;">${i.name}</span>`).join('')}
-              </div>
-            </div>
-          </div>
+        <div class="yearHeatmapCard ${this.activityFilter !== 'All' ? 'is-filtering' : ''}"${filteredHeatStyle}>
+          <div class="yearHeatmapHeader"><span>${engine.displayYear}</span><small>全年热力${this.activityFilter === 'All' ? '' : ` · ${{ run: '跑步', walk: '健走', ride: '骑行', indoor: '扑腾' }[this.activityFilter]}`}</small></div>
+          <div class="yearHeatmapContinuous">${yearHeatmapHtml}</div>
+          <div class="yearHeatmapLegend"><span>少</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>多</span></div>
+        </div>
         </div>
       `;
+
+      const heatCard = container.querySelector('.yearHeatmapCard');
+      const heatGrid = container.querySelector('.yearHeatGrid');
+      const fitHeatmap = () => {
+        if (!heatCard || !heatGrid) return;
+        const header = heatCard.querySelector('.yearHeatmapHeader');
+        const legend = heatCard.querySelector('.yearHeatmapLegend');
+        const gap = 3;
+        const availableWidth = Math.max(1, heatCard.clientWidth - 30);
+        const availableHeight = Math.max(1, heatCard.clientHeight - (header?.offsetHeight || 0) - (legend?.offsetHeight || 0) - 44);
+        let best = { columns: 1, rows: heatCells.length, size: 1 };
+        for (let columns = 2; columns <= Math.min(80, heatCells.length); columns++) {
+          const rows = Math.ceil(heatCells.length / columns);
+          const size = Math.min(
+            (availableWidth - gap * (columns - 1)) / columns,
+            (availableHeight - gap * (rows - 1)) / rows
+          );
+          if (size > best.size) best = { columns, rows, size };
+        }
+        heatGrid.style.setProperty('--heat-cols', best.columns);
+        heatGrid.style.setProperty('--heat-cell', `${Math.max(3, best.size)}px`);
+      };
+      if (this.heatmapResizeObserver) this.heatmapResizeObserver.disconnect();
+      if (window.ResizeObserver && heatCard) {
+        this.heatmapResizeObserver = new ResizeObserver(() => requestAnimationFrame(fitHeatmap));
+        this.heatmapResizeObserver.observe(heatCard);
+      }
+      requestAnimationFrame(fitHeatmap);
     }
   }
 

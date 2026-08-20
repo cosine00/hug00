@@ -699,6 +699,10 @@
   transition-delay: .08s, .08s, 0s;
 }
 
+.poster-review-tooltip.is-heatmap-tooltip {
+  white-space: pre-line;
+}
+
 .poster-review-tooltip::after {
   content: "";
   position: absolute;
