@@ -66,10 +66,19 @@
     <script>
       (function () {
         var allowed = ['paper', 'night', 'sepia', 'mist'];
-        var saved = localStorage.getItem('blog-palette');
+        var saved = null;
+        try {
+          saved = localStorage.getItem('blog-palette');
+        } catch (error) {}
         var palette = allowed.indexOf(saved) > -1 ? saved : 'paper';
+        if (saved !== palette) {
+          try {
+            localStorage.setItem('blog-palette', palette);
+          } catch (error) {}
+        }
         document.documentElement.dataset.theme = palette;
         document.documentElement.style.colorScheme = palette === 'night' ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', palette === 'night');
       }());
     </script>
     {{ partial "head_custom.html" . }}
