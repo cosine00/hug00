@@ -202,7 +202,9 @@
 
           {{ if $bodyContent }}
             <div class="hux-clip-card-body">
-              {{ $bodyContent | markdownify }}
+              {{/* Match the BB page: a single newline is rendered as a hard line break. */}}
+              {{ $renderBody := replace $bodyContent "\n" "  \n" }}
+              {{ $renderBody | markdownify }}
             </div>
           {{ end }}
 
@@ -565,6 +567,7 @@
     font-weight: 700;
     line-height: 1.45;
     overflow-wrap: anywhere;
+    transition: color .28s ease;
   }
 
   .hux-clip-external {
@@ -574,6 +577,14 @@
     font-size: .88rem;
     font-weight: 400;
     line-height: 1.45;
+    transition: color .28s ease;
+  }
+
+  .hux-clip-card:hover .hux-clip-card-title,
+  .hux-clip-card:hover .hux-clip-external,
+  .hux-clip-card:focus-within .hux-clip-card-title,
+  .hux-clip-card:focus-within .hux-clip-external {
+    color: var(--hux-clip-accent);
   }
 
   .hux-clip-card-body {
