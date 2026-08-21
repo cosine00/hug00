@@ -298,6 +298,8 @@ input:checked+.slider:before{transform:translateX(18px)}
 .media-name{font-weight:700;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-meta{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-item-actions{display:flex;gap:6px;flex-wrap:wrap}
+.media-prefix-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.media-prefix-tools .form-select{min-width:180px;max-width:320px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
@@ -6373,6 +6375,15 @@ function r2PrefixNow(){
     .replace(/\{mm\}/g,pad(d.getMonth()+1))
     .replace(/\{dd\}/g,pad(d.getDate())));
 }
+let MEDIA_PREFIX='';
+function r2SelectedPrefix(){ return cleanPath(MEDIA_PREFIX || r2PrefixNow()); }
+function r2PrefixRoot(){
+  const template=String(CFG.r2Prefix||'images/{yyyy}/{mm}');
+  const tokenIndex=template.indexOf('{');
+  if(tokenIndex>=0) return cleanPath(template.slice(0,tokenIndex));
+  const parts=r2PrefixNow().split('/').filter(Boolean);
+  return cleanPath(parts.slice(0,-1).join('/'));
+}
 function r2BuildKey(file){
   const original=String(file.name||'image');
   const dot=original.lastIndexOf('.');
@@ -6452,8 +6463,7 @@ async function r2UploadFile(file){
     convertedFromHeic:prepared.convertedFromHeic === true
   };
 }
-async function r2ListObjects(){
-  const prefix=r2PrefixNow();
+async function r2ListObjects(prefix=r2SelectedPrefix()){
   const signed=await r2SignRequest('GET','',{query:{'list-type':'2', prefix, 'max-keys':'100'}, payloadHash:await sha256Hex('')});
   const res=await fetch(signed.url, {method:'GET', headers:signed.headers});
   if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 列表读取失败：${res.status} ${text}`); }
@@ -6465,10 +6475,48 @@ async function r2ListObjects(){
     lastModified:n.querySelector('LastModified')?.textContent || ''
   })).filter(x=>x.key).sort((a,b)=>String(b.lastModified).localeCompare(String(a.lastModified)));
 }
+async function r2ListPrefixes(){
+  const root=r2PrefixRoot();
+  const prefixes=new Set([r2PrefixNow()]);
+  let continuationToken='';
+  do{
+    const query={'list-type':'2', prefix:root, 'max-keys':'1000'};
+    if(continuationToken) query['continuation-token']=continuationToken;
+    const signed=await r2SignRequest('GET','',{query, payloadHash:await sha256Hex('')});
+    const res=await fetch(signed.url, {method:'GET', headers:signed.headers});
+    if(!res.ok){
+      const text=await res.text().catch(()=>res.statusText);
+      throw new Error(`R2 前缀读取失败：${res.status} ${text}`);
+    }
+    const doc=new DOMParser().parseFromString(await res.text(),'application/xml');
+    [...doc.querySelectorAll('Contents > Key')].forEach(node=>{
+      const key=String(node.textContent||'');
+      const slash=key.lastIndexOf('/');
+      if(slash>0) prefixes.add(cleanPath(key.slice(0,slash)));
+    });
+    const truncated=doc.querySelector('IsTruncated')?.textContent==='true';
+    continuationToken=truncated ? (doc.querySelector('NextContinuationToken')?.textContent||'') : '';
+  }while(continuationToken);
+  return [...prefixes].filter(Boolean).sort((a,b)=>b.localeCompare(a,undefined,{numeric:true}));
+}
 async function r2DeleteObject(key){
+  const payloadHash=await sha256Hex('');
+  const signed=await r2SignRequest('DELETE', key, {payloadHash});
+  const res=await fetch(signed.url, {method:'DELETE', headers:signed.headers});
+  if(!res.ok){
+    const text=await res.text().catch(()=>res.statusText);
+    throw new Error(`R2 删除失败：${res.status} ${text}`);
+  }
+}
+async function deleteMediaObject(key){
   if(!confirm(`确定从 R2 删除这个文件吗？\n${key}`)) return;
-  try{ await r2DeleteObject(key); toast('R2 文件已删除','success'); refreshMediaList(); }
-  catch(e){ toast(e.message,'error'); }
+  try{
+    await r2DeleteObject(key);
+    toast('R2 文件已删除','success');
+    await refreshMediaList();
+  }catch(e){
+    toast(e.message,'error');
+  }
 }
 function formatBytes(n){
   n=Number(n||0); if(n<1024) return `${n} B`; if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`; return `${(n/1024/1024).toFixed(1)} MB`;
@@ -6679,9 +6727,38 @@ async function refreshMediaList(){
   box.innerHTML=`<div class="loading" style="padding:34px"><div class="spinner"></div>正在读取 R2 图片列表…</div>`;
   try{
     const objects=await r2ListObjects();
-    if(!objects.length){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">🖼️</div><p>当前前缀下还没有文件。</p><p class="muted">当前前缀：${escapeHTML(r2PrefixNow())}</p></div>`; return; }
+    if(!objects.length){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">🖼️</div><p>当前前缀下还没有文件。</p><p class="muted">当前前缀：${escapeHTML(r2SelectedPrefix())}</p></div>`; return; }
     box.innerHTML=`<div class="media-grid">${objects.map(renderMediaItem).join('')}</div>`;
   }catch(e){ box.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; }
+}
+async function refreshMediaPrefixes(){
+  const select=document.getElementById('media-prefix-select');
+  if(!select || !r2Configured()) return;
+  const selected=r2SelectedPrefix();
+  select.disabled=true;
+  select.innerHTML=`<option value="${escapeAttr(selected)}">正在读取前缀…</option>`;
+  try{
+    const prefixes=await r2ListPrefixes();
+    if(!prefixes.includes(selected)) prefixes.unshift(selected);
+    select.innerHTML=prefixes.map(prefix=>`<option value="${escapeAttr(prefix)}"${prefix===selected?' selected':''}>${escapeHTML(prefix)}</option>`).join('');
+  }catch(e){
+    select.innerHTML=`<option value="${escapeAttr(selected)}">${escapeHTML(selected)}</option>`;
+    toast(e.message,'error');
+  }finally{
+    select.disabled=false;
+  }
+}
+async function selectMediaPrefix(prefix){
+  MEDIA_PREFIX=cleanPath(prefix || r2PrefixNow());
+  const desc=document.getElementById('media-list-desc');
+  if(desc) desc.textContent=`显示 ${MEDIA_PREFIX} 下最近 100 个对象。可以复制链接或 Markdown 语法。`;
+  await refreshMediaList();
+}
+async function resetMediaPrefix(){
+  MEDIA_PREFIX=r2PrefixNow();
+  const select=document.getElementById('media-prefix-select');
+  if(select) select.value=MEDIA_PREFIX;
+  await selectMediaPrefix(MEDIA_PREFIX);
 }
 function renderMediaItem(item){
   const url=r2ObjectUrl(item.key); const isImg=/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(item.key);
@@ -6701,13 +6778,14 @@ function renderMediaItem(item){
 }
 function renderMediaPage(){
   STATE.page='media';
+  MEDIA_PREFIX=r2PrefixNow();
   document.getElementById('page-title').innerHTML='图床管理 <small>Cloudflare R2</small>';
   document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="refreshMediaList()">刷新列表</button><button class="btn primary" onclick="document.getElementById('media-file-input')?.click()">上传图片</button>`;
   const c=document.getElementById('main-content'); c.style.overflow='auto';
   c.innerHTML=`
     <div class="alert info" style="max-width:980px">R2 上传使用 S3 兼容 API。请先在系统设置中填写 R2 参数，并在 R2 Bucket CORS 中允许当前后台域名执行 PUT / GET / DELETE 请求。</div>
     <div class="card" style="max-width:980px">
-      <div class="card-header"><div><div class="card-title">上传到 R2</div><div class="card-desc">上传成功后会生成可直接粘贴到 Markdown 的图片链接。</div></div><span class="tag soft">${escapeHTML(r2PrefixNow())}</span></div>
+      <div class="card-header"><div><div class="card-title">上传到 R2</div><div class="card-desc">上传成功后会生成可直接粘贴到 Markdown 的图片链接。</div></div><div class="media-prefix-tools"><select class="form-select" id="media-prefix-select" aria-label="图片前缀" onchange="selectMediaPrefix(this.value)"><option value="${escapeAttr(MEDIA_PREFIX)}">${escapeHTML(MEDIA_PREFIX)}</option></select><button class="btn sm" type="button" onclick="resetMediaPrefix()">复位</button></div></div>
       <label class="media-drop" for="media-file-input">
         <input type="file" id="media-file-input" accept="image/*,.heic,.heif" multiple onchange="uploadMediaFiles(this)">
         <div class="media-drop-title">点击选择图片，或拖到这里后再选择</div>
@@ -6716,9 +6794,10 @@ function renderMediaPage(){
       <div id="media-upload-result" style="margin-top:14px"></div>
     </div>
     <div class="card" style="max-width:980px">
-      <div class="card-header"><div><div class="card-title">最近图片</div><div class="card-desc">显示当前前缀下最近 100 个对象。可以复制链接或 Markdown 语法。</div></div></div>
+      <div class="card-header"><div><div class="card-title">最近图片</div><div class="card-desc" id="media-list-desc">显示 ${escapeHTML(MEDIA_PREFIX)} 下最近 100 个对象。可以复制链接或 Markdown 语法。</div></div></div>
       <div id="media-list-box"></div>
     </div>`;
+  refreshMediaPrefixes();
   refreshMediaList();
 }
 
