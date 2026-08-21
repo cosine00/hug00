@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fafafa">
 <title>✨Counting Stars</title>
+<script>
+(()=>{const names=['paper','night','sepia','mist'];let name='paper';try{name=localStorage.getItem('blog-palette')||'paper';}catch(e){}if(!names.includes(name))name='paper';document.documentElement.dataset.theme=name;document.documentElement.style.colorScheme='light';})();
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
@@ -283,6 +287,40 @@ input:checked+.slider:before{transform:translateX(18px)}
 }
 
 /* R2 media library */
+.garden-archive-year-tabs{display:flex;width:fit-content;max-width:100%;margin:6px auto 20px;gap:8px;padding:5px;border:1px solid var(--border);border-radius:9999px;background:#fff;overflow-x:auto;scrollbar-width:none}.garden-archive-year-tabs::-webkit-scrollbar{display:none}
+.garden-archive-year-btn{flex:0 0 auto;padding:10px 24px;border:0;border-radius:9999px;background:transparent;color:var(--text3);font-size:14px;cursor:pointer;transition:.2s;white-space:nowrap}.garden-archive-year-btn:hover{color:var(--text)}.garden-archive-year-btn.active{background:#7d83b4;color:#fff;font-weight:500;box-shadow:none}
+.garden-archive{max-width:860px;margin:6px auto 0;padding:18px 6px 26px}.garden-archive-group{margin-top:12px}.garden-archive-heading{display:flex;align-items:flex-start;gap:10px;margin:0 0 22px;padding:0;border:0}.garden-archive-heading strong{font-size:24px;line-height:1;color:var(--text)}.garden-archive-heading sup{font-size:12px;font-weight:800;color:var(--text);line-height:1}
+.garden-archive-list{display:grid;gap:0}.garden-archive-item{position:relative;display:grid;grid-template-columns:112px minmax(0,1fr);align-items:center;gap:18px;width:100%;padding:10px 8px 10px 25px;border:0;background:transparent;color:var(--text);text-align:left;cursor:pointer}.garden-archive-item::before{content:'';position:absolute;left:7px;width:6px;height:6px;border-radius:50%;background:#3b3d42}.garden-archive-item:hover .garden-archive-title span{color:#42b983;border-bottom-color:#42b983}
+.garden-archive-date{font-size:14px;color:var(--text2);white-space:nowrap}.garden-archive-title{min-width:0;font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.garden-archive-title span{border-bottom:1px dashed #b9c5bf;padding-bottom:2px;transition:.15s}.garden-archive-empty{padding:46px 18px;text-align:center;color:var(--text3)}
+@media(max-width:640px){.garden-archive-year-btn{padding:9px 18px;font-size:13px}.garden-archive{padding-inline:0}.garden-archive-item{grid-template-columns:92px minmax(0,1fr);gap:9px;padding:10px 7px 10px 20px}.garden-archive-date{font-size:11.5px}.garden-archive-title{font-size:14px}}
+
+.journal-shell{width:100%;max-width:1100px;margin:0 auto;--journal-border:rgba(110,104,92,.22);--journal-muted:rgba(90,85,76,.66);--journal-bg:rgba(255,255,255,.3);--journal-accent:rgba(156,39,176,.82);--journal-accent-soft:rgba(156,39,176,.16)}
+.journal-toolbar{display:flex;align-items:center;justify-content:center;gap:9px;width:min(100%,768px);margin:0 auto 16px;padding:0;background:transparent;border:0;box-shadow:none}
+.journal-search-row{display:flex;align-items:center;gap:10px}.journal-search-box{position:relative;flex:1;min-width:0}.journal-search-box svg{position:absolute;left:13px;top:50%;width:17px;height:17px;transform:translateY(-50%);color:var(--text3)}
+.journal-search-row{display:flex;flex:1;min-width:0}.journal-search-input{width:100%;height:38px;padding:0 38px;border:1px solid var(--journal-border);border-radius:10px;background:var(--journal-bg);color:var(--text);font-size:13px;outline:none;transition:.2s}.journal-search-input:focus{border-color:var(--journal-accent);box-shadow:0 0 0 3px var(--journal-accent-soft)}
+.journal-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:var(--text3);cursor:pointer}.journal-search-clear:hover{background:var(--bg3);color:var(--text)}
+.journal-filter-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:min(100%,768px);margin:0 auto 12px;font-size:12px;color:var(--text3)}
+.journal-filter-status:empty{display:none}.journal-filter-label{color:var(--text2)}
+.journal-view-switch{display:inline-flex;flex:0 0 auto;align-items:center;gap:2px;padding:3px;border:1px solid var(--journal-border);border-radius:999px;background:var(--journal-bg)}.journal-view-button{display:grid;width:32px;height:32px;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--journal-muted);cursor:pointer}.journal-view-button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}.journal-view-button:hover{color:var(--text);transform:translateY(-1px)}.journal-view-button.active{background:rgba(127,127,127,.1);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.journal-count{flex:0 0 auto;min-width:48px;color:var(--journal-muted);font-size:12px;text-align:right;white-space:nowrap}
+.journal-stream{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:dense;align-items:start;width:100%;gap:14px;padding:0 0 36px}.journal-stream.is-timeline{display:block;width:min(100%,832px);margin:0 auto;padding-left:27px}.journal-stream.is-timeline::before{content:'';position:absolute;top:7px;bottom:48px;left:9px;width:1px;background:var(--journal-border)}
+.journal-entry{position:relative;align-self:start;margin:0;padding:16px 17px 17px;overflow:hidden;border:1px solid var(--journal-border);border-radius:12px;background:var(--journal-bg);box-shadow:0 1px 2px rgba(0,0,0,.02);transition:transform .28s,border-color .28s,box-shadow .28s}.journal-entry.is-span-2{grid-column-end:span 2}.journal-entry.is-span-3{grid-column:1/-1}.journal-entry:hover{transform:translateY(-2px);border-color:rgba(156,39,176,.2);box-shadow:0 8px 24px rgba(0,0,0,.045),0 0 0 3px rgba(156,39,176,.035)}.journal-stream.is-timeline .journal-entry{width:100%;margin:0 0 14px;overflow:visible;grid-column:auto}.journal-stream.is-timeline .journal-entry::before{content:'';position:absolute;top:18px;left:-25px;width:12px;height:12px;border:2px solid rgba(255,255,255,.9);border-radius:50%;background:var(--journal-accent);box-shadow:0 0 0 1px rgba(156,39,176,.32);transform:scale(.82)}
+.journal-entry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 12px;padding:0;border:0}
+.journal-entry-date{font-size:13px;font-weight:650;color:var(--journal-muted);line-height:1.25;letter-spacing:.04em}.journal-entry-weekday{margin-top:3px;font-size:11px;color:var(--journal-muted)}
+.journal-entry-source{font:10.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42%}
+.journal-entry-body{font-size:14px;line-height:1.68;color:var(--text2);overflow-wrap:anywhere}.journal-entry.is-span-3 .journal-entry-body{column-count:2;column-gap:26px;column-rule:1px solid rgba(110,104,92,.12)}.journal-stream.is-timeline .journal-entry-body{column-count:1;column-rule:0}
+.journal-entry-body>:first-child{margin-top:0}.journal-entry-body>:last-child{margin-bottom:0}
+.journal-entry-body ul,.journal-entry-body ol{padding-left:22px}.journal-entry-body li{margin:5px 0}
+.journal-entry-body blockquote{margin:12px 0;padding:8px 14px;border-left:3px solid var(--accent);background:var(--accent-light);border-radius:0 8px 8px 0}
+.journal-entry-body pre{overflow:auto;padding:12px;border-radius:8px;background:#f5f7f8}
+.journal-entry-body img{max-width:100%;height:auto;border-radius:8px}
+.journal-wikilink{color:var(--accent-dark);background:var(--accent-light);border-radius:5px;padding:1px 5px}
+.journal-tag{display:inline-flex;align-items:center;margin:0 2px;padding:2px 8px;border:1px solid #cce8da;border-radius:999px;background:#edf9f3;color:#16704b;font:700 11.5px/1.45 inherit;vertical-align:baseline;cursor:pointer;transition:.15s}.journal-tag:hover,.journal-tag.active{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(31,122,77,.18)}
+.journal-highlight{padding:0 2px;border-radius:3px;background:#ffe889;color:#493d00;box-shadow:0 0 0 1px rgba(205,161,0,.12)}
+.journal-load-more{position:relative;grid-column:1/-1;min-height:64px;display:flex;align-items:center;justify-content:center}.journal-stream.is-timeline .journal-load-more{margin-left:0}
+@media(max-width:1099px){.journal-stream{grid-template-columns:repeat(2,minmax(0,1fr))}.journal-entry.is-span-3{grid-column:1/-1}.journal-entry.is-span-3 .journal-entry-body{column-count:1}}
+@media(max-width:640px){.journal-toolbar{flex-wrap:wrap}.journal-search-row{flex-basis:calc(100% - 90px)}.journal-filter-status{justify-content:center}.journal-stream{grid-template-columns:1fr;gap:10px}.journal-entry,.journal-entry.is-span-2,.journal-entry.is-span-3{grid-column:1/-1;padding:15px}.journal-stream.is-timeline{padding-left:23px}.journal-stream.is-timeline::before{left:8px}.journal-stream.is-timeline .journal-entry::before{left:-21px;width:10px;height:10px}.journal-entry-head{display:block}.journal-entry-source{display:block;max-width:100%;margin-top:7px}.journal-load-more{margin-left:0}}
+
 .media-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:136px;border:1px dashed var(--border2);border-radius:var(--radius-lg);background:linear-gradient(180deg,#fff,var(--bg2));padding:24px;text-align:center;color:var(--text2);transition:.16s;cursor:pointer;position:relative;overflow:hidden}
 .media-drop::before{content:'🖼️';display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:var(--accent-light);color:var(--accent);font-size:20px;margin-bottom:12px}
 .media-drop:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.08);background:#fff}
@@ -1306,6 +1344,158 @@ tbody tr:hover td{background:#f2f8f5!important}
   .preview-viewport-switch button{font-size:11px;width:auto}
 }
 
+/* 与前台共用的四套色调：明亮、夜幕、霜灰、晨曦。 */
+:root,:root[data-theme="paper"]{--bg:#fff;--bg2:#fafafa;--bg3:#f3f4f2;--bg4:#eef0ed;--text:#2f3332;--text2:#59615d;--text3:#707673;--text4:#b9bdb9;--border:#dedfdb;--border2:#c9ccc8;--accent:#6870a8;--accent-light:#e8e9f3;--accent-dark:#4f578f;--pill-shell:#f2f2f7;--pill-hover:#e8e9f1;--pill-active:#737aa7;--pill-active-text:#fff;--selection:#dcdff0;--success:#5f8f78;--success-light:#edf5f0;--purple:#6870a8;--purple-light:#e8e9f3;--danger-soft:#fff0f2;--toolbar-bg:#f7f7f5;--topbar-bg:rgba(255,255,255,.92);--shadow:0 10px 30px rgba(30,39,35,.07),0 1px 3px rgba(30,39,35,.04);--shadow-soft:0 3px 14px rgba(30,39,35,.065)}
+:root[data-theme="night"]{--bg:#f9fcfe;--bg2:#edf5f8;--bg3:#e3f0f5;--bg4:#dceaf0;--text:#31454d;--text2:#536c76;--text3:#718891;--text4:#9aadb4;--border:#cfdee4;--border2:#abc2cc;--accent:#4c8ba2;--accent-light:#dcecf2;--accent-dark:#326b80;--pill-shell:#e4f0f4;--pill-hover:#d5e8ee;--pill-active:#4f8ca2;--pill-active-text:#fff;--selection:#cce5ee;--success:#4f8878;--success-light:#e0efea;--purple:#6385a5;--purple-light:#e0eaf3;--danger-soft:#f8e7e9;--toolbar-bg:#e8f2f6;--topbar-bg:rgba(249,252,254,.94);--shadow:0 10px 30px rgba(47,86,101,.1);--shadow-soft:0 3px 14px rgba(47,86,101,.085)}
+:root[data-theme="sepia"]{--bg:#f9fafb;--bg2:#eef0f2;--bg3:#e2e5e8;--bg4:#e5e8eb;--text:#3d4247;--text2:#596168;--text3:#687078;--text4:#959ca3;--border:#d0d5d9;--border2:#abb2b8;--accent:#6f7b86;--accent-light:#dde2e6;--accent-dark:#4f5b65;--pill-shell:#e7eaed;--pill-hover:#dce1e5;--pill-active:#78848e;--pill-active-text:#fff;--selection:#d7dde2;--success:#667f72;--success-light:#e0e8e3;--purple:#6f7b86;--purple-light:#dde2e6;--danger-soft:#f8e8ea;--toolbar-bg:#e7eaed;--topbar-bg:rgba(249,250,251,.92);--shadow:0 10px 30px rgba(38,45,51,.09);--shadow-soft:0 3px 14px rgba(38,45,51,.08)}
+:root[data-theme="mist"]{--bg:#fffaf8;--bg2:#f8f2ef;--bg3:#f2e5e0;--bg4:#f0e5e1;--text:#4a3d39;--text2:#735f58;--text3:#7e6b64;--text4:#a6928b;--border:#e1d1cb;--border2:#c2aaa1;--accent:#b66f61;--accent-light:#f2ddd7;--accent-dark:#8f5147;--pill-shell:#f4e8e3;--pill-hover:#ecd9d2;--pill-active:#bd796b;--pill-active-text:#fff;--selection:#f0cfc5;--success:#8a7563;--success-light:#f2e6df;--purple:#b66f61;--purple-light:#f2ddd7;--danger-soft:#f9e2e2;--toolbar-bg:#f6ebe7;--topbar-bg:rgba(255,250,248,.93);--shadow:0 10px 30px rgba(94,57,48,.09);--shadow-soft:0 3px 14px rgba(94,57,48,.08)}
+body{background:var(--bg2);background-image:none;color:var(--text)}
+::selection{background:var(--selection);color:var(--text)}
+.app{background:var(--bg2)}.sidebar{background:var(--bg);border-color:var(--border);box-shadow:none}.sidebar-logo{border-color:var(--border)}
+.logo-icon{background:var(--pill-active);box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 25%,transparent)}
+.nav-item:hover{background:var(--bg3);color:var(--text)}.nav-item.active{background:var(--accent-light);border-color:var(--border);color:var(--accent-dark);box-shadow:none}
+.sidebar-footer,.sidebar-status{background:var(--toolbar-bg)}.topbar{background:var(--topbar-bg);border-color:var(--border);box-shadow:none}.content{background:transparent}
+.card,.fm-card,.editor-left,.editor-title-panel,.editor-right,.reader-wrap,.modal-card,.inter-left,.inter-main,.journal-entry,.media-item{background:var(--bg);border-color:var(--border);box-shadow:var(--shadow-soft);color:var(--text)}
+.btn{border-radius:9999px!important;border-color:var(--border2);background:var(--bg);color:var(--text2);box-shadow:none}
+.btn:hover{border-color:var(--accent);background:var(--pill-shell);color:var(--accent-dark);box-shadow:none}
+.btn.primary,.seg-btn.active{background:var(--pill-active)!important;border-color:var(--pill-active)!important;color:var(--pill-active-text)!important;box-shadow:none!important}
+.btn.primary:hover{filter:brightness(.92)}.btn.danger{background:var(--bg);color:#c45a66}.btn.danger:hover{background:var(--danger-soft);border-color:#c95d68}
+.btn.blue,.btn.preview-btn{background:var(--pill-shell)!important;border-color:var(--border)!important;color:var(--accent-dark)!important;box-shadow:none!important}.btn.blue:hover,.btn.preview-btn:hover{background:var(--accent-light)!important;border-color:var(--accent)!important}
+.btn.sm{border-radius:9999px!important}.seg-btn{border-radius:9999px;background:var(--bg)}.seg-btn:hover{border-color:var(--accent);color:var(--accent-dark)}
+button:not(.garden-archive-item):not(.garden-archive-title):not(.article-title-link){border-radius:9999px}
+.search-input,select.filter,.form-select,.fm-input,.fm-textarea,.setting-input,input,textarea,select{border-color:var(--border2);background:var(--bg);color:var(--text)}.search-input:focus,select.filter:focus,.form-select:focus,.fm-input:focus,.fm-textarea:focus,.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.toolbar,.modal-header,.modal-footer,.media-info,.editor-toolbar,.CodeMirror-gutters{background:var(--toolbar-bg);border-color:var(--border)}.tag.published{background:var(--success-light);color:var(--success)}.tag.meta,.tag.purple{background:var(--accent-light);color:var(--accent-dark)}
+.garden-archive-year-btn.active{background:var(--pill-active)}.garden-archive-date:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.garden-archive-title{border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;padding:0;border-radius:0!important}
+.journal-tag:hover,.journal-tag.active{border-color:var(--accent);background:var(--accent);color:var(--pill-active-text)}.journal-highlight{background:var(--selection);color:var(--text)}
+.CodeMirror,.editor-preview,.editor-preview-side,.markdown-body,.preview-scroll-area,.media-thumb{background:var(--bg)!important;color:var(--text)!important;border-color:var(--border)!important}.CodeMirror-cursor{border-left-color:var(--text)!important}.CodeMirror-selected{background:var(--selection)!important}
+.article-row,.setting-row,.inter-comment,.journal-card,.garden-archive-item,table th,table td{border-color:var(--border)!important}.article-row:hover,.inter-comment:hover{background:var(--bg3)}
+.alert.info{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark)}
+
+/* 前台同款色调切换按钮与动态药丸提示。 */
+.sidebar-palette{position:fixed;right:calc(clamp(1rem,2vw,1.5rem) + 12px);bottom:calc(1.65rem + env(safe-area-inset-bottom,0px));z-index:1001;display:flex;justify-content:center}.palette-trigger{--palette-rotation:0deg;position:relative;width:42px;height:42px;padding:0;border:1px solid var(--border);border-radius:50%!important;background:var(--pill-shell);color:var(--text2);display:grid;place-items:center;cursor:pointer;overflow:visible;transform:rotate(var(--palette-rotation));transition:transform .35s cubic-bezier(.4,0,.2,1),background .2s,color .2s,border-color .2s}.palette-trigger:hover{background:var(--pill-hover);color:var(--accent-dark);border-color:var(--accent)}.palette-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.palette-trigger svg{width:22px;height:22px}.palette-tooltip-orbit{position:absolute;left:calc(50% - 39px);top:50%;width:0;height:0;pointer-events:none}.control-tooltip{position:absolute;z-index:1002;display:inline-flex;align-items:center;width:max-content;min-height:25px;padding:3px 10px;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);border-radius:999px;background:color-mix(in srgb,var(--bg) 92%,transparent);color:var(--text);box-shadow:0 6px 18px color-mix(in srgb,var(--text) 12%,transparent),inset 0 1px 0 color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(12px) saturate(120%);font:600 11px/1 system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none}.palette-trigger .control-tooltip{left:0;top:0;translate:-50% -50%;rotate:calc(0deg - var(--palette-rotation));scale:.96;transform:translateX(4px);transition:opacity .16s,rotate .35s cubic-bezier(.4,0,.2,1),scale .16s,transform .16s,visibility 0s linear .16s}.palette-trigger[data-palette-position="vertical"] .control-tooltip{min-width:25px;min-height:0;padding:8px 3px;line-height:1.05;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:.08em}
+
+/* 前台同款右下角返回顶部。 */
+.back-to-top{position:fixed;right:calc(clamp(1rem,2vw,1.5rem) + 12px);bottom:calc(5.4rem + env(safe-area-inset-bottom,0px));min-width:44px;min-height:44px;padding:.55rem .2rem .45rem;border:0;border-bottom:1px solid var(--text3);border-radius:0!important;background:transparent;color:var(--text2);box-shadow:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;font:inherit;font-size:.68rem;line-height:1;letter-spacing:.14em;cursor:pointer;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(6px);transition:opacity .2s,visibility .2s,transform .2s,color .2s,border-color .2s;z-index:999}.back-to-top::before{content:"↑";font-size:.95rem;letter-spacing:0}.back-to-top::after{content:"TOP"}.back-to-top.visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}.back-to-top:hover{color:var(--text);border-bottom-color:var(--text);transform:translateY(-2px)}.back-to-top:focus-visible{outline:1px dashed var(--text);outline-offset:5px}.back-to-top svg{display:none}.back-to-top .control-tooltip{right:calc(100% + 9px);top:50%;transform:translate(4px,-50%) scale(.96);transform-origin:right center;transition:opacity .16s,transform .16s,visibility 0s linear .16s}
+@media (hover:hover) and (pointer:fine){.palette-trigger:hover .control-tooltip,.palette-trigger:focus-visible .control-tooltip{opacity:1;visibility:visible;scale:1;transform:translateX(0);transition-delay:.08s,0s,.08s,.08s,0s}.back-to-top:hover .control-tooltip,.back-to-top:focus-visible .control-tooltip{opacity:1;visibility:visible;transform:translate(0,-50%) scale(1)}}
+@media (hover:none),(pointer:coarse){.control-tooltip{display:none}}@media (max-width:960px){.back-to-top{display:none!important}}@media (prefers-reduced-motion:reduce){.palette-trigger,.back-to-top{transition:none!important}}
+
+/* 夜幕主题兜底：清除旧版组件中遗留的白色底、浅色渐变和内联编辑器配色。 */
+html[data-theme="night"] body,
+html[data-theme="night"] .app,
+html[data-theme="night"] .main,
+html[data-theme="night"] .content{background-color:var(--bg2)!important;color:var(--text)!important}
+html[data-theme="night"] .sidebar{background:linear-gradient(180deg,var(--bg),var(--bg2))!important;border-color:var(--border)!important}
+html[data-theme="night"] .sidebar-logo,
+html[data-theme="night"] .sidebar-footer,
+html[data-theme="night"] .sidebar-status{background:var(--bg)!important;border-color:var(--border)!important}
+html[data-theme="night"] .logo-sub,
+html[data-theme="night"] .nav-section{color:var(--text3)!important}
+html[data-theme="night"] .nav-item{color:var(--text2)}
+html[data-theme="night"] .nav-item:hover{background:var(--bg3)!important;color:var(--text)!important}
+html[data-theme="night"] .nav-item.active{background:var(--accent-light)!important;border-color:var(--border2)!important;color:var(--accent-dark)!important}
+html[data-theme="night"] .topbar{background:var(--topbar-bg)!important;border-color:var(--border)!important;box-shadow:none!important}
+html[data-theme="night"] .page-title small{background:var(--bg3)!important;color:var(--text3)!important}
+
+html[data-theme="night"] .card,
+html[data-theme="night"] .fm-card,
+html[data-theme="night"] .quick-command,
+html[data-theme="night"] .friend-card,
+html[data-theme="night"] .fp-card,
+html[data-theme="night"] .friends-activity-item,
+html[data-theme="night"] .overview-stat,
+html[data-theme="night"] .tag-cloud-panel,
+html[data-theme="night"] .media-item,
+html[data-theme="night"] .journal-card,
+html[data-theme="night"] .journal-entry{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text)!important}
+html[data-theme="night"] .card-desc,
+html[data-theme="night"] .overview-stat span:last-child{color:var(--text3)!important}
+html[data-theme="night"] .rss-item,
+html[data-theme="night"] .rss-item:hover,
+html[data-theme="night"] .friends-activity-progress{background:var(--bg3)!important;border-color:var(--border)!important}
+html[data-theme="night"] .garden-archive-year-tabs,
+html[data-theme="night"] .garden-archive-item{background:var(--bg)!important;border-color:var(--border)!important}
+html[data-theme="night"] .media-drop,
+html[data-theme="night"] .media-drop:hover{background:linear-gradient(180deg,var(--bg),var(--bg3))!important;border-color:var(--border2)!important}
+
+html[data-theme="night"] .toolbar,
+html[data-theme="night"] .pagination-wrap,
+html[data-theme="night"] .table-wrap,
+html[data-theme="night"] table,
+html[data-theme="night"] th,
+html[data-theme="night"] td{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text)!important}
+html[data-theme="night"] th,
+html[data-theme="night"] .pagination-wrap{background:var(--toolbar-bg)!important;color:var(--text3)!important}
+html[data-theme="night"] tbody tr:hover td{background:var(--bg3)!important}
+html[data-theme="night"] .mono{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text2)!important}
+
+html[data-theme="night"] input,
+html[data-theme="night"] textarea,
+html[data-theme="night"] select,
+html[data-theme="night"] .search-input,
+html[data-theme="night"] .form-select,
+html[data-theme="night"] .fm-input,
+html[data-theme="night"] .fm-textarea,
+html[data-theme="night"] .setting-input,
+html[data-theme="night"] .tags-input-wrap{background:var(--bg3)!important;border-color:var(--border2)!important;color:var(--text)!important;box-shadow:none!important}
+html[data-theme="night"] input::placeholder,
+html[data-theme="night"] textarea::placeholder{color:var(--text4)!important}
+html[data-theme="night"] .switch-wrap,
+html[data-theme="night"] .editor-meta-line>span{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text3)!important}
+
+html[data-theme="night"] .editor-left,
+html[data-theme="night"] .editor-right,
+html[data-theme="night"] .editor-title-panel,
+html[data-theme="night"] .editor-toolbar,
+html[data-theme="night"] .editor-toolbar-upload,
+html[data-theme="night"] .CodeMirror,
+html[data-theme="night"] .CodeMirror-scroll,
+html[data-theme="night"] .CodeMirror-gutters,
+html[data-theme="night"] .editor-preview,
+html[data-theme="night"] .editor-preview-side{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text)!important}
+html[data-theme="night"] .editor-title-panel,
+html[data-theme="night"] .editor-toolbar,
+html[data-theme="night"] .CodeMirror-gutters{background:var(--toolbar-bg)!important}
+html[data-theme="night"] .editor-toolbar button{color:var(--text2)!important}
+html[data-theme="night"] .editor-toolbar button:hover,
+html[data-theme="night"] .editor-toolbar button.active{background:var(--accent-light)!important;border-color:var(--accent)!important;color:var(--accent-dark)!important}
+html[data-theme="night"] .CodeMirror-selected{background:var(--selection)!important}
+html[data-theme="night"] .CodeMirror-cursor{border-left-color:var(--text)!important}
+
+html[data-theme="night"] .modal-card,
+html[data-theme="night"] .modal-header,
+html[data-theme="night"] .modal-footer{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text)!important}
+html[data-theme="night"] .modal-header,
+html[data-theme="night"] .modal-footer{background:var(--toolbar-bg)!important}
+html[data-theme="night"] .inter-left-tools,
+html[data-theme="night"] .inter-post-item,
+html[data-theme="night"] .inter-summary-bar,
+html[data-theme="night"] .inter-filter-bar,
+html[data-theme="night"] .inter-memo-card,
+html[data-theme="night"] .inter-comment-card,
+html[data-theme="night"] .inter-load-more,
+html[data-theme="night"] .inter-thread-drawer,
+html[data-theme="night"] .inter-thread-head,
+html[data-theme="night"] .inter-twikoo-host,
+html[data-theme="night"] .inter-thread-drawer .tk-admin-container.inter-admin-docked{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text)!important}
+html[data-theme="night"] .inter-post-item:hover,
+html[data-theme="night"] .inter-comment-card:hover{background:var(--bg3)!important}
+html[data-theme="night"] .inter-origin,
+html[data-theme="night"] .inter-post-item.active .inter-post-count{background:var(--bg3)!important;color:var(--accent-dark)!important}
+
+html[data-theme="night"] .article-preview-shell{background:var(--bg2)!important;border-color:var(--border)!important}
+html[data-theme="night"] .article-preview-toolbar,
+html[data-theme="night"] .preview-browser-bar,
+html[data-theme="night"] .preview-address{background:var(--bg)!important;border-color:var(--border)!important;color:var(--text2)!important}
+html[data-theme="night"] .preview-viewport-switch,
+html[data-theme="night"] .preview-close-btn{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text2)!important}
+html[data-theme="night"] .preview-viewport-switch button.active{background:var(--pill-active)!important;color:var(--pill-active-text)!important}
+html[data-theme="night"] .preview-stage{background:var(--bg2)!important}
+html[data-theme="night"] .preview-device{border-color:var(--border)!important;background:var(--bg)!important}
+
+html[data-theme="night"] *{scrollbar-color:var(--border2) transparent}
+html[data-theme="night"] *::-webkit-scrollbar-thumb{background:var(--border2)}
+
 </style>
 </head>
 <body>
@@ -1335,6 +1525,10 @@ tbody tr:hover td{background:#f2f8f5!important}
       <div class="nav-item" onclick="showPage('garden')" id="nav-garden">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V5a2 2 0 00-2-2H6.5A2.5 2.5 0 004 5.5v14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8M8 11h8M8 15h5"/></svg>
         简悦花园
+      </div>
+      <div class="nav-item" onclick="showPage('journals')" id="nav-journals">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2h-2M8 3v3h8V3M8 11h8M8 15h6"/></svg>
+        日记管理
       </div>
       <div class="nav-item" onclick="showPage('sports')" id="nav-sports">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -1383,6 +1577,19 @@ tbody tr:hover td{background:#f2f8f5!important}
 
 <div id="modal-container"></div>
 <div class="toast-container" id="toast-container"></div>
+<div class="sidebar-palette">
+  <button class="palette-trigger" id="admin-palette-trigger" type="button" aria-label="切换色调" data-palette-position="horizontal">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/>
+    </svg>
+    <span class="palette-tooltip-orbit" aria-hidden="true"><span class="control-tooltip">明亮</span></span>
+  </button>
+</div>
+<button id="backToTop" class="back-to-top" type="button" aria-label="返回顶部">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+  <span class="control-tooltip" aria-hidden="true">返回顶部</span>
+</button>
 <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
@@ -1392,6 +1599,63 @@ tbody tr:hover td{background:#f2f8f5!important}
 // 高德地图前台配置凭证
 const AMAP_KEY = "0d4b886f7c34e19066e776eabf8e2310";
 const AMAP_SECRET = "5a01263b6b8d94d9f8bfaf203ab7c736";
+
+const ADMIN_PALETTE_ORDER=['paper','night','sepia','mist'];
+const ADMIN_PALETTES={
+  paper:{label:'明亮',color:'#fafafa',dark:false},
+  night:{label:'湖蓝',color:'#edf5f8',dark:false},
+  sepia:{label:'霜灰',color:'#eef0f2',dark:false},
+  mist:{label:'晨曦',color:'#f8f2ef',dark:false}
+};
+let adminPaletteRotation=Math.max(0,ADMIN_PALETTE_ORDER.indexOf(document.documentElement.dataset.theme))*90;
+
+function applyAdminPalette(name,persist=false){
+  if(!ADMIN_PALETTES[name]) name='paper';
+  const palette=ADMIN_PALETTES[name];
+  const root=document.documentElement;
+  const trigger=document.getElementById('admin-palette-trigger');
+  root.dataset.theme=name;
+  root.style.colorScheme=palette.dark?'dark':'light';
+  root.classList.toggle('dark',palette.dark);
+  document.body.classList.toggle('dark',palette.dark);
+  document.body.classList.toggle('dark-theme',palette.dark);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',palette.color);
+  if(trigger){
+    trigger.style.setProperty('--palette-rotation',adminPaletteRotation+'deg');
+    trigger.dataset.palettePosition=(name==='night'||name==='mist')?'vertical':'horizontal';
+    const tooltip=trigger.querySelector('.control-tooltip');
+    if(tooltip) tooltip.textContent=palette.label;
+    trigger.setAttribute('aria-label',`当前色调：${palette.label}，点击切换`);
+  }
+  if(persist){try{localStorage.setItem('blog-palette',name);}catch(e){}}
+  window.dispatchEvent(new CustomEvent('blogpalettechange',{detail:{theme:name,dark:palette.dark}}));
+}
+
+function initAdminPalette(){
+  const trigger=document.getElementById('admin-palette-trigger');
+  if(!trigger) return;
+  trigger.addEventListener('click',()=>{
+    const current=ADMIN_PALETTE_ORDER.indexOf(document.documentElement.dataset.theme);
+    adminPaletteRotation+=90;
+    applyAdminPalette(ADMIN_PALETTE_ORDER[(current+1)%ADMIN_PALETTE_ORDER.length],true);
+  });
+  applyAdminPalette(document.documentElement.dataset.theme||'paper',false);
+}
+
+function initAdminBackToTop(){
+  const button=document.getElementById('backToTop');
+  const content=document.getElementById('main-content');
+  if(!button||!content) return;
+  const pageScrollTop=()=>Math.max(content.scrollTop||0,window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop||0);
+  const update=()=>button.classList.toggle('visible',pageScrollTop()>120);
+  content.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('scroll',update,{passive:true});
+  button.addEventListener('click',()=>{
+    content.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  update();
+}
 
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
@@ -1410,7 +1674,16 @@ const GARDEN_CFG = {
   repo: 'clip',
   branch: 'main',
   postsPath: 'content',
-  blogUrl: 'https://github.com/cosine00/clip/blob/main'
+  blogUrl: 'https://clip.hux.ink/'
+};
+
+// 日记管理：只读访问 Obsidian / Logseq 日记目录，沿用系统设置中的 GitHub Token。
+const JOURNAL_CFG = {
+  get token(){ return CFG.token; },
+  owner: 'cosine00',
+  repo: 'logseq',
+  branch: 'master',
+  path: 'Logseq/journals'
 };
 
 let STATE = {
@@ -1443,6 +1716,12 @@ let GARDEN_STATE = {
   postsPage: 1, selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false,
   autosaveTimer: null, lastAutosaveAt: null, postSavePromise: null, postDeletePromise: null,
   previewRefreshTimer: null, previewViewport: 'desktop'
+};
+
+let JOURNAL_STATE = {
+  entries: [], indexLoaded: false, loading: false, cursor: 0, batchSize: 10,
+  viewEntries: [], observer: null, renderSeq: 0, activeTag: '', searchQuery: '',
+  searchTimer: null, indexing: false, indexPromise: null, filterSeq: 0, viewMode: 'card'
 };
 
 const ACT_JSON_PATH = "assets/act.json";
@@ -1756,6 +2035,7 @@ function showPage(page){
     case 'interactions': renderInteractionsPage(); break;
     case 'friends': renderFriendsPage(); break;
     case 'garden': renderGardenPage(); break;
+    case 'journals': renderJournalsPage(); break;
     case 'sports': renderSportsPage(); break;
     case 'footprints': renderFootprintsPage(); break;
     case 'media': renderMediaPage(); break;
@@ -2790,70 +3070,15 @@ function gardenToggleTagFilter(tag) {
 
 function gardenRenderPostsPageContainer() {
   const c = document.getElementById('main-content');
-  const validPosts = GARDEN_STATE.posts.filter(p => !p.isTrash);
-  const totalArticles = validPosts.length;
-  const totalWords = validPosts.reduce((acc, p) => acc + (p.words || 0), 0);
-  const publishedArticles = validPosts.filter(p => !p.draft).length;
-  const draftArticles = validPosts.filter(p => p.draft).length;
-
-  const tagCounts = new Map();
-  validPosts.forEach(p => p.tags.forEach(t => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
-  const sortedTags = [...tagCounts.keys()].sort((a, b) => a.localeCompare(b, 'zh-CN'));
-
-  const tagCloudHtml = sortedTags.map(t => {
-    const isActive = GARDEN_STATE.tagFilter === t;
-    return `<button class="seg-btn ${isActive ? 'active' : ''}" style="margin:2px;" onclick="gardenToggleTagFilter('${escapeAttr(t)}')">#${escapeHTML(t)}(${tagCounts.get(t)})</button>`;
-  }).join('');
-
+  GARDEN_STATE.statusTab='all';
+  GARDEN_STATE.tagFilter='all';
+  GARDEN_STATE.searchQuery='';
+  GARDEN_STATE.sortBy='date_desc';
   c.innerHTML=`
-    <div class="management-shell">
-      <div class="card posts-workbench-card">
-        <section class="overview-hero">
-          <div class="overview-hero-copy">
-            <span class="eyebrow">CONTENT OVERVIEW</span>
-            <h2>简悦花园工作台</h2>
-            <p>集中浏览、检索、预览和编辑 clip/content 中的 Markdown 收藏。</p>
-          </div>
-          <div class="overview-sync-pill"><span class="status-dot ok"></span>仓库内容已载入</div>
-        </section>
-        <div class="overview-grid">
-          <div class="overview-stat"><span class="overview-stat-icon">文</span><div><strong>${totalArticles}</strong><span>全部收藏</span></div></div>
-          <div class="overview-stat"><span class="overview-stat-icon success">✓</span><div><strong>${publishedArticles}</strong><span>已发布</span></div></div>
-          <div class="overview-stat"><span class="overview-stat-icon warning">✎</span><div><strong>${draftArticles}</strong><span>草稿</span></div></div>
-          <div class="overview-stat"><span class="overview-stat-icon purple">#</span><div><strong>${sortedTags.length}</strong><span>标签数量</span></div></div>
-          <div class="overview-stat"><span class="overview-stat-icon blue">字</span><div><strong>${totalWords.toLocaleString('zh-CN')}</strong><span>累计字数</span></div></div>
-        </div>
-
-        <div class="tag-cloud-panel">
-          <div class="tag-cloud-heading"><strong>标签导航</strong><span>点击标签快速筛选</span></div>
-          <div class="tag-cloud-list">
-            ${tagCloudHtml || '<span class="muted">暂无标签</span>'}
-          </div>
-        </div>
-
-        <div class="card-header list-section-header">
-          <div><div class="card-title">收藏列表</div></div>
-          <div class="segmented" id="status-tabs"></div>
-        </div>
-        <div class="toolbar">
-          <div class="search-box">${ICON_SEARCH}<input type="text" class="search-input" id="table-search" placeholder="搜索标题、摘要、标签或文件路径…" value="${escapeAttr(GARDEN_STATE.searchQuery)}"></div>
-          <select class="filter" id="year-filter"></select>
-          <select class="filter" id="tag-filter"></select>
-          <select class="filter" id="sort-filter">
-            <option value="date_desc">按日期倒序</option>
-            <option value="date_asc">按日期正序</option>
-            <option value="title_asc">按标题 A-Z</option>
-            <option value="words_desc">按字数最多</option>
-          </select>
-        </div>
+    <div style="max-width:920px;margin:0 auto;padding:8px 0 30px">
+        <div class="garden-archive-year-tabs" id="garden-archive-year-tabs"></div>
         <div id="table-render-box"></div>
-      </div>
     </div>`;
-  document.getElementById('table-search').addEventListener('input', e=>{ GARDEN_STATE.searchQuery=e.target.value; GARDEN_STATE.postsPage = 1; gardenRenderPostsTableBody(); });
-  document.getElementById('year-filter').addEventListener('change', e=>{ GARDEN_STATE.yearFilter=e.target.value; GARDEN_STATE.postsPage = 1; GARDEN_STATE.selected.clear(); gardenRenderPostsTableBody(); });
-  document.getElementById('tag-filter').addEventListener('change', e=>{ GARDEN_STATE.tagFilter=e.target.value; GARDEN_STATE.postsPage = 1; GARDEN_STATE.selected.clear(); gardenRenderPostsTableBody(); });
-  document.getElementById('sort-filter').value=GARDEN_STATE.sortBy;
-  document.getElementById('sort-filter').addEventListener('change', e=>{ GARDEN_STATE.sortBy=e.target.value; GARDEN_STATE.postsPage = 1; gardenRenderPostsTableBody(); });
   gardenRenderPostsTableBody();
 }
 
@@ -2867,7 +3092,21 @@ async function gardenLoadPosts(){
   const markdownFiles=tree.filter(item=>item.type==='blob' && item.path.startsWith(base+'/') && item.path.endsWith('.md') && !item.path.endsWith('_index.md'));
   const posts=await gardenReadPostMetas(markdownFiles,false);
   posts.sort((a,b)=>String(b.date||b.lastmod||'').localeCompare(String(a.date||a.lastmod||'')) || String(a.title||'').localeCompare(String(b.title||''),'zh-CN'));
+  gardenAssignPublicPaths(posts);
   GARDEN_STATE.posts=posts;
+}
+
+function gardenAssignPublicPaths(posts){
+  const counters={};
+  [...posts]
+    .filter(post=>!post.isTrash && !post.draft && gardenBeijingDayKey(post.date))
+    .sort((a,b)=>gardenPostTime(a.date)-gardenPostTime(b.date) || String(a.path||'').localeCompare(String(b.path||'')))
+    .forEach(post=>{
+      const dayKey=gardenBeijingDayKey(post.date);
+      counters[dayKey]=(counters[dayKey]||0)+1;
+      post.publicPath=`${dayKey}${String(counters[dayKey]).padStart(2,'0')}`;
+      post.publicUrl=`${String(GARDEN_CFG.blogUrl||'https://clip.hux.ink/').replace(/\/$/,'')}/${post.publicPath}`;
+    });
 }
 
 async function gardenReadPostMetas(items, isTrash){
@@ -2951,7 +3190,7 @@ function gardenGetPostYear(post){
 }
 
 function gardenRenderYearFilter(){
-  const select=document.getElementById('year-filter'); if(!select) return;
+  const tabs=document.getElementById('garden-archive-year-tabs'); if(!tabs) return;
   const base=gardenBasePostsForFilters().filter(p=>GARDEN_STATE.tagFilter==='all' || p.tags.includes(GARDEN_STATE.tagFilter));
   const yearCounts=new Map();
   base.forEach(p=>{
@@ -2960,10 +3199,16 @@ function gardenRenderYearFilter(){
   });
   const years=[...yearCounts.keys()].sort((a,b)=>b.localeCompare(a));
   const current=GARDEN_STATE.yearFilter;
-  select.innerHTML=`<option value="all">全部年份（${base.length}）</option>` +
-    years.map(y=>`<option value="${escapeAttr(y)}">${escapeHTML(y)} 年（${yearCounts.get(y)}）</option>`).join('');
-  select.value=years.includes(current) ? current : 'all';
-  GARDEN_STATE.yearFilter=select.value;
+  GARDEN_STATE.yearFilter=current==='all' || years.includes(current) ? current : (years[0]||'all');
+  tabs.innerHTML=`<button type="button" class="garden-archive-year-btn ${GARDEN_STATE.yearFilter==='all'?'active':''}" onclick="gardenSelectArchiveYear('all')">全部</button>`+
+    years.map(y=>`<button type="button" class="garden-archive-year-btn ${GARDEN_STATE.yearFilter===y?'active':''}" onclick="gardenSelectArchiveYear('${escapeAttr(y)}')">${escapeHTML(y)}</button>`).join('');
+}
+
+function gardenSelectArchiveYear(year){
+  GARDEN_STATE.yearFilter=String(year||'all');
+  GARDEN_STATE.postsPage=1;
+  GARDEN_STATE.selected.clear();
+  gardenRenderPostsTableBody();
 }
 
 function gardenGetFilteredPosts(){
@@ -2995,37 +3240,24 @@ function gardenChangePostsPage(page) {
 }
 
 function gardenRenderPostsTableBody(){
-  const counts=gardenPostCounts(); gardenRenderStats(counts); gardenRenderStatusTabs(counts); gardenRenderYearFilter(); gardenRenderTagFilter();
+  gardenRenderYearFilter();
   
   const posts=gardenGetFilteredPosts();
   const box=document.getElementById('table-render-box');
   if(posts.length===0){ box.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><p>没有找到符合条件的收藏文章</p></div>`; return; }
   
-  const pageSize = 10;
-  const totalPages = Math.ceil(posts.length / pageSize) || 1;
-  if(GARDEN_STATE.postsPage > totalPages) GARDEN_STATE.postsPage = totalPages;
-  if(GARDEN_STATE.postsPage < 1) GARDEN_STATE.postsPage = 1;
-  
-  const startIndex = (GARDEN_STATE.postsPage - 1) * pageSize;
-  const pagePosts = posts.slice(startIndex, startIndex + pageSize);
+  const years=GARDEN_STATE.yearFilter==='all' ? [...new Set(posts.map(gardenGetPostYear).filter(Boolean))] : [GARDEN_STATE.yearFilter];
+  box.innerHTML=`<div class="garden-archive">${years.map(year=>{
+    const yearPosts=posts.filter(post=>gardenGetPostYear(post)===year);
+    return `<section class="garden-archive-group"><h3 class="garden-archive-heading"><strong>${escapeHTML(year)}年</strong><sup>${yearPosts.length}</sup></h3><div class="garden-archive-list">${yearPosts.map(gardenRenderArchiveItem).join('')}</div></section>`;
+  }).join('')}</div>`;
+}
 
-  box.innerHTML=`
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>文章</th><th>标签</th><th>日期 / 字数</th><th>状态</th>
-        </tr></thead>
-        <tbody>${pagePosts.map(gardenRenderPostRow).join('')}</tbody>
-      </table>
-    </div>
-    <div class="pagination-wrap">
-      <div>共 ${posts.length} 篇收藏，显示第 ${startIndex + 1} - ${Math.min(startIndex + pageSize, posts.length)} 条</div>
-      <div class="pagination-controls">
-        <button class="btn sm" ${GARDEN_STATE.postsPage <= 1 ? 'disabled' : ''} onclick="gardenChangePostsPage(${GARDEN_STATE.postsPage - 1})">上一页</button>
-        <span style="padding: 0 8px; font-weight: 600;">${GARDEN_STATE.postsPage} / ${totalPages}</span>
-        <button class="btn sm" ${GARDEN_STATE.postsPage >= totalPages ? 'disabled' : ''} onclick="gardenChangePostsPage(${GARDEN_STATE.postsPage + 1})">下一页</button>
-      </div>
-    </div>`;
+function gardenRenderArchiveItem(post){
+  const encodedPath=encodePath(post.path);
+  const date=escapeHTML(formatDateShort(post.date));
+  const dateMarkup=post.publicUrl ? `<a class="garden-archive-date" href="${escapeAttr(post.publicUrl)}" target="_blank" rel="noopener" title="打开前台文章">${date}</a>` : `<span class="garden-archive-date" title="草稿暂无前台链接">${date}</span>`;
+  return `<div class="garden-archive-item">${dateMarkup}<button type="button" class="garden-archive-title" onclick="gardenViewPost('${encodedPath}')" title="后台预览 ${escapeAttr(post.title)}"><span>${escapeHTML(post.title)}</span></button></div>`;
 }
 
 function gardenRenderPostRow(p){
@@ -3056,9 +3288,9 @@ async function gardenViewPost(encodedPath){
   try{
     const file=await gardenGetFileContent(path); const {fm,body}=parseFrontMatter(file.content);
     const tags=normalizeTags(fm.tags); const htmlContent=marked.parse(body||'*当前文章无正文内容*');
-    const publicLink=GARDEN_CFG.blogUrl && (fm.slug || path) ? gardenBuildPublicUrl(fm, path) : '';
     const isTrashPost=false;
     const isDraftPost=isDraftValue(fm.draft);
+    const publicLink=!isDraftPost ? gardenBuildPublicUrl(fm, path) : '';
     const actionButtons=isTrashPost ? `
       <button class="btn" onclick="restoreFromTrash('${encodedPath}')">还原文章</button>
       <button class="btn primary" onclick="showPage('garden')">返回列表</button>
@@ -3080,7 +3312,7 @@ async function gardenViewPost(encodedPath){
             <span>✍️ ${countWords(body)} 字 · ${readMinutes(body)} 分钟</span>
             <span><span class="tag ${isTrashPost?'trash':(isDraftPost?'draft':'published')}">${isTrashPost?'回收站':(isDraftPost?'草稿':'已发布')}</span></span>
             ${tags.length?`<span>🏷️ ${tags.map(t=>`<span class="tag soft">${escapeHTML(t)}</span>`).join(' ')}</span>`:''}
-            ${publicLink&&!isTrashPost?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">查看 GitHub 源文件</a>`:''}
+            ${publicLink&&!isTrashPost?`<a class="tag published" href="${escapeAttr(publicLink)}" target="_blank" rel="noopener">查看文章</a>`:''}
           </div>
         </div>
         <div class="markdown-body">${htmlContent}</div>
@@ -3089,8 +3321,28 @@ async function gardenViewPost(encodedPath){
 }
 
 function gardenBuildPublicUrl(fm,path){
-  const encodedPath=String(path||'').split('/').map(encodeURIComponent).join('/');
-  return `https://github.com/${GARDEN_CFG.owner}/${GARDEN_CFG.repo}/blob/${encodeURIComponent(GARDEN_CFG.branch)}/${encodedPath}`;
+  const targetPath=String(path||'');
+  const cached=GARDEN_STATE.posts.find(post=>post.path===targetPath);
+  return cached?.publicUrl || '';
+}
+
+function gardenPostTime(value){
+  const date=gardenParseBuildDate(value);
+  return Number.isFinite(date.getTime()) ? date.getTime() : 0;
+}
+
+function gardenBeijingDayKey(value){
+  const date=gardenParseBuildDate(value);
+  if(Number.isFinite(date.getTime())) return new Date(date.getTime()+8*60*60*1000).toISOString().slice(0,10).replace(/-/g,'');
+  const match=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return match ? `${match[1]}${match[2]}${match[3]}` : '';
+}
+
+function gardenParseBuildDate(value){
+  let source=String(value||'').trim();
+  // GitHub Actions 构建环境按 UTC 解析无时区时间；显式补 Z，避免后台浏览器本地时区造成二次偏移。
+  if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(source)) source=source.replace(' ','T')+'Z';
+  return new Date(source);
 }
 
 async function gardenDeleteDraftPost(encodedPath){
@@ -6315,7 +6567,8 @@ function renderAmapCustomControls(container, map) {
   controlBox.className = 'footprint-map__custom-controls';
   controlBox.style.cssText = `
     position: absolute; top: 12px; right: 12px; z-index: 10;
-    display: flex; flex-direction: column; background: #ffffff;
+    display: flex; flex-direction: column; background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow: hidden;
   `;
 
@@ -6338,13 +6591,13 @@ function renderAmapCustomControls(container, map) {
     btnEl.title = btn.title;
     btnEl.innerHTML = btn.icon;
     btnEl.style.cssText = `
-      width: 32px; height: 32px; border: none; background: #ffffff;
-      color: #333333; font-size: 15px; font-weight: bold; cursor: pointer;
+      width: 32px; height: 32px; border: none; background: var(--bg);
+      color: var(--text); font-size: 15px; font-weight: bold; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      ${index < buttons.length - 1 ? 'border-bottom: 1px solid #eeeeee;' : ''}
+      ${index < buttons.length - 1 ? 'border-bottom: 1px solid var(--border);' : ''}
     `;
-    btnEl.onmouseover = () => btnEl.style.background = '#f5f5f5';
-    btnEl.onmouseout = () => btnEl.style.background = '#ffffff';
+    btnEl.onmouseover = () => btnEl.style.background = 'var(--bg3)';
+    btnEl.onmouseout = () => btnEl.style.background = 'var(--bg)';
     btnEl.onclick = (e) => { e.stopPropagation(); btn.action(); };
     controlBox.appendChild(btnEl);
   });
@@ -6353,7 +6606,277 @@ function renderAmapCustomControls(container, map) {
 }
 
 // ============================================================
-// 6. 图床 / 部署状态 / 系统设置
+// 6. 日记管理（只读 Obsidian / Logseq 日记流）
+// ============================================================
+async function journalGhFetch(path, opts={}){
+  if(!JOURNAL_CFG.token) throw new Error('GitHub Token 缺失，请先在系统设置中配置');
+  const base=`https://api.github.com/repos/${JOURNAL_CFG.owner}/${JOURNAL_CFG.repo}`;
+  const res=await fetch(base+path,{
+    ...opts,
+    headers:{'Authorization':`Bearer ${JOURNAL_CFG.token}`,'Accept':'application/vnd.github+json',...(opts.headers||{})}
+  });
+  if(!res.ok){
+    let detail={}; try{ detail=await res.json(); }catch(e){}
+    if(res.status===404) throw new Error(`无法读取私有仓库 ${JOURNAL_CFG.owner}/${JOURNAL_CFG.repo}，请确认 Token 已授予该仓库 Contents 读取权限`);
+    throw new Error(detail.message||`GitHub API 错误：${res.status}`);
+  }
+  return res.json();
+}
+function journalFileMeta(path){
+  const file=String(path||'').split('/').pop()||'';
+  const stem=file.replace(/\.md$/i,'');
+  const match=stem.match(/(\d{4})[-_.](\d{1,2})[-_.](\d{1,2})/);
+  if(!match) return {stamp:0,dateLabel:stem,weekday:'日期未识别',file};
+  const date=new Date(Number(match[1]),Number(match[2])-1,Number(match[3]));
+  const valid=date.getFullYear()===Number(match[1]) && date.getMonth()===Number(match[2])-1 && date.getDate()===Number(match[3]);
+  if(!valid) return {stamp:0,dateLabel:stem,weekday:'日期未识别',file};
+  return {
+    stamp:date.getTime(), file,
+    dateLabel:`${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`,
+    weekday:new Intl.DateTimeFormat('zh-CN',{weekday:'long'}).format(date)
+  };
+}
+async function loadJournalIndex(force=false){
+  if(JOURNAL_STATE.indexLoaded && !force) return;
+  const branch=encodeURIComponent(JOURNAL_CFG.branch).replace(/%2F/g,'/');
+  const tree=await journalGhFetch(`/git/trees/${branch}?recursive=1`);
+  if(tree.truncated) throw new Error('日记仓库文件树过大，GitHub 返回了不完整结果');
+  const root=cleanPath(JOURNAL_CFG.path)+'/';
+  JOURNAL_STATE.entries=(tree.tree||[])
+    .filter(item=>item.type==='blob' && item.path.startsWith(root) && /\.md$/i.test(item.path))
+    .map(item=>({path:item.path,sha:item.sha,...journalFileMeta(item.path),content:null}))
+    .sort((a,b)=>(b.stamp-a.stamp)||b.file.localeCompare(a.file,undefined,{numeric:true}));
+  JOURNAL_STATE.viewEntries=JOURNAL_STATE.entries;
+  JOURNAL_STATE.indexLoaded=true;
+  JOURNAL_STATE.cursor=0;
+}
+async function loadJournalContents(entries){
+  const missing=entries.filter(entry=>entry.content===null);
+  if(!missing.length) return;
+  const fields=missing.map((entry,index)=>`f${index}: object(expression: ${JSON.stringify(`${JOURNAL_CFG.branch}:${entry.path}`)}) { ... on Blob { text } }`).join('\n');
+  const query=`query($owner:String!,$repo:String!){ repository(owner:$owner,name:$repo){ ${fields} } }`;
+  const data=await ghGraphQL(query,{owner:JOURNAL_CFG.owner,repo:JOURNAL_CFG.repo});
+  if(!data.repository) throw new Error('Token 无权读取日记私有仓库，请授予该仓库 Contents 读取权限');
+  missing.forEach((entry,index)=>{ entry.content=data.repository[`f${index}`]?.text ?? ''; });
+}
+function cleanJournalSource(raw){
+  return String(raw||'')
+    .replace(/^\s*collapsed::\s*(?:true|false)\s*$/gmi,'')
+    .replace(/^\s*:LOGBOOK:\s*$[\s\S]*?^\s*:END:\s*$/gmi,'')
+    .replace(/^\s*:LOGBOOK:.*?:END:\s*$/gmi,'')
+    .replace(/^\s*CLOCK:\s*\[[^\]]+\](?:--\[[^\]]+\])?(?:\s*=>\s*\S+)?\s*$/gmi,'')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+}
+function journalExtractTags(raw){
+  const source=cleanJournalSource(raw).replace(/```[\s\S]*?```/g,'');
+  const tags=new Set();
+  const pattern=/(^|[\s(（\[])#([\p{L}\p{N}_\/-]+)/gu;
+  let match;
+  while((match=pattern.exec(source))) tags.add(match[2]);
+  return [...tags];
+}
+function decorateJournalTags(source){
+  let inFence=false;
+  return String(source||'').split('\n').map(line=>{
+    if(/^\s*```/.test(line)){ inFence=!inFence; return line; }
+    if(inFence) return line;
+    const parts=line.split(/(`[^`]*`)/g);
+    return parts.map((part,index)=>{
+      if(index%2) return part;
+      return part.replace(/(^|[\s(（\[])#([\p{L}\p{N}_\/-]+)/gu,(all,prefix,tag)=>{
+        const encoded=encodeURIComponent(tag);
+        const active=JOURNAL_STATE.activeTag.toLocaleLowerCase()===tag.toLocaleLowerCase()?' active':'';
+        return `${prefix}<button type="button" class="journal-tag${active}" data-journal-tag="${escapeAttr(encoded)}">#${escapeHTML(tag)}</button>`;
+      });
+    }).join('');
+  }).join('\n');
+}
+function renderJournalMarkdown(raw){
+  let body=cleanJournalSource(parseFrontMatter(String(raw||'')).body);
+  body=body
+    .replace(/!\[\[([^\]]+)\]\]/g,(_,name)=>`**附件：${String(name).replace(/[*_`]/g,'')}**`)
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,target,label)=>`<span class="journal-wikilink">${escapeHTML(label||target)}</span>`);
+  body=decorateJournalTags(body);
+  const html=window.marked?.parse ? marked.parse(body||'*这一天没有正文内容。*') : escapeHTML(body).replace(/\n/g,'<br>');
+  return window.DOMPurify?.sanitize ? DOMPurify.sanitize(html,{USE_PROFILES:{html:true}}) : html;
+}
+function highlightJournalSearch(root=document){
+  const query=JOURNAL_STATE.searchQuery.trim();
+  if(!query) return;
+  const needle=query.toLocaleLowerCase();
+  const pattern=new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  root.querySelectorAll?.('.journal-entry').forEach(entry=>{
+    const walker=document.createTreeWalker(entry,NodeFilter.SHOW_TEXT,{acceptNode(node){
+      return node.nodeValue?.toLocaleLowerCase().includes(needle) && !node.parentElement.closest('pre,code,button,.journal-highlight') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }});
+    const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      pattern.lastIndex=0;
+      const frag=document.createDocumentFragment(); let last=0;
+      node.nodeValue.replace(pattern,(hit,offset)=>{
+        frag.append(document.createTextNode(node.nodeValue.slice(last,offset)));
+        const mark=document.createElement('mark'); mark.className='journal-highlight'; mark.textContent=hit; frag.append(mark);
+        last=offset+hit.length; return hit;
+      });
+      frag.append(document.createTextNode(node.nodeValue.slice(last))); node.replaceWith(frag);
+    });
+  });
+}
+function renderJournalEntry(entry){
+  const textLength=cleanJournalSource(parseFrontMatter(entry.content||'').body).length;
+  const spanClass=textLength>=1200?' is-span-3':(textLength>=450?' is-span-2':'');
+  return `<article class="journal-entry${spanClass}">
+    <header class="journal-entry-head">
+      <div><div class="journal-entry-date">${escapeHTML(entry.dateLabel)}</div><div class="journal-entry-weekday">${escapeHTML(entry.weekday)}</div></div>
+      <div class="journal-entry-source" title="${escapeAttr(entry.path)}">${escapeHTML(entry.file)}</div>
+    </header>
+    <div class="journal-entry-body markdown-body">${renderJournalMarkdown(entry.content)}</div>
+  </article>`;
+}
+function observeJournalSentinel(){
+  JOURNAL_STATE.observer?.disconnect();
+  const sentinel=document.getElementById('journal-load-sentinel');
+  if(!sentinel || JOURNAL_STATE.cursor>=JOURNAL_STATE.viewEntries.length) return;
+  JOURNAL_STATE.observer=new IntersectionObserver(items=>{
+    if(items.some(item=>item.isIntersecting)) loadMoreJournals();
+  },{root:null,rootMargin:'500px 0px'});
+  JOURNAL_STATE.observer.observe(sentinel);
+}
+async function loadMoreJournals(){
+  if(JOURNAL_STATE.loading || STATE.page!=='journals') return;
+  const stream=document.getElementById('journal-stream');
+  const sentinel=document.getElementById('journal-load-sentinel');
+  if(!stream || !sentinel) return;
+  if(JOURNAL_STATE.cursor>=JOURNAL_STATE.viewEntries.length){ sentinel.remove(); return; }
+  JOURNAL_STATE.loading=true;
+  sentinel.innerHTML='<div class="loading"><div class="spinner"></div>正在读取更多日记…</div>';
+  const seq=JOURNAL_STATE.renderSeq;
+  try{
+    const batch=JOURNAL_STATE.viewEntries.slice(JOURNAL_STATE.cursor,JOURNAL_STATE.cursor+JOURNAL_STATE.batchSize);
+    await loadJournalContents(batch);
+    if(seq!==JOURNAL_STATE.renderSeq || STATE.page!=='journals') return;
+    sentinel.insertAdjacentHTML('beforebegin',batch.map(renderJournalEntry).join(''));
+    highlightJournalSearch(stream);
+    JOURNAL_STATE.cursor+=batch.length;
+    const count=document.getElementById('journal-loaded-count');
+    if(count) count.textContent=`已显示 ${JOURNAL_STATE.cursor} / ${JOURNAL_STATE.viewEntries.length} 篇`;
+    if(JOURNAL_STATE.cursor>=JOURNAL_STATE.viewEntries.length) sentinel.innerHTML='<span class="muted">已加载全部日记</span>';
+    else sentinel.innerHTML='';
+  }catch(e){
+    sentinel.innerHTML=`<div class="alert danger">${escapeHTML(e.message)} <button class="btn sm" onclick="loadMoreJournals()">重试</button></div>`;
+  }finally{
+    JOURNAL_STATE.loading=false;
+    observeJournalSentinel();
+  }
+}
+async function ensureJournalSearchIndex(){
+  if(JOURNAL_STATE.entries.every(entry=>entry.content!==null)) return;
+  if(JOURNAL_STATE.indexPromise) return JOURNAL_STATE.indexPromise;
+  JOURNAL_STATE.indexPromise=(async()=>{
+    JOURNAL_STATE.indexing=true;
+    const status=document.getElementById('journal-filter-status');
+    try{
+      const missing=JOURNAL_STATE.entries.filter(entry=>entry.content===null);
+      for(let i=0;i<missing.length;i+=20){
+        if(status) status.innerHTML=`<span class="journal-filter-label">正在建立全文索引 ${Math.min(i+20,missing.length)} / ${missing.length}…</span>`;
+        await loadJournalContents(missing.slice(i,i+20));
+      }
+    }finally{
+      JOURNAL_STATE.indexing=false;
+      JOURNAL_STATE.indexPromise=null;
+    }
+  })();
+  return JOURNAL_STATE.indexPromise;
+}
+function updateJournalFilterStatus(){
+  const status=document.getElementById('journal-filter-status'); if(!status) return;
+  const parts=[];
+  if(JOURNAL_STATE.activeTag) parts.push(`<span class="journal-filter-label">标签筛选</span><button type="button" class="journal-tag active" data-journal-tag="${escapeAttr(encodeURIComponent(JOURNAL_STATE.activeTag))}">#${escapeHTML(JOURNAL_STATE.activeTag)} ×</button>`);
+  if(JOURNAL_STATE.searchQuery) parts.push(`<span class="journal-filter-label">关键词：${escapeHTML(JOURNAL_STATE.searchQuery)}</span>`);
+  status.innerHTML=parts.join('');
+}
+async function applyJournalFilters(){
+  const stream=document.getElementById('journal-stream'); if(!stream) return;
+  const filterSeq=++JOURNAL_STATE.filterSeq;
+  const filtering=!!(JOURNAL_STATE.activeTag || JOURNAL_STATE.searchQuery.trim());
+  if(filtering){
+    stream.innerHTML='<div class="journal-load-more"><div class="loading"><div class="spinner"></div>正在检索全部日记…</div></div>';
+    try{ await ensureJournalSearchIndex(); }catch(e){ stream.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`; return; }
+  }
+  if(filterSeq!==JOURNAL_STATE.filterSeq || STATE.page!=='journals') return;
+  const tag=JOURNAL_STATE.activeTag.toLocaleLowerCase();
+  const query=JOURNAL_STATE.searchQuery.trim().toLocaleLowerCase();
+  JOURNAL_STATE.viewEntries=JOURNAL_STATE.entries.filter(entry=>{
+    const body=cleanJournalSource(parseFrontMatter(entry.content||'').body);
+    const tagMatch=!tag || journalExtractTags(body).some(item=>item.toLocaleLowerCase()===tag);
+    const textMatch=!query || body.toLocaleLowerCase().includes(query) || entry.file.toLocaleLowerCase().includes(query);
+    return tagMatch && textMatch;
+  });
+  JOURNAL_STATE.cursor=0;
+  JOURNAL_STATE.renderSeq++;
+  stream.innerHTML='<div class="journal-load-more" id="journal-load-sentinel"></div>';
+  updateJournalFilterStatus();
+  if(!JOURNAL_STATE.viewEntries.length){
+    stream.innerHTML='<div class="empty-state"><div class="empty-icon">🔎</div><p>没有找到匹配的日记。</p></div>';
+    const count=document.getElementById('journal-loaded-count'); if(count) count.textContent='找到 0 篇日记';
+    return;
+  }
+  await loadMoreJournals();
+}
+function handleJournalSearch(value){
+  JOURNAL_STATE.searchQuery=String(value||'').trim();
+  clearTimeout(JOURNAL_STATE.searchTimer);
+  JOURNAL_STATE.searchTimer=setTimeout(()=>applyJournalFilters(),350);
+}
+function clearJournalSearch(){
+  const input=document.getElementById('journal-search-input'); if(input) input.value='';
+  JOURNAL_STATE.searchQuery=''; clearTimeout(JOURNAL_STATE.searchTimer); applyJournalFilters();
+}
+function toggleJournalTag(tag,encoded=false){
+  const value=encoded ? decodeURIComponent(tag) : String(tag||'');
+  JOURNAL_STATE.activeTag=JOURNAL_STATE.activeTag.toLocaleLowerCase()===value.toLocaleLowerCase() ? '' : value;
+  applyJournalFilters();
+}
+function setJournalView(mode){
+  JOURNAL_STATE.viewMode=mode==='timeline'?'timeline':'card';
+  try{ localStorage.setItem('journal-view-mode',JOURNAL_STATE.viewMode); }catch(e){}
+  const stream=document.getElementById('journal-stream');
+  if(stream) stream.classList.toggle('is-timeline',JOURNAL_STATE.viewMode==='timeline');
+  document.querySelectorAll('.journal-view-button').forEach(button=>{
+    const active=button.dataset.view===JOURNAL_STATE.viewMode;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-pressed',active?'true':'false');
+  });
+}
+async function renderJournalsPage(force=false){
+  STATE.page='journals';
+  JOURNAL_STATE.renderSeq++;
+  JOURNAL_STATE.observer?.disconnect();
+  document.getElementById('page-title').innerHTML='日记管理 <small>Obsidian Journals · 只读</small>';
+  document.getElementById('topbar-actions').innerHTML=`<button class="btn" onclick="renderJournalsPage(true)">↻ 刷新日记</button>`;
+  const c=document.getElementById('main-content'); c.style.overflow='auto';
+  if(!CFG.token){ c.innerHTML=renderNoConfig(); return; }
+  c.innerHTML='<div class="loading"><div class="spinner"></div>正在读取私有仓库日记索引…</div>';
+  try{
+    await loadJournalIndex(force);
+    JOURNAL_STATE.cursor=0; JOURNAL_STATE.viewEntries=JOURNAL_STATE.entries;
+    JOURNAL_STATE.activeTag=''; JOURNAL_STATE.searchQuery='';
+    try{ JOURNAL_STATE.viewMode=localStorage.getItem('journal-view-mode')==='timeline'?'timeline':'card'; }catch(e){ JOURNAL_STATE.viewMode='card'; }
+    c.innerHTML=`<div class="journal-shell"><div class="journal-toolbar"><div class="journal-search-row"><div class="journal-search-box">${ICON_SEARCH}<input class="journal-search-input" id="journal-search-input" type="search" autocomplete="off" placeholder="搜索所有日记中的关键字…" oninput="handleJournalSearch(this.value)"><button class="journal-search-clear" type="button" onclick="clearJournalSearch()" aria-label="清除搜索">×</button></div></div><span class="journal-count" id="journal-loaded-count">${JOURNAL_STATE.entries.length} 篇</span><div class="journal-view-switch" role="group" aria-label="布局方式"><button class="journal-view-button" type="button" data-view="card" onclick="setJournalView('card')" title="卡片布局" aria-label="卡片布局"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></button><button class="journal-view-button" type="button" data-view="timeline" onclick="setJournalView('timeline')" title="时间线布局" aria-label="时间线布局"><svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.35"></circle><circle cx="5" cy="12" r="1.35"></circle><circle cx="5" cy="18" r="1.35"></circle><path d="M9 6h11M9 12h11M9 18h11"></path></svg></button></div></div><div class="journal-filter-status" id="journal-filter-status"></div><div class="journal-stream ${JOURNAL_STATE.viewMode==='timeline'?'is-timeline':''}" id="journal-stream"><div class="journal-load-more" id="journal-load-sentinel"></div></div></div>`;
+    setJournalView(JOURNAL_STATE.viewMode);
+    if(!JOURNAL_STATE.entries.length){
+      document.getElementById('journal-stream').innerHTML='<div class="empty-state"><div class="empty-icon">📓</div><p>日记目录中没有找到 Markdown 文件。</p></div>';
+      return;
+    }
+    await loadMoreJournals();
+  }catch(e){
+    c.innerHTML=`<div class="alert danger">${escapeHTML(e.message)}</div>`;
+  }
+}
+
+// ============================================================
+// 7. 图床 / 部署状态 / 系统设置
 // ============================================================
 function r2Configured(){
   return !!(CFG.r2AccountId && CFG.r2Bucket && CFG.r2AccessKeyId && CFG.r2SecretAccessKey && CFG.r2PublicUrl);
@@ -7056,12 +7579,22 @@ async function importSettingsFile(file){
 }
 
 // Lifecycle
+document.addEventListener('click',event=>{
+  const tagButton=event.target.closest?.('[data-journal-tag]');
+  if(!tagButton) return;
+  event.preventDefault();
+  try{ toggleJournalTag(decodeURIComponent(tagButton.dataset.journalTag||'')); }
+  catch(e){ toast('标签内容无法识别','error'); }
+});
+
 window.addEventListener('beforeunload',()=>{
   if(STATE.page==='editor' && STATE.dirty) saveLocalDraft('unload',{silent:true});
   if(GARDEN_STATE.page==='editor' && GARDEN_STATE.dirty) gardenSaveLocalDraft('unload',{silent:true});
 });
 
 window.addEventListener('DOMContentLoaded', async()=>{
+  initAdminPalette();
+  initAdminBackToTop();
   loadCfg(); const active=await checkStatus();
   if(active) showPage('posts'); else { showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning'); }
 });
