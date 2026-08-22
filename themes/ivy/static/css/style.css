@@ -10,7 +10,7 @@ html {
 
 body {
   /* Screen version */
-  font-family: "LXGW WenKai Screen", sans-serif;
+  font-family: "LXGW WenKai Screen", "KaiTi", serif;
 }
 
 *, *:before, *:after {

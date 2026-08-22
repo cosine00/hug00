@@ -14,11 +14,28 @@
         </a>
       </li>
     {{ end }}
+    <li class="font-menu">
+      <button class="font-trigger" type="button" aria-label="切换字体">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6.5 8V6h11v2M9.5 18h5M12 6v12" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-tooltip-orbit" aria-hidden="true">
+          <span class="control-tooltip">朱雀仿宋</span>
+        </span>
+      </button>
+    </li>
     <li class="palette-menu">
       <button class="palette-trigger" type="button" aria-label="切换色调" data-tooltip="明亮" data-tooltip-position="right">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/>
+          <defs>
+            <mask id="yin-yang-mask">
+              <rect width="24" height="24" fill="white"/>
+              <circle cx="12" cy="7.75" r="1.35" fill="black"/>
+            </mask>
+          </defs>
+          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 3.5a4.25 4.25 0 0 1 0 8.5 4.25 4.25 0 0 0 0 8.5 8.5 8.5 0 0 0 0-17z" fill="currentColor" mask="url(#yin-yang-mask)"/>
+          <circle cx="12" cy="16.25" r="1.35" fill="currentColor"/>
         </svg>
         <span class="palette-tooltip-orbit" aria-hidden="true">
           <span class="control-tooltip">明亮</span>

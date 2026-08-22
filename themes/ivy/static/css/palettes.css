@@ -126,6 +126,10 @@
 
 html { background: var(--page-bg); transition: background-color .2s ease; }
 body { background: var(--page-bg); color: var(--text); transition: background-color .2s ease, color .2s ease; }
+html[data-font="wenkai"] body { font-family: "LXGW WenKai Screen", "KaiTi", serif; }
+html[data-font="zhuque"] body { font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif; font-weight: 599; }
+html[data-font="kinghwa"] body { font-family: "KingHwa_OldSong", "Songti SC", SimSun, serif; }
+html[data-font="zhisong"] body { font-family: "LXGW Neo ZhiSong", "Songti SC", SimSun, serif; }
 ::selection { background: var(--selection); color: var(--text-strong); }
 a { color: var(--text-strong); border-color: var(--border-strong); }
 a:hover { color: var(--accent-hover); }
@@ -181,6 +185,28 @@ img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(
 .palette-trigger svg { width: 1.2rem; height: 1.2rem; display: block; transform: rotate(-25deg); }
 .palette-trigger:hover { background: var(--accent-soft); color: var(--accent-hover); }
 .palette-trigger:focus-visible { outline: 1px dashed var(--accent); outline-offset: 3px; }
+
+/* Font trial control */
+.font-menu { list-style: none; }
+.font-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  transform: rotate(var(--font-rotation, 0deg));
+  transition: color .18s ease, background-color .18s ease, transform .35s cubic-bezier(.4, 0, .2, 1);
+}
+.font-trigger:hover { color: var(--accent-hover); background: var(--accent-soft); }
+.font-trigger:focus-visible { outline: 1px dashed var(--accent); outline-offset: 3px; }
+.font-trigger svg { width: 1.1rem; height: 1.1rem; display: block; }
 
 /* Cards, lists, media pages and archive controls */
 .post-preview, .db-card, .archive-card, .book-card, .movie-card, .runCard, .statsCard, .calendarCard,
@@ -400,7 +426,155 @@ button.button-load.noclick {
   .masthead .menu .active a { background: transparent; border-color: var(--text-strong); color: var(--text-strong); }
   .palette-menu { display: inline-block; margin: 5px 0 0 3px; vertical-align: middle; }
   .palette-trigger { width: 2.25rem; height: 2.25rem; color: var(--text-strong); border: 1px solid var(--border-strong); }
+  .font-menu { display: inline-block; margin: 5px 0 0 3px; vertical-align: middle; }
+  .font-trigger { width: 2.25rem; height: 2.25rem; color: var(--text-strong); border: 1px solid var(--border-strong); }
 }
 
 @media (prefers-reduced-motion: reduce) { html, body { transition: none; } }
 @media print { .palette-menu { display: none !important; } html, body { background: #fff !important; color: #000 !important; } }
+
+/* Focused visual polish: navigation, reading content, media and shared cards. */
+
+/* 1. Quieter desktop navigation with a clearer current section. */
+.masthead .menu a {
+  color: color-mix(in srgb, var(--text) 78%, var(--muted));
+  border-bottom: 0;
+  transition: color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+
+.masthead .menu a:hover {
+  color: var(--text-strong);
+}
+
+.masthead .menu .active > a {
+  color: var(--accent-hover);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+/* 3. Article headings follow the reading flow; H2 gets a quiet divider. */
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  text-align: left;
+  text-wrap: balance;
+}
+
+.post-content h2 {
+  padding-top: .85em;
+  border-top: 1px solid var(--border);
+}
+
+/* 4. Consistent, restrained media treatment. */
+.post-content img:not(.emoji):not(.tk-avatar-img),
+figure img {
+  border-radius: 7px;
+}
+
+figure figcaption {
+  width: auto;
+  max-width: 34em;
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+/* 5. BB and article-preview cards share one surface language. */
+.bb-timeline .bb-item,
+.post-preview {
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--shadow) 58%, transparent) !important;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.post-preview--image {
+  border-top-right-radius: 11px !important;
+  border-bottom-right-radius: 11px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bb-timeline .bb-item:hover,
+  .post-preview:hover {
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border)) !important;
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow) 72%, transparent) !important;
+    transform: translateY(-1px);
+  }
+}
+
+/* 2. A light mobile menu trigger and a simple expanded panel. */
+@media screen and (max-width: 960px) {
+  #menu-label {
+    height: 42px;
+    margin-top: 10px;
+    padding: 0 15px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-soft);
+    font-size: 14px;
+    line-height: 40px;
+    transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+  }
+
+  #menu-label:hover,
+  #menu-label:focus {
+    color: var(--text-strong);
+    border-color: var(--border-strong);
+    background: var(--surface);
+  }
+
+  #menu-check:checked ~ ul {
+    max-width: 320px;
+    margin: 14px auto 0;
+    padding: 7px 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow) 65%, transparent);
+  }
+
+  .masthead .menu li,
+  .masthead .menu li:first-child {
+    display: block;
+    margin: 0;
+    border: 0;
+  }
+
+  .masthead .menu a {
+    display: block;
+    padding: 9px 16px;
+    color: var(--text);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+  }
+
+  .masthead .menu .active > a {
+    color: var(--accent-hover);
+    border: 0;
+    background: var(--accent-soft);
+    box-shadow: none;
+  }
+
+  .palette-menu,
+  .font-menu {
+    display: block;
+    margin: 3px 0 0;
+    padding: 5px 12px;
+    text-align: left;
+  }
+}
+
+/* 6. Hover-only image previews must not widen narrow/touch pages. */
+@media screen and (max-width: 600px) {
+  .bb-image-preview,
+  .post-content .post-image-preview,
+  .bb-image-trigger[data-tooltip]::after,
+  .post-content .post-image-trigger[data-tooltip]::after {
+    display: none !important;
+  }
+}
