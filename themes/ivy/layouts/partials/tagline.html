@@ -1,6 +1,6 @@
 <h1><a href="{{ relURL "/" }}">{{ .Site.Title }}</a></h1>
 
-{{ with .Site.Params.Description }}<p class="tagline">{{ . }}</p>{{ end }}
+{{ with .Site.Params.Description }}<p class="tagline" role="button" tabindex="0" aria-label="切换字体">{{ . }}</p>{{ end }}
 
 <script>
   (() => {

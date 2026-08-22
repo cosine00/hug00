@@ -138,6 +138,9 @@
     .main .title h1 {
       margin: 1em auto 0 auto;
     }
+    body.posts .main > .title > h3 {
+      padding-top: .55rem;
+    }
     .title hr {
       margin: 2em auto;
     }
@@ -496,8 +499,7 @@
 }
 
 /* Dynamic pill labels for the current palette and back-to-top controls. */
-.palette-trigger,
-.font-trigger {
+.palette-trigger {
   position: relative;
   overflow: visible;
 }
@@ -505,7 +507,6 @@
 .back-to-top { overflow: visible; }
 
 .palette-trigger .control-tooltip,
-.font-trigger .control-tooltip,
 .back-to-top .control-tooltip {
   position: absolute;
   top: 50%;
@@ -541,31 +542,11 @@
   pointer-events: none;
 }
 
-.font-trigger .font-tooltip-orbit {
-  position: absolute;
-  left: calc(50% + 48px);
-  top: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
 .palette-trigger .control-tooltip {
   left: 0;
   top: 0;
   translate: -50% -50%;
   rotate: calc(0deg - var(--palette-rotation, 0deg));
-  scale: .96;
-  transform: translateX(-4px);
-  transform-origin: center;
-  transition: opacity .16s ease, rotate .35s cubic-bezier(.4, 0, .2, 1), scale .16s ease, transform .16s ease, visibility 0s linear .16s;
-}
-
-.font-trigger .control-tooltip {
-  left: 0;
-  top: 0;
-  translate: -50% -50%;
-  rotate: calc(0deg - var(--font-rotation, 0deg));
   scale: .96;
   transform: translateX(-4px);
   transform-origin: center;
@@ -590,9 +571,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .palette-trigger:hover .control-tooltip,
-  .palette-trigger:focus-visible .control-tooltip,
-  .font-trigger:hover .control-tooltip,
-  .font-trigger:focus-visible .control-tooltip {
+  .palette-trigger:focus-visible .control-tooltip {
     opacity: 1;
     visibility: visible;
     scale: 1;
@@ -611,7 +590,6 @@
 
 @media (hover: none), (pointer: coarse) {
   .palette-trigger .control-tooltip,
-  .font-trigger .control-tooltip,
   .back-to-top .control-tooltip { display: none; }
 }
 
