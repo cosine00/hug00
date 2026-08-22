@@ -177,10 +177,26 @@ let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 20;
 bbMemo.viewImageDelay = bbMemo.viewImageDelay || 50;
 
+// 2024-08-03 起附件改用 R2；更早的附件仍由 Memos 数据库提供。
+// 时间戳边界使用北京时间 2024-08-03 00:00:00，避免浏览器所在时区影响判断。
+const legacyMemoResourceCutoff = Date.parse('2024-08-03T00:00:00+08:00') / 1000;
+const legacyMemoResourceBase = 'https://memos.hux.ink/o/r/';
+
+function getMemoResourceUrl(item, resource) {
+  if (!resource) return '';
+
+  const createdTs = Number(item && item.createdTs);
+  if (Number.isFinite(createdTs) && createdTs < legacyMemoResourceCutoff && resource.id != null) {
+    return legacyMemoResourceBase + encodeURIComponent(resource.id);
+  }
+
+  return resource.externalLink || resource.publicUrl || resource.filename || '';
+}
+
 function getMemoImageUrls(item) {
   if (!item || !Array.isArray(item.resourceList)) return [];
   return item.resourceList.map(res => {
-    const url = res && (res.externalLink || res.publicUrl || res.filename || '');
+    const url = getMemoResourceUrl(item, res);
     const type = String(res && res.type || '').toLowerCase();
     return url && (type.startsWith('image') || /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(url)) ? url : '';
   }).filter(Boolean);
