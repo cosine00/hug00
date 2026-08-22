@@ -127,7 +127,7 @@
 html { background: var(--page-bg); transition: background-color .2s ease; }
 body { background: var(--page-bg); color: var(--text); transition: background-color .2s ease, color .2s ease; }
 html[data-font="wenkai"] body { font-family: "LXGW WenKai Screen", "KaiTi", serif; }
-html[data-font="zhuque"] body { font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif; font-weight: 599; }
+html[data-font="zhuque"] body { font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif; font-weight: 400; text-shadow: 0 0 0.15px currentColor;}
 html[data-font="kinghwa"] body { font-family: "KingHwa_OldSong", "Songti SC", SimSun, serif; }
 html[data-font="zhisong"] body { font-family: "LXGW Neo ZhiSong", "Songti SC", SimSun, serif; }
 ::selection { background: var(--selection); color: var(--text-strong); }
