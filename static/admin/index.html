@@ -6,12 +6,13 @@
 <meta name="theme-color" content="#fafafa">
 <title>✨Counting Stars</title>
 <script>
-(()=>{const names=['paper','night','sepia','mist'];let name='paper';try{name=localStorage.getItem('blog-palette')||'paper';}catch(e){}if(!names.includes(name))name='paper';document.documentElement.dataset.theme=name;document.documentElement.style.colorScheme='light';})();
+(()=>{const names=['paper','night','sepia','mist'];let name='paper';try{name=localStorage.getItem('blog-palette')||'paper';}catch(e){}if(!names.includes(name))name='paper';document.documentElement.dataset.theme=name;document.documentElement.style.colorScheme=name==='night'?'dark':'light';})();
 </script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f7a4d'/%3E%3Crect x='13' y='14' width='38' height='36' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M21 25h22M21 32h22M21 39h22' stroke='%23fff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='28' cy='25' r='3.5' fill='%23fff'/%3E%3Ccircle cx='38' cy='32' r='3.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='39' r='3.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
+<link id="admin-font-stylesheet" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -41,6 +42,8 @@ a{color:inherit;text-decoration:none}
 
 /* Sidebar */
 .sidebar-logo{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;min-height:60px}
+.sidebar-logo-copy{min-width:0;cursor:pointer;border-radius:8px;outline:none}
+.sidebar-logo-copy:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .mobile-nav-toggle{display:none;margin-left:auto;align-items:center;justify-content:center;gap:7px;min-width:82px;height:36px;padding:0 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text2);font-family:inherit;font-size:12px;font-weight:600;line-height:1;cursor:pointer}
 .mobile-nav-toggle svg{width:16px;height:16px;transition:transform .18s ease}
 .sidebar.mobile-nav-open .mobile-nav-toggle svg{transform:rotate(90deg)}
@@ -133,7 +136,9 @@ tbody tr:hover td{background:#fbfcfd !important;}
 .editor-title-panel{padding:18px 20px 14px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff,#fbfcfd)}
 .editor-title-row{display:flex;align-items:flex-start;gap:10px;min-width:0}
 .editor-title-row .title-input{flex:1;min-width:0}
-.editor-focus-toggle{flex:0 0 auto;min-height:34px;padding:7px 10px}
+.editor-focus-toggle{flex:0 0 auto}
+.editor-focus-label{font:inherit!important;color:inherit!important}
+.editor-focus-upload{display:none}
 .title-input{border:none;outline:none;width:100%;font-size:25px;line-height:1.25;font-weight:800;color:var(--text);background:transparent;margin-bottom:10px}
 .title-input::placeholder{color:var(--text4)}
 .desc-input{border:none;outline:none;width:100%;font-size:14px;color:var(--text2);background:transparent;resize:none;min-height:34px;line-height:1.55}
@@ -163,7 +168,7 @@ tbody tr:hover td{background:#fbfcfd !important;}
 .fm-input,.fm-textarea{padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg);width:100%}
 .fm-textarea{min-height:76px;resize:vertical;line-height:1.55}
 .fm-input:focus,.fm-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
-.mobile-datetime-parts{display:none;grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);gap:8px;width:100%;min-width:0}
+.mobile-datetime-parts{display:none;grid-template-columns:1fr;gap:8px;width:100%;min-width:0}
 .mobile-datetime-parts>*{width:100%;min-width:0;max-width:100%}
 .tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:7px 9px;border:1px solid var(--border2);border-radius:var(--radius);min-height:40px;background:var(--bg);cursor:text}
 .tags-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
@@ -947,9 +952,22 @@ tbody tr:hover td{background:#f8fbf9!important}
 .editor-meta-line{gap:9px;color:#8b9791}
 .editor-meta-line>span{display:inline-flex;align-items:center;min-height:25px;padding:3px 8px;border-radius:7px;background:#f3f6f4;border:1px solid #e8eeeb}
 .editor-meta-line .mono{border:0;background:transparent;padding:0;margin-left:4px;max-width:380px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.editor-preview-link{margin-left:auto;display:inline-flex;align-items:center;gap:7px;min-height:27px;padding:4px 9px;border:1px solid #c8e3d5;border-radius:8px;background:#eff9f4;color:var(--accent-dark);cursor:pointer;font-size:11px;font-weight:750;transition:.16s}
-.editor-preview-link:hover{background:#e3f5ec;border-color:#8fc6aa;transform:translateY(-1px)}
-.editor-preview-link span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;color:#739284}
+.editor-preview-link{margin-left:auto;display:inline-flex;align-items:center;gap:7px;min-height:27px;padding:4px 9px;border:1px solid var(--border2);border-radius:8px;background:var(--pill-shell);color:var(--accent-dark);cursor:pointer;font-size:11px;font-weight:750;transition:.16s}
+.editor-preview-link.editor-focus-upload{display:none}
+.editor-preview-link.editor-focus-toggle{margin-left:0}
+.editor-preview-link:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark);transform:translateY(-1px)}
+.editor-preview-link span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;color:var(--text3)}
+.editor-focus-word-count{display:none}
+.editor-image-widget{display:flex;align-items:center;gap:7px;padding:4px 0 8px 4px}
+.editor-image-trigger{position:relative;display:inline-grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid var(--border);border-radius:7px!important;background:var(--bg);color:var(--accent);cursor:zoom-in}
+.editor-image-trigger svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7}
+.editor-image-badge{position:absolute;right:-6px;top:-7px;display:grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border:2px solid var(--bg);border-radius:999px;background:var(--accent);color:var(--bg);font:700 9px/1 system-ui,sans-serif}
+.editor-image-thumb{position:absolute;left:0;bottom:calc(100% + 9px);z-index:80;display:block;width:min(280px,70vw);max-height:240px;padding:4px;border:1px solid var(--border);border-radius:10px;background:var(--bg);box-shadow:0 14px 36px rgba(0,0,0,.24);object-fit:contain;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(5px);transition:.16s}
+@media (hover:hover) and (pointer:fine){.editor-image-trigger:hover .editor-image-thumb,.editor-image-trigger:focus-visible .editor-image-thumb{opacity:1;visibility:visible;transform:none}}
+.editor-image-viewer{display:flex;flex-direction:column;width:min(1100px,96vw);height:min(88vh,860px);border:1px solid var(--border);border-radius:18px;background:var(--bg);overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.35)}
+.editor-image-viewer-stage{position:relative;display:grid;place-items:center;flex:1;min-height:0;padding:18px;background:var(--bg2)}
+.editor-image-viewer-stage img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.editor-image-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;padding:0}.editor-image-viewer-nav.prev{left:14px}.editor-image-viewer-nav.next{right:14px}
 .editor-toolbar{min-height:54px!important;padding:7px 11px!important;background:#f7faf8!important;border-bottom-color:#e2e9e5!important}
 .editor-toolbar button{border-radius:7px!important}
 .editor-toolbar button:hover,.editor-toolbar button.active{background:#e7f3ed!important;border-color:#c8ded2!important;color:var(--accent-dark)!important}
@@ -1309,6 +1327,7 @@ tbody tr:hover td{background:#f2f8f5!important}
   .mobile-editor-publish .btn{width:100%;min-height:46px;font-size:14px}
   .editor-top-return,.editor-top-publish{display:none!important}
   .editor-title-panel .desc-input,.editor-path-meta,.editor-preview-link{display:none!important}
+  .editor-title-panel .editor-focus-toggle{display:inline-flex!important;margin-left:auto}
   .editor-left .editor-toolbar .editor-toolbar-upload{margin-left:6px;flex:0 0 42px}
   .editor-right{width:100%;height:auto;overflow:visible;padding:0;gap:12px}
   .fm-grid,.settings-grid{grid-template-columns:1fr!important}
@@ -1368,11 +1387,37 @@ body.editor-focus-mode .sidebar,body.editor-focus-mode .topbar,body.editor-focus
 body.editor-focus-mode .app,body.editor-focus-mode .main,body.editor-focus-mode .content{width:100%;max-width:none;height:var(--admin-visual-height,100dvh);min-height:0;padding:0;margin:0;overflow:hidden}
 body.editor-focus-mode .editor-wrap{display:block;width:100%;height:var(--admin-visual-height,100dvh);min-height:0;margin:0;padding:0;overflow:hidden;background:var(--bg)}
 body.editor-focus-mode .editor-left{width:100%;height:var(--admin-visual-height,100dvh);min-height:0;border:0;border-radius:0;box-shadow:none;overflow:hidden}
+body.editor-focus-mode .editor-left{position:relative}
 body.editor-focus-mode .editor-title-panel{padding:14px 16px 8px}
-body.editor-focus-mode .editor-title-panel .desc-input,body.editor-focus-mode .editor-meta-line,body.editor-focus-mode .editor-toolbar{display:none!important}
+body.editor-focus-mode .editor-title-panel .desc-input,body.editor-focus-mode .editor-toolbar{display:none!important}
+body.editor-focus-mode .editor-meta-line{display:flex!important;justify-content:flex-end;margin-top:8px}
+body.editor-focus-mode .editor-meta-line>span,body.editor-focus-mode .editor-preview-link:not(.editor-focus-toggle):not(.editor-focus-upload){display:none!important}
+body.editor-focus-mode .editor-focus-upload,body.editor-focus-mode .editor-focus-toggle{display:inline-flex!important;margin-left:0}
 body.editor-focus-mode .editor-left .EasyMDEContainer{height:auto;min-height:0;flex:1}
 body.editor-focus-mode .editor-left .CodeMirror{height:100%!important;min-height:0!important;padding-inline:10px}
 body.editor-focus-mode .editor-left .CodeMirror-scroll{min-height:0}
+body.editor-focus-mode .CodeMirror-gutters{display:block!important;border-right:0!important;background:transparent!important}
+body.editor-focus-mode .CodeMirror-linenumber{min-width:26px;padding:0 8px 0 4px;color:var(--text3)!important;font-size:.72em;opacity:.42;text-align:right}
+html[data-theme="night"] body.editor-focus-mode .CodeMirror-gutters{background:transparent!important}
+body.editor-focus-mode .editor-focus-word-count{position:absolute;left:18px;bottom:14px;z-index:12;display:inline-flex;align-items:center;min-height:25px;padding:4px 9px;border:1px solid color-mix(in srgb,var(--border) 70%,transparent);border-radius:999px;background:color-mix(in srgb,var(--bg) 82%,transparent);color:var(--text3);font-size:11px;line-height:1;opacity:.68;pointer-events:none;backdrop-filter:blur(8px)}
+@media (min-width:861px){
+  body.editor-focus-mode .app,body.editor-focus-mode .main,body.editor-focus-mode .content{background:color-mix(in srgb,var(--bg2) 72%,#000 28%)!important}
+  body.editor-focus-mode .editor-wrap{display:flex;align-items:center;justify-content:center;padding:24px;background:transparent}
+  body.editor-focus-mode .editor-left{position:relative;max-width:min(980px,calc(100vw - 190px));height:calc(var(--admin-visual-height,100dvh) - 48px);overflow:visible;border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 65px rgba(0,0,0,.2);background:var(--bg)}
+  body.editor-focus-mode .editor-left .EasyMDEContainer{overflow:hidden;border-radius:0 0 20px 20px}
+  body.editor-focus-mode .editor-title-panel{position:static;max-height:118px;overflow:visible;padding:24px 32px 14px;background:var(--bg);transition:max-height .34s ease,padding .34s ease,border-color .25s ease}
+  body.editor-focus-mode .editor-title-row{transition:opacity .26s ease,transform .34s ease}
+  body.editor-focus-mode .title-input{font-size:30px;line-height:1.3;margin-bottom:0}
+  body.editor-focus-mode .editor-meta-line{position:absolute;right:-128px;bottom:26px;z-index:20;display:flex!important;width:112px;margin:0;flex-direction:column;align-items:stretch;gap:9px}
+  body.editor-focus-mode .editor-focus-upload,body.editor-focus-mode .editor-focus-toggle{width:112px;min-height:36px;justify-content:center;background:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.14)}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-panel{max-height:18px;padding:0 32px;border-bottom-color:transparent}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-row{opacity:0;transform:translateY(-22px);pointer-events:none}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-panel::after{content:"";position:absolute;left:50%;top:7px;width:52px;height:2px;border-radius:999px;background:var(--border2);opacity:.42;transform:translateX(-50%)}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-panel:hover{max-height:118px;padding:24px 32px 14px;border-bottom-color:var(--border)}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-panel:hover .editor-title-row{opacity:1;transform:none;pointer-events:auto}
+  body.editor-focus-mode.editor-title-dimmed .editor-title-panel:hover::after{opacity:0}
+  body.editor-focus-mode .editor-left .CodeMirror{padding:18px 30px 28px;font-size:16px;line-height:1.9}
+}
 @media (max-width:860px){
   body.admin-keyboard-open:not(.editor-focus-mode) .editor-left .CodeMirror{height:max(220px,calc(var(--admin-visual-height,100dvh) - 150px))!important;min-height:220px}
   body.admin-keyboard-open:not(.editor-focus-mode) .editor-left .CodeMirror-scroll{min-height:0}
@@ -1405,7 +1450,7 @@ body.editor-focus-mode .editor-left .CodeMirror-scroll{min-height:0}
 
 /* 与前台共用的四套色调：明亮、夜幕、霜灰、晨曦。 */
 :root,:root[data-theme="paper"]{--bg:#fff;--bg2:#fafafa;--bg3:#f3f4f2;--bg4:#eef0ed;--text:#2f3332;--text2:#59615d;--text3:#707673;--text4:#b9bdb9;--border:#dedfdb;--border2:#c9ccc8;--accent:#6870a8;--accent-light:#e8e9f3;--accent-dark:#4f578f;--pill-shell:#f2f2f7;--pill-hover:#e8e9f1;--pill-active:#737aa7;--pill-active-text:#fff;--selection:#dcdff0;--success:#5f8f78;--success-light:#edf5f0;--purple:#6870a8;--purple-light:#e8e9f3;--danger-soft:#fff0f2;--toolbar-bg:#f7f7f5;--topbar-bg:rgba(255,255,255,.92);--shadow:0 10px 30px rgba(30,39,35,.07),0 1px 3px rgba(30,39,35,.04);--shadow-soft:0 3px 14px rgba(30,39,35,.065)}
-:root[data-theme="night"]{--bg:#f9fcfe;--bg2:#edf5f8;--bg3:#e3f0f5;--bg4:#dceaf0;--text:#31454d;--text2:#536c76;--text3:#718891;--text4:#9aadb4;--border:#cfdee4;--border2:#abc2cc;--accent:#4c8ba2;--accent-light:#dcecf2;--accent-dark:#326b80;--pill-shell:#e4f0f4;--pill-hover:#d5e8ee;--pill-active:#4f8ca2;--pill-active-text:#fff;--selection:#cce5ee;--success:#4f8878;--success-light:#e0efea;--purple:#6385a5;--purple-light:#e0eaf3;--danger-soft:#f8e7e9;--toolbar-bg:#e8f2f6;--topbar-bg:rgba(249,252,254,.94);--shadow:0 10px 30px rgba(47,86,101,.1);--shadow-soft:0 3px 14px rgba(47,86,101,.085)}
+:root[data-theme="night"]{--bg:#202329;--bg2:#17191d;--bg3:#272b31;--bg4:#2b2f36;--text:#d7d9dc;--text2:#a2a7ae;--text3:#777e87;--text4:#5f6670;--border:#383d45;--border2:#505761;--accent:#72c7a5;--accent-light:#263d35;--accent-dark:#98ddc1;--pill-shell:#23272c;--pill-hover:#2c3335;--pill-active:#548f78;--pill-active-text:#eef8f3;--selection:#315d4d;--success:#72c7a5;--success-light:#263d35;--purple:#72c7a5;--purple-light:#263d35;--danger-soft:#3b2529;--toolbar-bg:#1d2025;--topbar-bg:rgba(23,25,29,.94);--shadow:0 10px 30px rgba(0,0,0,.28);--shadow-soft:0 3px 14px rgba(0,0,0,.24)}
 :root[data-theme="sepia"]{--bg:#f9fafb;--bg2:#eef0f2;--bg3:#e2e5e8;--bg4:#e5e8eb;--text:#3d4247;--text2:#596168;--text3:#687078;--text4:#959ca3;--border:#d0d5d9;--border2:#abb2b8;--accent:#6f7b86;--accent-light:#dde2e6;--accent-dark:#4f5b65;--pill-shell:#e7eaed;--pill-hover:#dce1e5;--pill-active:#78848e;--pill-active-text:#fff;--selection:#d7dde2;--success:#667f72;--success-light:#e0e8e3;--purple:#6f7b86;--purple-light:#dde2e6;--danger-soft:#f8e8ea;--toolbar-bg:#e7eaed;--topbar-bg:rgba(249,250,251,.92);--shadow:0 10px 30px rgba(38,45,51,.09);--shadow-soft:0 3px 14px rgba(38,45,51,.08)}
 :root[data-theme="mist"]{--bg:#fffaf8;--bg2:#f8f2ef;--bg3:#f2e5e0;--bg4:#f0e5e1;--text:#4a3d39;--text2:#735f58;--text3:#7e6b64;--text4:#a6928b;--border:#e1d1cb;--border2:#c2aaa1;--accent:#b66f61;--accent-light:#f2ddd7;--accent-dark:#8f5147;--pill-shell:#f4e8e3;--pill-hover:#ecd9d2;--pill-active:#bd796b;--pill-active-text:#fff;--selection:#f0cfc5;--success:#8a7563;--success-light:#f2e6df;--purple:#b66f61;--purple-light:#f2ddd7;--danger-soft:#f9e2e2;--toolbar-bg:#f6ebe7;--topbar-bg:rgba(255,250,248,.93);--shadow:0 10px 30px rgba(94,57,48,.09);--shadow-soft:0 3px 14px rgba(94,57,48,.08)}
 body{background:var(--bg2);background-image:none;color:var(--text)}
@@ -1562,7 +1607,7 @@ html[data-theme="night"] *::-webkit-scrollbar-thumb{background:var(--border2)}
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">★</div>
-      <div>
+      <div class="sidebar-logo-copy" role="button" tabindex="0" onclick="cycleAdminFont()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cycleAdminFont()}" aria-label="点击切换后台字体">
         <div class="logo-title">博客控制台</div>
         <div class="logo-sub">💫Counting Stars</div>
       </div>
@@ -1670,10 +1715,16 @@ const AMAP_SECRET = "5a01263b6b8d94d9f8bfaf203ab7c736";
 const ADMIN_PALETTE_ORDER=['paper','night','sepia','mist'];
 const ADMIN_PALETTES={
   paper:{label:'明亮',color:'#fafafa',dark:false},
-  night:{label:'湖蓝',color:'#edf5f8',dark:false},
+  night:{label:'夜幕',color:'#17191d',dark:true},
   sepia:{label:'霜灰',color:'#eef0f2',dark:false},
   mist:{label:'晨曦',color:'#f8f2ef',dark:false}
 };
+const ADMIN_FONTS=[
+  {id:'wenkai',label:'霞鹜文楷',href:'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',family:'"LXGW WenKai Screen","LXGW WenKai",sans-serif'},
+  {id:'zhuque',label:'朱雀仿宋',href:'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',family:'"Zhuque Fangsong","FangSong",serif'},
+  {id:'kinghwa',label:'京华老宋',href:'https://ik.imagekit.io/fonts130/packages/jhlst/dist/%E4%BA%AC%E8%8F%AF%E8%80%81%E5%AE%8B%E4%BD%93v2_002/result.css',family:'"KingHwa_OldSong","Songti SC",serif'},
+  {id:'zhisong',label:'新致宋',href:'https://fontsapi.zeoseven.com/22/main/result.css',family:'"LXGW Neo ZhiSong","Songti SC",SimSun,serif'}
+];
 let adminPaletteRotation=Math.max(0,ADMIN_PALETTE_ORDER.indexOf(document.documentElement.dataset.theme))*90;
 
 function applyAdminPalette(name,persist=false){
@@ -1707,6 +1758,31 @@ function initAdminPalette(){
     applyAdminPalette(ADMIN_PALETTE_ORDER[(current+1)%ADMIN_PALETTE_ORDER.length],true);
   });
   applyAdminPalette(document.documentElement.dataset.theme||'paper',false);
+}
+
+function applyAdminFont(option,persist=false){
+  if(!option) option=ADMIN_FONTS[0];
+  const stylesheet=document.getElementById('admin-font-stylesheet');
+  if(stylesheet) stylesheet.href=option.href;
+  document.documentElement.dataset.font=option.id;
+  document.body.style.fontFamily=option.family;
+  const copy=document.querySelector('.sidebar-logo-copy');
+  if(copy) copy.setAttribute('aria-label',`当前字体：${option.label}，点击切换`);
+  if(persist){
+    try{localStorage.setItem('blog-font',option.id);}catch(e){}
+    toast(`已切换为${option.label}`,'success');
+  }
+}
+
+function initAdminFont(){
+  let saved='wenkai';
+  try{saved=localStorage.getItem('blog-font')||'wenkai';}catch(e){}
+  applyAdminFont(ADMIN_FONTS.find(item=>item.id===saved)||ADMIN_FONTS[0],false);
+}
+
+function cycleAdminFont(){
+  const current=ADMIN_FONTS.findIndex(item=>item.id===document.documentElement.dataset.font);
+  applyAdminFont(ADMIN_FONTS[(current+1+ADMIN_FONTS.length)%ADMIN_FONTS.length],true);
 }
 
 function initAdminBackToTop(){
@@ -2664,14 +2740,14 @@ function renderEditor(){
         <div class="editor-title-panel">
           <div class="editor-title-row">
             <input class="title-input" id="fm-title" placeholder="请输入文章标题" value="${escapeAttr(fm.title||'')}">
-            <button class="btn editor-focus-toggle" type="button" onclick="toggleEditorFocusMode()" aria-pressed="false" title="隐藏其他模块，只保留标题和正文"><span aria-hidden="true">◫</span><span class="editor-focus-label">沉浸写作</span></button>
           </div>
-          <textarea class="desc-input" id="fm-description" placeholder="请输入文章摘要 (可选)...">${escapeHTML(fm.description||'')}</textarea>
           <div class="editor-meta-line">
             <span id="word-counter">0 字 · 1 分钟</span>
             <span class="editor-path-meta">路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
             <span id="autosave-text">本地草稿未变更</span>
             <button type="button" class="editor-preview-link" onclick="openArticlePreview()">预览成稿 <span>⌘⇧P</span></button>
+            <label class="editor-preview-link editor-focus-upload" for="editor-image-upload" role="button" tabindex="0"><span aria-hidden="true">▧</span><span class="editor-focus-label">上传图片</span></label>
+            <button class="editor-preview-link editor-focus-toggle" type="button" onclick="toggleEditorFocusMode()" aria-pressed="false" title="隐藏其他模块，只保留标题和正文"><span aria-hidden="true">◫</span><span class="editor-focus-label">沉浸写作</span></button>
           </div>
         </div>
         <textarea id="mde-area"></textarea>
@@ -2680,6 +2756,7 @@ function renderEditor(){
           <span class="editor-toolbar-upload-copy"><span class="editor-toolbar-upload-title">上传图片</span><span class="editor-toolbar-upload-sub">R2 图床 · 自动插入正文</span></span>
         </label>
         <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic,.heif" multiple onchange="uploadEditorR2Images(this)">
+        <div class="editor-focus-word-count" id="editor-focus-word-count" aria-live="polite">0 字 · 1 分钟</div>
       </div>
       <div class="editor-right">
         <div class="fm-card">
@@ -2712,7 +2789,7 @@ function renderEditor(){
                 </div>
               </div>
           </div>
-          <div class="fm-group fm-path-group"><label class="fm-label"><span>文件路径</span><button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="revisePostPath()">一键修订</button></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
+          <div class="fm-group fm-path-group"><label class="fm-label"><span>文件路径</span><button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="revisePostPath()">修订</button></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
           <div class="switch-wrap">
             <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
             <span>保存为草稿，不公开渲染</span>
@@ -2735,8 +2812,11 @@ function renderEditor(){
     const el=document.getElementById(id);
     if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
   });
-  STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
-  STATE.mde.codemirror.on('focus',scheduleActiveEditorIntoView);
+  STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); scheduleEditorImageWidgets(); });
+  STATE.mde.codemirror.on('focus',()=>{
+    if(document.body.classList.contains('editor-focus-mode')) document.body.classList.add('editor-title-dimmed');
+    scheduleActiveEditorIntoView();
+  });
   STATE.mde.codemirror.on('cursorActivity',scheduleActiveEditorIntoView);
   refreshEditorMeta();
   startPostAutosave();
@@ -2746,6 +2826,8 @@ function toggleEditorFocusMode(force){
   if(STATE.page!=='editor') return;
   const enabled=typeof force==='boolean' ? force : !document.body.classList.contains('editor-focus-mode');
   document.body.classList.toggle('editor-focus-mode',enabled);
+  if(!enabled) document.body.classList.remove('editor-title-dimmed');
+  STATE.mde?.codemirror?.setOption('lineNumbers',enabled);
   const button=document.querySelector('.editor-focus-toggle');
   if(button){
     button.setAttribute('aria-pressed',String(enabled));
@@ -2753,7 +2835,81 @@ function toggleEditorFocusMode(force){
     const label=button.querySelector('.editor-focus-label');
     if(label) label.textContent=enabled ? '退出沉浸' : '沉浸写作';
   }
-  requestAnimationFrame(()=>STATE.mde?.codemirror?.refresh());
+  requestAnimationFrame(()=>{
+    STATE.mde?.codemirror?.refresh();
+    refreshEditorImageWidgets();
+  });
+}
+
+let editorImageWidgetTimer=null;
+let editorImageWidgets=[];
+let editorImageGallery=[];
+
+function markdownImageEntries(text){
+  const entries=[];
+  String(text||'').split('\n').forEach((line,lineNo)=>{
+    const pattern=/!\[([^\]]*)\]\((<?[^\s)>]+>?)(?:\s+["'][^"']*["'])?\)/g;
+    let match;
+    while((match=pattern.exec(line))){
+      entries.push({line:lineNo,alt:match[1]||'文章图片',url:match[2].replace(/^<|>$/g,'')});
+    }
+  });
+  return entries;
+}
+
+function scheduleEditorImageWidgets(){
+  clearTimeout(editorImageWidgetTimer);
+  editorImageWidgetTimer=setTimeout(refreshEditorImageWidgets,180);
+}
+
+function refreshEditorImageWidgets(){
+  const cm=STATE.mde?.codemirror;
+  editorImageWidgets.forEach(widget=>{try{widget.clear();}catch(e){}});
+  editorImageWidgets=[];
+  editorImageGallery=[];
+  if(!cm || !document.body.classList.contains('editor-focus-mode')) return;
+  editorImageGallery=markdownImageEntries(cm.getValue());
+  editorImageGallery.forEach((entry,index)=>{
+    const wrap=document.createElement('div');
+    wrap.className='editor-image-widget';
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='editor-image-trigger';
+    button.title=`查看图片 ${index+1}`;
+    button.setAttribute('aria-label',`查看文章图片 ${index+1}：${entry.alt}`);
+    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l4.6-4.6a2 2 0 0 1 2.8 0L16 16m-2-2 1.6-1.6a2 2 0 0 1 2.8 0L20 14M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/><path d="M14 8h.01"/></svg>';
+    const badge=document.createElement('span');
+    badge.className='editor-image-badge';
+    badge.textContent=String(index+1);
+    const thumb=document.createElement('img');
+    thumb.className='editor-image-thumb';
+    thumb.alt='';
+    thumb.dataset.src=entry.url;
+    button.addEventListener('mouseenter',()=>{if(!thumb.src) thumb.src=thumb.dataset.src;},{once:true});
+    button.addEventListener('focus',()=>{if(!thumb.src) thumb.src=thumb.dataset.src;},{once:true});
+    button.addEventListener('click',()=>openEditorImageViewer(index));
+    button.append(badge,thumb);
+    wrap.appendChild(button);
+    editorImageWidgets.push(cm.addLineWidget(entry.line,wrap,{coverGutter:false,noHScroll:true,above:false}));
+  });
+}
+
+function openEditorImageViewer(index){
+  if(!editorImageGallery.length) editorImageGallery=markdownImageEntries(STATE.mde?.value()||'');
+  if(!editorImageGallery.length) return;
+  const normalized=(index+editorImageGallery.length)%editorImageGallery.length;
+  const item=editorImageGallery[normalized];
+  document.getElementById('modal-container').innerHTML=`
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-label="文章图片查看" onclick="if(event.target===this)closeModal()">
+      <div class="editor-image-viewer">
+        <div class="modal-header"><span>图片 ${normalized+1} / ${editorImageGallery.length}</span><button class="btn sm ghost" type="button" onclick="closeModal()">✕</button></div>
+        <div class="editor-image-viewer-stage">
+          <img src="${escapeAttr(item.url)}" alt="${escapeAttr(item.alt)}">
+          ${editorImageGallery.length>1?`<button class="btn editor-image-viewer-nav prev" type="button" onclick="openEditorImageViewer(${normalized-1})" aria-label="上一张">‹</button><button class="btn editor-image-viewer-nav next" type="button" onclick="openEditorImageViewer(${normalized+1})" aria-label="下一张">›</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  document.body.classList.add('modal-open');
 }
 
 let editorViewportTimer=null;
@@ -3090,6 +3246,7 @@ function updateDraftTag(){ const el=document.getElementById('draft-tag'); const 
 function refreshEditorMeta(){
   const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
   const word=document.getElementById('word-counter'); if(word) word.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
+  const focusWord=document.getElementById('editor-focus-word-count'); if(focusWord) focusWord.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
   const pp=document.getElementById('path-preview'); if(pp) pp.textContent=path;
   scheduleArticlePreviewRefresh();
 }
@@ -3123,7 +3280,7 @@ function collectEditorData(mode='draft', options={}){
     author:getFormValue('fm-author'),
     date:fullDateStr,
     lastmod:nowLocalString(),
-    description:getFormValue('fm-description'),
+    description:getFormValue('fm-description',String(STATE.editingPost?.fm?.description||'')),
     tags:[...STATE.activeTags],
     slug,
     draft:draftChecked
@@ -7874,6 +8031,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
   window.visualViewport?.addEventListener('scroll',syncAdminVisualViewport);
   window.addEventListener('orientationchange',()=>setTimeout(syncAdminVisualViewport,120));
   initAdminPalette();
+  initAdminFont();
   initAdminBackToTop();
   loadCfg(); const active=await checkStatus();
   if(active) {
