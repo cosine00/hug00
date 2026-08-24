@@ -163,6 +163,8 @@ tbody tr:hover td{background:#fbfcfd !important;}
 .fm-input,.fm-textarea{padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);outline:none;transition:.15s;background:var(--bg);width:100%}
 .fm-textarea{min-height:76px;resize:vertical;line-height:1.55}
 .fm-input:focus,.fm-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
+.mobile-datetime-parts{display:none;grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);gap:8px;width:100%;min-width:0}
+.mobile-datetime-parts>*{width:100%;min-width:0;max-width:100%}
 .tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:7px 9px;border:1px solid var(--border2);border-radius:var(--radius);min-height:40px;background:var(--bg);cursor:text}
 .tags-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .tag-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-light);color:var(--accent-dark);padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
@@ -1337,6 +1339,8 @@ tbody tr:hover td{background:#f2f8f5!important}
   .modal-body .fm-input,.modal-body .form-select,.modal-body input[type="datetime-local"]{display:block;inline-size:100%;width:100%;min-inline-size:0;min-width:0;max-width:100%;font-size:16px}
   .modal-body input[type="datetime-local"]{overflow:hidden}
   .modal-body input[type="datetime-local"]::-webkit-date-and-time-value{min-width:0;text-align:left}
+  .datetime-combined{display:none!important}
+  .mobile-datetime-parts{display:grid}
   .modal-footer>div{min-width:0;max-width:100%;flex-wrap:wrap}
   .modal-footer .btn{flex:1;min-width:110px;min-height:40px}
   .form-grid{grid-template-columns:1fr!important}
@@ -1361,14 +1365,18 @@ tbody tr:hover td{background:#f2f8f5!important}
 
 body.editor-focus-mode{overflow:hidden}
 body.editor-focus-mode .sidebar,body.editor-focus-mode .topbar,body.editor-focus-mode .editor-right,body.editor-focus-mode .mobile-editor-upload,body.editor-focus-mode .mobile-editor-publish{display:none!important}
-body.editor-focus-mode .app,body.editor-focus-mode .main,body.editor-focus-mode .content{width:100%;max-width:none;height:100dvh;min-height:0;padding:0;margin:0;overflow:hidden}
-body.editor-focus-mode .editor-wrap{display:block;width:100%;height:100dvh;min-height:0;margin:0;padding:0;overflow:hidden;background:var(--bg)}
-body.editor-focus-mode .editor-left{width:100%;height:100dvh;min-height:0;border:0;border-radius:0;box-shadow:none;overflow:hidden}
+body.editor-focus-mode .app,body.editor-focus-mode .main,body.editor-focus-mode .content{width:100%;max-width:none;height:var(--admin-visual-height,100dvh);min-height:0;padding:0;margin:0;overflow:hidden}
+body.editor-focus-mode .editor-wrap{display:block;width:100%;height:var(--admin-visual-height,100dvh);min-height:0;margin:0;padding:0;overflow:hidden;background:var(--bg)}
+body.editor-focus-mode .editor-left{width:100%;height:var(--admin-visual-height,100dvh);min-height:0;border:0;border-radius:0;box-shadow:none;overflow:hidden}
 body.editor-focus-mode .editor-title-panel{padding:14px 16px 8px}
 body.editor-focus-mode .editor-title-panel .desc-input,body.editor-focus-mode .editor-meta-line,body.editor-focus-mode .editor-toolbar{display:none!important}
 body.editor-focus-mode .editor-left .EasyMDEContainer{height:auto;min-height:0;flex:1}
 body.editor-focus-mode .editor-left .CodeMirror{height:100%!important;min-height:0!important;padding-inline:10px}
 body.editor-focus-mode .editor-left .CodeMirror-scroll{min-height:0}
+@media (max-width:860px){
+  body.admin-keyboard-open:not(.editor-focus-mode) .editor-left .CodeMirror{height:max(220px,calc(var(--admin-visual-height,100dvh) - 150px))!important;min-height:220px}
+  body.admin-keyboard-open:not(.editor-focus-mode) .editor-left .CodeMirror-scroll{min-height:0}
+}
 
 @media (max-width:520px){
   .sidebar-logo{padding:8px 11px}
@@ -1816,9 +1824,27 @@ function nowISOStringForInput(){ const d=new Date(); const pad=n=>String(n).padS
 
 function resetSingleDateTimePicker(inputId){
   const el = document.getElementById(inputId);
-  if(el) el.value = nowISOStringForInput();
+  const value=nowISOStringForInput();
+  if(el) el.value=value;
+  const dateInput=document.getElementById(`${inputId}-date`);
+  const timeInput=document.getElementById(`${inputId}-time`);
+  if(dateInput) dateInput.value=value.slice(0,10);
+  if(timeInput) timeInput.value=value.slice(11,16);
   if(typeof GARDEN_STATE !== 'undefined' && GARDEN_STATE.page==='editor' && typeof gardenMarkDirty==='function') gardenMarkDirty();
   else if(typeof markDirty === 'function') markDirty();
+}
+
+function syncSplitDateTime(inputId){
+  const combined=document.getElementById(inputId);
+  const dateValue=document.getElementById(`${inputId}-date`)?.value || '';
+  const timeValue=document.getElementById(`${inputId}-time`)?.value || '';
+  if(combined && dateValue) combined.value=`${dateValue}T${timeValue || '00:00'}:00`;
+  return combined?.value || '';
+}
+
+function getResponsiveDateTimeValue(inputId){
+  if(window.matchMedia('(max-width:860px)').matches) syncSplitDateTime(inputId);
+  return getFormValue(inputId);
 }
 
 function slugify(str){ return String(str||'post').trim().toLowerCase().replace(/[\s_]+/g,'-').replace(/[^\w\-\u4e00-\u9fa5]+/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'') || `post-${Date.now()}`; }
@@ -2666,7 +2692,11 @@ function renderEditor(){
               <span>发布日期与时间</span>
               <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('fm-datetime')">⚡ 现在</button>
             </label>
-            <input class="fm-input" type="datetime-local" step="1" id="fm-datetime" value="${escapeAttr(fullDateStr)}">
+            <input class="fm-input datetime-combined" type="datetime-local" step="1" id="fm-datetime" value="${escapeAttr(fullDateStr)}">
+            <div class="mobile-datetime-parts">
+              <input class="fm-input" type="date" id="fm-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布日期">
+              <input class="fm-input" type="time" id="fm-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布时间">
+            </div>
           </div>
 
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
@@ -2695,7 +2725,7 @@ function renderEditor(){
 
   if(STATE.mde){ try{STATE.mde.toTextArea();}catch(e){} }
   STATE.mde=new EasyMDE({
-    element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:true,
+    element:document.getElementById('mde-area'), initialValue:post.body||'', spellChecker:false, autofocus:!window.matchMedia('(max-width:860px)').matches,
     placeholder:'从这里开始写正文，支持 Markdown…', status:false,
     toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','table','code','|','preview','side-by-side','fullscreen']
   });
@@ -2706,6 +2736,8 @@ function renderEditor(){
     if(el) el.addEventListener('input',()=>{ markDirty(); refreshEditorMeta(); });
   });
   STATE.mde.codemirror.on('change',()=>{ markDirty(); refreshEditorMeta(); });
+  STATE.mde.codemirror.on('focus',scheduleActiveEditorIntoView);
+  STATE.mde.codemirror.on('cursorActivity',scheduleActiveEditorIntoView);
   refreshEditorMeta();
   startPostAutosave();
 }
@@ -2722,6 +2754,42 @@ function toggleEditorFocusMode(force){
     if(label) label.textContent=enabled ? '退出沉浸' : '沉浸写作';
   }
   requestAnimationFrame(()=>STATE.mde?.codemirror?.refresh());
+}
+
+let editorViewportTimer=null;
+function activeMarkdownEditor(){
+  if(STATE.page==='editor' && STATE.mde) return STATE.mde;
+  if(typeof GARDEN_STATE!=='undefined' && GARDEN_STATE.page==='editor' && GARDEN_STATE.mde) return GARDEN_STATE.mde;
+  return null;
+}
+
+function scheduleActiveEditorIntoView(){
+  if(!window.matchMedia('(max-width:860px)').matches) return;
+  clearTimeout(editorViewportTimer);
+  editorViewportTimer=setTimeout(()=>{
+    const editor=activeMarkdownEditor();
+    if(!editor) return;
+    const cm=editor.codemirror;
+    cm.refresh();
+    cm.scrollIntoView(cm.getCursor(),Math.max(72,Math.round((window.visualViewport?.height || window.innerHeight)*.18)));
+    const cursor=cm.cursorCoords(null,'page');
+    const viewport=window.visualViewport;
+    if(viewport){
+      const top=viewport.offsetTop+18;
+      const bottom=viewport.offsetTop+viewport.height-44;
+      if(cursor.bottom>bottom) window.scrollBy({top:cursor.bottom-bottom,behavior:'auto'});
+      else if(cursor.top<top) window.scrollBy({top:cursor.top-top,behavior:'auto'});
+    }
+  },180);
+}
+
+function syncAdminVisualViewport(){
+  const viewport=window.visualViewport;
+  const height=Math.round(viewport?.height || window.innerHeight);
+  document.documentElement.style.setProperty('--admin-visual-height',`${height}px`);
+  const keyboardOpen=Boolean(viewport && window.innerHeight-viewport.height>120);
+  document.body.classList.toggle('admin-keyboard-open',keyboardOpen);
+  if(keyboardOpen) scheduleActiveEditorIntoView();
 }
 
 
@@ -3044,7 +3112,7 @@ function collectEditorData(mode='draft', options={}){
   if(!path) path=`${normalizePostsPath()}/${defaultFileName}.md`;
   if(!path.endsWith('.md')) path += '.md';
 
-  const datetimeVal=getFormValue('fm-datetime');
+  const datetimeVal=getResponsiveDateTimeValue('fm-datetime');
   const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ') : nowLocalString();
   // draft 状态完全由编辑器中的开关决定：
   // 提交到仓库只负责写入文件，不再自动把 draft 改成 false。
@@ -5838,7 +5906,11 @@ function openSportsModal(startDateKey=null) {
               <span>运动日期与时间</span>
               <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('sp-datetime')">⚡ 现在</button>
             </label>
-            <input class="fm-input" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
+            <input class="fm-input datetime-combined" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
+            <div class="mobile-datetime-parts">
+              <input class="fm-input" type="date" id="sp-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动日期">
+              <input class="fm-input" type="time" id="sp-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动时间">
+            </div>
           </div>
 
           <div class="fm-group">
@@ -5898,7 +5970,7 @@ function deleteSportsData(startDateKey) {
 
 async function saveSportsData() {
   const name = document.getElementById('sp-name').value.trim();
-  const datetimeVal = document.getElementById('sp-datetime').value.trim();
+  const datetimeVal = getResponsiveDateTimeValue('sp-datetime');
   const startDateLocal = datetimeVal ? datetimeVal.replace('T', ' ') : nowLocalString();
 
   const type = document.getElementById('sp-type').value.trim();
@@ -7797,6 +7869,10 @@ window.addEventListener('beforeunload',()=>{
 });
 
 window.addEventListener('DOMContentLoaded', async()=>{
+  syncAdminVisualViewport();
+  window.visualViewport?.addEventListener('resize',syncAdminVisualViewport);
+  window.visualViewport?.addEventListener('scroll',syncAdminVisualViewport);
+  window.addEventListener('orientationchange',()=>setTimeout(syncAdminVisualViewport,120));
   initAdminPalette();
   initAdminBackToTop();
   loadCfg(); const active=await checkStatus();
