@@ -364,10 +364,12 @@ input:checked+.slider:before{transform:translateX(18px)}
 .quick-command-status{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .quick-command .btn{flex:0 0 auto}
 .publish-launch-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.publish-launch{display:flex;align-items:center;gap:13px;min-height:88px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--bg);color:var(--text);font-family:inherit;text-align:left;cursor:pointer;transition:.16s}
+.publish-launch{display:flex;align-items:center;gap:13px;min-height:72px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--bg);color:var(--text);font-family:inherit;text-align:left;cursor:pointer;transition:.16s}
 .publish-launch:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-1px)}
 .publish-launch-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:var(--accent-light);color:var(--accent);font-size:20px;font-weight:800}
-.publish-launch strong{display:block;font-size:14px;margin-bottom:4px}.publish-launch small{display:block;color:var(--text3);font-size:11.5px;line-height:1.4}
+.publish-launch-icon svg{width:22px;height:22px}
+.publish-launch strong{display:block;font-size:14px}
+.mobile-editor-upload,.mobile-editor-publish{display:none}
 .mobile-publish-nav{display:none}
 
 /* 图片风格网格订阅与足迹网格 (Grid Styles) */
@@ -859,6 +861,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .btn.preview-btn{border-color:#b9dcca;background:linear-gradient(180deg,#f9fffc,#effaf4);color:var(--accent-dark)}
 .btn.preview-btn:hover{border-color:#76b797;background:#eaf8f1;color:#0b5f40}
 .btn.preview-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn .editor-action-icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .btn.sm{min-height:30px}
 
 .card{
@@ -992,6 +995,7 @@ tbody tr:hover td{background:#f8fbf9!important}
 .preview-draft-badge.is-draft{background:var(--warning-light);color:#a95f09}
 .preview-draft-badge.is-published{background:var(--success-light);color:#237f4a}
 .preview-scroll-area{flex:1;min-height:0;overflow-y:auto;background:#fff}
+.recent-preview-frame{display:block;flex:1;width:100%;height:auto;min-height:0;border:0;background:#fff}
 
 /* 前台页面骨架 */
 .preview-front-page{
@@ -1201,8 +1205,7 @@ tbody tr:hover td{background:#f2f8f5!important}
   .preview-stage{padding:10px}
 }
 @media (max-width:620px){
-  .topbar-actions .btn.preview-btn span{display:none}
-  .topbar-actions .btn.preview-btn{flex:0 0 38px;padding:0}
+  .topbar-actions .btn.preview-btn{padding:8px 9px}
   .overview-hero{display:block;padding:21px 18px 23px}
   .overview-sync-pill{display:none}
   .overview-hero h2{font-size:20px}
@@ -1279,7 +1282,7 @@ tbody tr:hover td{background:#f2f8f5!important}
 
   .overview-hero{margin-bottom:12px}
   .publish-launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-  .publish-launch{min-height:82px;padding:12px;gap:9px}.publish-launch-icon{width:38px;height:38px;flex-basis:38px;font-size:17px}.publish-launch strong{font-size:13px}.publish-launch small{font-size:10.5px}
+  .publish-launch{min-height:64px;padding:11px 12px;gap:9px}.publish-launch-icon{width:38px;height:38px;flex-basis:38px;font-size:17px}.publish-launch strong{font-size:13px}
   .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .overview-stat{min-width:0}
 
@@ -1289,8 +1292,14 @@ tbody tr:hover td{background:#f2f8f5!important}
   .editor-left .EasyMDEContainer{display:flex;flex-direction:column;min-height:58dvh}
   .editor-left .CodeMirror{height:50dvh!important;min-height:360px}
   .editor-left .CodeMirror-scroll{min-height:360px}
-  .editor-toolbar{display:flex!important;max-width:100%;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;-webkit-overflow-scrolling:touch}
-  .editor-toolbar-upload{margin-left:6px;flex:0 0 42px}
+  .editor-left .editor-toolbar{display:none!important}
+  .mobile-editor-upload{display:flex;margin:10px 12px 0;width:auto;min-width:0;height:42px;padding:6px 10px;justify-content:center;flex:none}
+  .mobile-editor-upload .editor-toolbar-upload-copy{display:grid}
+  .mobile-editor-publish{display:block;width:100%;padding:0 0 8px}
+  .mobile-editor-publish .btn{width:100%;min-height:46px;font-size:14px}
+  .editor-top-return,.editor-top-publish{display:none!important}
+  .editor-title-panel .desc-input,.editor-path-meta,.editor-preview-link{display:none!important}
+  .editor-left .editor-toolbar .editor-toolbar-upload{margin-left:6px;flex:0 0 42px}
   .editor-right{width:100%;height:auto;overflow:visible;padding:0;gap:12px}
   .fm-grid,.settings-grid{grid-template-columns:1fr!important}
   .fm-group,.setting-group{grid-column:1!important;min-width:0}
@@ -1314,8 +1323,11 @@ tbody tr:hover td{background:#f2f8f5!important}
   #main-footprint-map-wrapper{height:min(56vh,390px)}
 
   .modal-overlay{align-items:flex-end;padding:0;z-index:10001}
-  .modal-card{width:100%;max-width:none;max-height:94dvh;border-radius:18px 18px 0 0;border-bottom:0}
-  .modal-header{padding:13px 14px}.modal-body{padding:14px;overflow-x:hidden}.modal-footer{padding:10px 12px;flex-wrap:wrap}
+  .modal-card{width:100%;min-width:0;max-width:100%;max-height:94dvh;border-radius:18px 18px 0 0;border-bottom:0}
+  .modal-header{padding:13px 14px}.modal-body{min-width:0;padding:14px;overflow-x:hidden}.modal-footer{min-width:0;padding:10px 12px;flex-wrap:wrap;gap:8px}
+  .modal-body .fm-group,.modal-body .sports-name-combo{min-width:0;max-width:100%}
+  .modal-body .fm-input,.modal-body .form-select,.modal-body input[type="datetime-local"]{display:block;width:100%;min-width:0;max-width:100%}
+  .modal-footer>div{min-width:0;max-width:100%;flex-wrap:wrap}
   .modal-footer .btn{flex:1;min-width:110px;min-height:40px}
   .form-grid{grid-template-columns:1fr!important}
 
@@ -1329,7 +1341,8 @@ tbody tr:hover td{background:#f2f8f5!important}
   .preview-close-btn{width:34px;height:34px}
   .preview-stage{padding:6px}
   .preview-device{max-width:100%;border-radius:10px}
-  .preview-browser-bar{height:38px;padding:0 8px;gap:6px}
+  .preview-browser-bar{display:none}
+  .preview-viewport-switch{display:none}
   .preview-browser-dots{display:none}
   .preview-address{padding:0 8px}
 
@@ -1353,6 +1366,8 @@ tbody tr:hover td{background:#f2f8f5!important}
   .pagination-controls{max-width:100%;overflow-x:auto;justify-content:flex-start}
   .inter-left{max-height:320px}
   .inter-comment-head{align-items:flex-start}
+  .modal-footer>div{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .modal-footer .btn{width:100%;min-width:0}
   .inter-comment-actions{opacity:1;position:static}
   .preview-toolbar-title strong{font-size:11px}
   .preview-toolbar-icon{display:none}
@@ -1530,7 +1545,7 @@ html[data-theme="night"] *::-webkit-scrollbar-thumb{background:var(--border2)}
     <nav class="sidebar-nav" id="admin-mobile-nav">
       <div class="nav-section">内容管理</div>
       <div class="nav-item mobile-publish-nav" onclick="showPage('publish')" id="nav-publish">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.12 2.12 0 0 1 3 3L11 15l-4 1 1-4 8.5-8.5Z"/></svg>
         发布
       </div>
       <div class="nav-item active" onclick="showPage('posts')" id="nav-posts">
@@ -2094,25 +2109,57 @@ function renderPublishPage(){
   const c=document.getElementById('main-content');
   c.style.overflow='auto';
   c.innerHTML=`
-    <div class="card">
-      <div class="card-header"><div><div class="card-title">快速发布</div><div class="card-desc">选择一项操作，直接进入对应功能。</div></div></div>
-      <div class="publish-launch-grid">
-        <button class="publish-launch" type="button" onclick="openNewPost()"><span class="publish-launch-icon">文</span><span><strong>新建文章</strong><small>打开文章编辑器</small></span></button>
-        <button class="publish-launch" type="button" onclick="openSportsModal()"><span class="publish-launch-icon">跑</span><span><strong>新建运动</strong><small>添加一条运动记录</small></span></button>
-        <button class="publish-launch" type="button" onclick="openMemosWorkflow()"><span class="publish-launch-icon">M</span><span><strong>获取 Memos</strong><small>前往同步工作流</small></span></button>
-        <button class="publish-launch" type="button" onclick="openMobileMediaUpload()"><span class="publish-launch-icon">图</span><span><strong>上传图片</strong><small>上传至 R2 图床</small></span></button>
-      </div>
+    <div class="publish-launch-grid">
+      <button class="publish-launch" type="button" onclick="openNewPost()"><span class="publish-launch-icon">文</span><strong>新建文章</strong></button>
+      <button class="publish-launch" type="button" onclick="openSportsModal()"><span class="publish-launch-icon">跑</span><strong>新建运动</strong></button>
+      <button class="publish-launch" type="button" onclick="openMemosWorkflow()"><span class="publish-launch-icon">M</span><strong>获取 Memos</strong></button>
+      <button class="publish-launch" type="button" onclick="openMobileMediaUpload()"><span class="publish-launch-icon">图</span><strong>上传图片</strong></button>
+      <button class="publish-launch" type="button" onclick="openRecentPreview()"><span class="publish-launch-icon">近</span><strong>查看近况</strong></button>
+      <button class="publish-launch" type="button" onclick="window.location.href='/'"><span class="publish-launch-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg></span><strong>返回主页</strong></button>
     </div>`;
 }
 
 function openMemosWorkflow(){
-  showPage('deploy');
-  requestAnimationFrame(()=>document.querySelector('[data-workflow="fetch-memos.yml"]')?.scrollIntoView({behavior:'smooth',block:'center'}));
+  const proxyButton=document.createElement('button');
+  triggerQuickWorkflow('fetch-memos.yml',proxyButton);
 }
 
 function openMobileMediaUpload(){
   showPage('media');
-  document.getElementById('media-file-input')?.click();
+}
+
+function openRecentPreview(){
+  const container=document.getElementById('modal-container');
+  container.innerHTML=`
+    <div class="article-preview-overlay" role="dialog" aria-modal="true" aria-label="查看近况" onclick="if(event.target===this) closeModal()">
+      <div class="article-preview-shell">
+        <div class="article-preview-toolbar">
+          <div class="preview-toolbar-title"><span class="preview-toolbar-icon">近</span><div><strong>查看近况</strong><small>前台“发生”页面</small></div></div>
+          <button class="preview-close-btn" type="button" onclick="closeModal()" aria-label="关闭">×</button>
+        </div>
+        <iframe class="recent-preview-frame" src="/recent/" title="近况" onload="prepareRecentPreview(this)"></iframe>
+      </div>
+    </div>`;
+  document.body.classList.add('modal-open');
+}
+
+function prepareRecentPreview(frame){
+  try{
+    const doc=frame.contentDocument;
+    if(!doc || !doc.head) return;
+    const style=doc.createElement('style');
+    style.textContent=`
+      html,body{min-height:100%!important;background:#fff!important}
+      body{display:block!important;margin:0!important;padding:0!important}
+      .masthead,.main>.title,.back-to-top,#backToTop{display:none!important}
+      .main{display:block!important;width:100%!important;max-width:none!important;min-height:100%!important;margin:0!important;padding:12px 10px 28px!important;border:0!important;box-sizing:border-box!important}
+      #friend-circle-lite-root{margin:0!important;padding-top:0!important}
+    `;
+    doc.head.appendChild(style);
+    frame.contentWindow.scrollTo(0,0);
+  }catch(error){
+    console.warn('近况预览样式处理失败',error);
+  }
 }
 
 // ============================================================
@@ -2509,12 +2556,21 @@ async function deleteDraftPost(encodedPath){
   return deleteTask;
 }
 
+function stripArticleHeart(body){
+  return String(body||'').replace(/\s*❤\s*$/u,'').replace(/\s+$/,'');
+}
+
+function appendArticleHeart(body){
+  const content=stripArticleHeart(body);
+  return `${content}${content ? '\n\n' : ''}❤\n`;
+}
+
 function openNewPost(){
   const draft=readLocalDraft('__new__');
   const useDraft=draft && confirm('检测到一份未提交的新文章本地草稿，是否恢复？');
   STATE.editingPost=useDraft
-    ? {...draft, draftKey:'__new__', isNew:true}
-    : {fm:{title:'',author:'',date:nowLocalString(),description:'',tags:[],slug:'',draft:true},body:'\n\n❤',path:null,sha:null,isNew:true,draftKey:'__new__',originalPath:null};
+    ? {...draft, body:stripArticleHeart(draft.body), draftKey:'__new__', isNew:true}
+    : {fm:{title:'',author:'',date:nowLocalString(),description:'',tags:[],slug:'',draft:true},body:'',path:null,sha:null,isNew:true,draftKey:'__new__',originalPath:null};
   STATE.activeTags=normalizeTags(STATE.editingPost.fm.tags); renderEditor();
 }
 
@@ -2523,8 +2579,9 @@ async function openEditPost(encodedPath){
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 读取源文件…</div>`;
   try{
     const file=await getFileContent(path); const {fm,body}=parseFrontMatter(file.content); fm.tags=normalizeTags(fm.tags);
-    const local=readLocalDraft(path); let post={fm,body,path,sha:file.sha,isNew:false,draftKey:path,originalPath:path};
+    const local=readLocalDraft(path); let post={fm,body:stripArticleHeart(body),path,sha:file.sha,isNew:false,draftKey:path,originalPath:path};
     if(local && confirm('检测到此文章有未提交的本地草稿，是否恢复本地草稿？')) post={...local, sha:file.sha, isNew:false, draftKey:path, originalPath:path};
+    post.body=stripArticleHeart(post.body);
     STATE.editingPost=post; STATE.activeTags=normalizeTags(post.fm.tags); renderEditor();
   }catch(e){ toast(e.message,'error'); renderPostsPage(); }
 }
@@ -2538,15 +2595,15 @@ function renderEditor(){
   const allExistingTags = [...new Set(STATE.posts.filter(p=>!p.isTrash).flatMap(p => p.tags))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
 
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">已同步</small>`;
+  document.getElementById('page-title').innerHTML=`${post.isNew?'撰写新文章':'编辑文章'} <small id="dirty-state">未修改</small>`;
   document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="showPage('posts')">← <span>返回列表</span></button>
+    <button class="btn editor-top-return" onclick="showPage('posts')">← <span>返回列表</span></button>
+    <button class="btn" onclick="savePost('draft')" id="btn-save-draft"><svg class="editor-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 16h8"/></svg><span>保存草稿</span></button>
     <button class="btn preview-btn" onclick="openArticlePreview()" title="预览当前未保存内容（Ctrl/⌘ + Shift + P）">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg>
       <span>文章预览</span>
     </button>
-    <button class="btn" onclick="savePost('draft')" id="btn-save-draft">保存草稿</button>
-    <button class="btn primary" onclick="savePost('publish')" id="btn-publish">发布/更新</button>`;
+    <button class="btn primary editor-top-publish" onclick="savePost('publish')" id="btn-publish"><svg class="editor-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 14v6h14v-6"/></svg><span>发布/更新</span></button>`;
   const c=document.getElementById('main-content'); c.style.overflow='hidden';
   const filePath=post.path || `${normalizePostsPath()}/${slugify(fm.slug || fm.title || 'new-post')}.md`;
 
@@ -2560,12 +2617,16 @@ function renderEditor(){
           <textarea class="desc-input" id="fm-description" placeholder="请输入文章摘要 (可选)...">${escapeHTML(fm.description||'')}</textarea>
           <div class="editor-meta-line">
             <span id="word-counter">0 字 · 1 分钟</span>
-            <span>路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
+            <span class="editor-path-meta">路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
             <span id="autosave-text">本地草稿未变更</span>
             <button type="button" class="editor-preview-link" onclick="openArticlePreview()">预览成稿 <span>⌘⇧P</span></button>
           </div>
         </div>
         <textarea id="mde-area"></textarea>
+        <label class="editor-toolbar-upload mobile-editor-upload" for="editor-image-upload" role="button" aria-label="上传图片到 R2 图床并插入正文">
+          <span class="editor-toolbar-upload-icon" aria-hidden="true">🖼️</span>
+          <span class="editor-toolbar-upload-copy"><span class="editor-toolbar-upload-title">上传图片</span><span class="editor-toolbar-upload-sub">R2 图床 · 自动插入正文</span></span>
+        </label>
         <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic,.heif" multiple onchange="uploadEditorR2Images(this)">
       </div>
       <div class="editor-right">
@@ -2583,20 +2644,19 @@ function renderEditor(){
           </div>
 
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
-          <div class="fm-group"><label class="fm-label">标签 <span class="muted">回车或逗号添加</span></label>
+          <div class="fm-group"><label class="fm-label"><span>标签 <span class="muted">回车或逗号添加</span></span><button class="btn sm ghost" type="button" id="btn-load-post-tags" style="color:var(--accent);padding:0;" onclick="loadExistingPostTags()">获取标签</button></label>
             <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
               ${STATE.activeTags.map(t=>tagChip(t)).join('')}
               <input type="text" class="tags-input" id="tag-input" onkeydown="handleTagPush(event)" placeholder="添加标签">
             </div>
-            ${allExistingTags.length ? `
-              <div style="margin-top:6px;">
+            <div id="existing-post-tags" style="margin-top:6px;${allExistingTags.length ? '' : 'display:none;'}">
                 <div style="font-size:11.5px;color:var(--text3);margin-bottom:4px;">已有标签快速选择：</div>
-                <div style="display:flex;flex-wrap:wrap;gap:4px;max-height:80px;overflow-y:auto;">
+                <div id="existing-post-tags-list" style="display:flex;flex-wrap:wrap;gap:4px;max-height:80px;overflow-y:auto;">
                   ${allExistingTags.map(t => `<button class="tag meta" style="cursor:pointer;border:none;" type="button" onclick="appendExistingTag('${escapeAttr(t)}')">+ #${escapeHTML(t)}</button>`).join('')}
                 </div>
-              </div>` : ''}
+              </div>
           </div>
-          <div class="fm-group"><label class="fm-label">文件路径</label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
+          <div class="fm-group fm-path-group"><label class="fm-label"><span>文件路径</span><button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="revisePostPath()">一键修订</button></label><input class="fm-input" id="fm-path" value="${escapeAttr(filePath)}"></div>
           <div class="switch-wrap">
             <label class="switch"><input type="checkbox" id="fm-draft" ${isDraftValue(fm.draft)?'checked':''} onchange="updateDraftTag(); markDirty();"><span class="slider"></span></label>
             <span>保存为草稿，不公开渲染</span>
@@ -2604,6 +2664,7 @@ function renderEditor(){
         </div>
 
       </div>
+      <div class="mobile-editor-publish"><button class="btn primary" type="button" id="btn-publish-mobile" onclick="savePost('publish')"><svg class="editor-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 14v6h14v-6"/></svg><span>发布/更新</span></button></div>
     </div>`;
 
   if(STATE.mde){ try{STATE.mde.toTextArea();}catch(e){} }
@@ -2635,6 +2696,7 @@ function sanitizePreviewHtml(html){
 
 function articlePreviewSnapshot(){
   const data=collectEditorData('preview',{requireTitle:false});
+  const previewBody=appendArticleHeart(data.body);
   const title=data.fm.title || '未命名文章';
   const description=data.fm.description || getExcerpt(data.body,'') || '这篇文章暂时还没有摘要。';
   const author=data.fm.author || '未署名';
@@ -2642,10 +2704,11 @@ function articlePreviewSnapshot(){
   const words=countWords(data.body);
   const minutes=readMinutes(data.body);
   const rawHtml=window.marked && typeof window.marked.parse==='function'
-    ? window.marked.parse(data.body || '*正文内容将在这里显示。*')
-    : `<p>${escapeHTML(data.body || '正文内容将在这里显示。')}</p>`;
+    ? window.marked.parse(previewBody || '*正文内容将在这里显示。*')
+    : `<p>${escapeHTML(previewBody || '正文内容将在这里显示。')}</p>`;
   return {
     ...data,
+    body:previewBody,
     title,
     description,
     author,
@@ -2875,6 +2938,41 @@ function handleTagPush(e){
   }
 }
 function removeTagNode(el,val){ STATE.activeTags=STATE.activeTags.filter(t=>t!==val); el.parentElement.remove(); markDirty(); }
+async function loadExistingPostTags(){
+  const button=document.getElementById('btn-load-post-tags');
+  const box=document.getElementById('existing-post-tags');
+  const list=document.getElementById('existing-post-tags-list');
+  if(!button || !box || !list) return;
+  button.disabled=true;
+  button.textContent='读取中…';
+  try{
+    await loadPosts();
+    STATE.postsLoaded=true;
+    const tags=[...new Set(STATE.posts.filter(post=>!post.isTrash).flatMap(post=>normalizeTags(post.tags)))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+    list.innerHTML=tags.length
+      ? tags.map(tag=>`<button class="tag meta" style="cursor:pointer;border:none;" type="button" onclick="appendExistingTag('${escapeAttr(tag)}')">+ #${escapeHTML(tag)}</button>`).join('')
+      : '<span class="muted">暂无已有标签</span>';
+    box.style.display='block';
+    button.textContent='刷新标签';
+  }catch(e){
+    button.textContent='重新获取';
+    toast(`标签读取失败：${e.message}`,'error');
+  }finally{
+    button.disabled=false;
+  }
+}
+
+function revisePostPath(){
+  const input=document.getElementById('fm-path');
+  if(!input) return;
+  const date=(document.getElementById('fm-datetime')?.value || nowISOStringForInput()).slice(0,10);
+  const rawTitle=(document.getElementById('fm-title')?.value || '').trim();
+  const safeTitle=(rawTitle || '未命名文章').replace(/[\\/:*?"<>|]/g,'-').replace(/\s+/g,' ').trim();
+  input.value=`${normalizePostsPath()}/${date} ${safeTitle}.md`;
+  markDirty();
+  refreshEditorMeta();
+}
+
 function markDirty(){
   STATE.dirty=true;
   const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未暂存修改';
@@ -3025,11 +3123,15 @@ function clearLocalDraft(path){
 function setPostSaveBusy(busy){
   const draftBtn=document.getElementById('btn-save-draft');
   const publishBtn=document.getElementById('btn-publish');
+  const mobilePublishBtn=document.getElementById('btn-publish-mobile');
   if(draftBtn) draftBtn.disabled=busy;
-  if(publishBtn){
-    publishBtn.disabled=busy;
-    publishBtn.textContent=busy ? '正在发布…' : '发布/更新';
-  }
+  [publishBtn,mobilePublishBtn].forEach(button=>{
+    if(!button) return;
+    button.disabled=busy;
+    const label=button.querySelector('span');
+    if(label) label.textContent=busy ? '正在发布…' : '发布/更新';
+    else button.textContent=busy ? '正在发布…' : '发布/更新';
+  });
 }
 
 async function savePost(mode){
@@ -3047,7 +3149,7 @@ async function savePost(mode){
 
       // 发布前先在浏览器中保留一份草稿备份；远程提交成功后再清除。
       saveLocalDraft('backup',{silent:true});
-      const content=buildFrontMatter(data.fm,data.body);
+      const content=buildFrontMatter(data.fm,appendArticleHeart(data.body));
       const commitAction=data.fm.draft ? 'update draft' : 'publish';
       const res=await putFile(data.path,content,null,`content: ${commitAction} ${data.fm.title}`);
 
@@ -3639,9 +3741,10 @@ function gardenPreviewNeighborMarkup(post,direction){
 function gardenBuildFrontendPreviewDocument(data,neighbors){
   const savedPalette=localStorage.getItem('blog-palette');
   const palette=['paper','night','sepia','mist'].includes(savedPalette) ? savedPalette : 'paper';
+  const articleOnly=window.matchMedia('(max-width:860px)').matches;
   const assetVersion=Date.now();
   const tags=data.tags.length
-    ? `<div class="post-tags"><i class="fa fa-tags"></i> ${data.tags.map(tag=>`#<a href="#">${escapeHTML(tag)}</a>&nbsp;`).join('')}</div><p>&nbsp;</p>`
+    ? `<div class="post-tags"><i class="fa fa-tags"></i> ${data.tags.map(tag=>`#<a href="#">${escapeHTML(tag)}</a>&nbsp;`).join('')}</div>`
     : '';
   const neighbor=(post,direction)=>{
     const isPrevious=direction==='previous';
@@ -3650,7 +3753,6 @@ function gardenBuildFrontendPreviewDocument(data,neighbors){
     return isPrevious ? `&larr; <a href="#">${label}</a>` : `<a href="#">${label}</a> &rarr;`;
   };
   const title=escapeHTML(data.title);
-  const author=escapeHTML(data.author);
   const date=escapeHTML(formatDateShort(data.fm.date || data.date));
   return `<!doctype html>
 <html lang="zh-CN" data-theme="${palette}">
@@ -3664,9 +3766,9 @@ function gardenBuildFrontendPreviewDocument(data,neighbors){
   <link rel="stylesheet" href="/css/style.css?v=${assetVersion}">
   <link rel="stylesheet" href="/css/fonts.css?v=${assetVersion}">
   <link rel="stylesheet" href="/css/palettes.css?v=${assetVersion}">
-  <style>html{min-height:100%;background:var(--page-bg,#fff)}body{min-height:calc(100vh - 60px)}a[href="#"]{cursor:default}.post-nav:empty{display:none}</style>
+  <style>html{min-height:100%;background:var(--page-bg,#fff)}body{min-height:calc(100vh - 60px)}a[href="#"]{cursor:default}.post-nav:empty{display:none}${articleOnly ? 'body.preview-article-only{display:block!important;min-height:100vh}.preview-article-only .masthead{display:none!important}.preview-article-only .main{width:100%!important;max-width:760px!important;min-height:100vh!important;margin:0 auto!important;padding:28px 18px 40px!important;border:0!important}.preview-article-only .post-nav{display:none!important}' : ''}</style>
 </head>
-<body class="posts">
+<body class="posts${articleOnly ? ' preview-article-only' : ''}">
   <header class="masthead">
     <h1><a href="/">Counting Stars✨</a></h1>
     <p class="tagline">欲买桂花同载酒，终不似，少年游。</p>
@@ -3677,9 +3779,9 @@ function gardenBuildFrontendPreviewDocument(data,neighbors){
     </nav>
   </header>
   <article class="main">
-    <header class="title"><h1>${title}</h1><h3>${author} / ${date}</h3><hr></header>
+    <header class="title"><h1>${title}</h1><hr></header>
     <div class="post-content">${data.html}</div>
-    ${tags}
+    <div class="post-footer-meta">${tags}<div class="post-footer-date"><time datetime="${date}">${date}</time></div></div><p>&nbsp;</p>
     <footer>
       <nav class="post-nav"><span class="nav-prev">${neighbor(neighbors.previous,'previous')}</span><span class="nav-next">${neighbor(neighbors.next,'next')}</span></nav>
     </footer>
