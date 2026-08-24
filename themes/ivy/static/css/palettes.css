@@ -404,9 +404,16 @@ button.button-load.noclick {
 .back-to-top:focus-visible { outline-color: var(--accent); }
 
 @media screen and (max-width: 960px) {
-  .masthead .menu a { background: var(--text-strong); color: var(--page-bg); border-color: var(--text-strong); border-radius: 5px; padding: 5px 10px; }
-  .masthead .menu .active a { background: transparent; border-color: var(--text-strong); color: var(--text-strong); }
-  .palette-menu { display: inline-block; margin: 5px 0 0 3px; vertical-align: middle; }
+  #menu-check:checked ~ ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .masthead .menu li, .masthead .menu li:first-child { border: 0; }
+  .masthead .menu li, .masthead .menu li:first-child { display: block; margin: 0; min-width: 0; }
+  .masthead .menu a { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; min-height: 2.35rem; background: var(--surface-soft); color: var(--text); border: 1px solid var(--border); border-radius: 5px; padding: 5px 6px; line-height: 1.2; text-align: center; white-space: nowrap; }
+  .masthead .menu .active a { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-hover); font-weight: 400 !important; }
+  .palette-menu { display: flex !important; align-items: center; justify-content: center; margin: 0; vertical-align: middle; }
   .palette-trigger { width: 2.25rem; height: 2.25rem; color: var(--text-strong); border: 1px solid var(--border-strong); }
 }
 

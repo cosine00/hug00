@@ -5,18 +5,24 @@
 {{ end }}
 
 <div class="post-content">
+{{ $postContent := .Content }}
 {{ if (and (eq (getenv "HUGO_BLOGDOWN_POST_RELREF") "") (and (and .Params.date (lt (now.AddDate 0 0 ($.Site.Params.holdDays | default -90)) .Date)) (in (string .Content) "<!--# ON_HOLD -->"))) }}
-{{ (index (split .Content "<!--# ON_HOLD -->") 0) | safeHTML }}
-{{ else }}
-{{ .Content }}
+{{ $postContent = (index (split .Content "<!--# ON_HOLD -->") 0) }}
 {{ end }}
+{{ $postContent = replaceRE `(?s)(<p(?:\s[^>]*)?>\s*)([^<\s])` `${1}<span class="post-dropcap">${2}</span><span class="post-first-line-space" aria-hidden="true"></span>` $postContent 1 }}
+{{ $postContent | safeHTML }}
 </div>
-{{ if .Params.tags }}
+{{ if or .Params.tags .Params.date }}
+  <div class="post-footer-meta">
+  {{ if .Params.tags }}
   <div class="post-tags">
     <i class="fa fa-tags"></i>
     {{ range .Params.tags }}
     #<a href="{{ (urlize (printf "tags/%s" . )) | absURL }}/">{{ . }}</a>&nbsp;
     {{ end }}
+  </div>
+  {{ end }}
+  {{ if .Params.date }}<div class="post-footer-date"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time></div>{{ end }}
   </div>
   <p>&nbsp;</p>
 {{ end }}

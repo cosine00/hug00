@@ -11,6 +11,7 @@
 
     var INITIAL_BATCH_SIZE = 12
     var NEXT_BATCH_SIZE = 9
+    var RELATIVE_TIME_WINDOW_DAYS = 7
     var allPhotos = []
     var renderedCards = []
     var renderedCount = 0
@@ -99,6 +100,27 @@
       )
     }
 
+    function formatPhotoDate(timestamp) {
+      if (!timestamp) return ""
+      var date = new Date(Number(timestamp) * 1000)
+      if (isNaN(date.getTime())) return ""
+      var year = date.getFullYear()
+      var month = String(date.getMonth() + 1).padStart(2, "0")
+      var day = String(date.getDate()).padStart(2, "0")
+      return year + "-" + month + "-" + day
+    }
+
+    function formatPhotoTime(timestamp) {
+      if (!timestamp) return ""
+      var milliseconds = Number(timestamp) * 1000
+      var age = Date.now() - milliseconds
+      var relativeWindow = RELATIVE_TIME_WINDOW_DAYS * 24 * 60 * 60 * 1000
+      if (age >= 0 && age < relativeWindow && window.Lately) {
+        return Lately.format(milliseconds)
+      }
+      return formatPhotoDate(timestamp)
+    }
+
     function collectPhotos(responseData) {
       var data = Array.isArray(responseData)
         ? responseData
@@ -118,9 +140,7 @@
         var memo = data[i] || {}
         var content = String(memo.content || "")
         var galleryTitle = cleanGalleryTitle(content)
-        var memoCreatedTime = memo.createdTs
-          ? new Date(memo.createdTs * 1000).toLocaleString()
-          : ""
+        var memoCreatedTime = memo.createdTs || ""
 
         // 解析 JSON 条目 content 内的 Markdown 图片，保持原始顺序。
         var imagePattern = /!\[(.*?)\]\((.*?)\)/g
@@ -212,7 +232,8 @@
       if (photo.time) {
         var time = document.createElement("span")
         time.className = "photo-time"
-        time.textContent = photo.time
+        time.textContent = formatPhotoTime(photo.time)
+        time.title = new Date(Number(photo.time) * 1000).toLocaleString()
         card.appendChild(time)
       }
 
@@ -229,9 +250,6 @@
         ViewImage.init("." + batchClass)
       }
 
-      if (window.Lately) {
-        Lately.init({ target: ".photo-time" })
-      }
     }
 
     function updateStatus() {

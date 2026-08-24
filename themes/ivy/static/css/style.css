@@ -251,12 +251,47 @@ body {
 
 .main .title h1 {
   margin-top: 0;
-  margin-bottom: -25px;
+  margin-bottom: 0;
+}
+
+.main .title hr {
+  margin: 1.6em auto;
 }
 
 .title h3 {
   font-weight: normal;
   text-align: center;
+}
+
+.post-footer-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5em;
+}
+
+.post-footer-date {
+  margin-left: auto;
+  color: #777;
+  font-size: .9em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+body.posts .post-content > p:first-of-type {
+  margin-top: 0;
+  text-indent: 0;
+}
+
+body.posts .post-content > p:first-of-type .post-dropcap {
+  margin-right: .04em;
+  font-size: 1.35em;
+  font-weight: 600;
+  line-height: inherit;
+}
+
+body.posts .post-content > p:first-of-type .post-first-line-space {
+  display: none;
 }
 
 .subtitle {

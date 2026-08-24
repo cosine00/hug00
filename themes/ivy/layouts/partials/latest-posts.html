@@ -5,17 +5,11 @@
     }
 
     .post-grid {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .post-row {
-      display: flex;
-      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .post-item {
-      flex: 1 0 50%; /* 每行两个元素 */
       box-sizing: border-box;
       padding: 10px;
     }
@@ -28,19 +22,30 @@
       color: rgb(255, 0, 0); /* 修改为蓝色 */
       font-weight: bold; /* 调整点号的样式 */
     }
+
+    @media screen and (max-width: 683px) {
+      .post-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .post-item {
+        padding: 8px 10px;
+      }
+
+      .post-item:nth-child(n + 4) {
+        display: none;
+      }
+    }
   </style>
 
   <div class="post-grid">
     {{ $latestPosts := where .Site.RegularPages "Section" "posts" | first 6 }}
-    {{ range $index, $post := $latestPosts }}
-      {{ if eq (mod $index 2) 0 }}<div class="post-row">{{ end }}
-        <div class="post-item">
-          <span class="bullet">•</span> <!-- 添加点号 -->
-          <span class="post-date">{{ $post.Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>
-          <a href="{{ $post.Permalink }}">{{ $post.Title }}</a>
-        </div>
-      {{ if eq (mod $index 2) 1 }} </div> {{ end }}
+    {{ range $post := $latestPosts }}
+      <div class="post-item">
+        <span class="bullet">•</span> <!-- 添加点号 -->
+        <span class="post-date">{{ $post.Date.Format ($.Site.Params.DateFormatList | default "2006-01-02") }}</span>
+        <a href="{{ $post.Permalink }}">{{ $post.Title }}</a>
+      </div>
     {{ end }}
-    {{ if mod (len $latestPosts) 2 }} </div> {{ end }}
   </div>
 </div>
