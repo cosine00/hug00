@@ -1,5 +1,15 @@
 [
   {
+    "run_id": 20260901001,
+    "name": "YaoYao跳绳",
+    "moving_time": "0:25:00",
+    "type": "RopeSkipping",
+    "start_date_local": "2026-09-01 19:14:37",
+    "summary_polyline": "",
+    "average_heartrate": 141,
+    "source": "manual"
+  },
+  {
     "run_id": 20260807001,
     "name": "亲子足球",
     "moving_time": "0:36:00",
