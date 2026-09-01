@@ -1,18 +1,6 @@
 {
   "article_data": [
     {
-      "title": "核磁共振检查有好转",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/89051/",
-      "created": "2026-09-01 08:24:19",
-      "updated": "2026-09-01 08:24:19",
-      "excerpt": "距离我车祸刚好两个月多一点。在医生的建议下我预约了左膝核磁共振检查，因为当天做不了所以约了第二天。也就是昨天。 上午9点多做的，做完我就回家等结果了。在公众号上看了一下没想到中午就出结果了。 本来以为髌骨移位这个问题已经解决了，还打算庆祝了一下。结果最后确认核磁共振看不出有没有复位，要做CT才行。😅😅😅 和上次的对比一下，情况有了极大的好转，医生说我这个情况三个月应该能差不多，但最终恢复还要更久一点。",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 1
-    },
-    {
       "title": "读了篇小作文",
       "author": "ACEVS",
       "avatar": "https://weavatar.com/avatar/ffc1ac2ecde17b2eb1caff3e94c119fdaea4dc1a947a08a3092b388bf9b454d0",
@@ -22,7 +10,7 @@
       "excerpt": "5000万美元相当于图瓦卢国家的gp...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 2
+      "floor": 1
     },
     {
       "title": "不再期待下一份工作",
@@ -34,6 +22,18 @@
       "excerpt": "最近在工位上发呆的时间明显变多了。 倒不是工作不饱和，而是手头那些看似紧锣密鼓的推进、跨部门拉扯和流程审批，在脑子里过完一遍之后，只剩下一个感觉：我是在纯粹消耗心力，换取一份固定的现金流。 我以前总觉得，换一个新环境或者接手一个新的业务线，至少能带来一些认知上的增量。但现实往往很骨感。以我现在的岗位和年资，所谓的「成长」，在落地的前一个月把业务逻辑、组织架构摸清楚之后，基本就见顶了。剩下的，无非是在高度重复的协同机制里，去应付那些低效…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
+      "floor": 2
+    },
+    {
+      "title": "核磁共振检查有好转",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/89051/",
+      "created": "2026-09-01 00:24:19",
+      "updated": "2026-09-01 00:24:19",
+      "excerpt": "距离我车祸刚好两个月多一点。在医生的建议下我预约了左膝核磁共振检查，因为当天做不了所以约了第二天。也就是昨天。 上午9点多做的，做完我就回家等结果了。在公众号上看了一下没想到中午就出结果了。 本来以为髌骨移位这个问题已经解决了，还打算庆祝了一下。结果最后确认核磁共振看不出有没有复…",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
       "floor": 3
     },
     {
@@ -85,18 +85,6 @@
       "floor": 7
     },
     {
-      "title": "打算换一个智能门锁",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/67244/",
-      "created": "2026-08-31 10:35:06",
-      "updated": "2026-08-31 10:35:06",
-      "excerpt": "我家里的门锁还是老式的机械锁，每次开门都要插钥匙。已经用了很多年了，有的时候忘记带钥匙就会很麻烦。而我家那把锁用久了还需要在锁芯里加点“铅笔芯粉末”来润滑一下，否则钥匙会不好用。 我打算换一把智能门锁，这样更方便一点。 征求了家里人的意见决定换一把带人脸识别功能的智能门锁。因为光指纹识别的话不太够用，我爸爸的指纹比较浅，经常识别不出来，只能输密码。可这样就失去了智能锁的意义。所以人脸识别是最好的选择。 在哪里买也是个问题。最终决定在京…",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 8
-    },
-    {
       "title": "搬工位时的三波人",
       "author": "So!azy",
       "avatar": "https://icon.horse/icon/blog.solazy.me",
@@ -106,7 +94,7 @@
       "excerpt": "公司最近把楼下的一整层重新装修了一遍。前前后后折腾了几个月，装完之后又花了一个多月通风、除甲醛。接下来的计划很明确：我们所有人集体搬去楼下，然后空出来的原有楼层，无缝衔接进入下一轮拆除和装修。 搬家这件事本身并不复杂，无非是打包显示器、清空工位、把私人物品塞进纸箱。但就在这前后两周的窗口期里，办公室里不同人的反应，比搬家本身要有意思得多。 我们事业部有个做测试的同事，平时在大家眼里属于那种「事儿挺多、细节极度挑剔」的人。听说要搬去新装…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 9
+      "floor": 8
     },
     {
       "title": "备份工具简单比较",
@@ -118,19 +106,7 @@
       "excerpt": "hasleo先用的这个，增量备份也很...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 10
-    },
-    {
-      "title": "在小红书上一毛钱买了一提卫生纸",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/10735/",
-      "created": "2026-08-31 07:46:33",
-      "updated": "2026-08-31 07:46:33",
-      "excerpt": "今天早上在小红书上无意间点到了“集市”按钮，没想到意外发现了薅羊毛的机会。 传送门： 进入这个界面以后，会送一张大额无门槛优惠券，我在首页选了一提卫生纸。 不用分付，没有套路，没有自动扣款。 微信付一毛钱填个地址就行。 😄😄😄",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 11
+      "floor": 9
     },
     {
       "title": "买垃圾",
@@ -142,7 +118,7 @@
       "excerpt": "有时候，看到好玩的东西，喜欢的东西，总是太容易心动。心动之后，就容易冲动，一旦冲动的结果就是手里又多了一件可能 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 12
+      "floor": 10
     },
     {
       "title": "每夫吐槽（119）",
@@ -154,6 +130,30 @@
       "excerpt": "单位聚餐。 坐定后，饭店按照惯例鼓励扫码发评论，送饮料。 小云忽然冲服务员蹦出来一句：“我VIP7，可以发单独发笔记，你去跟经理商量商量。” 这几个词单独出现都认识，组合到一起可就超出我认知范围了。 前台和经理商量了一阵，表示可以给我们送一荤一素两个菜。 小云脸上登时流光溢彩起来。 哦，原来饭吃的多且话多还有这种好处。 我一点儿也不稀罕。吃个饭还要写作文，累不累啊。某软件我都没装。 小云是真心爱好拍照和打卡。去西安前她甚至问了每个人的…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
+      "floor": 11
+    },
+    {
+      "title": "打算换一个智能门锁",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/67244/",
+      "created": "2026-08-31 02:35:06",
+      "updated": "2026-08-31 02:35:06",
+      "excerpt": "我家里的门锁还是老式的机械锁，每次开门都要插钥匙。已经用了很多年了，有的时候忘记带钥匙就会很麻烦。而我家那把锁用久了还需要在锁芯里加点“铅笔芯粉末”来润滑一下，否则钥匙会不好用。 我打算换一把智能门锁，这样更方便一点。 征求了家里人的意见决定换一把带人脸识别功能的智能门锁。因为光…",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
+      "floor": 12
+    },
+    {
+      "title": "在小红书上一毛钱买了一提卫生纸",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/10735/",
+      "created": "2026-08-30 23:46:33",
+      "updated": "2026-08-30 23:46:33",
+      "excerpt": "今天早上在小红书上无意间点到了“集市”按钮，没想到意外发现了薅羊毛的机会。 传送门： 进入这个界面以后，会送一张大额无门槛优惠券，我在首页选了一提卫生纸。 不用分付，没有套路，没有自动扣款。 微信付一毛钱填个地址就行。 😄😄😄",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
       "floor": 13
     },
     {
@@ -301,30 +301,6 @@
       "floor": 25
     },
     {
-      "title": "Astro博客后台升级版",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/96931/",
-      "created": "2026-08-29 13:46:15",
-      "updated": "2026-08-29 13:46:15",
-      "excerpt": "之前说过我用AI做了一个Astro的可视化后台，最近我又升级了一下，增加了一些功能。 比如WP上有的仪表盘，我感觉不好用，所以我写了一个适合自己的。还接入了DeepSeek做站内AI问答。 虽然有一些bug，但我都修好了。还有点不完美，但因为是我自用的，所以无所谓了😁 到目前为止没有功能上的问题。核心功能都是正常的。 以下是iOS上PWA版后台截图：",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 26
-    },
-    {
-      "title": "分享一些花的照片",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/89162/",
-      "created": "2026-08-29 11:33:25",
-      "updated": "2026-08-29 11:33:25",
-      "excerpt": "拍摄于山东青岛。",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 27
-    },
-    {
       "title": "一些切片的终止",
       "author": "So!azy",
       "avatar": "https://icon.horse/icon/blog.solazy.me",
@@ -334,7 +310,7 @@
       "excerpt": "这两天断更了。原本昨天打算把前两天的内容补上，但昨天深夜发生的一件事，把所有的表达欲和所谓的节奏全都打碎了。 我身边的一个朋友，昨天中午在家里突然去世了。我是昨晚十一点半左右接到的家属电话。 听到消息的那一瞬间，人其实是懵的。前几天大家还在一起经常见面、聊天、开玩笑，活生生的一个人，第二天就彻底不在了这个世界上。整整一晚上我几乎没怎么合眼，脑子里反复过着那些日常的切片，直到今天清晨。 今天一早，我陪着家属去处理了一些交接和遗物收拾的事…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 28
+      "floor": 26
     },
     {
       "title": "到了我这个年纪是不是都会自动变油腻？",
@@ -346,7 +322,7 @@
       "excerpt": "油腻是装吗？",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 29
+      "floor": 27
     },
     {
       "title": "碎片2026年8月29日",
@@ -358,7 +334,7 @@
       "excerpt": "大宝昨天去打扫卫生，今天去发书，wi...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 30
+      "floor": 28
     },
     {
       "title": "开车",
@@ -370,6 +346,30 @@
       "excerpt": "安心在自己的道上走",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
+      "floor": 29
+    },
+    {
+      "title": "Astro博客后台升级版",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/96931/",
+      "created": "2026-08-29 05:46:15",
+      "updated": "2026-08-29 05:46:15",
+      "excerpt": "之前说过我用AI做了一个Astro的可视化后台，最近我又升级了一下，增加了一些功能。 比如WP上有的仪表盘，我感觉不好用，所以我写了一个适合自己的。还接入了DeepSeek做站内AI问答。 虽然有一些bug，但我都修好了。还有点不完美，但因为是我自用的，所以无所谓了😁 到目前为…",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
+      "floor": 30
+    },
+    {
+      "title": "分享一些花的照片",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/89162/",
+      "created": "2026-08-29 03:33:25",
+      "updated": "2026-08-29 03:33:25",
+      "excerpt": "拍摄于山东青岛。",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
       "floor": 31
     },
     {
@@ -385,18 +385,6 @@
       "floor": 32
     },
     {
-      "title": "分享去上海拍的照片",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/62291/",
-      "created": "2026-08-28 16:39:33",
-      "updated": "2026-08-28 16:39:33",
-      "excerpt": "这些照片是去年在上海的时候拍的。分享一下。",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 33
-    },
-    {
       "title": "碎碎念W35",
       "author": "燕渡寒潭",
       "avatar": "https://icon.horse/icon/hisherry.com",
@@ -406,19 +394,7 @@
       "excerpt": "虽然开始了人生新篇章，不过旧篇章的余韵还在，新的生活轨迹尚未成型，有点晃晃悠悠的日子过得过于纯粹了。 现在获取新闻信息的途径都是通过Radio-Canada，浓浓的魁省法语味道，不过听习惯了好像也没那么难听，当一种方言听就还好了。不过我听着 …",
       "site_url": "https://hisherry.com/",
       "feed_url": "https://hisherry.com/feed/",
-      "floor": 34
-    },
-    {
-      "title": "AI没有我想象的那么差劲",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/56987/",
-      "created": "2026-08-28 12:58:02",
-      "updated": "2026-08-28 12:58:02",
-      "excerpt": "之前说过：AI目前不能让没有编程基础的人开发应用。这句话我今天要收回。因为作为一个没有编程基础的人来说，我用AI开发了我的Astro博客后台管理系统。 我原本的想法：看不懂代码，没法编程，看不懂代码，不会指挥。 现在的情况：原来我用的模型太笨了。 哈哈哈😁 在之前说过，我用AI搭建了我的Astro博客，并成功导入了WordPress博客文章。并做了URL的优化。文章最后说我还开发了一个后台管理系统。现在我来介绍一下这个系统。 起初我是…",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 35
+      "floor": 33
     },
     {
       "title": "关于不确定性II",
@@ -430,7 +406,7 @@
       "excerpt": "往前走",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 36
+      "floor": 34
     },
     {
       "title": "定时重启路由发现断连",
@@ -442,7 +418,19 @@
       "excerpt": "根据你提供的信息，可以确认这个版本的...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 37
+      "floor": 35
+    },
+    {
+      "title": "分享去上海拍的照片",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/62291/",
+      "created": "2026-08-28 08:39:33",
+      "updated": "2026-08-28 08:39:33",
+      "excerpt": "这些照片是去年在上海的时候拍的。分享一下。",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
+      "floor": 36
     },
     {
       "title": "关于博客写作IV",
@@ -454,7 +442,7 @@
       "excerpt": "接着写，接着改",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 38
+      "floor": 37
     },
     {
       "title": "Deepseek Harness有点儿东西",
@@ -466,6 +454,18 @@
       "excerpt": "之前看到Deepseek开源了Harness，其实还是有点儿兴趣，但是一直没空研究，这不昨天下午正好有点儿空，就部署来玩玩，踩了些坑，不过都是小问题，好在最后都解决了，整体上来说Harness还...",
       "site_url": "https://zhoutian.com/",
       "feed_url": "https://zhoutian.com/feed/",
+      "floor": 38
+    },
+    {
+      "title": "AI没有我想象的那么差劲",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/56987/",
+      "created": "2026-08-28 04:58:02",
+      "updated": "2026-08-28 04:58:02",
+      "excerpt": "之前说过：AI目前不能让没有编程基础的人开发应用。这句话我今天要收回。因为作为一个没有编程基础的人来说，我用AI开发了我的Astro博客后台管理系统。 我原本的想法：看不懂代码，没法编程，看不懂代码，不会指挥。 现在的情况：原来我用的模型太笨了。 哈哈哈😁 在之前说过，我用AI…",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
       "floor": 39
     },
     {
@@ -7206,6 +7206,6 @@
     "active_num": 56,
     "error_num": 7,
     "article_num": 600,
-    "last_updated_time": "2026-09-01 05:14:47 UTC"
+    "last_updated_time": "2026-09-01 13:36:45 UTC"
   }
 }
