@@ -10366,5 +10366,21 @@
 "elevation_gain": 41.99551405897364,
 "source": "Keep",
 "streak": 1
+},
+{
+"run_id": 9223370248508525807,
+"name": "\u508d\u665a\u8dd1\u6b65",
+"distance": 6185.16845703125,
+"moving_time": "0:38:43",
+"type": "Run",
+"start_date": "2026-09-02 10:12:07",
+"start_date_local": "2026-09-02 18:12:07",
+"location_country": "{'latitude': 22.546942, 'longitude': 114.110109, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u5e7f\u4e1c\u7701', 'city': '\u6df1\u5733\u5e02', 'cityCode': '0755', 'district': None, 'districtCode': None, 'startLatitude': 0.0, 'startLongitude': 0.0}",
+"summary_polyline": "gqqrFsrkeU??",
+"average_heartrate": 161.0,
+"average_speed": 2.662577897990207,
+"elevation_gain": 0.0,
+"source": "Keep",
+"streak": 1
 }
 ]
