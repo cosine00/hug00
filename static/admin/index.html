@@ -185,6 +185,8 @@ tbody tr:hover td{background:#fbfcfd !important;}
 .fm-input:focus,.fm-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .mobile-datetime-parts{display:none;grid-template-columns:1fr;gap:8px;width:100%;min-width:0}
 .mobile-datetime-parts>*{width:100%;min-width:0;max-width:100%}
+.mobile-datetime-field{display:grid;grid-template-columns:46px minmax(0,1fr);align-items:center;gap:9px;width:100%;min-width:0}
+.mobile-datetime-field>span{color:var(--text3);font-size:12px;font-weight:700;text-align:right}
 .tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:7px 9px;border:1px solid var(--border2);border-radius:var(--radius);min-height:40px;background:var(--bg);cursor:text}
 .tags-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.1)}
 .tag-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-light);color:var(--accent-dark);padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
@@ -1388,12 +1390,14 @@ tbody tr:hover td{background:#f2f8f5!important}
   .modal-header{padding:13px 14px}.modal-body{min-width:0;padding:16px 14px;overflow-x:hidden;overflow-y:auto;gap:16px}.modal-footer{min-width:0;padding:10px 12px;flex-wrap:wrap;gap:8px}
   .modal-body .fm-group{width:100%;min-width:0;max-width:100%;margin:0;overflow:visible;gap:9px}
   .modal-body .sports-name-combo{display:grid;width:100%;min-width:0;max-width:100%;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;align-items:stretch;gap:9px;overflow:visible}
-  .modal-body .fm-input,.modal-body .form-select,.modal-body input[type="date"],.modal-body input[type="time"],.modal-body input[type="datetime-local"]{display:block;inline-size:100%;width:100%;min-inline-size:0;min-width:0;max-width:100%;height:52px;min-height:52px;padding:12px 14px;font-size:16px;line-height:1.3;overflow:visible}
+  .modal-body .fm-input,.modal-body .form-select,.modal-body input[type="datetime-local"]{display:block;inline-size:100%;width:100%;min-inline-size:0;min-width:0;max-width:100%;height:52px;min-height:52px;padding:12px 14px;font-size:16px;line-height:1.3;overflow:visible}
   .modal-body select.form-select{padding-right:38px}
   .modal-body input[type="datetime-local"]{overflow:hidden}
   .modal-body input[type="datetime-local"]::-webkit-date-and-time-value{min-width:0;text-align:left}
   .datetime-combined{display:none!important}
-  .mobile-datetime-parts{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:52px;gap:9px;overflow:visible}
+  .mobile-datetime-parts{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;gap:9px;overflow:visible}
+  .mobile-datetime-field{grid-template-columns:42px minmax(0,1fr)}
+  .mobile-datetime-field .fm-input{height:48px;min-height:48px;padding:11px 13px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
   .modal-footer>div{min-width:0;max-width:100%;flex-wrap:wrap}
   .modal-footer .btn{flex:1;min-width:110px;min-height:40px}
   .form-grid{grid-template-columns:1fr!important}
@@ -1963,9 +1967,19 @@ function resetSingleDateTimePicker(inputId){
 
 function syncSplitDateTime(inputId){
   const combined=document.getElementById(inputId);
-  const dateValue=document.getElementById(`${inputId}-date`)?.value || '';
-  const timeValue=document.getElementById(`${inputId}-time`)?.value || '';
-  if(combined && dateValue) combined.value=`${dateValue}T${timeValue || '00:00'}:00`;
+  const dateInput=document.getElementById(`${inputId}-date`);
+  const timeInput=document.getElementById(`${inputId}-time`);
+  let dateValue=dateInput?.value.trim() || '';
+  let timeValue=timeInput?.value.trim() || '';
+  if(/^\d{8}$/.test(dateValue)) dateValue=dateValue.replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3');
+  if(/^\d{4}$/.test(timeValue)) timeValue=timeValue.replace(/^(\d{2})(\d{2})$/,'$1:$2');
+  const dateMatch=dateValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const timeMatch=timeValue.match(/^(\d{2}):(\d{2})$/);
+  const dateValid=Boolean(dateMatch) && Number(dateMatch[2])>=1 && Number(dateMatch[2])<=12 && Number(dateMatch[3])>=1 && Number(dateMatch[3])<=31;
+  const timeValid=Boolean(timeMatch) && Number(timeMatch[1])<=23 && Number(timeMatch[2])<=59;
+  if(dateInput){ dateInput.value=dateValue; dateInput.setCustomValidity(dateValid ? '' : '请输入 YYYY-MM-DD 格式的日期'); }
+  if(timeInput){ timeInput.value=timeValue; timeInput.setCustomValidity(timeValid ? '' : '请输入 HH:mm 格式的时间'); }
+  if(combined) combined.value=dateValid && timeValid ? `${dateValue}T${timeValue}:00` : '';
   return combined?.value || '';
 }
 
@@ -2838,8 +2852,8 @@ function renderEditor(){
             </label>
             <input class="fm-input datetime-combined" type="datetime-local" step="1" id="fm-datetime" value="${escapeAttr(fullDateStr)}">
             <div class="mobile-datetime-parts">
-              <input class="fm-input" type="date" id="fm-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布日期">
-              <input class="fm-input" type="time" id="fm-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布时间">
+              <label class="mobile-datetime-field"><span>日期</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="fm-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" placeholder="YYYY-MM-DD" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布日期，格式为年-月-日"></label>
+              <label class="mobile-datetime-field"><span>时间</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="5" id="fm-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" placeholder="HH:mm" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布时间，格式为时:分"></label>
             </div>
           </div>
 
@@ -3337,6 +3351,7 @@ function collectEditorData(mode='draft', options={}){
   if(!path.endsWith('.md')) path += '.md';
 
   const datetimeVal=getResponsiveDateTimeValue('fm-datetime');
+  if(document.getElementById('fm-datetime-date') && !datetimeVal) throw new Error('发布日期或时间格式不正确，请按 YYYY-MM-DD 和 HH:mm 填写');
   const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ') : nowLocalString();
   // draft 状态完全由编辑器中的开关决定：
   // 提交到仓库只负责写入文件，不再自动把 draft 改成 false。
@@ -6132,8 +6147,8 @@ function openSportsModal(startDateKey=null) {
             </label>
             <input class="fm-input datetime-combined" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
             <div class="mobile-datetime-parts">
-              <input class="fm-input" type="date" id="sp-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动日期">
-              <input class="fm-input" type="time" id="sp-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动时间">
+              <label class="mobile-datetime-field"><span>日期</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="sp-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" placeholder="YYYY-MM-DD" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动日期，格式为年-月-日"></label>
+              <label class="mobile-datetime-field"><span>时间</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="5" id="sp-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" placeholder="HH:mm" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动时间，格式为时:分"></label>
             </div>
           </div>
 
