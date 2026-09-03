@@ -6209,13 +6209,15 @@ function renderSportsTableContainer() {
     </div>`;
 }
 
-function openSportsModal(startDateKey=null) {
+async function openSportsModal(startDateKey=null) {
+  if(!STATE.sportsSha){
+    try{ await loadSportsData(); }
+    catch(e){ toast('已有运动名称暂时未加载，可在弹窗内点击“获取已有”重试','warning'); }
+  }
   const isEdit = !!startDateKey;
-  const item = isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {};
+  const item = (isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {}) || {};
   const currentMinutes = isEdit ? parseTimeToMinutes(item.moving_time) : 30;
   const fullDateStr = String(item.start_date_local || nowLocalString()).trim().replace(' ', 'T');
-  const existingSportNames = [...new Set(STATE.sportsData.map(record => String(record.name || '').trim()).filter(Boolean))]
-    .sort((a,b) => a.localeCompare(b,'zh-CN'));
   const currentSportName = String(item.name || '登月计划');
 
   const html = `
@@ -6237,12 +6239,10 @@ function openSportsModal(startDateKey=null) {
           </div>
 
           <div class="fm-group">
-            <label class="fm-label">运动名称</label>
+            <label class="fm-label"><span>运动名称</span><button class="btn sm ghost" type="button" style="color:var(--accent);padding:0 4px;" onclick="refreshSportsNames(this)">载入</button></label>
             <div class="sports-name-combo">
               <select class="form-select" id="sp-name-select" style="width:100%;" onchange="applySportsNameSelection(this.value)">
-                <option value="">选择已有名称…</option>
-                ${existingSportNames.map(name => `<option value="${escapeAttr(name)}" ${name === currentSportName ? 'selected' : ''}>${escapeHTML(name)}</option>`).join('')}
-                <option value="__custom__">＋ 输入新的运动名称</option>
+                ${sportsNameOptions(currentSportName)}
               </select>
               <input class="fm-input" id="sp-name" value="${escapeAttr(currentSportName)}" placeholder="选择已有名称或直接输入新名称">
             </div>
@@ -8182,6 +8182,41 @@ let waitingPwaWorker=null;
 function applyPwaUpdate(){
   if(waitingPwaWorker) waitingPwaWorker.postMessage({type:'SKIP_WAITING'});
   else window.location.reload();
+}
+
+async function loadSportsData(force=false){
+  if(!force && STATE.sportsSha && Array.isArray(STATE.sportsData)) return STATE.sportsData;
+  const file=await getFileContent(ACT_JSON_PATH);
+  const list=JSON.parse(file.content || '[]');
+  if(!Array.isArray(list)) throw new Error('运动数据格式不正确');
+  list.sort((a,b)=>String(b.start_date_local).localeCompare(String(a.start_date_local)));
+  STATE.sportsData=list;
+  STATE.sportsSha=file.sha;
+  return list;
+}
+
+function uniqueSportsNames(){
+  return [...new Set(STATE.sportsData.map(record=>String(record.name || '').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'zh-CN'));
+}
+
+function sportsNameOptions(selected=''){
+  return `<option value="">选择已有名称…</option>${uniqueSportsNames().map(name=>`<option value="${escapeAttr(name)}" ${name===selected?'selected':''}>${escapeHTML(name)}</option>`).join('')}<option value="__custom__">＋ 输入新的运动名称</option>`;
+}
+
+async function refreshSportsNames(button){
+  const selected=document.getElementById('sp-name')?.value.trim() || '';
+  if(button){ button.disabled=true; button.textContent='获取中…'; }
+  try{
+    await loadSportsData(true);
+    const select=document.getElementById('sp-name-select');
+    if(select){ select.innerHTML=sportsNameOptions(selected); if(uniqueSportsNames().includes(selected)) select.value=selected; }
+    toast(`已获取 ${uniqueSportsNames().length} 个已有名称`,'success');
+  }catch(e){
+    toast(`获取已有名称失败：${e.message}`,'error');
+  }finally{
+    if(button){ button.disabled=false; button.textContent='载入'; }
+  }
 }
 
 function renderMobileRecentPage(){
