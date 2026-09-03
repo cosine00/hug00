@@ -975,6 +975,8 @@ tbody tr:hover td{background:#f8fbf9!important}
 .editor-preview-link.editor-focus-toggle{margin-left:0}
 .editor-preview-link:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent-dark);transform:translateY(-1px)}
 .editor-preview-link span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;color:var(--text3)}
+.editor-preview-link .editor-focus-label{font-family:inherit;font-size:12px;font-weight:800;color:currentColor}
+.editor-focus-icon{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .editor-focus-word-count{display:none}
 .editor-image-widget{display:flex;align-items:center;gap:7px;padding:4px 0 8px 4px}
 .editor-image-trigger{position:relative;display:inline-grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid var(--border);border-radius:7px!important;background:var(--bg);color:var(--accent);cursor:zoom-in}
@@ -1396,8 +1398,18 @@ tbody tr:hover td{background:#f2f8f5!important}
   .modal-body input[type="datetime-local"]::-webkit-date-and-time-value{min-width:0;text-align:left}
   .datetime-combined{display:none!important}
   .mobile-datetime-parts{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;gap:9px;overflow:visible}
-  .mobile-datetime-field{grid-template-columns:42px minmax(0,1fr)}
-  .mobile-datetime-field .fm-input{height:48px;min-height:48px;padding:11px 13px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+  .mobile-wheel-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;width:100%}
+  .mobile-wheel-row.time{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mobile-wheel-field{position:relative;display:block;min-width:0}
+  .mobile-wheel-field select{appearance:auto;width:100%;height:48px;min-height:48px;padding:10px 25px 10px 10px;border:1px solid var(--border2);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-size:16px;font-variant-numeric:tabular-nums;text-align:center}
+  .mobile-wheel-field span{position:absolute;right:8px;top:50%;z-index:1;transform:translateY(-50%);color:var(--text3);font-size:11px;pointer-events:none}
+  .mobile-wheel-caption{display:flex;align-items:center;gap:7px;color:var(--text3);font-size:12px;font-weight:700}.mobile-wheel-caption::after{content:"";height:1px;flex:1;background:var(--border)}
+  .editor-focus-toggle{min-height:40px!important;padding:8px 12px!important;border-color:color-mix(in srgb,var(--accent) 40%,var(--border))!important;background:var(--accent-light)!important;color:var(--accent-dark)!important}
+  body.editor-focus-mode .editor-meta-line{gap:8px!important}
+  body.editor-focus-mode .editor-focus-upload,body.editor-focus-mode .editor-focus-toggle{min-width:116px;min-height:42px!important;padding:8px 12px!important;border:1px solid var(--border2)!important;border-radius:12px!important;background:var(--bg)!important;color:var(--accent-dark)!important;box-shadow:0 5px 16px rgba(15,35,25,.1)!important}
+  body.editor-focus-mode .editor-focus-upload{background:var(--accent-light)!important;border-color:color-mix(in srgb,var(--accent) 35%,var(--border))!important}
+  body.admin-keyboard-open .mobile-tabbar{display:none!important}
+  body.admin-keyboard-open .modal-body,body.admin-keyboard-open .editor-right{scroll-padding-bottom:32px}
   .modal-footer>div{min-width:0;max-width:100%;flex-wrap:wrap}
   .modal-footer .btn{flex:1;min-width:110px;min-height:40px}
   .form-grid{grid-template-columns:1fr!important}
@@ -1961,8 +1973,55 @@ function resetSingleDateTimePicker(inputId){
   const timeInput=document.getElementById(`${inputId}-time`);
   if(dateInput) dateInput.value=value.slice(0,10);
   if(timeInput) timeInput.value=value.slice(11,16);
+  const parts={year:value.slice(0,4),month:value.slice(5,7),day:value.slice(8,10),hour:value.slice(11,13),minute:value.slice(14,16)};
+  Object.entries(parts).forEach(([part,partValue])=>{ const input=document.getElementById(`${inputId}-${part}`); if(input) input.value=partValue; });
+  if(document.getElementById(`${inputId}-year`)) syncWheelDateTime(inputId);
   if(typeof GARDEN_STATE !== 'undefined' && GARDEN_STATE.page==='editor' && typeof gardenMarkDirty==='function') gardenMarkDirty();
   else if(typeof markDirty === 'function') markDirty();
+}
+
+function dateTimeOptions(start,end,selected,pad=true){
+  let html='';
+  for(let value=start;value<=end;value++){
+    const text=pad ? String(value).padStart(2,'0') : String(value);
+    html+=`<option value="${text}" ${text===String(selected)?'selected':''}>${text}</option>`;
+  }
+  return html;
+}
+
+function mobileDateTimeWheel(inputId,fullDateStr,onChange=''){
+  const value=String(fullDateStr||nowISOStringForInput()).replace(' ','T');
+  const year=Number(value.slice(0,4)) || new Date().getFullYear();
+  const month=value.slice(5,7),day=value.slice(8,10),hour=value.slice(11,13),minute=value.slice(14,16);
+  const startYear=Math.min(new Date().getFullYear()-10,year-2);
+  const endYear=Math.max(new Date().getFullYear()+5,year+2);
+  const change=`syncWheelDateTime('${inputId}');${onChange}`;
+  return `<div class="mobile-datetime-parts">
+    <div class="mobile-wheel-caption">日期</div>
+    <div class="mobile-wheel-row">
+      <label class="mobile-wheel-field"><select id="${inputId}-year" aria-label="年份" onchange="${change}">${dateTimeOptions(startYear,endYear,String(year),false)}</select><span>年</span></label>
+      <label class="mobile-wheel-field"><select id="${inputId}-month" aria-label="月份" onchange="${change}">${dateTimeOptions(1,12,month)}</select><span>月</span></label>
+      <label class="mobile-wheel-field"><select id="${inputId}-day" aria-label="日期" onchange="${change}">${dateTimeOptions(1,31,day)}</select><span>日</span></label>
+    </div>
+    <div class="mobile-wheel-caption">时间</div>
+    <div class="mobile-wheel-row time">
+      <label class="mobile-wheel-field"><select id="${inputId}-hour" aria-label="小时" onchange="${change}">${dateTimeOptions(0,23,hour)}</select><span>时</span></label>
+      <label class="mobile-wheel-field"><select id="${inputId}-minute" aria-label="分钟" onchange="${change}">${dateTimeOptions(0,59,minute)}</select><span>分</span></label>
+    </div>
+  </div>`;
+}
+
+function syncWheelDateTime(inputId){
+  const read=part=>document.getElementById(`${inputId}-${part}`)?.value || '';
+  const year=read('year'),month=read('month'),hour=read('hour'),minute=read('minute');
+  const dayInput=document.getElementById(`${inputId}-day`);
+  if(!year || !month || !dayInput) return syncSplitDateTime(inputId);
+  const maxDay=new Date(Number(year),Number(month),0).getDate();
+  let day=Math.min(Number(dayInput.value)||1,maxDay);
+  dayInput.value=String(day).padStart(2,'0');
+  const combined=document.getElementById(inputId);
+  if(combined) combined.value=`${year}-${month}-${String(day).padStart(2,'0')}T${hour||'00'}:${minute||'00'}:00`;
+  return combined?.value || '';
 }
 
 function syncSplitDateTime(inputId){
@@ -1984,7 +2043,10 @@ function syncSplitDateTime(inputId){
 }
 
 function getResponsiveDateTimeValue(inputId){
-  if(window.matchMedia('(max-width:860px)').matches) syncSplitDateTime(inputId);
+  if(window.matchMedia('(max-width:860px)').matches){
+    if(document.getElementById(`${inputId}-year`)) syncWheelDateTime(inputId);
+    else syncSplitDateTime(inputId);
+  }
   return getFormValue(inputId);
 }
 
@@ -2827,8 +2889,8 @@ function renderEditor(){
             <span class="editor-path-meta">路径：<span class="mono" id="path-preview">${escapeHTML(filePath)}</span></span>
             <span id="autosave-text">本地草稿未变更</span>
             <button type="button" class="editor-preview-link" onclick="openArticlePreview()">预览成稿 <span>⌘⇧P</span></button>
-            <label class="editor-preview-link editor-focus-upload" for="editor-image-upload" role="button" tabindex="0"><span aria-hidden="true">▧</span><span class="editor-focus-label">上传图片</span></label>
-            <button class="editor-preview-link editor-focus-toggle" type="button" onclick="toggleEditorFocusMode()" aria-pressed="false" title="隐藏其他模块，只保留标题和正文"><span aria-hidden="true">◫</span><span class="editor-focus-label">沉浸写作</span></button>
+            <label class="editor-preview-link editor-focus-upload" for="editor-image-upload" role="button" tabindex="0"><svg class="editor-focus-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16m-2-2 1.5-1.5a2 2 0 0 1 2.8 0L20 14"/><path d="M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/><path d="M15 8h.01"/></svg><span class="editor-focus-label">上传图片</span></label>
+            <button class="editor-preview-link editor-focus-toggle" type="button" onclick="toggleEditorFocusMode()" aria-pressed="false" title="隐藏其他模块，只保留标题和正文"><svg class="editor-focus-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg><span class="editor-focus-label">沉浸写作</span></button>
           </div>
         </div>
         <textarea id="mde-area"></textarea>
@@ -2851,10 +2913,7 @@ function renderEditor(){
               <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('fm-datetime')">⚡ 现在</button>
             </label>
             <input class="fm-input datetime-combined" type="datetime-local" step="1" id="fm-datetime" value="${escapeAttr(fullDateStr)}">
-            <div class="mobile-datetime-parts">
-              <label class="mobile-datetime-field"><span>日期</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="fm-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" placeholder="YYYY-MM-DD" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布日期，格式为年-月-日"></label>
-              <label class="mobile-datetime-field"><span>时间</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="5" id="fm-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" placeholder="HH:mm" onchange="syncSplitDateTime('fm-datetime');markDirty();refreshEditorMeta()" aria-label="发布时间，格式为时:分"></label>
-            </div>
+            ${mobileDateTimeWheel('fm-datetime',fullDateStr,'markDirty();refreshEditorMeta()')}
           </div>
 
           <div class="fm-group"><label class="fm-label">Slug</label><input class="fm-input" id="fm-slug" value="${escapeAttr(fm.slug||'')}" placeholder="留空则按标题生成"></div>
@@ -2911,10 +2970,15 @@ function toggleEditorFocusMode(force){
   STATE.mde?.codemirror?.setOption('lineNumbers',enabled);
   const button=document.querySelector('.editor-focus-toggle');
   if(button){
+    button.classList.toggle('is-active',enabled);
     button.setAttribute('aria-pressed',String(enabled));
     button.title=enabled ? '恢复文章设置和页面菜单' : '隐藏其他模块，只保留标题和正文';
     const label=button.querySelector('.editor-focus-label');
     if(label) label.textContent=enabled ? '退出沉浸' : '沉浸写作';
+    const icon=button.querySelector('.editor-focus-icon');
+    if(icon) icon.innerHTML=enabled
+      ? '<path d="M9 9H4V4M15 9h5V4M9 15H4v5M15 15h5v5"/>'
+      : '<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>';
   }
   requestAnimationFrame(()=>{
     STATE.mde?.codemirror?.refresh();
@@ -2994,6 +3058,7 @@ function openEditorImageViewer(index){
 }
 
 let editorViewportTimer=null;
+let lastMobileFocusTarget=null;
 function activeMarkdownEditor(){
   if(STATE.page==='editor' && STATE.mde) return STATE.mde;
   if(typeof GARDEN_STATE!=='undefined' && GARDEN_STATE.page==='editor' && GARDEN_STATE.mde) return GARDEN_STATE.mde;
@@ -3020,13 +3085,35 @@ function scheduleActiveEditorIntoView(){
   },180);
 }
 
+function ensureMobileControlVisible(target=lastMobileFocusTarget){
+  if(!target || !target.isConnected || !window.matchMedia('(max-width:860px)').matches) return;
+  if(target.closest('.CodeMirror')){ scheduleActiveEditorIntoView(); return; }
+  const viewport=window.visualViewport;
+  const visibleTop=(viewport?.offsetTop || 0)+18;
+  const visibleBottom=(viewport?.offsetTop || 0)+(viewport?.height || window.innerHeight)-24;
+  const rect=target.getBoundingClientRect();
+  if(rect.top>=visibleTop && rect.bottom<=visibleBottom) return;
+  const delta=rect.bottom>visibleBottom ? rect.bottom-visibleBottom+18 : rect.top-visibleTop-18;
+  const scroller=target.closest('.modal-body,.editor-right');
+  if(scroller && scroller.scrollHeight>scroller.clientHeight) scroller.scrollBy({top:delta,behavior:'auto'});
+  else window.scrollBy({top:delta,behavior:'auto'});
+}
+
+function scheduleMobileControlIntoView(target){
+  if(target) lastMobileFocusTarget=target;
+  [60,220,480].forEach(delay=>setTimeout(()=>ensureMobileControlVisible(),delay));
+}
+
 function syncAdminVisualViewport(){
   const viewport=window.visualViewport;
   const height=Math.round(viewport?.height || window.innerHeight);
   document.documentElement.style.setProperty('--admin-visual-height',`${height}px`);
   const keyboardOpen=Boolean(viewport && window.innerHeight-viewport.height>120);
   document.body.classList.toggle('admin-keyboard-open',keyboardOpen);
-  if(keyboardOpen) scheduleActiveEditorIntoView();
+  if(keyboardOpen){
+    scheduleActiveEditorIntoView();
+    scheduleMobileControlIntoView();
+  }
 }
 
 
@@ -6146,10 +6233,7 @@ function openSportsModal(startDateKey=null) {
               <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('sp-datetime')">⚡ 现在</button>
             </label>
             <input class="fm-input datetime-combined" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
-            <div class="mobile-datetime-parts">
-              <label class="mobile-datetime-field"><span>日期</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="sp-datetime-date" value="${escapeAttr(fullDateStr.slice(0,10))}" placeholder="YYYY-MM-DD" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动日期，格式为年-月-日"></label>
-              <label class="mobile-datetime-field"><span>时间</span><input class="fm-input" type="text" inputmode="numeric" autocomplete="off" maxlength="5" id="sp-datetime-time" value="${escapeAttr(fullDateStr.slice(11,16))}" placeholder="HH:mm" onchange="syncSplitDateTime('sp-datetime')" aria-label="运动时间，格式为时:分"></label>
-            </div>
+            ${mobileDateTimeWheel('sp-datetime',fullDateStr)}
           </div>
 
           <div class="fm-group">
@@ -8149,6 +8233,14 @@ async function initMobilePwa(){
 }
 
 // Lifecycle
+document.addEventListener('focusin',event=>{
+  if(!window.matchMedia('(max-width:860px)').matches) return;
+  const target=event.target;
+  if(target?.matches?.('input,textarea,select,[contenteditable="true"]') || target?.closest?.('.CodeMirror')){
+    scheduleMobileControlIntoView(target);
+  }
+});
+
 document.addEventListener('click',event=>{
   const tagButton=event.target.closest?.('[data-journal-tag]');
   if(!tagButton) return;
