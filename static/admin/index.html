@@ -396,7 +396,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 .publish-launch-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:var(--accent-light);color:var(--accent);font-size:20px;font-weight:800}
 .publish-launch-icon svg{width:22px;height:22px}
 .publish-launch strong{display:block;font-size:14px}
-.mobile-editor-upload,.mobile-editor-publish{display:none}
+.mobile-editor-upload,.mobile-editor-publish,.mobile-writing-header,.mobile-writing-context,.mobile-writing-dock,.mobile-settings-head,.mobile-settings-backdrop{display:none}
 .mobile-publish-nav{display:none}
 .mobile-tabbar,.mobile-nav-backdrop,.pwa-update{display:none}
 
@@ -1410,6 +1410,40 @@ tbody tr:hover td{background:#f2f8f5!important}
   body.editor-focus-mode .editor-focus-upload{background:var(--accent-light)!important;border-color:color-mix(in srgb,var(--accent) 35%,var(--border))!important}
   body.admin-keyboard-open .mobile-tabbar{display:none!important}
   body.admin-keyboard-open .modal-body,body.admin-keyboard-open .editor-right{scroll-padding-bottom:32px}
+
+  /* Day One inspired mobile writing workspace */
+  body.mobile-writing-mode{height:var(--admin-visual-height,100dvh);overflow:hidden;background:var(--bg)}
+  body.mobile-writing-mode .sidebar,body.mobile-writing-mode>.mobile-tabbar,body.mobile-writing-mode .topbar,body.mobile-writing-mode .sidebar-palette{display:none!important}
+  body.mobile-writing-mode .app,body.mobile-writing-mode .main,body.mobile-writing-mode .content{width:100%;height:var(--admin-visual-height,100dvh);min-height:0;margin:0;padding:0;overflow:hidden;background:var(--bg)}
+  body.mobile-writing-mode .editor-wrap{display:block;width:100%;height:var(--admin-visual-height,100dvh);min-height:0;margin:0;padding:0;overflow:hidden;background:var(--bg)}
+  body.mobile-writing-mode .editor-left{display:flex;width:100%;height:100%;min-height:0;border:0;border-radius:0;box-shadow:none;overflow:hidden;background:var(--bg)}
+  body.mobile-writing-mode .editor-title-panel{flex:0 0 auto;padding:0 18px 14px;border:0;background:var(--bg)}
+  .mobile-writing-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;min-height:62px;padding-top:env(safe-area-inset-top,0px);gap:12px;border-bottom:1px solid var(--border)}
+  .mobile-writing-date{min-width:0;color:var(--text);font-size:15px;font-weight:800;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mobile-writing-done{min-width:58px;min-height:38px;padding:8px 12px;border:0!important;border-radius:10px!important;background:var(--accent)!important;color:#fff!important;font-size:14px;font-weight:800}
+  .mobile-writing-context{display:flex;align-items:center;gap:7px;padding:11px 0 3px;color:var(--text3);font-size:12px}
+  .mobile-writing-context::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-light)}
+  body.mobile-writing-mode .editor-title-row{display:block;padding-top:8px}
+  body.mobile-writing-mode .title-input{min-height:42px;margin:0;padding:5px 0;border:0;font-size:23px;line-height:1.35}
+  body.mobile-writing-mode .editor-meta-line{display:none!important}
+  body.mobile-writing-mode .EasyMDEContainer{flex:1;min-height:0;padding-bottom:76px;background:var(--bg)}
+  body.mobile-writing-mode .CodeMirror{height:100%!important;min-height:0!important;padding:12px 18px 100px;border:0!important;background:var(--bg)!important;font-size:17px;line-height:1.85}
+  body.mobile-writing-mode .CodeMirror-gutters{display:none!important}
+  .mobile-writing-dock{position:fixed;left:12px;right:12px;bottom:calc(var(--admin-keyboard-height,0px) + 10px);z-index:118;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));min-height:66px;padding:7px;border:1px solid var(--border);border-radius:18px;background:color-mix(in srgb,var(--bg) 94%,transparent);box-shadow:0 12px 36px rgba(15,35,25,.16);backdrop-filter:blur(18px) saturate(150%);transition:bottom .16s ease}
+  .mobile-writing-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:50px;padding:4px;border:0!important;border-radius:12px!important;background:transparent!important;color:var(--text2)!important;font-family:inherit;font-size:11px;font-weight:700}
+  .mobile-writing-action:active{background:var(--accent-light)!important;color:var(--accent-dark)!important}
+  .mobile-writing-action svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-writing-action.primary{color:var(--accent-dark)!important}
+  body.mobile-writing-mode .mobile-editor-upload,body.mobile-writing-mode .mobile-editor-publish{display:none!important}
+  body.mobile-writing-mode .editor-right{display:none;position:fixed;left:0;right:0;bottom:0;z-index:122;width:100%;max-height:min(78dvh,680px);padding:0 14px calc(18px + env(safe-area-inset-bottom,0px));overflow-y:auto;border:1px solid var(--border);border-bottom:0;border-radius:22px 22px 0 0;background:var(--bg);box-shadow:0 -18px 54px rgba(15,35,25,.22)}
+  body.mobile-writing-mode.mobile-settings-open .editor-right{display:block;animation:mobileSheetIn .18s ease-out}
+  .mobile-settings-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;min-height:54px;margin:0 -14px 12px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg);font-size:15px;font-weight:800}
+  .mobile-settings-head button{min-width:54px;min-height:34px;border:0!important;background:var(--accent-light)!important;color:var(--accent-dark)!important;font-size:13px;font-weight:800}
+  .mobile-settings-backdrop{position:fixed;inset:0;z-index:121;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:rgba(8,20,14,.32);backdrop-filter:blur(2px)}
+  body.mobile-writing-mode.mobile-settings-open .mobile-settings-backdrop{display:block}
+  body.mobile-writing-mode.editor-focus-mode .mobile-writing-dock{display:grid!important}
+  body.mobile-writing-mode.editor-focus-mode .mobile-writing-header{display:grid!important}
+  body.mobile-writing-mode.editor-focus-mode .mobile-writing-context{display:flex!important}
   .modal-footer>div{min-width:0;max-width:100%;flex-wrap:wrap}
   .modal-footer .btn{flex:1;min-width:110px;min-height:40px}
   .form-grid{grid-template-columns:1fr!important}
@@ -2332,6 +2366,7 @@ function showPage(page){
   }
   stopPostAutosave(); gardenStopPostAutosave();
   document.body.classList.remove('editor-focus-mode');
+  document.body.classList.remove('mobile-writing-mode','mobile-settings-open');
   STATE.page=page; STATE.dirty=false;
   if(page!=='garden') GARDEN_STATE.dirty=false;
   if(STATE.mde){ try{ STATE.mde.toTextArea(); }catch(e){} STATE.mde=null; }
@@ -2840,6 +2875,29 @@ function openNewPost(){
   STATE.activeTags=normalizeTags(STATE.editingPost.fm.tags); renderEditor();
 }
 
+function formatMobileWritingDate(value){
+  const date=new Date(String(value || nowISOStringForInput()).replace(' ','T'));
+  if(Number.isNaN(date.getTime())) return '新文章';
+  const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
+  const pad=n=>String(n).padStart(2,'0');
+  return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日 ${weekdays[date.getDay()]}　${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function toggleMobileEditorSettings(open){
+  if(!window.matchMedia('(max-width:860px)').matches) return;
+  const shouldOpen=typeof open==='boolean' ? open : !document.body.classList.contains('mobile-settings-open');
+  if(shouldOpen && document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  document.body.classList.toggle('mobile-settings-open',shouldOpen);
+}
+
+function finishMobileWriting(){
+  if(STATE.page!=='editor') return;
+  if(STATE.dirty) saveLocalDraft('manual',{silent:true});
+  STATE.dirty=false;
+  document.body.classList.remove('mobile-settings-open');
+  showPage('posts');
+}
+
 async function openEditPost(encodedPath){
   const path=decodeURIComponent(encodedPath); const c=document.getElementById('main-content'); c.style.overflow='auto';
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在从 GitHub 读取源文件…</div>`;
@@ -2857,6 +2915,8 @@ function renderEditor(){
   document.body.classList.remove('editor-focus-mode');
   STATE.page='editor'; STATE.dirty=false;
   syncMobileTabbar('write');
+  document.body.classList.toggle('mobile-writing-mode',window.matchMedia('(max-width:860px)').matches);
+  document.body.classList.remove('mobile-settings-open');
   const post=STATE.editingPost; const fm=post.fm || {};
   
   // 收集当前仓库所有已存在的标签供选择
@@ -2881,6 +2941,11 @@ function renderEditor(){
     <div class="editor-wrap">
       <div class="editor-left">
         <div class="editor-title-panel">
+          <div class="mobile-writing-header">
+            <div class="mobile-writing-date">${formatMobileWritingDate(fullDateStr)}</div>
+            <button class="mobile-writing-done" type="button" onclick="finishMobileWriting()">完成</button>
+          </div>
+          <div class="mobile-writing-context"><span id="mobile-writing-status">本地草稿 · 0 字</span></div>
           <div class="editor-title-row">
             <input class="title-input" id="fm-title" placeholder="请输入文章标题" value="${escapeAttr(fm.title||'')}">
           </div>
@@ -2900,8 +2965,16 @@ function renderEditor(){
         </label>
         <input class="editor-image-upload-input" type="file" id="editor-image-upload" accept="image/*,.heic,.heif" multiple onchange="uploadEditorR2Images(this)">
         <div class="editor-focus-word-count" id="editor-focus-word-count" aria-live="polite">0 字 · 1 分钟</div>
+        <div class="mobile-writing-dock" aria-label="写作工具">
+          <label class="mobile-writing-action" for="editor-image-upload" role="button" tabindex="0"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="15.5" cy="9" r="1.5"/><path d="m5 17 4.5-4.5 3.2 3.2 2-2L19 18"/></svg><span>图片</span></label>
+          <button class="mobile-writing-action" type="button" onclick="openArticlePreview()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg><span>预览</span></button>
+          <button class="mobile-writing-action" type="button" onclick="toggleMobileEditorSettings(true)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="13" cy="18" r="2"/></svg><span>设置</span></button>
+          <button class="mobile-writing-action primary" type="button" onclick="savePost('publish')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 14v6h14v-6"/></svg><span>发布</span></button>
+        </div>
       </div>
+      <button class="mobile-settings-backdrop" type="button" aria-label="关闭发布设置" onclick="toggleMobileEditorSettings(false)"></button>
       <div class="editor-right">
+        <div class="mobile-settings-head"><span>文章设置</span><button type="button" onclick="toggleMobileEditorSettings(false)">完成</button></div>
         <div class="fm-card">
           <div class="fm-card-title">发布设置 <span class="tag ${isDraftValue(fm.draft)?'draft':'published'}" id="draft-tag">${isDraftValue(fm.draft)?'草稿':'发布'}</span></div>
           <div class="fm-group"><label class="fm-label">作者</label><input class="fm-input" id="fm-author" value="${escapeAttr(fm.author||'落落vici')}"></div>
@@ -3109,6 +3182,8 @@ function syncAdminVisualViewport(){
   const height=Math.round(viewport?.height || window.innerHeight);
   document.documentElement.style.setProperty('--admin-visual-height',`${height}px`);
   const keyboardOpen=Boolean(viewport && window.innerHeight-viewport.height>120);
+  const keyboardHeight=keyboardOpen ? Math.max(0,Math.round(window.innerHeight-viewport.height-viewport.offsetTop)) : 0;
+  document.documentElement.style.setProperty('--admin-keyboard-height',`${keyboardHeight}px`);
   document.body.classList.toggle('admin-keyboard-open',keyboardOpen);
   if(keyboardOpen){
     scheduleActiveEditorIntoView();
@@ -3409,12 +3484,14 @@ function markDirty(){
   STATE.dirty=true;
   const ds=document.getElementById('dirty-state'); if(ds) ds.textContent='有未暂存修改';
   const autosave=document.getElementById('autosave-text'); if(autosave) autosave.textContent='等待下一次自动暂存';
+  const mobileStatus=document.getElementById('mobile-writing-status'); if(mobileStatus) mobileStatus.dataset.dirty='true';
 }
 function updateDraftTag(){ const el=document.getElementById('draft-tag'); const checked=document.getElementById('fm-draft')?.checked; if(el){ el.className=`tag ${checked?'draft':'published'}`; el.textContent=checked?'草稿':'发布'; } }
 function refreshEditorMeta(){
   const body=STATE.mde?STATE.mde.value():''; const wc=countWords(body); const path=document.getElementById('fm-path')?.value || '';
   const word=document.getElementById('word-counter'); if(word) word.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
   const focusWord=document.getElementById('editor-focus-word-count'); if(focusWord) focusWord.textContent=`${wc} 字 · ${Math.max(1,Math.ceil(wc/400))} 分钟`;
+  const mobileStatus=document.getElementById('mobile-writing-status'); if(mobileStatus) mobileStatus.textContent=`${STATE.dirty?'未保存':'本地草稿'} · ${wc} 字`;
   const pp=document.getElementById('path-preview'); if(pp) pp.textContent=path;
   scheduleArticlePreviewRefresh();
 }
