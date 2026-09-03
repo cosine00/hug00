@@ -1,0 +1,19 @@
+{
+  "id": "/admin/",
+  "name": "Counting Stars 博客控制台",
+  "short_name": "博客控制台",
+  "description": "Counting Stars Hugo 博客移动管理后台",
+  "lang": "zh-CN",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#f7f8fa",
+  "theme_color": "#1f7a4d",
+  "icons": [{"src":"/admin/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
+  "shortcuts": [
+    {"name":"撰写文章","short_name":"写文章","url":"/admin/?page=write"},
+    {"name":"查看最新近况","short_name":"近况","url":"/admin/?page=recent"}
+  ]
+}
