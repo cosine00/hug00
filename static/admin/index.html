@@ -3649,7 +3649,7 @@ function collectEditorData(mode='draft', options={}){
 
   const datetimeVal=getResponsiveDateTimeValue('fm-datetime');
   if(document.getElementById('fm-datetime-date') && !datetimeVal) throw new Error('发布日期或时间格式不正确，请按 YYYY-MM-DD 和 HH:mm 填写');
-  const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ') : nowLocalString();
+  const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ').replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})$/, '$1:00') : nowLocalString();
   // draft 状态完全由编辑器中的开关决定：
   // 提交到仓库只负责写入文件，不再自动把 draft 改成 false。
   const draftChecked=Boolean(document.getElementById('fm-draft')?.checked);
@@ -4669,7 +4669,7 @@ function gardenCollectEditorData(mode='draft', options={}){
   if(!path.endsWith('.md')) path += '.md';
 
   const datetimeVal=gardenGetFormValue('fm-datetime');
-  const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ') : nowLocalString();
+  const fullDateStr=datetimeVal ? datetimeVal.replace('T',' ').replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})$/, '$1:00') : nowLocalString();
   // draft 状态完全由编辑器中的开关决定：
   // 提交到仓库只负责写入文件，不再自动把 draft 改成 false。
   const draftChecked=Boolean(document.getElementById('fm-draft')?.checked);
