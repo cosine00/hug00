@@ -2241,6 +2241,43 @@ async function putFile(path, content, sha, message){
   }
 }
 
+// Article saves use a snapshot and one non-force branch update. A rename must
+// never leave both paths behind or overwrite a different article.
+async function commitPostFile(path, content, post, message){
+  const originalPath=post?.isNew ? null : post?.originalPath;
+  if(!post?.isNew && !originalPath) throw new Error('缺少原文章路径，请重新打开文章后保存');
+  const branch=encodeURIComponent(CFG.branch).replace(/%2F/g,'/');
+  const head=await ghFetch(`/git/ref/heads/${branch}`);
+  const parent=head.object.sha;
+  const commit=await ghFetch(`/git/commits/${parent}`);
+  const readAtHead=async filePath=>{
+    try{
+      return await ghFetch(`/contents/${encodeURIComponent(filePath).replace(/%2F/g,'/')}?ref=${encodeURIComponent(parent)}`);
+    }catch(e){ if(e.status===404) return null; throw e; }
+  };
+  if(originalPath){
+    const source=await readAtHead(originalPath);
+    if(!source || source.type!=='file') throw new Error('原文章已被移动或删除，请重新加载文章列表');
+    if(!post.sha || source.sha!==post.sha) throw new Error('原文章在远程已被修改，请重新打开并核对内容后保存，本地草稿已保留');
+  }
+  if(path!==originalPath && await readAtHead(path)){
+    throw new Error('目标路径已经存在文件，请换一个名称；不会覆盖其他文章');
+  }
+  const blob=await ghFetch('/git/blobs',{method:'POST',body:JSON.stringify({content,encoding:'utf-8'})});
+  const entries=[{path,mode:'100644',type:'blob',sha:blob.sha}];
+  if(originalPath && originalPath!==path) entries.push({path:originalPath,mode:'100644',type:'blob',sha:null});
+  const tree=await ghFetch('/git/trees',{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree:entries})});
+  const next=await ghFetch('/git/commits',{method:'POST',body:JSON.stringify({message,tree:tree.sha,parents:[parent]})});
+  try{
+    await ghFetch(`/git/refs/heads/${branch}`,{method:'PATCH',body:JSON.stringify({sha:next.sha,force:false})});
+  }catch(e){
+    // Do not rebase/retry silently: another writer may have changed either path.
+    if(e.status===409 || e.status===422) throw new Error('仓库发生变化或分支拒绝更新，请刷新核对后重试；本地草稿已保留');
+    throw e;
+  }
+  return {content:{sha:blob.sha},commit:next};
+}
+
 async function deleteFile(path, sha, message){
   return ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`, {
     method:'DELETE', body:JSON.stringify({message, sha, branch:CFG.branch})
@@ -3758,12 +3795,14 @@ async function savePost(mode){
       saveLocalDraft('backup',{silent:true});
       const content=buildFrontMatter(data.fm,appendArticleHeart(data.body));
       const commitAction=data.fm.draft ? 'update draft' : 'publish';
-      const res=await putFile(data.path,content,null,`content: ${commitAction} ${data.fm.title}`);
+      const res=await commitPostFile(data.path,content,STATE.editingPost,`content: ${commitAction} ${data.fm.title}`);
 
       if(STATE.editingPost){
         STATE.editingPost.fm=data.fm;
         STATE.editingPost.body=data.body;
         STATE.editingPost.path=data.path;
+        STATE.editingPost.originalPath=data.path;
+        STATE.editingPost.draftKey=data.path;
         STATE.editingPost.sha=res?.content?.sha || STATE.editingPost.sha;
         STATE.editingPost.isNew=false;
       }
