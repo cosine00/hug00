@@ -373,7 +373,7 @@
       "floor": 31
     },
     {
-      "title": "写在响石潭博客十八周岁之前",
+      "title": "写在博客十八周岁之前",
       "author": "响石潭",
       "avatar": "https://www.xiangshitan.com/favicon.ico",
       "link": "https://www.xiangshitan.com/post/3508.html",
@@ -1123,7 +1123,7 @@
       "link": "https://demochen.com/posts/20260827/",
       "created": "2026-08-27 14:44:00",
       "updated": "2026-08-27 14:44:00",
-      "excerpt": "说明：本文是 Typeless 口述框架后经由 DC_Agent 结合「日知录」流程辅助完成。 截至 2026 年 8 月 25 日，我在 Day One 里写了 1784 天日记，共有 4109 篇条目。按自然日去重，同一天多篇仍只算一天；最早一篇是 2021 年 9 月 3 日。 今年年初，我开始用声音记录自己。7 月 10 日，我第一次认真录下几乎完整的一天。一开始，我只是想对抗遗忘。一天结束后，日记通常只剩几件印象最深的事。大…",
+      "excerpt": "截至 2026 年 8 月 25 日，我在 Day One 里写了 1784 天日记，共有 4109 篇条目。按自然日去重，同一天多篇仍只算一天；最早一篇是 2021 年 9 月 3 日。 今年年初，我开始用声音记录自己。7 月 10 日，我第一次认真录下几乎完整的一天。一开始，我只是想对抗遗忘。一天结束后，日记通常只剩几件印象最深的事。大量普通交流、临时判断和情绪变化，睡一觉就散了。 DC_Agent 就是我的个人分身，也是我的伙伴…",
       "site_url": "https://demochen.com/",
       "feed_url": "https://demochen.com/atom.xml",
       "floor": 94
@@ -7206,6 +7206,6 @@
     "active_num": 56,
     "error_num": 7,
     "article_num": 600,
-    "last_updated_time": "2026-09-07 20:04:55 UTC"
+    "last_updated_time": "2026-09-07 22:57:28 UTC"
   }
 }
