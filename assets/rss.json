@@ -1,6 +1,18 @@
 {
   "article_data": [
     {
+      "title": "开源我的个人基因分析流程",
+      "author": "Dayu",
+      "avatar": "https://icon.horse/icon/anotherdayu.com",
+      "link": "https://anotherdayu.com/4250/",
+      "created": "2026-09-10 19:56:22",
+      "updated": "2026-09-10 19:56:22",
+      "excerpt": "去年做完 WeGene 的全基因组测序之后，就一直想自己分析试试，于是有了这个项目。 整个项目是和 Claude 一起完成的，把分析流程整理成了 Skills 的形式，并开源到了 GitHub： https://github.com/DayuGuo/genome-atlas-skill WeGene 测序数据分两种，过滤过的基因型数据表（15 MB左右）和 FASTQ/BAM/CRAM 等格式的原始测序文件（30-90 GB）。所以我…",
+      "site_url": "https://anotherdayu.com/",
+      "feed_url": "https://anotherdayu.com/feed/",
+      "floor": 1
+    },
+    {
       "title": "彩虹网盘二次开发：更新前台，后台原样保留",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
@@ -10,7 +22,7 @@
       "excerpt": "最近在彩虹网盘的基础上做二次开发，整套前端页面直接交给AI完整重写，整体改动幅度不小，新增功能和底层调整一并落地。{mx_photo}{mx_photo}前台的文件操作体验是这次改动的重点。原版...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 1
+      "floor": 2
     },
     {
       "title": "爹味人的自由",
@@ -22,7 +34,7 @@
       "excerpt": "最近在一次闲聊里，听到一个挺有意思的场景。 一位平时很喜欢替别人做决定的朋友，在聊天时忽然说起，成年人最重要的就是拥有自己的生活，不应该总被别人安排。说这话的时候，他刚刚还在劝另一个朋友换工作，理由是「你现在这个选择明显不划算」，并且顺手替对方规划好了接下来几年的路径。 当时桌上没人接话。大家都笑了笑，打了个岔，顺势把话题带了过去。 但回家的路上，这句话一直在脑子里转。我突然意识到一种很荒诞的割裂感：很多极其习惯在微观环境里当「爹」的…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 2
+      "floor": 3
     },
     {
       "title": "风骚律师第二集",
@@ -34,7 +46,7 @@
       "excerpt": "三寸不烂之舌",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 3
+      "floor": 4
     },
     {
       "title": "不当“善良人”",
@@ -46,7 +58,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 4
+      "floor": 5
     },
     {
       "title": "伞绳绳结学习记录",
@@ -58,7 +70,7 @@
       "excerpt": "之前觉得nfc卡的那个绳子不结实，然...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 5
+      "floor": 6
     },
     {
       "title": "青岛进入“极速冷冻”模式",
@@ -70,7 +82,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 6
+      "floor": 7
     },
     {
       "title": "给静态博客加上阅读量统计：我的踩坑与最终方案",
@@ -82,7 +94,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 7
+      "floor": 8
     },
     {
       "title": "我的邻居",
@@ -94,7 +106,7 @@
       "excerpt": "不渗人",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 8
+      "floor": 9
     },
     {
       "title": "仪式感重要吗？",
@@ -106,7 +118,7 @@
       "excerpt": "重要",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 9
+      "floor": 10
     },
     {
       "title": "放下助人情结，我又辞职了",
@@ -118,7 +130,7 @@
       "excerpt": "今天直接去老板办公室提了离职。 整个过程比我想象中要平静得多。没有长篇大论的铺垫，也没有拍桌子翻脸的戏剧性场面，就是坐下来，把事情说清楚。老板显然有点意外，连着追问我到底是什么人、或者什么具体的事情惹到我了，言下之意好像只要能抓出一个具体的矛盾，这事儿就还有得聊。 看着他认真的神情，我突然觉得特别没劲。在那几秒钟的沉默里，我意识到事已至此，到底是谁在甩锅、哪条业务线在扯皮、哪个会议开得荒谬，早就没那么重要了。甚至连解释这些细节本身，都…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 10
+      "floor": 11
     },
     {
       "title": "曾经用过的那些“灯”！",
@@ -130,18 +142,6 @@
       "excerpt": "不知道我们那个村是什么时候通电的，但自我有记忆起好像就有”电灯”的概念。即使是通了电但 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 11
-    },
-    {
-      "title": "开源我的个人基因分析流程",
-      "author": "Dayu",
-      "avatar": "https://icon.horse/icon/anotherdayu.com",
-      "link": "https://anotherdayu.com/4250/",
-      "created": "2026-09-09 10:43:04",
-      "updated": "2026-09-09 10:43:04",
-      "excerpt": "去年做完 WeGene 的全基因组测序之后，我就一直想自己分析试试。于是就有了这个项目。 整个项目是和 Claude 一起完成的，把分析流程整理成了 Skill 的形式，并开源到了 GitHub： https://github.com/DayuGuo/genome-atlas-skill 目前 WeGene 的原始测序数据体量比较大，我还在后台申请下载权限，暂时没有拿到。因此这一轮分析使用的是大约 15 MB 的基因型数据表，而不是…",
-      "site_url": "https://anotherdayu.com/",
-      "feed_url": "https://anotherdayu.com/feed/",
       "floor": 12
     },
     {
@@ -7206,6 +7206,6 @@
     "active_num": 57,
     "error_num": 6,
     "article_num": 600,
-    "last_updated_time": "2026-09-10 19:14:12 UTC"
+    "last_updated_time": "2026-09-10 22:42:24 UTC"
   }
 }
