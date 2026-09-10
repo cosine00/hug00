@@ -1,5 +1,12 @@
 [
   {
+    "id": 1180,
+    "content": "我不是咖啡成瘾，近段时间习惯早上来一杯咖啡，好像只是坐到工位想来一口冰饮。于是，今早没点咖啡，到公司从冰箱拿了一瓶乌龙茶，没觉得哪里有差别。",
+    "createdTs": 1789001537,
+    "resourceList": [],
+    "tags": []
+  },
+  {
     "id": 1179,
     "content": "不都是 markdown 文件吗，[这里](https://spark.hux.ink/)可能还更早，直接源于 Obsidian 主库。",
     "createdTs": 1788877435,
