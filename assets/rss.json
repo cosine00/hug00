@@ -213,7 +213,7 @@
       "updated": "2026-09-11 01:08:00",
       "excerpt": "该护的护住了吗？该管的管住了吗？ 先看两件事，越看越拧巴 4岁男童被指“性骚扰” 就长沙那个事。 一个4岁小男孩在餐厅里跑，手碰到了一个女的屁股。监控里看，孩子就是在跑，手甩来甩去，根本不像故意摸。 法律上也讲得很清楚：4岁孩子连“性”是啥都不懂，哪来的性骚扰故意？ 结果呢？视频一发，标签一贴，“性骚扰”帽子直接扣上。真正该被保护的幼童，反而被网暴、被围观、被当成流量素材。 你说这算保护谁？ 14岁女生被围殴，施暴者处理却分年龄 再看…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 18
     },
     {
@@ -2217,7 +2217,7 @@
       "updated": "2026-08-04 10:49:00",
       "excerpt": "Nebula Nebula 是一款面向 Typecho 的响应式博客主题，采用深空、星云与极光风格，适用于个人博客、技术博客和长期内容归档。 功能特性 响应式文章卡片，适配桌面、平板和移动端 深色与浅色模式切换，并记忆访客偏好 Canvas 动态星空背景与轻量滚动动画 文章自定义封面、正文首图回退和渐变占位封面 文章、独立页面、搜索、分类、标签和作者归档 时间线归档、分类目录、标签云和友情链接页面 嵌套评论、评论回复和移动端评论布局…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 185
     },
     {
@@ -2697,7 +2697,7 @@
       "updated": "2026-07-20 10:29:17",
       "excerpt": "俗话说 听风就是雨 ,用来比喻一听到一点风声或消息，就不加核实地信以为真，并轻率地做出反应或盲目附和。这个词在日常生活中常用于形容一个人缺乏独立判断能力，容易被谣言或未经证实的言论所左右。 今天就遇到了这类人. 有人在ns论坛发帖声称pdd有监听人手机屏幕的功能,用来精准投放广告,起因是x上的一篇贴文 https://x.com/giantcutie666/status/2079039026779378133 然后很多人就表示真的都刷…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 225
     },
     {
@@ -2913,7 +2913,7 @@
       "updated": "2026-07-12 12:32:00",
       "excerpt": "面包云 的 vps 突然更换了新的IP 也没有通知 某天早上起床发现梯子不能用了才去查看 探针. 于是这才发现 IP 更改了。 vipcloud 的vps在线率果然不是很理想，但是无所谓了，就部署了 hermes 和一个博客。 能用就行吧 薅谷歌空间的羊毛注册了一个 7 元的 com 域名 薅 chatgpt plus 花了十块钱弄了个 1 刀卡 结果没用两天就封号了 于是自己正价开通了 plus 一个月 120 元。 加上搭车的英区…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 243
     },
     {
@@ -3693,7 +3693,7 @@
       "updated": "2026-06-12 08:41:00",
       "excerpt": "七牛云的新加坡机房 线路差到了极点 于是换到了 vipcloud 三网各自优化2c3g10M带宽,国内访问感觉好多了 推荐链接 https://cloud.vipcloud.cc/recommend/FGArW5epNdl0 💻基本信息 🎬IP质量 🌐网络质量 📍回程路由 NodeQuality链接",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 308
     },
     {
@@ -4041,7 +4041,7 @@
       "updated": "2026-05-26 01:01:17",
       "excerpt": "前言 依旧是从 bigfa 大佬的同名wordpress主题移植而来 保留大部分原汁原味的设置 预览 暂无 演示站点 https://blog.sgcd.net 下载地址 [github=jkjoy/Typecho-Theme-Jaguar] [info]喜欢就随手点个star 谢谢[/info]",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 337
     },
     {
@@ -4497,7 +4497,7 @@
       "updated": "2026-04-27 10:13:00",
       "excerpt": "简介 老孙从刚开始研究主题到现在也移植了不少主题 这次真的是自己慢慢手搓出来的主题 纯原创 主打的就是一个简洁无太多功能专注于写作本身(我本身不爱写作) 预览 开源地址 https://github.com/jkjoy/typecho-theme-timellow 希望多多点点star,谢谢~ 演示地址 https://www.imsun.org/",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 375
     },
     {
@@ -5289,7 +5289,7 @@
       "updated": "2026-03-03 01:55:00",
       "excerpt": "简介 从 halo 开源主题 Clarity 移植.. 保留大多数设置 使用 建议配合插件 Enhancement 一起使用过 效果更佳 [article id=\"1779\"] 预览 本站 下载地址 https://github.com/jkjoy/theme-clarity 配置文档 https://www.imsun.org/Clarity-theme-docs/",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 441
     },
     {
@@ -5325,7 +5325,7 @@
       "updated": "2026-02-26 03:59:10",
       "excerpt": "简介 本插件进行了常用插件缝合,并针对主题进行了优化 功能 融合怪插件 —— 友链增强 + 瞬间 + 标签助手 + 站点地图 + 评论增强 + 外链跳转 + 视频链接解析 + QQ通知 + 邮件提醒 + 主题插件在线上传/删除等多功能于一体的 Typecho 插件。 使用 typecho_links 数据表存储友链信息 输出方式：模板函数调用 + 文章内标签解析 三种输出模式：SHOW_TEXT / SHOW_IMG / SHOW_M…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 444
     },
     {
@@ -5637,7 +5637,7 @@
       "updated": "2026-01-24 09:03:00",
       "excerpt": "近日 Typecho 突然诈尸更新了版本号 1.3.0 其实与之前的 beta 版本相差不大.. [info]但是更新需谨慎![/info] 部分插件或者主题 在1.3.0无法继续使用.. 在 1panel 使用 Typecho 的过程中还是会有一些问题 使用自带的伪静态规则大概率会出现 404 需要修改伪静态为 location / { try_files $uri $uri/ /index.php?$args; } 因为高中时候最…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 470
     },
     {
@@ -5985,7 +5985,7 @@
       "updated": "2025-12-20 11:57:00",
       "excerpt": "起因 最近由于内存涨价了, 我把x99平台的4条16G内存卖了, 回了一波血, 暂时不打算玩这个老旧的平台了 恰好手里头有张微星的Z590M 爆破弹, 准备换平台玩玩. 于是在拼夕夕斥巨资买了一颗i5 10600KF 花费 458.. 内存就使用 几年前玩机 扔在抽屉里的 金百达 DDR4 2666MHZ 8G X2 开启XMP 可运行在3000MHZ. 硬盘还有两块铠侠 的 1T m.2 也是当年玩机买的 当时的价格貌似是599一块…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 499
     },
     {
@@ -6225,7 +6225,7 @@
       "updated": "2025-12-03 03:50:00",
       "excerpt": "功能 基于AI实现 slug/摘要/标签提取/文章内容生成 等功能 插件设置可以自定义提示词,根据你的需要生成相关内容 下载 [download file='AIHelper_NnneT.tar.gz' size='16.5kb'] https://file.imsun.org/upload/2025-12/AIHelper_NnneT.tar.gz [/download] [download file='demo.zip' size…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 519
     },
     {
@@ -6333,7 +6333,7 @@
       "updated": "2025-11-24 09:20:00",
       "excerpt": "Typecho 1.2中正常使用的UploadPlugin插件在 1.3 beta中无法正常的上传主题和插件了 非常的不方便 于是修复了上传的问题 下载地址放在下面 自取 [download file='UploadPlugin.zip' size='7.5KB'] https://file.imsun.org/upload/2025-11/UploadPlugin%20 (1).zip [/download]",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 528
     },
     {
@@ -6429,7 +6429,7 @@
       "updated": "2025-11-14 07:14:00",
       "excerpt": "这制订规则的人当真是有着高高在上的傲慢. 遵守规则的我反而陷入了困境之中. 不知道为何我这个域名现在被腾讯拉入了黑名单,连带着使用了腾讯安全数据的小米手机也会提示危险 我不理解,我曾经申诉过几次,有时候好一段时间,然后就又红了. 在不明真相的人眼中 这无异于败坏了我的人品. 实在不行就换个域名重来过..",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 536
     },
     {
@@ -6465,7 +6465,7 @@
       "updated": "2025-11-09 06:58:58",
       "excerpt": "因为想用Cloudflare的Workers 和 D1 部署一个完全仿照Wordpress Rest API 的博客后端 所以 用AI糊了一个项目 https://github.com/jkjoy/cfblog 为了能使用这个后端 所以就又糊了一个基于vue3的前端 仿 Akina 风格 https://github.com/jkjoy/cfblog-theme-akina 同时又仿hugo主题paper 糊了一个Astro 的前端…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 539
     },
     {
@@ -6621,7 +6621,7 @@
       "updated": "2025-10-20 01:18:00",
       "excerpt": "一个功能强大的 Typecho RSS 插件，支持全文输出和多种美化显示风格。 功能特点 全文输出 : 支持输出文章全文或摘要 多种主题 : 提供 4 种精美样式主题供选择 美化显示 : 在浏览器中直接打开 RSS 链接时显示美观的界面 灵活配置 : 可自定义文章数量、输出内容、版权信息等 响应式设计 : 完美适配桌面和移动设备 接管原生路由 : 完全接管 Typecho 的 /feed 路由 安装方法 下载插件到 Typecho 插…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 552
     },
     {
@@ -6657,7 +6657,7 @@
       "updated": "2025-10-16 05:36:00",
       "excerpt": "说明 本主题移植自开源项目 https://github.com/Licoy/wordpress-theme-puock 原项目为 WordPress 主题. 我觉得很酷 所以移植到了 Typecho 平台. 预览 本站 使用指南 适用于 Typecho 1.2.0 以上版本 [danger]注意事项[/danger] 部分功能需要使用插件 Puock 来实现 插件地址 Puock 项目地址 https://github.com/jk…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 555
     },
     {
@@ -6993,7 +6993,7 @@
       "updated": "2025-08-09 09:27:00",
       "excerpt": "问题 在内存爆满几乎100%的情况下,开启了swap分区却占用一直为0,这种情况发生在阿里云 和 华为云 比较多. 排查 查看系统的 Swap 使用倾向（swappiness）,执行 cat /proc/sys/vm/swappiness 最小为0最大为100 数字越小代表使用倾向越低. 我的华为云服务器查询到的数值竟然为0. 这意味着云服务商根本就不打算让人使用swap. 解决 编辑配置 sudo nano /etc/sysctl.…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 583
     },
     {
@@ -7065,7 +7065,7 @@
       "updated": "2025-07-09 07:09:28",
       "excerpt": "昨天是我妈生日,今天是我的生日. 本来我都已经忘记了,但是在那个相亲相爱一家人的群里总有人会记得大家的生日. 小时候是很爱过生日的,总会在生日当天叫上自己的小伙伴来自家玩耍. 少年时候也是喜欢过生日的,无非是找个由头和自己喜欢的女孩子在一起玩耍. 如今却是不喜欢的,无疑是告诉自己又年长一岁.又老了一些. 总是会有些负面的情绪是因为太过于繁琐和无奈. 社会总是会磨平年少的棱角. 也会产生更多的怨气. 人生有七苦,生、老、病、死、怨憎会、…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 589
     },
     {
@@ -7161,7 +7161,7 @@
       "updated": "2025-06-17 07:14:00",
       "excerpt": "写在前面 众所周知 Typecho 的插件多且杂.各种版本分支满天飞. 这里收集一些我自用的插件. 供同样使用 Typecho 的博友们下载使用 插件 Links 很多主题 友情链接 页面都是基于此插件来实现,当然也有很多主题不使用此插件. 或者没有友情链接页面的主题亦可以使用此插件来实现 点此下载 兼容性测试: 兼容1.3.0 Testore 一个非官方的插件商店,里面的插件万年没更新... ps.我准备等1.3.0正式版发布维护一…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 597
     },
     {
@@ -7203,9 +7203,9 @@
   ],
   "statistical_data": {
     "friends_num": 64,
-    "active_num": 57,
-    "error_num": 7,
+    "active_num": 56,
+    "error_num": 8,
     "article_num": 600,
-    "last_updated_time": "2026-09-12 15:38:40 UTC"
+    "last_updated_time": "2026-09-12 18:30:15 UTC"
   }
 }
