@@ -22,7 +22,6 @@
     var statusDom = null
     var observer = null
     var isRendering = false
-    var batchSequence = 0
 
     // 宽高比采用“宽 / 高”。每次进入页面会重新随机，当前页面内保持不变。
     var ratioPool = [0.72, 0.82, 0.95, 1, 1.16, 1.35, 1.55]
@@ -84,6 +83,7 @@
       galleryDom.appendChild(sentinel)
       galleryDom.appendChild(statusDom)
       createColumns(getColumnCount())
+      wrapper.addEventListener("click", openPhotoViewer)
     }
 
     function truncateTitle(text, maxLength) {
@@ -187,17 +187,20 @@
         }
       }
 
-      return photos
+      // 显式按发布时间从新到旧排序，同一条 memo 内保持图片原始顺序。
+      return photos.sort(function (a, b) {
+        return (Number(b.time) || 0) - (Number(a.time) || 0)
+      })
     }
 
-    function createPhotoCard(photo, index, batchClass) {
+    function createPhotoCard(photo, index) {
       var card = document.createElement("figure")
       card.className = "album-photo-card " + photo.className
       card.style.setProperty("--photo-ratio", String(photo.ratio))
       card.style.setProperty("--reveal-delay", Math.min(index % NEXT_BATCH_SIZE, 5) * 35 + "ms")
 
       var image = document.createElement("img")
-      image.className = "photo-img " + batchClass
+      image.className = "photo-img"
       image.alt = photo.title || "相册图片"
       image.decoding = "async"
       image.loading = index < 6 ? "eager" : "lazy"
@@ -245,11 +248,18 @@
       return card
     }
 
-    function initializeNewPlugins(batchClass) {
-      if (window.ViewImage) {
-        ViewImage.init("." + batchClass)
-      }
+    function openPhotoViewer(event) {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+      var image = event.target.closest(".photo-img")
+      if (!image || !window.ViewImage) return
 
+      // 分列 DOM 顺序与时间顺序不同；直接使用完整相册数据，跨批次也连续。
+      var sources = allPhotos.map(function (photo) {
+        return new URL(photo.src, document.baseURI).href
+      })
+      window.ViewImage.display(sources, image.src)
+      event.stopPropagation()
+      event.preventDefault()
     }
 
     function updateStatus() {
@@ -269,16 +279,13 @@
       isRendering = true
 
       var end = Math.min(renderedCount + batchSize, allPhotos.length)
-      batchSequence += 1
-      var batchClass = "album-lightbox-batch-" + batchSequence
       for (var i = renderedCount; i < end; i++) {
-        var card = createPhotoCard(allPhotos[i], i, batchClass)
+        var card = createPhotoCard(allPhotos[i], i)
         renderedCards.push(card)
         columns[i % columnCount].appendChild(card)
       }
 
       renderedCount = end
-      initializeNewPlugins(batchClass)
       updateStatus()
       isRendering = false
     }
