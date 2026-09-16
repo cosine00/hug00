@@ -32,15 +32,11 @@ footnotereturnlinkcontents = "↩"
   [[menu.main]]
   name="断章"
   url="/clip/"
-  weight="5"
-  [[menu.main]]
-  name="迷途"
-  url="https://spark.hux.ink/"
-  weight="6"
+  weight="5"  
   [[menu.main]]
   name="关于"
   url="/about/"
-  weight="7"
+  weight="6"
  
   
   
