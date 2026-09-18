@@ -25,18 +25,6 @@
       "floor": 2
     },
     {
-      "title": "开源我的Astro博客主题和后台管理系统",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/32518/",
-      "created": "2026-09-18 03:48:55",
-      "updated": "2026-09-18 03:48:55",
-      "excerpt": "",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 3
-    },
-    {
       "title": "夜跑",
       "author": "obaby",
       "avatar": "https://icon.horse/icon/h4ck.org.cn",
@@ -46,7 +34,7 @@
       "excerpt": "前段时间买了好几条瑜伽裤：单条的瑜伽裤、跟短裤一体的、跟短裙一体的。基本都是淘宝买的，并没有在抖音上浏览过相关 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 4
+      "floor": 3
     },
     {
       "title": "碎片2026-09-18",
@@ -58,7 +46,7 @@
       "excerpt": "公安系统用数字命名各种记录，历史事件...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 5
+      "floor": 4
     },
     {
       "title": "爱睡觉的鸟",
@@ -70,7 +58,7 @@
       "excerpt": "随笔",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 6
+      "floor": 5
     },
     {
       "title": "例行检查身体",
@@ -82,7 +70,7 @@
       "excerpt": "#早起 今早定的5点闹钟，起来晕乎乎的煮了饭，炒了青菜。一碟辣椒炒肉是昨晚炒的，荤菜费时，都提前炒好。早起炒个 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 7
+      "floor": 6
     },
     {
       "title": "大数据杀熟真可恶",
@@ -94,7 +82,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 8
+      "floor": 7
     },
     {
       "title": "每个硬币都有两面吗？",
@@ -106,7 +94,7 @@
       "excerpt": "我不知道。",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 9
+      "floor": 8
     },
     {
       "title": "被迫给博客图片搬家：从 Gitee 到 Cloudflare R2",
@@ -118,7 +106,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 10
+      "floor": 9
     },
     {
       "title": "开通了TRAE Lite会员",
@@ -130,7 +118,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 11
+      "floor": 10
     },
     {
       "title": "之前新办的手机号问题",
@@ -142,7 +130,7 @@
       "excerpt": "多个月之前某次滴滴电话问我在哪儿，我...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 12
+      "floor": 11
     },
     {
       "title": "童年阴影",
@@ -154,7 +142,7 @@
       "excerpt": "真的会起鸡皮疙瘩",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 13
+      "floor": 12
     },
     {
       "title": "不可思议的南博事件后续，徐某判三年",
@@ -166,7 +154,7 @@
       "excerpt": "今天已经到处都在说徐某平被判三年，开除党籍。说真的，对一个80多岁的老头来说，有个几把用？不是说犯法不用究，当然要追究。只是，这完全就是搞搞举起，轻轻放下，罚酒三倍的味道。时隔7个月，能出来这个...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 14
+      "floor": 13
     },
     {
       "title": "潮人茶事",
@@ -178,7 +166,7 @@
       "excerpt": "潮汕人从小就喝功夫茶，家家户户有一套功夫茶具，人来客往坐下来就开始泡茶，逢年过节更是去哪都喝一整天。",
       "site_url": "https://www.leolin86.com/",
       "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 15
+      "floor": 14
     },
     {
       "title": "微软动手了，E3 免费空间彻底凉凉",
@@ -190,7 +178,7 @@
       "excerpt": "玩 OneDrive 的朋友这两天估计心里都不太踏实。微软更新了开发者计划条款，说是为了防止免费开发者沙盒被滥用成大容量私人网盘，全网所有的 E3 和 E5 Developer 账号，单用户 O...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 16
+      "floor": 15
     },
     {
       "title": "分享青岛中山公园照片",
@@ -202,7 +190,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 17
+      "floor": 16
     },
     {
       "title": "随笔",
@@ -214,7 +202,7 @@
       "excerpt": "随笔",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 18
+      "floor": 17
     },
     {
       "title": "碎片2026-09-16",
@@ -226,7 +214,7 @@
       "excerpt": "Warcraft III 2.0.4...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 19
+      "floor": 18
     },
     {
       "title": "什么叫做爱情？",
@@ -238,7 +226,7 @@
       "excerpt": "说不清道不明。那你还说？",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 20
+      "floor": 19
     },
     {
       "title": "敬畏之心",
@@ -250,7 +238,7 @@
       "excerpt": "最近在整理工作交接和复盘的时候，脑子里经常蹦出四个字：敬畏之心。 这词听起来挺大，甚至有点像老干部说教。但我不是在谈什么虚无缥缈的道德，而是这两年在不同的团队、跟不同的人打交道时，反复撞见的一种让人难受的轻佻感。 说白了，很多人在做事的时候，压根不知道水有多深，就敢大摇大摆地往里跳，还觉得自己姿态挺优美。 先说两个观察。 第一个事儿。前阵子一个团队招产品经理，负责人随手抓了一个 00 后的年轻人去当一面面试官。 初听这话，可能会有人觉…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 21
+      "floor": 20
     },
     {
       "title": "我用的Obsidian插件",
@@ -262,7 +250,7 @@
       "excerpt": "2023年我《放弃思源笔记，还是选择了多端同步Obsidian笔记软件》，我使用笔记软件只是记录每天的流水，但 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 22
+      "floor": 21
     },
     {
       "title": "松声｜廿六年·九月中·正秋收",
@@ -274,7 +262,7 @@
       "excerpt": "小学生 大宝解锁了人生新身份，小学生，如同去幼儿园一样，期待了好久，作为老父亲，生怕不适应，当然有些想法是多余的，屁颠屁颠的就去上学了。晚上回家，老父亲能够清晰的感觉到她不开心，大概是第一天结...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 23
+      "floor": 22
     },
     {
       "title": "成也UNI，败也UNI",
@@ -286,7 +274,7 @@
       "excerpt": "在不久的以前，写代码还需要大量人力的时候，跨平台框架无疑是最好的选择。不管是uni还是flutter，都是为了 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 24
+      "floor": 23
     },
     {
       "title": "「旧文」车祸回忆录",
@@ -298,7 +286,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 25
+      "floor": 24
     },
     {
       "title": "遇见你",
@@ -310,7 +298,7 @@
       "excerpt": "因 B 站 UP 主安州牧的一期视频《重返历史现场》，看完后 Loop 了两个多小时的博物馆系列。 继续刷到 UP 主破产兄弟有关博物馆入坑入门的两期视频，里面有一段文案击中人心。 “它生命当中遇到的第一个人是匠人，匠人带着非凡的技艺和观念把它制作了出来，然后它遇到了物主人，主人用一生去爱护它，甚至爱到要带它入土去往来世，但是不料几百年后它还是遇到了盗贼，就这样它开始了一段颠沛流离的岁月。 它起初在潮湿的船舱底部飘摇，后来在灰暗的库房…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 26
+      "floor": 25
     },
     {
       "title": "关于指标III",
@@ -322,7 +310,7 @@
       "excerpt": "好好学习，天天向上。",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 27
+      "floor": 26
     },
     {
       "title": "我在博客上建了一个「问题库」",
@@ -334,7 +322,7 @@
       "excerpt": "",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/rss.xml",
-      "floor": 28
+      "floor": 27
     },
     {
       "title": "细数一下我所有的离职瞬间",
@@ -346,7 +334,7 @@
       "excerpt": "今天晚上收到 HR 负责人的消息，问我明天是否有空，董事长想找我聊聊。 我回了句「有空」。但其实我直属 CEO，日常跟董事长几乎没有什么业务交集。不用多想，这肯定是进入最后一周交接期里的说客之一了。 手机屏幕暗下去的时候，我突然笑了一下。这种临别前的大佬约谈、挽留试探，或者例行公事的「买卖不成仁义在」，在我的职业生涯里演过太多次。这道消息像个开关，顺手就把我毕业十几年来的每一次离职，像放走马灯一样全倒了出来。 14 年前我刚大学毕业，…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 29
+      "floor": 28
     },
     {
       "title": "魔兽争霸 更新dlc 增加中立新英雄 死亡骑士他爸",
@@ -358,6 +346,18 @@
       "excerpt": "朋友说魔兽争霸增加新英雄了，和我讲多...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
+      "floor": 29
+    },
+    {
+      "title": "今天升级了 iOS 27，也顺手把 Mac 升到了 macOS 27",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/21122/",
+      "created": "2026-09-15 00:45:38",
+      "updated": "2026-09-15 00:45:38",
+      "excerpt": "",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/rss.xml",
       "floor": 30
     },
     {
@@ -7203,9 +7203,9 @@
   ],
   "statistical_data": {
     "friends_num": 63,
-    "active_num": 54,
-    "error_num": 9,
+    "active_num": 55,
+    "error_num": 8,
     "article_num": 600,
-    "last_updated_time": "2026-09-18 19:06:16 UTC"
+    "last_updated_time": "2026-09-18 22:39:10 UTC"
   }
 }
