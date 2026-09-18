@@ -20,6 +20,15 @@
       sessionStorage.setItem("random-motto-index", String(index));
     } catch (_) {}
 
-    target.textContent = prefix + mottos[index];
+    const renderMotto = (nextIndex) => {
+      index = nextIndex;
+      target.textContent = prefix + mottos[index];
+      try {
+        sessionStorage.setItem("random-motto-index", String(index));
+      } catch (_) {}
+    };
+
+    renderMotto(index);
+
   })();
 </script>

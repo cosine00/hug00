@@ -35,6 +35,11 @@
   --hux-clip-muted: var(--muted);
   --hux-clip-border: var(--border);
   --hux-clip-accent: var(--accent);
+  --panel-bg: color-mix(in srgb, var(--surface) 90%, transparent);
+  --panel-border: color-mix(in srgb, var(--accent) 14%, var(--border));
+  --panel-border-hover: color-mix(in srgb, var(--accent) 38%, var(--border));
+  --panel-shadow: 0 5px 18px color-mix(in srgb, var(--shadow) 62%, transparent), inset 0 1px 0 color-mix(in srgb, var(--surface-raised) 68%, transparent);
+  --panel-shadow-hover: 0 9px 26px color-mix(in srgb, var(--shadow) 78%, transparent), inset 0 1px 0 color-mix(in srgb, var(--surface-raised) 76%, transparent);
 }
 
 :root[data-theme="night"] {
@@ -67,65 +72,104 @@
 }
 
 :root[data-theme="sepia"] {
-  --page-bg: #eef0f2;
-  --surface: #f9fafb;
-  --surface-soft: #e2e5e8;
-  --surface-raised: #ffffff;
-  --text: #3d4247;
-  --text-strong: #202428;
-  --muted: #687078;
-  --faint: #959ca3;
-  --border: #d0d5d9;
-  --border-strong: #abb2b8;
-  --accent: #6f7b86;
-  --accent-hover: #4f5b65;
-  --accent-soft: #dde2e6;
+  /* Silver frost: icy blue-gray light over translucent, glassy surfaces. */
+  --page-bg: #e7edf1;
+  --surface: rgba(250, 252, 253, .82);
+  --surface-soft: rgba(218, 228, 235, .84);
+  --surface-raised: rgba(255, 255, 255, .92);
+  --text: #465967;
+  --text-strong: #1d2b35;
+  --muted: #6d808d;
+  --faint: #95a5af;
+  --border: rgba(117, 143, 158, .30);
+  --border-strong: rgba(92, 121, 139, .48);
+  --accent: #527d96;
+  --accent-hover: #2f607c;
+  --accent-soft: rgba(99, 143, 169, .17);
   --accent-contrast: #ffffff;
-  --code-bg: #e5e8eb;
-  --code-border: #cbd1d6;
-  --quote: #596168;
-  --shadow: rgba(38, 45, 51, .13);
-  --overlay: rgba(24, 29, 33, .76);
-  --selection: #d7dde2;
-  --pill-shell: #e7eaed;
-  --pill-hover: #dce1e5;
-  --pill-active: #78848e;
+  --code-bg: rgba(226, 234, 239, .82);
+  --code-border: rgba(104, 132, 149, .32);
+  --quote: #586d7b;
+  --shadow: rgba(35, 57, 71, .15);
+  --overlay: rgba(22, 34, 42, .78);
+  --selection: #bdd3df;
+  --pill-shell: rgba(224, 232, 237, .82);
+  --pill-hover: rgba(199, 216, 226, .86);
+  --pill-active: #587f96;
   --pill-active-text: #ffffff;
-  --heatmap-empty: #e3e6e9;
-  --heatmap-active: #74808a;
+  --heatmap-empty: rgba(212, 223, 230, .86);
+  --heatmap-active: #668ca2;
 }
 
 :root[data-theme="mist"] {
-  --page-bg: #f8f2ef;
-  --surface: #fffaf8;
-  --surface-soft: #f2e5e0;
-  --surface-raised: #fffdfc;
-  --text: #4a3d39;
-  --text-strong: #2d2421;
-  --muted: #7e6b64;
-  --faint: #a6928b;
-  --border: #e1d1cb;
-  --border-strong: #c2aaa1;
-  --accent: #b66f61;
-  --accent-hover: #8f5147;
-  --accent-soft: #f2ddd7;
-  --accent-contrast: #fffaf8;
-  --code-bg: #f0e5e1;
-  --code-border: #ddcbc5;
-  --quote: #735f58;
-  --shadow: rgba(94, 57, 48, .13);
-  --overlay: rgba(48, 32, 28, .74);
-  --selection: #f0cfc5;
-  --pill-shell: #f4e8e3;
-  --pill-hover: #ecd9d2;
-  --pill-active: #bd796b;
+  /* Dawn: warm first light, pale rose clouds and a trace of violet mist. */
+  --page-bg: #faf6f2;
+  --surface: #fffdfb;
+  --surface-soft: #f5ece9;
+  --surface-raised: #ffffff;
+  --text: #55484d;
+  --text-strong: #2f292d;
+  --muted: #7f7076;
+  --faint: #a9979e;
+  --border: #e7dad8;
+  --border-strong: #cdb9b8;
+  --accent: #c86f67;
+  --accent-hover: #a9535c;
+  --accent-soft: #f4dcd8;
+  --accent-contrast: #fffaf7;
+  --code-bg: #f5efec;
+  --code-border: #e4d7d4;
+  --quote: #705e65;
+  --shadow: rgba(91, 60, 70, .11);
+  --overlay: rgba(44, 34, 39, .76);
+  --selection: #f1c9c2;
+  --pill-shell: #f4ebe9;
+  --pill-hover: #efdeda;
+  --pill-active: #ba6965;
   --pill-active-text: #ffffff;
-  --heatmap-empty: #f0e5e1;
-  --heatmap-active: #b77365;
+  --heatmap-empty: #eee5e4;
+  --heatmap-active: #c87570;
 }
 
 html { background: var(--page-bg); transition: background-color .2s ease; }
 body { background: var(--page-bg); color: var(--text); transition: background-color .2s ease, color .2s ease; }
+:root[data-theme="sepia"] {
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(circle at -4% -8%, rgba(117, 156, 181, .52), transparent 38rem),
+    radial-gradient(circle at 104% 5%, rgba(183, 190, 216, .48), transparent 38rem),
+    radial-gradient(circle at 52% 110%, rgba(255, 255, 255, .82), transparent 42rem),
+    linear-gradient(140deg, #d9e5ec 0%, #f3f6f7 48%, #dfe5ed 100%);
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+:root[data-theme="sepia"] body { background: transparent; }
+:root[data-theme="sepia"] .post-preview,
+:root[data-theme="sepia"] .db-card,
+:root[data-theme="sepia"] .archive-card,
+:root[data-theme="sepia"] .book-card,
+:root[data-theme="sepia"] .movie-card,
+:root[data-theme="sepia"] .bb-timeline .bb-item,
+:root[data-theme="sepia"] .hux-clip-card,
+:root[data-theme="sepia"] [class*="cardContainer"] {
+  -webkit-backdrop-filter: blur(12px) saturate(112%);
+  backdrop-filter: blur(12px) saturate(112%);
+}
+:root[data-theme="mist"] {
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(circle at 10% -8%, rgba(239, 170, 153, .30), transparent 34rem),
+    radial-gradient(circle at 62% 12%, rgba(209, 176, 218, .15), transparent 28rem),
+    radial-gradient(circle at 91% 2%, rgba(174, 151, 211, .18), transparent 34rem),
+    linear-gradient(135deg, #fbf1ec 0%, #faf5f3 48%, #f2eff8 100%);
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+:root[data-theme="mist"] body { background: transparent; }
 html[data-font="wenkai"] body { font-family: "LXGW WenKai Screen", "KaiTi", serif; }
 html[data-font="zhuque"] body { font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif; font-weight: 400; text-shadow: 0 0 0.15px currentColor;}
 html[data-font="kinghwa"] body { font-family: "KingHwa_OldSong", "Songti SC", SimSun, serif; }
@@ -187,15 +231,64 @@ img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(
 .palette-trigger:focus-visible { outline: 1px dashed var(--accent); outline-offset: 3px; }
 
 /* The sidebar poem doubles as an intentionally quiet font switch. */
-.masthead .tagline { cursor: pointer; }
+.masthead .tagline {
+  padding: .3rem .45rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.masthead .tagline:hover,
+.masthead .tagline:focus-visible {
+  color: var(--accent-hover);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent), inset -2px 0 0 var(--accent);
+  transform: translateY(-1px);
+}
 .masthead .tagline:focus-visible { outline: 1px dashed var(--accent); outline-offset: 4px; }
 
 /* Cards, lists, media pages and archive controls */
 .post-preview, .db-card, .archive-card, .book-card, .movie-card, .runCard, .statsCard, .calendarCard,
-.insightCard, .hux-clip-card, [class*="cardContainer"] { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; box-shadow: 0 1px 5px var(--shadow); }
+.insightCard, .yearHeatmapCard, .hux-clip-card, #global-stats > div, [class*="cardContainer"] {
+  background: var(--panel-bg) !important;
+  border-color: var(--panel-border) !important;
+  color: var(--text) !important;
+  box-shadow: var(--panel-shadow) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(108%);
+  backdrop-filter: blur(10px) saturate(108%);
+}
 .post-preview--date, .rating-average, .iibjPt, .runName, .runDate, .distUnit, .pagetitle,
 .ttName, .ttNum small, .detailHeader, .detailLabel, .datafrom, .hugo-audio-shortcode .audio-caption { color: var(--muted) !important; }
-.scroll-btn, .archive-header, .filter-header { color: var(--muted); }
+.scroll-btn, .archive-header, .filter-header { color: var(--muted) !important; }
+.scroll-btn {
+  color: var(--faint) !important;
+  opacity: .42;
+}
+.scroll-btn.active-left, .scroll-btn.active-right {
+  color: var(--accent) !important;
+  opacity: 1;
+}
+.scroll-btn.active-left:hover, .scroll-btn.active-right:hover { color: var(--accent-hover) !important; }
+:root[data-theme="night"] #year-nav-container .scroll-btn,
+:root[data-theme="night"] #month-nav-container .scroll-btn {
+  color: #45a77f !important;
+  opacity: .58;
+}
+:root[data-theme="night"] #year-nav-container .scroll-btn.active-left,
+:root[data-theme="night"] #year-nav-container .scroll-btn.active-right,
+:root[data-theme="night"] #month-nav-container .scroll-btn.active-left,
+:root[data-theme="night"] #month-nav-container .scroll-btn.active-right {
+  color: #52bc90 !important;
+  opacity: 1;
+}
+:root[data-theme="night"] #year-nav-container .scroll-btn svg,
+:root[data-theme="night"] #year-nav-container .scroll-btn path,
+:root[data-theme="night"] #month-nav-container .scroll-btn svg,
+:root[data-theme="night"] #month-nav-container .scroll-btn path {
+  color: inherit !important;
+  fill: currentColor !important;
+  stroke: none !important;
+  filter: none !important;
+}
 .filter-btn.active, .archive-filter.active, .exercise-tabs .active { background: var(--accent) !important; color: var(--accent-contrast) !important; }
 .tag-span,
 .datacont .tag-span,
@@ -214,9 +307,11 @@ img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(
 
 /* Shared year selector across BB, archives and exercise. */
 #memos-year-nav, #archive-year-nav, #year-nav-container, #month-nav-container, .controlsArea {
-  background: var(--page-bg) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 1px 4px var(--shadow);
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--panel-border) !important;
+  box-shadow: var(--panel-shadow) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(108%);
+  backdrop-filter: blur(10px) saturate(108%);
 }
 #memos-year-nav .button, #archive-year-nav .button, #year-nav .button {
   background: transparent !important;
@@ -370,18 +465,57 @@ button.button-load.noclick {
 }
 
 /* Exercise calendar contains generated inline colours, so override them here. */
-.runTooltip, .runDetailCard { background: color-mix(in srgb, var(--surface-raised) 95%, transparent) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.runTooltip, .runDetailCard {
+  background: color-mix(in srgb, var(--surface-raised) 92%, transparent) !important;
+  border: 1px solid var(--panel-border) !important;
+  color: var(--text) !important;
+  box-shadow: var(--panel-shadow-hover) !important;
+}
 .runDetailCard .detailValue, .dateNum, .monthlyInsights strong, .calendarCard strong { color: var(--text-strong) !important; }
-.monthlyInsights > div, #calendar-board-container > div, #global-stats > div { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.calendarSection, .globalSection { background: transparent !important; border-color: transparent !important; }
+.calendarCard, .insightCard, .yearHeatmapCard, #global-stats > div {
+  background: var(--panel-bg) !important;
+  border-color: var(--panel-border) !important;
+  color: var(--text) !important;
+}
 #global-stats > div [style*="color: #333"], #calendar-board-container > div [style*="color: #333"] { color: var(--text-strong) !important; }
 #global-stats > div [style*="color: #999"], #calendar-board-container > div [style*="color: #999"],
 #calendar-board-container > div [style*="color: #bbb"] { color: var(--muted) !important; }
-.map-placeholder { background: var(--surface-soft) !important; border: 1px solid var(--border) !important; border-radius: 25px; padding: 3px; box-shadow: 0 2px 10px var(--shadow); }
+.calendarCard > div:first-child button { color: var(--muted) !important; }
+.calendarCard > div:first-child button:hover { color: var(--accent-hover) !important; }
+.dayCell { transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .2s ease !important; }
+.dayCell:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); border-color: var(--panel-border-hover) !important; }
+
+.map-placeholder {
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--panel-border) !important;
+  border-radius: 25px;
+  padding: 3px;
+  box-shadow: var(--panel-shadow) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(108%);
+  backdrop-filter: blur(10px) saturate(108%);
+}
 #map-wrapper, #mapbox-container { background: var(--surface-soft) !important; border-color: var(--border) !important; }
-#map-wrapper { box-shadow: inset 0 0 0 1px var(--border); }
+#map-wrapper { box-shadow: inset 0 0 0 1px var(--panel-border); }
+
+.runCard {
+  transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease, transform .2s ease;
+}
+.runCard:hover {
+  border-color: var(--panel-border-hover) !important;
+  box-shadow: var(--panel-shadow-hover) !important;
+  transform: translateY(-1px);
+}
+.runCard.is-active {
+  background: color-mix(in srgb, var(--accent) 9%, var(--panel-bg)) !important;
+  border-color: color-mix(in srgb, var(--accent) 56%, var(--border)) !important;
+  box-shadow: 0 0 0 2px var(--accent-soft), var(--panel-shadow) !important;
+}
 
 .dayCell:not(.hasRun) .dateNum { color: var(--faint) !important; }
-.shareBtn { background: var(--surface-raised) !important; color: var(--muted) !important; }
+.ttUnitTag { background: var(--surface-soft) !important; color: var(--muted) !important; }
+.ttNum, .runDistance { color: var(--text-strong) !important; }
+.shareBtn { background: var(--surface-raised) !important; color: var(--muted) !important; border: 1px solid var(--panel-border) !important; }
 
 /* Comments and third-party widgets */
 .tk-comments, .tk-submit, .tk-comment, .tk-content, .OwO-body { color: var(--text) !important; }
@@ -417,7 +551,9 @@ button.button-load.noclick {
   .palette-trigger { width: 2.25rem; height: 2.25rem; color: var(--text-strong); border: 1px solid var(--border-strong); }
 }
 
-@media (prefers-reduced-motion: reduce) { html, body { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html, body, .masthead .tagline, .masthead .menu a { transition: none; }
+}
 @media print { .palette-menu { display: none !important; } html, body { background: #fff !important; color: #000 !important; } }
 
 /* Focused visual polish: navigation, reading content, media and shared cards. */
@@ -426,11 +562,14 @@ button.button-load.noclick {
 .masthead .menu a {
   color: color-mix(in srgb, var(--text) 78%, var(--muted));
   border-bottom: 0;
-  transition: color .18s ease, background-color .18s ease, box-shadow .18s ease;
+  font-weight: 400;
+  transition: color .22s ease, background-color .18s ease, box-shadow .18s ease, font-weight .22s ease;
 }
 
-.masthead .menu a:hover {
-  color: var(--text-strong);
+.masthead .menu a:hover,
+.masthead .menu a:focus-visible {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .masthead .menu .active > a {

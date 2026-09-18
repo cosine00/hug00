@@ -1,151 +1,277 @@
-<div id="heatmap" style="
+<section id="heatmap" class="archiveHeatmap" aria-label="最近一年文章热力图">
+  <div class="archiveHeatmapViewport">
+    <div class="archiveHeatmapBody">
+      <div class="archiveHeatmapWeekdays" aria-hidden="true">
+        <span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span>
+      </div>
+      <div class="archiveHeatmapChart">
+        <div class="archiveHeatmapMonths" aria-hidden="true"></div>
+        <div class="archiveHeatmapGrid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="archiveHeatTooltip" role="tooltip" aria-hidden="true"></div>
+</section>
+
+<style>
+.archiveHeatmap {
+  --archive-heat-cell: 10px;
+  --archive-heat-gap: 2px;
+  width: 100%;
   max-width: 780px;
-  height:110px;
-  text-align: center;
-  margin:10px auto;
-  "
-></div>
-<script src="/js/echarts.min.js"></script>
-<script type="text/javascript">
-  var chartDom = document.getElementById('heatmap');
-  var myChart = echarts.init(chartDom);
-  window.onresize = function() {
-      myChart.resize();
-  };
-  var option;
-  var dataMap = new Map();
-  {{ range ((where .Site.RegularPages "Type" "posts")) }}
-    var key = {{ .Date.Format "2006-01-02" }};
-    var value = dataMap.get(key);
-    var link = {{ .RelPermalink}};
-    var title = {{ .Title }};
-    
-    // multiple posts in same day
-    if (value == null) {
-      dataMap.set(key, [{link, title}]);
-    } else {
-      value.push({link, title});
-    }
-  {{- end -}}
+  height: auto !important;
+  margin: 18px auto 12px !important;
+  color: var(--muted);
+}
+.archiveHeatmapViewport {
+  width: 100%;
+  overflow: hidden;
+  padding: 2px 1px 5px;
+}
+.archiveHeatmapBody {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+.archiveHeatmapWeekdays {
+  display: grid;
+  grid-template-rows: repeat(7, var(--archive-heat-cell));
+  gap: var(--archive-heat-gap);
+  margin-top: 21px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: var(--archive-heat-cell);
+  text-align: right;
+}
+.archiveHeatmapWeekdays span { width: 1.2em; }
+.archiveHeatmapChart {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+.archiveHeatmapMonths {
+  position: relative;
+  height: 20px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 16px;
+}
+.archiveHeatmapMonths span {
+  position: absolute;
+  top: 0;
+  transform: translateX(1px);
+  font-variant-numeric: tabular-nums;
+}
+.archiveHeatmapGrid {
+  display: grid;
+  grid-template-rows: repeat(7, var(--archive-heat-cell));
+  grid-auto-columns: var(--archive-heat-cell);
+  grid-auto-flow: column;
+  gap: var(--archive-heat-gap);
+  width: 100%;
+}
+.archiveHeatCell {
+  display: block;
+  width: var(--archive-heat-cell);
+  height: var(--archive-heat-cell);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: var(--heatmap-empty);
+}
+button.archiveHeatCell {
+  appearance: none;
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease, background-color .2s ease;
+}
+button.archiveHeatCell:hover {
+  position: relative;
+  z-index: 2;
+  transform: scale(1.42);
+  box-shadow: 0 2px 7px var(--shadow);
+}
+button.archiveHeatCell:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.archiveHeatCell.is-blank { visibility: hidden; }
+.archiveHeatCell.level-1 { background: color-mix(in srgb, var(--heatmap-active) 78%, var(--heatmap-empty)); }
+.archiveHeatCell.level-2 { background: color-mix(in srgb, var(--heatmap-active) 88%, var(--heatmap-empty)); }
+.archiveHeatCell.level-3 { background: color-mix(in srgb, var(--heatmap-active) 95%, var(--heatmap-empty)); }
+.archiveHeatCell.level-4 { background: var(--heatmap-active); }
+.archiveHeatTooltip {
+  position: fixed;
+  z-index: 520;
+  left: 0;
+  top: 0;
+  max-width: min(420px, calc(100vw - 24px));
+  padding: 7px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 72%, var(--surface-raised));
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow) 82%, transparent);
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, calc(-100% - 10px)) scale(.96);
+  transform-origin: center bottom;
+  transition: opacity .14s ease, transform .14s ease, visibility 0s linear .14s;
+}
+.archiveHeatTooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, calc(-100% - 10px)) scale(1);
+  transition-delay: 0s;
+}
+@media screen and (max-width: 600px) {
+  .archiveHeatmapBody { gap: 5px; }
+  .archiveHeatmapWeekdays { font-size: 8px; }
+  .archiveHeatmapWeekdays span { width: 1em; }
+  .archiveHeatmapMonths { font-size: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button.archiveHeatCell, .archiveHeatTooltip { transition: none; }
+}
+</style>
 
-  var data = [];
-  for (const [key, value] of dataMap.entries()) {
-    data.push([key, value.length]);
-  }
+<script>
+(() => {
+  const root = document.getElementById('heatmap');
+  if (!root) return;
 
-  var startDate = new Date();
-  var year_Mill = startDate.setFullYear((startDate.getFullYear() - 1));
-  var startDate = +new Date(year_Mill);
-  var endDate = +new Date();
-
-  startDate = echarts.format.formatTime('yyyy-MM-dd', startDate);
-  endDate = echarts.format.formatTime('yyyy-MM-dd', endDate);
-  
-  function readHeatmapTheme() {
-    var styles = getComputedStyle(document.documentElement);
-    return {
-      backgroundColor: styles.getPropertyValue('--page-bg').trim(),
-      fangkuaicolor: styles.getPropertyValue('--heatmap-empty').trim(),
-      gaoliangcolor: [styles.getPropertyValue('--heatmap-active').trim()],
-      riqiColor: styles.getPropertyValue('--muted').trim(),
-      textbrcolor: styles.getPropertyValue('--surface-raised').trim(),
-      textColor: styles.getPropertyValue('--text').trim(),
-      xiankuangcolor: 'rgba(0, 0, 0, 0)'
-    };
-  }
-
-  var currentTheme = readHeatmapTheme();
-
-  option = {
-    tooltip: {
-    hideDelay: 1000,
-    enterable: true,
-    backgroundColor: currentTheme.textbrcolor,
-    borderWidth: 0, // 边框宽度为0
-    formatter: function (p) {
-        const date = p.data[0];
-        const posts = dataMap.get(date);
-        var content = `<span style="font-size: 0.75rem;font-family: var(--font-family-code);">${date}</span>`;
-        for (const [i, post] of posts.entries()) {
-            content += "<br>";          
-            var link = post.link;
-            var title = post.title;
-            content += `<a href="${link}" target="_blank">${title}</a>` + '<br>';
-        }
-        return content;
-        }
+  const posts = [
+    {{- range ((where .Site.RegularPages "Type" "posts")) }}
+    {
+      date: {{ .Date.Format "2006-01-02" | jsonify | safeJS }},
+      link: {{ .RelPermalink | jsonify | safeJS }},
+      title: {{ .Title | jsonify | safeJS }}
     },
-    visualMap: {
-        show: false,
-        inRange: {   
-          color: currentTheme.gaoliangcolor
-        },
-    },
-    calendar: {
-        left: 20,
-        top:20,
-        bottom:0,
-        right: 0,
-        cellSize: ['auto', 13],
-        range: [startDate, endDate],
-        itemStyle: {
-            color: currentTheme.fangkuaicolor,
-            borderWidth: 3.5,
-            borderColor: currentTheme.backgroundColor, 
-        },
-        yearLabel: { show: false },
-        monthLabel: { 
-        nameMap: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
-        textStyle: {
-            color: currentTheme.riqiColor,
-        }
-    },
-        dayLabel: {
-            firstDay: 1,
-            nameMap: ['日', '一', '', '三', '', '五', ''],
-            textStyle: {
-                color: currentTheme.riqiColor
-            }
-        },
-        splitLine: {
-            lineStyle: {
-                color: currentTheme.xiankuangcolor,
-            }
-        }
-    },
-    series: {
-        type: 'heatmap',
-        coordinateSystem: 'calendar',
-        data: data,
-    }
-  };
-  
-  myChart.setOption(option);
-  window.addEventListener('blogpalettechange', function () {
-    currentTheme = readHeatmapTheme();
-    myChart.setOption({
-      backgroundColor: 'transparent',
-      tooltip: {
-        backgroundColor: currentTheme.textbrcolor,
-        textStyle: { color: currentTheme.textColor }
-      },
-      visualMap: { inRange: { color: currentTheme.gaoliangcolor } },
-      calendar: {
-        itemStyle: {
-          color: currentTheme.fangkuaicolor,
-          borderColor: currentTheme.backgroundColor
-        },
-        monthLabel: { textStyle: { color: currentTheme.riqiColor } },
-        dayLabel: { textStyle: { color: currentTheme.riqiColor } }
-      }
-    });
+    {{- end }}
+  ];
+
+  const byDate = new Map();
+  posts.forEach((post) => {
+    const list = byDate.get(post.date) || [];
+    list.push(post);
+    byDate.set(post.date, list);
   });
-  myChart.on('click', function(params) {
-    if (params.componentType === 'series') {
-      // open the first post on the day
-      const post = dataMap.get(params.data[0])[0];
-      const link = window.location.origin + post.link;
-      window.open(link, '_blank').focus();
+
+  const pad = (value) => String(value).padStart(2, '0');
+  const formatDate = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  const dayNumber = (date) => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000;
+  const mondayIndex = (date) => (date.getDay() + 6) % 7;
+
+  const endDate = new Date();
+  endDate.setHours(12, 0, 0, 0);
+  const startDate = new Date(endDate);
+  startDate.setFullYear(startDate.getFullYear() - 1);
+  const gridStart = new Date(startDate);
+  gridStart.setDate(gridStart.getDate() - mondayIndex(gridStart));
+
+  const grid = root.querySelector('.archiveHeatmapGrid');
+  const months = root.querySelector('.archiveHeatmapMonths');
+  const chart = root.querySelector('.archiveHeatmapChart');
+  const tooltip = root.querySelector('.archiveHeatTooltip');
+  const monthWeeks = new Set();
+  const fragment = document.createDocumentFragment();
+  let cursor = new Date(gridStart);
+
+  while (cursor <= endDate) {
+    const isBeforeRange = cursor < startDate;
+    const dateKey = formatDate(cursor);
+    const dayPosts = isBeforeRange ? [] : (byDate.get(dateKey) || []);
+    const level = dayPosts.length === 0 ? 0 : Math.min(4, dayPosts.length);
+    const cell = document.createElement(dayPosts.length ? 'button' : 'span');
+    cell.className = `archiveHeatCell level-${level}${isBeforeRange ? ' is-blank' : ''}`;
+
+    if (dayPosts.length) {
+      cell.type = 'button';
+      const titles = dayPosts.map((post) => post.title).join('\n');
+      const description = `${dateKey} · ${dayPosts.length} 篇\n${titles}`;
+      cell.setAttribute('aria-label', description.replace(/\n/g, '，'));
+      cell.dataset.link = dayPosts[0].link;
+      cell.dataset.tooltip = `${dateKey} · ${dayPosts.map((post) => post.title).join(' / ')}`;
     }
-});
+    fragment.appendChild(cell);
+
+    if (!isBeforeRange && (cursor.getDate() === 1 || formatDate(cursor) === formatDate(startDate))) {
+      const week = Math.floor((dayNumber(cursor) - dayNumber(gridStart)) / 7);
+      if (!monthWeeks.has(week)) {
+        monthWeeks.add(week);
+        const label = document.createElement('span');
+        label.textContent = pad(cursor.getMonth() + 1);
+        label.style.left = `calc(${week} * (var(--archive-heat-cell) + var(--archive-heat-gap)))`;
+        months.appendChild(label);
+      }
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  grid.appendChild(fragment);
+
+  const fitGrid = () => {
+    const weekCount = Math.ceil(grid.children.length / 7);
+    if (!weekCount || !chart.clientWidth) return;
+    const gap = chart.clientWidth < 480 ? 1 : 2;
+    const cellSize = Math.max(1, (chart.clientWidth - gap * (weekCount - 1)) / weekCount);
+    root.style.setProperty('--archive-heat-gap', `${gap}px`);
+    root.style.setProperty('--archive-heat-cell', `${cellSize}px`);
+  };
+
+  const placeTooltip = (cell) => {
+    const rect = cell.getBoundingClientRect();
+    const halfWidth = tooltip.offsetWidth / 2;
+    const desiredX = rect.left + rect.width / 2;
+    const safeX = Math.min(window.innerWidth - halfWidth - 8, Math.max(halfWidth + 8, desiredX));
+    tooltip.style.left = `${safeX}px`;
+    tooltip.style.top = `${rect.top}px`;
+  };
+
+  const showTooltip = (cell) => {
+    tooltip.textContent = cell.dataset.tooltip;
+    tooltip.setAttribute('aria-hidden', 'false');
+    tooltip.classList.add('is-visible');
+    placeTooltip(cell);
+  };
+
+  const hideTooltip = () => {
+    tooltip.classList.remove('is-visible');
+    tooltip.setAttribute('aria-hidden', 'true');
+  };
+
+  grid.addEventListener('pointerover', (event) => {
+    const cell = event.target.closest('button.archiveHeatCell[data-tooltip]');
+    if (cell) showTooltip(cell);
+  });
+  grid.addEventListener('pointerout', (event) => {
+    if (event.target.closest('button.archiveHeatCell[data-tooltip]')) hideTooltip();
+  });
+  grid.addEventListener('focusin', (event) => {
+    const cell = event.target.closest('button.archiveHeatCell[data-tooltip]');
+    if (cell) showTooltip(cell);
+  });
+  grid.addEventListener('focusout', hideTooltip);
+  grid.addEventListener('click', (event) => {
+    const cell = event.target.closest('button.archiveHeatCell[data-link]');
+    if (!cell) return;
+    window.open(cell.dataset.link, '_blank', 'noopener');
+  });
+
+  fitGrid();
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(fitGrid).observe(chart);
+  } else {
+    window.addEventListener('resize', fitGrid);
+  }
+})();
 </script>

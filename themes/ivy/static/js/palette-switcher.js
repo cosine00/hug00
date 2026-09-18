@@ -5,8 +5,8 @@
   var palettes = {
     paper: { label: '明亮', color: '#fafafa', dark: false },
     night: { label: '夜幕', color: '#17191d', dark: true },
-    sepia: { label: '霜灰', color: '#eef0f2', dark: false },
-    mist: { label: '晨曦', color: '#f8f2ef', dark: false }
+    sepia: { label: '霜灰', color: '#e7edf1', dark: false },
+    mist: { label: '晨曦', color: '#faf6f2', dark: false }
   };
   var root = document.documentElement;
   var trigger = document.querySelector('.palette-trigger');

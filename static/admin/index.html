@@ -358,16 +358,29 @@ input:checked+.slider:before{transform:translateX(18px)}
 .media-drop-title{font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
 .media-drop-desc{font-size:12.5px;color:var(--text3);line-height:1.6;max-width:640px}
 .media-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:center}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
-.media-item{border:1px solid var(--border);border-radius:var(--radius-lg);background:#fff;overflow:hidden;box-shadow:var(--shadow-soft)}
-.media-thumb{height:128px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3);font-size:12px;text-align:center;padding:10px}
-.media-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.media-info{padding:10px;display:grid;gap:8px}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+.media-item{position:relative;min-width:0;aspect-ratio:1;border:1px solid var(--border);border-radius:14px;background:var(--bg3);overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.media-item:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
+.media-thumb{width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3);font-size:12px;text-align:center;padding:0;cursor:zoom-in}
+.media-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .22s ease,filter .22s ease}
+.media-item:hover .media-thumb img{transform:scale(1.035);filter:saturate(1.04)}
+.media-tile-label{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px 9px 8px;background:linear-gradient(transparent,rgba(10,16,13,.72));color:#fff;font-size:11px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.media-info{display:none}
 .media-name{font-weight:700;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-meta{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-item-actions{display:flex;gap:6px;flex-wrap:wrap}
 .media-prefix-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .media-prefix-tools .form-select{min-width:180px;max-width:320px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.media-preview-overlay{z-index:10030;padding:24px;background:rgba(7,10,9,.72);backdrop-filter:blur(14px)}
+.media-lightbox{position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto;width:min(1040px,calc(100vw - 48px));height:min(88vh,820px);overflow:hidden;border:1px solid var(--border);border-radius:22px;background:var(--bg);box-shadow:0 28px 90px rgba(0,0,0,.34)}
+.media-lightbox .modal-header{min-height:58px;padding:13px 18px;background:var(--toolbar-bg);border-bottom:1px solid var(--border)}
+.media-lightbox-title{min-width:0;display:grid;gap:2px}.media-lightbox-title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}.media-lightbox-title small{color:var(--text3);font-size:11px;font-weight:500}
+.media-lightbox-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:20px;background:color-mix(in srgb,var(--bg2) 74%,#000 26%);overflow:hidden}
+.media-lightbox-stage img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 12px 34px rgba(0,0,0,.26);user-select:none}
+.media-lightbox-nav{position:absolute;top:50%;z-index:2;width:42px;height:42px;padding:0!important;transform:translateY(-50%);border:1px solid color-mix(in srgb,var(--accent) 48%,transparent)!important;background:color-mix(in srgb,var(--bg) 78%,transparent)!important;color:var(--accent-dark)!important;box-shadow:0 6px 20px rgba(0,0,0,.18)!important;backdrop-filter:blur(10px);font-size:22px!important}
+.media-lightbox-nav:hover{background:var(--accent)!important;color:var(--pill-active-text)!important}.media-lightbox-nav.prev{left:18px}.media-lightbox-nav.next{right:18px}.media-lightbox-nav[hidden]{display:none!important}
+.media-lightbox-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:12px 18px;border-top:1px solid var(--border);background:var(--toolbar-bg)}
+.media-lightbox-meta{min-width:0;color:var(--text3);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.media-preview-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}.media-preview-actions .btn{min-height:32px}
 
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
@@ -1535,8 +1548,8 @@ body.editor-focus-mode .editor-focus-word-count{position:absolute;left:18px;bott
 /* 与前台共用的四套色调：明亮、夜幕、霜灰、晨曦。 */
 :root,:root[data-theme="paper"]{--bg:#fff;--bg2:#fafafa;--bg3:#f3f4f2;--bg4:#eef0ed;--text:#2f3332;--text2:#59615d;--text3:#707673;--text4:#b9bdb9;--border:#dedfdb;--border2:#c9ccc8;--accent:#6870a8;--accent-light:#e8e9f3;--accent-dark:#4f578f;--pill-shell:#f2f2f7;--pill-hover:#e8e9f1;--pill-active:#737aa7;--pill-active-text:#fff;--selection:#dcdff0;--success:#5f8f78;--success-light:#edf5f0;--purple:#6870a8;--purple-light:#e8e9f3;--danger-soft:#fff0f2;--toolbar-bg:#f7f7f5;--topbar-bg:rgba(255,255,255,.92);--shadow:0 10px 30px rgba(30,39,35,.07),0 1px 3px rgba(30,39,35,.04);--shadow-soft:0 3px 14px rgba(30,39,35,.065)}
 :root[data-theme="night"]{--bg:#202329;--bg2:#17191d;--bg3:#272b31;--bg4:#2b2f36;--text:#d7d9dc;--text2:#a2a7ae;--text3:#777e87;--text4:#5f6670;--border:#383d45;--border2:#505761;--accent:#72c7a5;--accent-light:#263d35;--accent-dark:#98ddc1;--pill-shell:#23272c;--pill-hover:#2c3335;--pill-active:#548f78;--pill-active-text:#eef8f3;--selection:#315d4d;--success:#72c7a5;--success-light:#263d35;--purple:#72c7a5;--purple-light:#263d35;--danger-soft:#3b2529;--toolbar-bg:#1d2025;--topbar-bg:rgba(23,25,29,.94);--shadow:0 10px 30px rgba(0,0,0,.28);--shadow-soft:0 3px 14px rgba(0,0,0,.24)}
-:root[data-theme="sepia"]{--bg:#f9fafb;--bg2:#eef0f2;--bg3:#e2e5e8;--bg4:#e5e8eb;--text:#3d4247;--text2:#596168;--text3:#687078;--text4:#959ca3;--border:#d0d5d9;--border2:#abb2b8;--accent:#6f7b86;--accent-light:#dde2e6;--accent-dark:#4f5b65;--pill-shell:#e7eaed;--pill-hover:#dce1e5;--pill-active:#78848e;--pill-active-text:#fff;--selection:#d7dde2;--success:#667f72;--success-light:#e0e8e3;--purple:#6f7b86;--purple-light:#dde2e6;--danger-soft:#f8e8ea;--toolbar-bg:#e7eaed;--topbar-bg:rgba(249,250,251,.92);--shadow:0 10px 30px rgba(38,45,51,.09);--shadow-soft:0 3px 14px rgba(38,45,51,.08)}
-:root[data-theme="mist"]{--bg:#fffaf8;--bg2:#f8f2ef;--bg3:#f2e5e0;--bg4:#f0e5e1;--text:#4a3d39;--text2:#735f58;--text3:#7e6b64;--text4:#a6928b;--border:#e1d1cb;--border2:#c2aaa1;--accent:#b66f61;--accent-light:#f2ddd7;--accent-dark:#8f5147;--pill-shell:#f4e8e3;--pill-hover:#ecd9d2;--pill-active:#bd796b;--pill-active-text:#fff;--selection:#f0cfc5;--success:#8a7563;--success-light:#f2e6df;--purple:#b66f61;--purple-light:#f2ddd7;--danger-soft:#f9e2e2;--toolbar-bg:#f6ebe7;--topbar-bg:rgba(255,250,248,.93);--shadow:0 10px 30px rgba(94,57,48,.09);--shadow-soft:0 3px 14px rgba(94,57,48,.08)}
+:root[data-theme="sepia"]{--bg:rgba(250,252,253,.82);--bg2:#e7edf1;--bg3:rgba(218,228,235,.84);--bg4:rgba(255,255,255,.92);--text:#465967;--text2:#586d7b;--text3:#6d808d;--text4:#95a5af;--border:rgba(117,143,158,.30);--border2:rgba(92,121,139,.48);--accent:#527d96;--accent-light:rgba(99,143,169,.17);--accent-dark:#2f607c;--pill-shell:rgba(224,232,237,.82);--pill-hover:rgba(199,216,226,.86);--pill-active:#587f96;--pill-active-text:#fff;--selection:#bdd3df;--success:#668a79;--success-light:rgba(102,138,121,.14);--purple:#6f7f9b;--purple-light:rgba(111,127,155,.15);--danger-soft:rgba(196,90,102,.12);--toolbar-bg:rgba(226,234,239,.82);--topbar-bg:rgba(250,252,253,.78);--shadow:0 10px 30px rgba(35,57,71,.13);--shadow-soft:0 3px 14px rgba(35,57,71,.11)}
+:root[data-theme="mist"]{--bg:#fffdfb;--bg2:#faf6f2;--bg3:#f5ece9;--bg4:#fff;--text:#55484d;--text2:#705e65;--text3:#7f7076;--text4:#a9979e;--border:#e7dad8;--border2:#cdb9b8;--accent:#c86f67;--accent-light:#f4dcd8;--accent-dark:#a9535c;--pill-shell:#f4ebe9;--pill-hover:#efdeda;--pill-active:#ba6965;--pill-active-text:#fff;--selection:#f1c9c2;--success:#8d7969;--success-light:#f2e7df;--purple:#8f78b8;--purple-light:#eee7f7;--danger-soft:#f9e2e2;--toolbar-bg:#f5efec;--topbar-bg:rgba(255,253,251,.88);--shadow:0 10px 30px rgba(91,60,70,.10);--shadow-soft:0 3px 14px rgba(91,60,70,.085)}
 body{background:var(--bg2);background-image:none;color:var(--text)}
 ::selection{background:var(--selection);color:var(--text)}
 .app{background:var(--bg2)}.sidebar{background:var(--bg);border-color:var(--border);box-shadow:none}.sidebar-logo{border-color:var(--border)}
@@ -1684,6 +1697,14 @@ html[data-theme="night"] .preview-device{border-color:var(--border)!important;ba
 html[data-theme="night"] *{scrollbar-color:var(--border2) transparent}
 html[data-theme="night"] *::-webkit-scrollbar-thumb{background:var(--border2)}
 
+/* Frost and dawn reuse the same page-wide atmosphere as the frontend palettes. */
+html[data-theme="sepia"]{background-color:#e7edf1;background-image:radial-gradient(circle at -4% -8%,rgba(117,156,181,.52),transparent 38rem),radial-gradient(circle at 104% 5%,rgba(183,190,216,.48),transparent 38rem),radial-gradient(circle at 52% 110%,rgba(255,255,255,.82),transparent 42rem),linear-gradient(140deg,#d9e5ec 0%,#f3f6f7 48%,#dfe5ed 100%);background-attachment:fixed;background-size:cover}
+html[data-theme="mist"]{background-color:#faf6f2;background-image:radial-gradient(circle at 10% -8%,rgba(239,170,153,.30),transparent 34rem),radial-gradient(circle at 62% 12%,rgba(209,176,218,.15),transparent 28rem),radial-gradient(circle at 91% 2%,rgba(174,151,211,.18),transparent 34rem),linear-gradient(135deg,#fbf1ec 0%,#faf5f3 48%,#f2eff8 100%);background-attachment:fixed;background-size:cover}
+html[data-theme="sepia"] body,html[data-theme="sepia"] .app,html[data-theme="mist"] body,html[data-theme="mist"] .app{background:transparent!important}
+.overview-hero{background:radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--pill-active-text) 18%,transparent),transparent 24%),linear-gradient(125deg,color-mix(in srgb,var(--accent-dark) 82%,var(--text)) 0%,var(--accent-dark) 52%,var(--accent) 100%)}
+.overview-stat,.quick-command,.friend-card,.fp-card,.journal-card,.table-wrap,.editor-actions{background:var(--bg);border-color:var(--border);color:var(--text)}
+.search-input:hover,select.filter:hover,.form-select:hover,.fm-input:hover,.fm-textarea:hover,.setting-input:hover{background:var(--bg4);border-color:var(--accent)}
+
 /* Final mobile overrides: do not alter the desktop workspace. */
 @media(max-width:860px){
   body.mobile-writing-mode .editor-title-row{display:none}
@@ -1701,14 +1722,15 @@ html[data-theme="night"] *::-webkit-scrollbar-thumb{background:var(--border2)}
   .sports-modal-overlay .modal-body{min-height:0}
   .sports-modal-overlay .modal-body>.fm-group{flex-shrink:0}
   .media-api-notice{display:none}
-  #media-list-box .media-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  #media-list-box .media-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
   #media-list-box .media-item{min-width:0;border-radius:10px;overflow:hidden;box-shadow:none}
   #media-list-box .media-thumb{aspect-ratio:1;height:auto;padding:0;cursor:zoom-in}
   #media-list-box .media-thumb img{width:100%;height:100%;object-fit:cover}
   #media-list-box .media-info{display:none}
-  .mobile-media-preview{position:relative;width:100%;max-height:90dvh;overflow:auto;background:var(--bg);border-radius:18px}
-  .mobile-media-preview img{display:block;width:100%;height:60dvh;object-fit:contain;background:#111}
-  .mobile-media-preview .media-preview-actions{display:flex;flex-wrap:wrap;gap:8px;padding:14px}
+  .media-preview-overlay{align-items:center;padding:10px}
+  .media-lightbox{width:100%;height:min(88dvh,760px);border-radius:18px;grid-template-rows:auto minmax(0,1fr) auto}
+  .media-lightbox-stage{padding:8px}.media-lightbox-nav{width:38px;height:38px}.media-lightbox-nav.prev{left:8px}.media-lightbox-nav.next{right:8px}
+  .media-lightbox-footer{align-items:stretch;flex-direction:column;padding:10px 12px}.media-preview-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.media-preview-actions .btn{width:100%}
 }
 </style>
 </head>
@@ -1843,8 +1865,8 @@ const ADMIN_PALETTE_ORDER=['paper','night','sepia','mist'];
 const ADMIN_PALETTES={
   paper:{label:'明亮',color:'#fafafa',dark:false},
   night:{label:'夜幕',color:'#17191d',dark:true},
-  sepia:{label:'霜灰',color:'#eef0f2',dark:false},
-  mist:{label:'晨曦',color:'#f8f2ef',dark:false}
+  sepia:{label:'霜灰',color:'#e7edf1',dark:false},
+  mist:{label:'晨曦',color:'#faf6f2',dark:false}
 };
 const ADMIN_FONTS=[
   {id:'wenkai',label:'霞鹜文楷',href:'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',family:'"LXGW WenKai Screen","LXGW WenKai",sans-serif'},
@@ -7847,7 +7869,7 @@ async function deleteMediaObject(key){
   if(!confirm(`确定从 R2 删除这个文件吗？\n${key}`)) return;
   try{
     await r2DeleteObject(key);
-    const preview=document.getElementById('mobile-media-preview');
+    const preview=document.getElementById('media-preview');
     if(preview?.dataset.key===key) preview.remove();
     toast('R2 文件已删除','success');
     await refreshMediaList();
@@ -8099,10 +8121,11 @@ async function resetMediaPrefix(){
 }
 function renderMediaItem(item){
   const url=r2ObjectUrl(item.key); const isImg=/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(item.key);
+  const name=item.key.split('/').pop();
   return `<div class="media-item" data-media-key="${escapeAttr(item.key)}">
-    <div class="media-thumb" role="button" tabindex="0" aria-label="预览图片" onclick="openMobileMediaPreview(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMobileMediaPreview(this)}">${isImg?`<img src="${escapeAttr(url)}" loading="lazy" alt="">`:'文件'}</div>
+    <div class="media-thumb" role="button" tabindex="0" aria-label="预览 ${escapeAttr(name)}" onclick="openMediaPreview(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMediaPreview(this)}">${isImg?`<img src="${escapeAttr(url)}" loading="lazy" alt="${escapeAttr(name)}">`:'文件'}<span class="media-tile-label">${escapeHTML(name)}</span></div>
     <div class="media-info">
-      <div class="media-name" title="${escapeAttr(item.key)}">${escapeHTML(item.key.split('/').pop())}</div>
+      <div class="media-name" title="${escapeAttr(item.key)}">${escapeHTML(name)}</div>
       <div class="media-meta">${formatBytes(item.size)} · ${item.lastModified?new Date(item.lastModified).toLocaleDateString():'未知日期'}</div>
       <div class="media-item-actions">
         <button class="btn sm" onclick="copyText('${escapeAttr(url)}')">复制链接</button>
@@ -8113,40 +8136,46 @@ function renderMediaItem(item){
     </div>
   </div>`;
 }
-function openMobileMediaPreview(thumb){
-  if(!window.matchMedia('(max-width:860px)').matches) return;
+function openMediaPreview(thumb){
   const source=thumb.querySelector('img');
   if(!source) return;
   const gallery=[...document.querySelectorAll('#media-list-box .media-thumb')].filter(item=>item.querySelector('img'));
   if(!gallery.includes(thumb)) gallery.push(thumb);
   let index=gallery.indexOf(thumb);
-  document.getElementById('mobile-media-preview')?.remove();
+  document.getElementById('media-preview')?.remove();
   const overlay=document.createElement('div');
-  overlay.id='mobile-media-preview'; overlay.className='modal-overlay';
+  overlay.id='media-preview'; overlay.className='modal-overlay media-preview-overlay';
   overlay.dataset.key=thumb.closest('.media-item').dataset.mediaKey;
-  overlay.style.zIndex='10030';
+  overlay.tabIndex=-1;
   overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true'); overlay.setAttribute('aria-label','图片预览与操作');
-  const panel=document.createElement('div'); panel.className='mobile-media-preview';
+  const panel=document.createElement('div'); panel.className='media-lightbox';
   const header=document.createElement('div'); header.className='modal-header';
-  const counter=document.createElement('span'); header.appendChild(counter);
-  const close=document.createElement('button'); close.className='btn sm'; close.textContent='关闭'; close.onclick=()=>{overlay.remove();if(thumb.isConnected)thumb.focus({preventScroll:true});};
+  const title=document.createElement('div'); title.className='media-lightbox-title';
+  const titleName=document.createElement('strong'); const counter=document.createElement('small'); title.append(titleName,counter); header.appendChild(title);
+  const close=document.createElement('button'); close.className='btn sm icon'; close.textContent='✕'; close.setAttribute('aria-label','关闭图片预览'); close.onclick=()=>{overlay.remove();if(thumb.isConnected)thumb.focus({preventScroll:true});};
   header.appendChild(close);
+  const stage=document.createElement('div'); stage.className='media-lightbox-stage';
   const img=document.createElement('img'); img.alt='图片预览'; img.draggable=false;
   img.style.touchAction='pan-y pinch-zoom';
-  const navigation=document.createElement('div'); navigation.className='media-preview-actions';
-  const previous=document.createElement('button'); previous.className='btn sm'; previous.textContent='← 上一张';
-  const next=document.createElement('button'); next.className='btn sm'; next.textContent='下一张 →';
-  navigation.append(previous,next);
+  const previous=document.createElement('button'); previous.className='btn media-lightbox-nav prev'; previous.textContent='‹'; previous.setAttribute('aria-label','上一张');
+  const next=document.createElement('button'); next.className='btn media-lightbox-nav next'; next.textContent='›'; next.setAttribute('aria-label','下一张');
+  stage.append(img,previous,next);
+  const footer=document.createElement('div'); footer.className='media-lightbox-footer';
+  const meta=document.createElement('div'); meta.className='media-lightbox-meta';
   const actions=document.createElement('div'); actions.className='media-preview-actions';
   const display=()=>{
     const current=gallery[index]; const photo=current.querySelector('img');
     img.src=photo.currentSrc || photo.src;
-    overlay.dataset.key=current.closest('.media-item').dataset.mediaKey;
+    img.alt=photo.alt || '图片预览';
+    const item=current.closest('.media-item');
+    overlay.dataset.key=item.dataset.mediaKey;
+    titleName.textContent=photo.alt || item.dataset.mediaKey.split('/').pop();
     counter.textContent=`图片 ${index+1} / ${gallery.length}`;
-    previous.disabled=index===0; next.disabled=index===gallery.length-1;
-    actions.replaceChildren(...[...current.closest('.media-item').querySelector('.media-item-actions').children].map(node=>node.cloneNode(true)));
+    meta.textContent=`${item.querySelector('.media-meta')?.textContent || ''} · ${item.dataset.mediaKey}`;
+    previous.hidden=gallery.length<2; next.hidden=gallery.length<2;
+    actions.replaceChildren(...[...item.querySelector('.media-item-actions').children].map(node=>node.cloneNode(true)));
   };
-  const step=delta=>{const target=index+delta;if(target>=0 && target<gallery.length){index=target;display();}};
+  const step=delta=>{index=(index+delta+gallery.length)%gallery.length;display();};
   previous.onclick=()=>step(-1); next.onclick=()=>step(1);
   let touchStart=null;
   img.addEventListener('touchstart',event=>{touchStart=event.touches.length===1 ? {x:event.touches[0].clientX,y:event.touches[0].clientY} : null;},{passive:true});
@@ -8159,7 +8188,7 @@ function openMobileMediaPreview(thumb){
     if(Math.abs(dx)>=50 && Math.abs(dx)>Math.abs(dy)*1.5)step(dx<0?1:-1);
   },{passive:true});
   display();
-  panel.append(header,img,navigation,actions); overlay.appendChild(panel); document.body.appendChild(overlay);
+  footer.append(meta,actions); panel.append(header,stage,footer); overlay.appendChild(panel); document.body.appendChild(overlay);
   overlay.addEventListener('click',event=>{if(event.target===overlay)close.click();});
   overlay.addEventListener('keydown',event=>{if(event.key==='Escape')close.click();else if(event.key==='ArrowLeft')step(-1);else if(event.key==='ArrowRight')step(1);});
   close.focus({preventScroll:true});

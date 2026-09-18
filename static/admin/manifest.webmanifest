@@ -10,7 +10,7 @@
   "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "any",
   "background_color": "#f7f8fa",
-  "theme_color": "#1f7a4d",
+  "theme_color": "#fafafa",
   "icons": [{"src":"/admin/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
   "shortcuts": [
     {"name":"撰写文章","short_name":"写文章","url":"/admin/?page=write"},
