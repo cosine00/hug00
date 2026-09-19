@@ -146,6 +146,7 @@ class EmojiReaction extends s {
         border-style: solid;
         border-color: var(--reaction-available-popup-border-color, var(--reaction-available-popup-border-color-default));
         box-shadow: var(--reaction-available-popup-box-shadow, var(--reaction-available-popup-box-shadow-default));
+        z-index: var(--reaction-available-emoji-z-index, var(--reaction-available-emoji-z-index-default));
       }
       .reaction-available-emoji {
         z-index: var(--reaction-available-emoji-z-index, var(--reaction-available-emoji-z-index-default));
@@ -205,6 +206,7 @@ class EmojiReaction extends s {
     // Declare reactive properties
     this.showAvailable = false;
     this.availableReactions = [];
+    this.pendingReactions = new Set();
   }
 
   connectedCallback() {
@@ -222,8 +224,10 @@ class EmojiReaction extends s {
       if (!emoji || !reaction_name) {
         return null
       }
-      return { emoji, reaction_name }
+      return { emoji, reaction_name, count: 0, meReacted: false }
     }).filter(val => val);
+    // 先渲染本地候选项。远端接口不可用时，点击笑脸仍能正常打开表情面板。
+    this.availableReactions = arr;
     // 初始化 endpoint
     if (!this?.endpoint) {
       this.endpoint = 'https://api.emaction.cool';
@@ -237,29 +241,9 @@ class EmojiReaction extends s {
     if (!this?.reactTargetId) {
       this.reactTargetId = await this._sha256(url_without_hash);
     }
-    const { data: { reactionsGot } } = await fetch(this.endpoint + '/reactions?' + new URLSearchParams({
-      targetId: this.reactTargetId,
-    }), {
-      method: 'GET',
-    })
-    .then(resp => resp.json())
-    .then(resp => {
-      if (!resp?.data || !Array.isArray(resp?.data?.reactionsGot)) {
-        throw new Error("获取 reactions 出错！")
-      }
-      return resp;
-    });
-    // 获得的 reactions 数量放到 arr 里
-    reactionsGot.forEach(reaction => {
-      arr.forEach(availableReaction => {
-        if (reaction.reaction_name === availableReaction.reaction_name) {
-          availableReaction.count = reaction.count;
-        }
-      });
-    });
     // 读取 localStorage，获取当前用户点击过的 emoji
     const storageKey = `meReactedReactions_${this.reactTargetId}`;
-    const meReactedReactions = JSON.parse(window.localStorage.getItem(storageKey) || "[]");
+    const meReactedReactions = this._readLocalReactions(storageKey);
     // 当前用户点击状态放到 arr
     meReactedReactions.forEach(reaction_name => {
       arr.forEach(availableReaction => {
@@ -268,12 +252,32 @@ class EmojiReaction extends s {
         }
       });
     });
-    // 初始化 avaiableArray
-    this.availableReactions = arr;
+    this.availableReactions = [...arr];
+
+    try {
+      const resp = await fetch(this.endpoint + '/reactions?' + new URLSearchParams({
+        targetId: this.reactTargetId,
+      }), { method: 'GET' });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+      const payload = await resp.json();
+      const reactionsGot = payload?.data?.reactionsGot;
+      if (!Array.isArray(reactionsGot)) {
+        throw new Error("返回的数据格式不正确");
+      }
+      const countByName = new Map(reactionsGot.map(reaction => [reaction.reaction_name, Number(reaction.count) || 0]));
+      this.availableReactions = this.availableReactions.map(reaction => ({
+        ...reaction,
+        count: countByName.get(reaction.reaction_name) || 0,
+      }));
+    } catch (error) {
+      // 不让计数接口异常阻断表情面板本身。
+      console.warn('emaction 获取 reaction 失败，已保留本地表情面板：', error);
+    }
   }
 
   _closePopup(e) {
-    console.log(e.target);
     this.showAvailable = false;
   }
 
@@ -284,36 +288,63 @@ class EmojiReaction extends s {
       console.error("未知的 reaction!");
       return
     }
+    if (this.pendingReactions.has(reaction_name)) return;
+    this.pendingReactions.add(reaction_name);
     const cancel = reaction?.meReacted ? true : false;
+    const previousCount = Number(reaction.count) || 0;
+    const previousMeReacted = Boolean(reaction.meReacted);
     const count = Math.max(0, reaction?.count ? reaction.count + (cancel ? -1 : 1) : (cancel ? 0 : 1));
     const meReacted = !reaction.meReacted;
-    this.availableReactions = this.availableReactions.map(val => {
-      if (val.reaction_name === reaction_name) {
-        val.count = count;
-        val.meReacted = meReacted;
-      }
-      return val
-    });
+    this.availableReactions = this.availableReactions.map(val => val.reaction_name === reaction_name
+      ? { ...val, count, meReacted }
+      : val
+    );
     this.showAvailable = false;
-    // 请求接口，更新 react 数量
-    await fetch(this.endpoint + '/reaction?' + new URLSearchParams({
-      targetId: this.reactTargetId,
-      reaction_name,
-      diff: cancel ? -1 : 1
-    }), { method: "PATCH"});
-    // 更新 localStorage
+    // 先记录本地状态，再提交接口；失败时回滚，避免静默显示错误计数。
     const storageKey = `meReactedReactions_${this.reactTargetId}`;
-    const meReactedReactionsSet = new Set(JSON.parse(window.localStorage.getItem(storageKey) || "[]"));
+    const meReactedReactionsSet = new Set(this._readLocalReactions(storageKey));
     if (cancel) {
       meReactedReactionsSet.delete(reaction_name);
     } else {
       meReactedReactionsSet.add(reaction_name);
     }
     window.localStorage.setItem(storageKey, JSON.stringify(Array.from(meReactedReactionsSet)));
+    try {
+      const resp = await fetch(this.endpoint + '/reaction?' + new URLSearchParams({
+        targetId: this.reactTargetId,
+        reaction_name,
+        diff: cancel ? -1 : 1
+      }), { method: "PATCH"});
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+    } catch (error) {
+      this.availableReactions = this.availableReactions.map(val => val.reaction_name === reaction_name
+        ? { ...val, count: previousCount, meReacted: previousMeReacted }
+        : val
+      );
+      const rollbackSet = new Set(this._readLocalReactions(storageKey));
+      if (cancel) rollbackSet.add(reaction_name);
+      else rollbackSet.delete(reaction_name);
+      window.localStorage.setItem(storageKey, JSON.stringify(Array.from(rollbackSet)));
+      console.error('emaction 提交 reaction 失败，已回滚：', error);
+    } finally {
+      this.pendingReactions.delete(reaction_name);
+    }
   }
   _showAvailable(e) {
     e.preventDefault();
+    e.stopPropagation();
     this.showAvailable = !this.showAvailable;
+  }
+  _readLocalReactions(storageKey) {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(storageKey) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      console.warn('emaction 本地状态损坏，已忽略：', error);
+      return [];
+    }
   }
   async _sha256(string) {
     return Array.from(new Uint8Array(

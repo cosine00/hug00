@@ -362,7 +362,7 @@ async function updateHTMl(data){
         }
       }
       let memosIdNow = memos.replace(/https\:\/\/(.*\.)?(.*)\..*/,'id-$2-')
-      let emojiReaction = `<emoji-reaction theme="system" class="reaction" endpoint="https://api-emaction.immmmm.com" reacttargetid="${memosIdNow+'memo-'+bbID}" style="line-height:normal;display:inline-flex;"></emoji-reaction>`
+      let emojiReaction = `<emoji-reaction theme="system" class="reaction" endpoint="https://emaction-api.hux.ink" reacttargetid="${memosIdNow+'memo-'+bbID}" style="line-height:normal;display:inline-flex;"></emoji-reaction>`
       let datacountDOM = `<div class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${bbID}" onclick="loadTwikoo(this)"> ${data[i].count} 条评论 </div>`
       
       memosOpenIdNow = window.localStorage && window.localStorage.getItem("memos-access-token")

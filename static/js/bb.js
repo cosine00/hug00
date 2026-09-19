@@ -345,7 +345,7 @@ function renderMemosPaged(memos, page) {
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
     content = appendMemoImageTrigger(content, attachBtn);
 
-    let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
+    let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
     
     let datacountDOM = `
       <span class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${item.id}" title="评论">

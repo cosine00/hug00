@@ -24,7 +24,7 @@
     "name": "亲子篮球",
     "moving_time": "0:26:00",
     "type": "Workout",
-    "start_date_local": "2026-09-08 19:38:46",
+    "start_date_local": "2026-09-08 19:38",
     "summary_polyline": "",
     "average_heartrate": 113,
     "source": "manual"
@@ -34,7 +34,7 @@
     "name": "亲子足球",
     "moving_time": "0:15:00",
     "type": "Workout",
-    "start_date_local": "2026-09-07 18:55:42",
+    "start_date_local": "2026-09-07 18:55",
     "summary_polyline": "",
     "average_heartrate": 118,
     "source": "manual"
@@ -54,7 +54,7 @@
     "name": "YaoYao跳绳",
     "moving_time": "0:25:00",
     "type": "RopeSkipping",
-    "start_date_local": "2026-09-01 19:14:37",
+    "start_date_local": "2026-09-01 19:14",
     "summary_polyline": "",
     "average_heartrate": 141,
     "source": "manual"

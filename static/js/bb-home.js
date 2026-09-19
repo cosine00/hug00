@@ -234,7 +234,7 @@ function renderMemosPaged(memos, page) {
               </div>
               
               <div style="display:inline-flex;">
-                <emoji-reaction theme="system" endpoint="https://api-emaction.immmmm.com" reacttargetid="memo-${item.id}" style="line-height:normal;"></emoji-reaction>
+                <emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;"></emoji-reaction>
               </div>
             </div>
             

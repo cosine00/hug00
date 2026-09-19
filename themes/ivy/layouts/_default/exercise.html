@@ -511,6 +511,7 @@
 
 {{ $rawActivities := resources.Get "activities.json" | unmarshal }}
 {{ $rawAct := resources.Get "act.json" | unmarshal }}
+{{ $activityNameOverrides := resources.Get "activity-name-overrides.json" | unmarshal }}
 
 {{ $activities := slice }}
 {{ $themeMap := dict
@@ -533,7 +534,12 @@
 {{ $defaultTheme := dict "color" "#32D74B" }}
 
 {{ range $rawActivities }}
-  {{ $activities = $activities | append . }}
+  {{ $overrideName := index $activityNameOverrides (printf "%v" .run_id) }}
+  {{ if $overrideName }}
+    {{ $activities = $activities | append (merge (dict "name" $overrideName) .) }}
+  {{ else }}
+    {{ $activities = $activities | append . }}
+  {{ end }}
 {{ end }}
 
 {{ range $rawAct }}

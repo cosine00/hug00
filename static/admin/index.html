@@ -358,13 +358,12 @@ input:checked+.slider:before{transform:translateX(18px)}
 .media-drop-title{font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
 .media-drop-desc{font-size:12.5px;color:var(--text3);line-height:1.6;max-width:640px}
 .media-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:center}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
-.media-item{position:relative;min-width:0;aspect-ratio:1;border:1px solid var(--border);border-radius:14px;background:var(--bg3);overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.media-grid{columns:4 180px;column-gap:12px}
+.media-item{position:relative;display:inline-block;width:100%;min-width:0;margin:0 0 12px;break-inside:avoid;border:1px solid var(--border);border-radius:14px;background:var(--bg3);overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
 .media-item:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
-.media-thumb{width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3);font-size:12px;text-align:center;padding:0;cursor:zoom-in}
-.media-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .22s ease,filter .22s ease}
+.media-thumb{width:100%;min-height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3);font-size:12px;text-align:center;padding:0;cursor:zoom-in}
+.media-thumb img{width:100%;height:auto;display:block;transition:transform .22s ease,filter .22s ease}
 .media-item:hover .media-thumb img{transform:scale(1.035);filter:saturate(1.04)}
-.media-tile-label{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px 9px 8px;background:linear-gradient(transparent,rgba(10,16,13,.72));color:#fff;font-size:11px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 .media-info{display:none}
 .media-name{font-weight:700;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-meta{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1396,7 +1395,7 @@ tbody tr:hover td{background:#f2f8f5!important}
   .inter-comment-card{margin:9px;padding:11px}
   .inter-thread-drawer{position:fixed;inset:0;z-index:9999;border-radius:0}
 
-  .friends-grid,.footprint-cards-grid,.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px}
+  .friends-grid,.footprint-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px}
   .friend-card,.fp-card,.media-card{min-width:0}
   #main-footprint-map-wrapper{height:min(56vh,390px)}
 
@@ -1533,7 +1532,7 @@ body.editor-focus-mode .editor-focus-word-count{position:absolute;left:18px;bott
   .overview-grid{grid-template-columns:1fr}
   .publish-launch-grid{grid-template-columns:1fr}
   .overview-stat{padding:12px}
-  .friends-grid,.footprint-cards-grid,.media-grid{grid-template-columns:1fr!important}
+  .friends-grid,.footprint-cards-grid{grid-template-columns:1fr!important}
   .pagination-controls{max-width:100%;overflow-x:auto;justify-content:flex-start}
   .inter-left{max-height:320px}
   .inter-comment-head{align-items:flex-start}
@@ -1722,10 +1721,10 @@ html[data-theme="sepia"] body,html[data-theme="sepia"] .app,html[data-theme="mis
   .sports-modal-overlay .modal-body{min-height:0}
   .sports-modal-overlay .modal-body>.fm-group{flex-shrink:0}
   .media-api-notice{display:none}
-  #media-list-box .media-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  #media-list-box .media-grid{display:block!important;columns:2;column-gap:7px!important}
   #media-list-box .media-item{min-width:0;border-radius:10px;overflow:hidden;box-shadow:none}
-  #media-list-box .media-thumb{aspect-ratio:1;height:auto;padding:0;cursor:zoom-in}
-  #media-list-box .media-thumb img{width:100%;height:100%;object-fit:cover}
+  #media-list-box .media-thumb{height:auto;padding:0;cursor:zoom-in}
+  #media-list-box .media-thumb img{width:100%;height:auto}
   #media-list-box .media-info{display:none}
   .media-preview-overlay{align-items:center;padding:10px}
   .media-lightbox{width:100%;height:min(88dvh,760px);border-radius:18px;grid-template-rows:auto minmax(0,1fr) auto}
@@ -1765,10 +1764,6 @@ html[data-theme="sepia"] body,html[data-theme="sepia"] .app,html[data-theme="mis
       <div class="nav-item" onclick="showPage('friends')" id="nav-friends">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         订阅管理
-      </div>
-      <div class="nav-item" onclick="showPage('garden')" id="nav-garden">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V5a2 2 0 00-2-2H6.5A2.5 2.5 0 004 5.5v14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8M8 11h8M8 15h5"/></svg>
-        简悦花园
       </div>
       <div class="nav-item" onclick="showPage('journals')" id="nav-journals">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2h-2M8 3v3h8V3M8 11h8M8 15h6"/></svg>
@@ -1980,10 +1975,11 @@ const JOURNAL_CFG = {
 
 let STATE = {
   page: 'posts', posts: [], postsLoaded: false, searchQuery: '', statusTab: 'all', tagFilter: 'all', yearFilter: 'all', sortBy: 'date_desc',
-  postsPage: 1, footprintsPage: 1, sportsPage: 1, sportsTypeFilter: 'all',
+  postsPage: 1, footprintsPage: 1, sportsPage: 1, sportsTypeFilter: 'all', sportsSource: 'manual',
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null, postSavePromise: null, postDeletePromise: null,
   previewRefreshTimer: null, previewViewport: 'desktop',
-  sportsData: [], sportsSha: null, footprintsData: [], footprintsSha: null,
+  sportsData: [], sportsSha: null, syncedSportsData: [], syncedSportsSha: null,
+  activityNameOverrides: {}, activityNameOverridesSha: null, footprintsData: [], footprintsSha: null,
   friendsData: [], friendsSha: null, friendsSearchKeyword: '', friendsStatusFilter: 'all', friendsPage: 1, friendsStatus: {},
   friendsView: 'list', friendsFeedItems: [], friendsFeedLoaded: false, friendsFeedLoading: false,
   friendsFeedVisibleLimit: 20, friendsFeedProgress: {done:0,total:0}, friendsFeedErrors: 0, friendsFeedRequestSeq: 0,
@@ -2017,6 +2013,8 @@ let JOURNAL_STATE = {
 };
 
 const ACT_JSON_PATH = "assets/act.json";
+const ACTIVITIES_JSON_PATH = "assets/activities.json";
+const ACTIVITY_NAME_OVERRIDES_PATH = "assets/activity-name-overrides.json";
 const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
 const FRIENDS_JSON_PATH = "static/friends.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
@@ -2472,7 +2470,6 @@ function showPage(page){
     case 'posts': renderPostsPage(); break;
     case 'interactions': renderInteractionsPage(); break;
     case 'friends': renderFriendsPage(); break;
-    case 'garden': renderGardenPage(); break;
     case 'journals': renderJournalsPage(); break;
     case 'sports': renderSportsPage(); break;
     case 'footprints': renderFootprintsPage(); break;
@@ -6316,21 +6313,42 @@ function downloadFriendsJson() {
 // ============================================================
 async function renderSportsPage(){
   STATE.page='sports';
-  document.getElementById('page-title').innerHTML='运动记录 <small>assets/act.json</small>';
+  document.getElementById('page-title').innerHTML='运动记录 <small>手工记录与同步记录</small>';
   document.getElementById('topbar-actions').innerHTML=`
     <button class="btn" onclick="renderSportsPage()">刷新数据</button>
-    <button class="btn primary" onclick="openSportsModal()">新建运动条目</button>
-    <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="saveSportsData()">保存到仓库</button>`;
+    <button class="btn primary" onclick="openSportsModal()">新建手工记录</button>`;
   
   const c=document.getElementById('main-content');
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取运动记录…</div>`;
 
   try {
-    const file = await getFileContent(ACT_JSON_PATH);
-    const list = JSON.parse(file.content || "[]");
+    const [manualFile,syncedFile,overridesFile] = await Promise.all([
+      getFileContent(ACT_JSON_PATH),
+      getFileContent(ACTIVITIES_JSON_PATH),
+      getFileContent(ACTIVITY_NAME_OVERRIDES_PATH).catch(error=>{
+        if(error?.status===404 || /not found/i.test(String(error?.message || ''))) return {content:'{}',sha:null};
+        throw error;
+      })
+    ]);
+    const list = JSON.parse(manualFile.content || "[]").map(item => ({
+      ...item,
+      start_date_local: normalizeSportsDateTime(item.start_date_local)
+    }));
     list.sort((a,b) => String(b.start_date_local).localeCompare(String(a.start_date_local)));
     STATE.sportsData = list;
-    STATE.sportsSha = file.sha;
+    STATE.sportsSha = manualFile.sha;
+
+    const overrides=JSON.parse(overridesFile.content || '{}');
+    STATE.activityNameOverrides=overrides && typeof overrides==='object' && !Array.isArray(overrides) ? overrides : {};
+    STATE.activityNameOverridesSha=overridesFile.sha;
+    const syncedList=JSON.parse(syncedFile.content || '[]').map(item=>{
+      const key=String(item.run_id ?? '');
+      const sourceName=String(item.name || '');
+      return {...item,_sourceName:sourceName,name:String(STATE.activityNameOverrides[key] || sourceName)};
+    });
+    syncedList.sort((a,b)=>String(b.start_date_local).localeCompare(String(a.start_date_local)));
+    STATE.syncedSportsData=syncedList;
+    STATE.syncedSportsSha=syncedFile.sha;
 
     renderSportsTableContainer();
   } catch (e) {
@@ -6344,6 +6362,13 @@ function setSportsTypeFilter(type) {
   renderSportsTableContainer();
 }
 
+function setSportsSource(source){
+  STATE.sportsSource=source==='synced' ? 'synced' : 'manual';
+  STATE.sportsTypeFilter='all';
+  STATE.sportsPage=1;
+  renderSportsTableContainer();
+}
+
 function changeSportsPage(page) {
   STATE.sportsPage = page;
   renderSportsTableContainer();
@@ -6351,11 +6376,13 @@ function changeSportsPage(page) {
 
 function renderSportsTableContainer() {
   const c = document.getElementById('main-content');
-  const types = [...new Set(STATE.sportsData.map(i => i.type || 'Workout'))].filter(Boolean);
+  const isSynced=STATE.sportsSource==='synced';
+  const sourceList=isSynced ? STATE.syncedSportsData : STATE.sportsData;
+  const types = [...new Set(sourceList.map(i => i.type || 'Workout'))].filter(Boolean);
 
-  let filteredList = STATE.sportsData;
+  let filteredList = sourceList;
   if (STATE.sportsTypeFilter !== 'all') {
-    filteredList = STATE.sportsData.filter(i => (i.type || 'Workout') === STATE.sportsTypeFilter);
+    filteredList = sourceList.filter(i => (i.type || 'Workout') === STATE.sportsTypeFilter);
   }
 
   const totalMinutes = filteredList.reduce((acc, i) => acc + parseTimeToMinutes(i.moving_time), 0);
@@ -6364,11 +6391,11 @@ function renderSportsTableContainer() {
   const timeSummaryStr = totalHours > 0 ? `${totalHours} 小时 ${remainMins} 分钟` : `${remainMins} 分钟`;
 
   const typeTabs = [
-    { key: 'all', name: '全部分类', count: STATE.sportsData.length },
+    { key: 'all', name: '全部分类', count: sourceList.length },
     ...types.map(t => ({
       key: t,
       name: t,
-      count: STATE.sportsData.filter(i => (i.type || 'Workout') === t).length
+      count: sourceList.filter(i => (i.type || 'Workout') === t).length
     }))
   ];
 
@@ -6384,24 +6411,31 @@ function renderSportsTableContainer() {
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">🏃运动记录列表 ${STATE.sportsTypeFilter === 'all' ? '共' : STATE.sportsTypeFilter} <strong>${filteredList.length}</strong> 次，总时长 <strong>${timeSummaryStr}</strong> </div>        
+          <div class="card-title">🏃${isSynced?'同步':'手工'}运动记录 ${STATE.sportsTypeFilter === 'all' ? '共' : STATE.sportsTypeFilter} <strong>${filteredList.length}</strong> 次，总时长 <strong>${timeSummaryStr}</strong></div>
+          <div class="card-desc">${isSynced?'名称修改保存在独立覆盖表中，后续同步不会覆盖。':'数据来自 assets/act.json，可完整新增和编辑。'}</div>
         </div>
-        <div class="segmented">
-          ${typeTabs.map(tab => `
-            <button class="seg-btn ${STATE.sportsTypeFilter === tab.key ? 'active' : ''}" onclick="setSportsTypeFilter('${tab.key}')">
-              ${escapeHTML(tab.name)} <span class="seg-count">${tab.count}</span>
-            </button>
-          `).join('')}
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;max-width:100%">
+          <div class="segmented">
+            <button class="seg-btn ${!isSynced?'active':''}" onclick="setSportsSource('manual')">手工记录 <span class="seg-count">${STATE.sportsData.length}</span></button>
+            <button class="seg-btn ${isSynced?'active':''}" onclick="setSportsSource('synced')">同步记录 <span class="seg-count">${STATE.syncedSportsData.length}</span></button>
+          </div>
+          <div class="segmented">
+            ${typeTabs.map(tab => `
+              <button class="seg-btn ${STATE.sportsTypeFilter === tab.key ? 'active' : ''}" onclick="setSportsTypeFilter('${escapeAttr(tab.key)}')">
+                ${escapeHTML(tab.name)} <span class="seg-count">${tab.count}</span>
+              </button>
+            `).join('')}
+          </div>
         </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>日期</th>
-              <th>时间</th>
+              ${isSynced?'<th>日期与时间</th>':'<th>日期</th><th>时间</th>'}
               <th>运动名称</th>
               <th>运动类型</th>
+              ${isSynced?'<th>距离</th>':''}
               <th>时长</th>
               <th>平均心率</th>
               <th>操作</th>
@@ -6410,21 +6444,23 @@ function renderSportsTableContainer() {
           <tbody>
             ${pageList.length === 0 ? `<tr><td colspan="7" class="muted" style="padding:24px;">暂无该分类的运动记录</td></tr>` : 
               pageList.map(item => {
-                const fullDate = String(item.start_date_local || '').trim();
+                const fullDate = normalizeSportsDateTime(item.start_date_local);
                 const parts = fullDate.split(' ');
                 const datePart = parts[0] || '-';
-                const timePart = parts[1] || '00:00:00';
+                const timePart = parts[1] || '00:00';
 
                 return `
                 <tr>
-                  <td class="sports-date-cell"><strong>${escapeHTML(datePart)}</strong></td>
-                  <td class="sports-time-cell muted">${escapeHTML(timePart)}</td>
+                  ${isSynced
+                    ? `<td class="sports-date-cell"><strong>${escapeHTML(datePart)}</strong><span class="sports-time-cell muted" style="margin-left:10px">${escapeHTML(timePart)}</span></td>`
+                    : `<td class="sports-date-cell"><strong>${escapeHTML(datePart)}</strong></td><td class="sports-time-cell muted">${escapeHTML(timePart)}</td>`}
                   <td><strong>${escapeHTML(item.name)}</strong></td>
                   <td><span class="tag purple">${escapeHTML(item.type)}</span></td>
+                  ${isSynced?`<td class="nowrap">${item.distance!==null && item.distance!==undefined && item.distance!=='' && Number.isFinite(Number(item.distance)) ? `${(Number(item.distance)/1000).toFixed(2)} km` : '-'}</td>`:''}
                   <td>${escapeHTML(item.moving_time)}</td>
                   <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
                   <td>
-                    <button class="btn sm" onclick="openSportsModal('${escapeAttr(item.start_date_local)}')">编辑</button>
+                    <button class="btn sm" onclick="${isSynced?`openSyncedActivityNameModal('${escapeAttr(String(item.run_id))}')`:`openSportsModal('${escapeAttr(item.start_date_local)}')`}">${isSynced?'修改名称':'编辑'}</button>
                   </td>
                 </tr>`;
               }).join('')}
@@ -6443,6 +6479,71 @@ function renderSportsTableContainer() {
     </div>`;
 }
 
+function openSyncedActivityNameModal(runId){
+  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===String(runId));
+  if(!item){ toast('没有找到这条同步记录','error'); return; }
+  const key=String(item.run_id);
+  const hasOverride=Object.prototype.hasOwnProperty.call(STATE.activityNameOverrides,key);
+  document.getElementById('modal-container').innerHTML=`
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header"><div>修改同步记录名称</div><button class="btn sm ghost" onclick="closeModal()">✕</button></div>
+        <div class="modal-body">
+          <div class="alert info">只覆盖显示名称，不修改 Keep 同步的距离、时间、轨迹等原始数据。以后重新同步 activities.json 时，这个名称仍会保留。</div>
+          <div class="fm-group"><label class="fm-label">日期与类型</label><div class="fm-input" style="background:var(--bg2)">${escapeHTML(String(item.start_date_local || '').slice(0,16))} · ${escapeHTML(item.type || '-')}</div></div>
+          <div class="fm-group"><label class="fm-label">同步名称</label><div class="fm-input" style="background:var(--bg2)">${escapeHTML(item._sourceName || '-')}</div></div>
+          <div class="fm-group"><label class="fm-label">自定义运动名称</label><input class="fm-input" id="synced-activity-name" value="${escapeAttr(item.name || '')}" maxlength="80" placeholder="请输入运动名称" onkeydown="if(event.key==='Enter'){event.preventDefault();saveSyncedActivityName('${escapeAttr(key)}')}"></div>
+        </div>
+        <div class="modal-footer" style="justify-content:space-between">
+          ${hasOverride?`<button class="btn danger" type="button" onclick="resetSyncedActivityName('${escapeAttr(key)}')">恢复同步名称</button>`:'<div></div>'}
+          <div style="display:flex;gap:8px"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="saveSyncedActivityName('${escapeAttr(key)}')">保存名称</button></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function persistActivityNameOverride(runId,name){
+  const key=String(runId);
+  const next={...STATE.activityNameOverrides};
+  if(name===null) delete next[key];
+  else next[key]=name;
+  const result=await putFile(
+    ACTIVITY_NAME_OVERRIDES_PATH,
+    JSON.stringify(next,null,2)+'\n',
+    STATE.activityNameOverridesSha,
+    name===null ? `chore: reset activity name ${key}` : `chore: rename activity ${key}`
+  );
+  STATE.activityNameOverrides=next;
+  STATE.activityNameOverridesSha=result?.content?.sha || STATE.activityNameOverridesSha;
+  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===key);
+  if(item) item.name=name===null ? item._sourceName : name;
+}
+
+async function saveSyncedActivityName(runId){
+  const input=document.getElementById('synced-activity-name');
+  const name=input?.value.trim() || '';
+  if(!name){ toast('运动名称不能为空','error'); input?.focus(); return; }
+  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===String(runId));
+  if(!item){ toast('没有找到这条同步记录','error'); return; }
+  try{
+    toast('正在保存自定义名称…');
+    await persistActivityNameOverride(runId,name===item._sourceName ? null : name);
+    closeModal();
+    renderSportsTableContainer();
+    toast(name===item._sourceName ? '已使用同步名称' : '运动名称修改成功','success');
+  }catch(e){ toast(e.message,'error'); }
+}
+
+async function resetSyncedActivityName(runId){
+  try{
+    toast('正在恢复同步名称…');
+    await persistActivityNameOverride(runId,null);
+    closeModal();
+    renderSportsTableContainer();
+    toast('已恢复同步名称','success');
+  }catch(e){ toast(e.message,'error'); }
+}
+
 async function openSportsModal(startDateKey=null) {
   if(!STATE.sportsSha){
     try{ await loadSportsData(); }
@@ -6451,7 +6552,7 @@ async function openSportsModal(startDateKey=null) {
   const isEdit = !!startDateKey;
   const item = (isEdit ? STATE.sportsData.find(i => i.start_date_local === startDateKey) : {}) || {};
   const currentMinutes = isEdit ? parseTimeToMinutes(item.moving_time) : 30;
-  const fullDateStr = String(item.start_date_local || nowLocalString()).trim().replace(' ', 'T');
+  const fullDateStr = normalizeSportsDateTime(item.start_date_local || nowLocalString()).replace(' ', 'T');
   const currentSportName = String(item.name || '登月计划');
 
   const html = `
@@ -6468,7 +6569,7 @@ async function openSportsModal(startDateKey=null) {
               <span>运动日期与时间</span>
               <button class="btn sm ghost" type="button" style="color:var(--accent);padding:0;" onclick="resetSingleDateTimePicker('sp-datetime')">⚡ 现在</button>
             </label>
-            <input class="fm-input datetime-combined" type="datetime-local" step="1" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
+            <input class="fm-input datetime-combined" type="datetime-local" step="60" id="sp-datetime" value="${escapeAttr(fullDateStr)}">
             ${mobileDateTimeWheel('sp-datetime',fullDateStr)}
           </div>
 
@@ -6526,10 +6627,16 @@ function deleteSportsData(startDateKey) {
   toast("该运动记录已从本地列表剔除", "info");
 }
 
+function normalizeSportsDateTime(value){
+  const normalized=String(value || '').trim().replace('T',' ');
+  const match=normalized.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})/);
+  return match ? match[1] : normalized;
+}
+
 async function saveSportsData() {
   const name = document.getElementById('sp-name').value.trim();
   const datetimeVal = getResponsiveDateTimeValue('sp-datetime');
-  const startDateLocal = datetimeVal ? datetimeVal.replace('T', ' ') : nowLocalString();
+  const startDateLocal = normalizeSportsDateTime(datetimeVal || nowLocalString());
 
   const type = document.getElementById('sp-type').value.trim();
   const durationMin = parseFloat(document.getElementById('sp-duration').value) || 0;
@@ -6542,7 +6649,10 @@ async function saveSportsData() {
     const movingTime = formatMovingTime(durationMin);
 
     let map = {};
-    STATE.sportsData.forEach(item => { if(item.start_date_local) map[item.start_date_local] = item; });
+    STATE.sportsData.forEach(item => {
+      const key=normalizeSportsDateTime(item.start_date_local);
+      if(key) map[key] = {...item,start_date_local:key};
+    });
 
     if (map[startDateLocal]) {
       map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr };
@@ -8123,7 +8233,7 @@ function renderMediaItem(item){
   const url=r2ObjectUrl(item.key); const isImg=/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(item.key);
   const name=item.key.split('/').pop();
   return `<div class="media-item" data-media-key="${escapeAttr(item.key)}">
-    <div class="media-thumb" role="button" tabindex="0" aria-label="预览 ${escapeAttr(name)}" onclick="openMediaPreview(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMediaPreview(this)}">${isImg?`<img src="${escapeAttr(url)}" loading="lazy" alt="${escapeAttr(name)}">`:'文件'}<span class="media-tile-label">${escapeHTML(name)}</span></div>
+    <div class="media-thumb" role="button" tabindex="0" aria-label="预览 ${escapeAttr(name)}" onclick="openMediaPreview(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMediaPreview(this)}">${isImg?`<img src="${escapeAttr(url)}" loading="lazy" alt="${escapeAttr(name)}">`:'文件'}</div>
     <div class="media-info">
       <div class="media-name" title="${escapeAttr(item.key)}">${escapeHTML(name)}</div>
       <div class="media-meta">${formatBytes(item.size)} · ${item.lastModified?new Date(item.lastModified).toLocaleDateString():'未知日期'}</div>
@@ -8483,7 +8593,10 @@ function applyPwaUpdate(){
 async function loadSportsData(force=false){
   if(!force && STATE.sportsSha && Array.isArray(STATE.sportsData)) return STATE.sportsData;
   const file=await getFileContent(ACT_JSON_PATH);
-  const list=JSON.parse(file.content || '[]');
+  const list=JSON.parse(file.content || '[]').map(item=>({
+    ...item,
+    start_date_local:normalizeSportsDateTime(item.start_date_local)
+  }));
   if(!Array.isArray(list)) throw new Error('运动数据格式不正确');
   list.sort((a,b)=>String(b.start_date_local).localeCompare(String(a.start_date_local)));
   STATE.sportsData=list;
@@ -8610,7 +8723,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
   if(startupNavigation!==adminNavigationRevision) return;
   if(active) {
     const requestedPage=new URLSearchParams(window.location.search).get('page');
-    const allowedPages=['write','recent','create','publish','posts','interactions','friends','garden','journals','sports','footprints','media','deploy','settings'];
+    const allowedPages=['write','recent','create','publish','posts','interactions','friends','journals','sports','footprints','media','deploy','settings'];
     showPage(allowedPages.includes(requestedPage) ? requestedPage : (window.matchMedia('(max-width:860px)').matches ? 'write' : 'posts'));
   } else {
     showPage('settings'); toast('请先配置 GitHub 仓库信息。','warning');
