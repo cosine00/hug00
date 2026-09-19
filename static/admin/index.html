@@ -1979,7 +1979,9 @@ let STATE = {
   selected: new Set(), editingPost: null, activeTags: [], mde: null, dirty: false, autosaveTimer: null, lastAutosaveAt: null, postSavePromise: null, postDeletePromise: null,
   previewRefreshTimer: null, previewViewport: 'desktop',
   sportsData: [], sportsSha: null, syncedSportsData: [], syncedSportsSha: null,
-  activityNameOverrides: {}, activityNameOverridesSha: null, footprintsData: [], footprintsSha: null,
+  activityNameOverrides: {}, activityNameOverridesSha: null,
+  sportsManualDirty: false, sportsOverridesDirty: false, sportsSubmitting: false,
+  footprintsData: [], footprintsSha: null,
   friendsData: [], friendsSha: null, friendsSearchKeyword: '', friendsStatusFilter: 'all', friendsPage: 1, friendsStatus: {},
   friendsView: 'list', friendsFeedItems: [], friendsFeedLoaded: false, friendsFeedLoading: false,
   friendsFeedVisibleLimit: 20, friendsFeedProgress: {done:0,total:0}, friendsFeedErrors: 0, friendsFeedRequestSeq: 0,
@@ -2015,6 +2017,7 @@ let JOURNAL_STATE = {
 const ACT_JSON_PATH = "assets/act.json";
 const ACTIVITIES_JSON_PATH = "assets/activities.json";
 const ACTIVITY_NAME_OVERRIDES_PATH = "assets/activity-name-overrides.json";
+const SPORTS_DRAFT_STORAGE_KEY = "hugo_admin_sports_draft_v1";
 const FOOTPRINTS_JSON_PATH = "assets/footprints.json";
 const FRIENDS_JSON_PATH = "static/friends.json";
 const ICON_SEARCH = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>';
@@ -6311,12 +6314,78 @@ function downloadFriendsJson() {
 // ============================================================
 // 4. 运动记录管理
 // ============================================================
+function hasPendingSportsChanges(){
+  return STATE.sportsManualDirty || STATE.sportsOverridesDirty;
+}
+
+function renderSportsTopbarActions(){
+  const actions=document.getElementById('topbar-actions');
+  if(!actions) return;
+  const dirty=hasPendingSportsChanges();
+  actions.innerHTML=`
+    <button class="btn" onclick="renderSportsPage()">刷新数据</button>
+    <button class="btn primary" onclick="openSportsModal()">新建手工记录</button>
+    ${dirty?'<button class="btn danger" onclick="discardSportsDraft()">放弃本地变更</button>':''}
+    <button class="btn primary" style="background:var(--blue);border-color:var(--blue)" onclick="commitSportsChanges()" ${dirty && !STATE.sportsSubmitting?'':'disabled'}>${STATE.sportsSubmitting?'提交中…':dirty?'提交变更':'暂无变更'}</button>`;
+}
+
+function readSportsDraft(){
+  try{
+    const value=JSON.parse(localStorage.getItem(SPORTS_DRAFT_STORAGE_KEY) || 'null');
+    return value && typeof value==='object' ? value : null;
+  }catch(e){ return null; }
+}
+
+function saveSportsDraft(){
+  if(!hasPendingSportsChanges()){
+    localStorage.removeItem(SPORTS_DRAFT_STORAGE_KEY);
+    renderSportsTopbarActions();
+    return;
+  }
+  const draft={
+    savedAt:new Date().toISOString(),
+    manualDirty:STATE.sportsManualDirty,
+    overridesDirty:STATE.sportsOverridesDirty,
+    manualBaseSha:STATE.sportsSha || null,
+    overridesBaseSha:STATE.activityNameOverridesSha || null,
+    manualData:STATE.sportsManualDirty ? STATE.sportsData : null,
+    overrides:STATE.sportsOverridesDirty ? STATE.activityNameOverrides : null
+  };
+  localStorage.setItem(SPORTS_DRAFT_STORAGE_KEY,JSON.stringify(draft));
+  renderSportsTopbarActions();
+}
+
+function restoreSportsDraft(){
+  const draft=readSportsDraft();
+  STATE.sportsManualDirty=false;
+  STATE.sportsOverridesDirty=false;
+  if(!draft) return false;
+  if(draft.manualDirty && Array.isArray(draft.manualData)){
+    STATE.sportsData=draft.manualData;
+    STATE.sportsSha=draft.manualBaseSha || null;
+    STATE.sportsManualDirty=true;
+  }
+  if(draft.overridesDirty && draft.overrides && typeof draft.overrides==='object' && !Array.isArray(draft.overrides)){
+    STATE.activityNameOverrides=draft.overrides;
+    STATE.activityNameOverridesSha=draft.overridesBaseSha || null;
+    STATE.sportsOverridesDirty=true;
+  }
+  return hasPendingSportsChanges();
+}
+
+function discardSportsDraft(){
+  if(!confirm('确定放弃所有尚未提交的运动记录修改吗？')) return;
+  localStorage.removeItem(SPORTS_DRAFT_STORAGE_KEY);
+  STATE.sportsManualDirty=false;
+  STATE.sportsOverridesDirty=false;
+  toast('已放弃本地变更','info');
+  renderSportsPage();
+}
+
 async function renderSportsPage(){
   STATE.page='sports';
   document.getElementById('page-title').innerHTML='运动记录 <small>手工记录与同步记录</small>';
-  document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="renderSportsPage()">刷新数据</button>
-    <button class="btn primary" onclick="openSportsModal()">新建手工记录</button>`;
+  renderSportsTopbarActions();
   
   const c=document.getElementById('main-content');
   c.innerHTML=`<div class="loading"><div class="spinner"></div>正在读取运动记录…</div>`;
@@ -6341,6 +6410,7 @@ async function renderSportsPage(){
     const overrides=JSON.parse(overridesFile.content || '{}');
     STATE.activityNameOverrides=overrides && typeof overrides==='object' && !Array.isArray(overrides) ? overrides : {};
     STATE.activityNameOverridesSha=overridesFile.sha;
+    const restoredDraft=restoreSportsDraft();
     const syncedList=JSON.parse(syncedFile.content || '[]').map(item=>{
       const key=activityNameOverrideKey(item);
       const sourceName=String(item.name || '');
@@ -6350,7 +6420,9 @@ async function renderSportsPage(){
     STATE.syncedSportsData=syncedList;
     STATE.syncedSportsSha=syncedFile.sha;
 
+    renderSportsTopbarActions();
     renderSportsTableContainer();
+    if(restoredDraft) toast('已恢复尚未提交的运动记录修改','info');
   } catch (e) {
     c.innerHTML = `<div class="alert danger">读取运动数据失败: ${escapeHTML(e.message)}</div>`;
   }
@@ -6408,6 +6480,7 @@ function renderSportsTableContainer() {
   const pageList = filteredList.slice(startIndex, startIndex + pageSize);
 
   c.innerHTML = `
+    ${hasPendingSportsChanges()?'<div class="alert warning">当前有尚未提交的运动记录变更，已暂存在此浏览器中。确认无误后请点击右上角“提交变更”。</div>':''}
     <div class="card">
       <div class="card-header">
         <div>
@@ -6511,16 +6584,11 @@ async function persistActivityNameOverride(runId,name){
   const next={...STATE.activityNameOverrides};
   if(name===null) delete next[key];
   else next[key]=name;
-  const result=await putFile(
-    ACTIVITY_NAME_OVERRIDES_PATH,
-    JSON.stringify(next,null,2)+'\n',
-    STATE.activityNameOverridesSha,
-    name===null ? `chore: reset activity name ${key}` : `chore: rename activity ${key}`
-  );
   STATE.activityNameOverrides=next;
-  STATE.activityNameOverridesSha=result?.content?.sha || STATE.activityNameOverridesSha;
+  STATE.sportsOverridesDirty=true;
   const item=STATE.syncedSportsData.find(record=>record._overrideKey===key);
   if(item) item.name=name===null ? item._sourceName : name;
+  saveSportsDraft();
 }
 
 async function saveSyncedActivityName(runId){
@@ -6530,21 +6598,19 @@ async function saveSyncedActivityName(runId){
   const item=STATE.syncedSportsData.find(record=>record._overrideKey===String(runId));
   if(!item){ toast('没有找到这条同步记录','error'); return; }
   try{
-    toast('正在保存自定义名称…');
     await persistActivityNameOverride(runId,name===item._sourceName ? null : name);
     closeModal();
     renderSportsTableContainer();
-    toast(name===item._sourceName ? '已使用同步名称' : '运动名称修改成功','success');
+    toast(name===item._sourceName ? '已在本地恢复同步名称，尚未提交' : '名称已保存到本地，尚未提交','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
 async function resetSyncedActivityName(runId){
   try{
-    toast('正在恢复同步名称…');
     await persistActivityNameOverride(runId,null);
     closeModal();
     renderSportsTableContainer();
-    toast('已恢复同步名称','success');
+    toast('已在本地恢复同步名称，尚未提交','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
@@ -6602,7 +6668,7 @@ async function openSportsModal(startDateKey=null) {
           ${isEdit ? `<button class="btn danger" type="button" onclick="deleteSportsData('${escapeAttr(startDateKey)}')">🗑️ 删除此记录</button>` : '<div></div>'}
           <div style="display:flex;gap:8px;">
             <button class="btn" onclick="closeModal()">取消</button>
-            <button class="btn primary" onclick="saveSportsData()">保存并写入</button>
+            <button class="btn primary" onclick="saveSportsData('${escapeAttr(startDateKey || '')}')">保存到本地</button>
           </div>
         </div>
       </div>
@@ -6626,9 +6692,11 @@ function deleteSportsData(startDateKey) {
   if (!confirm(`确定要从本地列表中删除此项运动记录吗？\n（点击确认后仅从本地列表中剔除，最终提交需要保存）`)) return;
 
   STATE.sportsData = STATE.sportsData.filter(i => i.start_date_local !== startDateKey);
+  STATE.sportsManualDirty=true;
+  saveSportsDraft();
   closeModal();
   renderSportsTableContainer();
-  toast("该运动记录已从本地列表剔除", "info");
+  toast("该运动记录已从本地列表剔除，尚未提交", "info");
 }
 
 function normalizeSportsDateTime(value){
@@ -6637,7 +6705,7 @@ function normalizeSportsDateTime(value){
   return match ? match[1] : normalized;
 }
 
-async function saveSportsData() {
+async function saveSportsData(originalStartDateKey='') {
   const name = document.getElementById('sp-name').value.trim();
   const datetimeVal = getResponsiveDateTimeValue('sp-datetime');
   const startDateLocal = normalizeSportsDateTime(datetimeVal || nowLocalString());
@@ -6649,7 +6717,6 @@ async function saveSportsData() {
   if (!datetimeVal || !name) { toast("运动名称与日期时间不能为空", "error"); return; }
 
   try {
-    toast("正在保存更新运动 JSON...");
     const movingTime = formatMovingTime(durationMin);
 
     let map = {};
@@ -6658,6 +6725,7 @@ async function saveSportsData() {
       if(key) map[key] = {...item,start_date_local:key};
     });
 
+    if(originalStartDateKey && originalStartDateKey!==startDateLocal) delete map[originalStartDateKey];
     if (map[startDateLocal]) {
       map[startDateLocal] = { ...map[startDateLocal], name, type, moving_time: movingTime, average_heartrate: hr };
     } else {
@@ -6670,11 +6738,65 @@ async function saveSportsData() {
     let newList = Object.values(map);
     newList.sort((a,b) => String(b.start_date_local).localeCompare(String(a.start_date_local)));
 
-    await putFile(ACT_JSON_PATH, JSON.stringify(newList, null, 2), STATE.sportsSha, `chore: update sports record ${startDateLocal}`);
-    toast("运动记录更新成功", "success");
+    STATE.sportsData=newList;
+    STATE.sportsManualDirty=true;
+    saveSportsDraft();
     closeModal();
-    renderSportsPage();
+    renderSportsTableContainer();
+    toast("运动记录已保存到本地，尚未提交", "success");
   } catch (e) { toast(e.message, "error"); }
+}
+
+async function commitSportsChanges(){
+  if(!hasPendingSportsChanges() || STATE.sportsSubmitting) return;
+  if(!confirm('确定将当前浏览器暂存的运动记录变更一次性提交到远程仓库吗？')) return;
+  STATE.sportsSubmitting=true;
+  renderSportsTopbarActions();
+  try{
+    const checks=[];
+    if(STATE.sportsManualDirty) checks.push(getRemoteFileSha(ACT_JSON_PATH).then(sha=>({label:'手工运动记录',expected:STATE.sportsSha || null,actual:sha || null})));
+    if(STATE.sportsOverridesDirty) checks.push(getRemoteFileSha(ACTIVITY_NAME_OVERRIDES_PATH).then(sha=>({label:'运动名称覆盖表',expected:STATE.activityNameOverridesSha || null,actual:sha || null})));
+    const conflicts=(await Promise.all(checks)).filter(item=>item.expected!==item.actual);
+    if(conflicts.length) throw new Error(`${conflicts.map(item=>item.label).join('、')}已被远程更新。请先放弃本地变更并刷新，再重新修改，避免覆盖新数据。`);
+
+    const branch=encodeURIComponent(CFG.branch).replace(/%2F/g,'/');
+    const head=await ghFetch(`/git/ref/heads/${branch}`);
+    const parent=head.object.sha;
+    const parentCommit=await ghFetch(`/git/commits/${parent}`);
+    const files=[];
+    if(STATE.sportsManualDirty) files.push({path:ACT_JSON_PATH,content:JSON.stringify(STATE.sportsData,null,2)+'\n'});
+    if(STATE.sportsOverridesDirty) files.push({path:ACTIVITY_NAME_OVERRIDES_PATH,content:JSON.stringify(STATE.activityNameOverrides,null,2)+'\n'});
+    const blobs=await Promise.all(files.map(file=>ghFetch('/git/blobs',{method:'POST',body:JSON.stringify({content:file.content,encoding:'utf-8'})})));
+    const tree=await ghFetch('/git/trees',{method:'POST',body:JSON.stringify({
+      base_tree:parentCommit.tree.sha,
+      tree:files.map((file,index)=>({path:file.path,mode:'100644',type:'blob',sha:blobs[index].sha}))
+    })});
+    const commit=await ghFetch('/git/commits',{method:'POST',body:JSON.stringify({
+      message:'chore: update sports records',
+      tree:tree.sha,
+      parents:[parent]
+    })});
+    try{
+      await ghFetch(`/git/refs/heads/${branch}`,{method:'PATCH',body:JSON.stringify({sha:commit.sha,force:false})});
+    }catch(error){
+      if(error.status===409 || error.status===422) throw new Error('提交期间远程仓库发生了变化，本地暂存仍已保留，请稍后重试。');
+      throw error;
+    }
+    files.forEach((file,index)=>{
+      if(file.path===ACT_JSON_PATH) STATE.sportsSha=blobs[index].sha;
+      if(file.path===ACTIVITY_NAME_OVERRIDES_PATH) STATE.activityNameOverridesSha=blobs[index].sha;
+    });
+    STATE.sportsManualDirty=false;
+    STATE.sportsOverridesDirty=false;
+    localStorage.removeItem(SPORTS_DRAFT_STORAGE_KEY);
+    toast('运动记录变更已合并为一次提交并推送到远程','success');
+    await renderSportsPage();
+  }catch(e){
+    toast(e.message,'error');
+  }finally{
+    STATE.sportsSubmitting=false;
+    renderSportsTopbarActions();
+  }
 }
 
 // ============================================================
@@ -8595,6 +8717,7 @@ function applyPwaUpdate(){
 }
 
 async function loadSportsData(force=false){
+  if(STATE.sportsManualDirty && Array.isArray(STATE.sportsData)) return STATE.sportsData;
   if(!force && STATE.sportsSha && Array.isArray(STATE.sportsData)) return STATE.sportsData;
   const file=await getFileContent(ACT_JSON_PATH);
   const list=JSON.parse(file.content || '[]').map(item=>({
