@@ -534,9 +534,9 @@
 {{ $defaultTheme := dict "color" "#32D74B" }}
 
 {{ range $rawActivities }}
-  {{ $overrideName := index $activityNameOverrides (printf "%v" .run_id) }}
+  {{ $overrideName := index $activityNameOverrides .start_date_local }}
   {{ if $overrideName }}
-    {{ $activities = $activities | append (merge (dict "name" $overrideName) .) }}
+    {{ $activities = $activities | append (merge . (dict "name" $overrideName)) }}
   {{ else }}
     {{ $activities = $activities | append . }}
   {{ end }}

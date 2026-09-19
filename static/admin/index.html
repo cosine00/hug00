@@ -6342,9 +6342,9 @@ async function renderSportsPage(){
     STATE.activityNameOverrides=overrides && typeof overrides==='object' && !Array.isArray(overrides) ? overrides : {};
     STATE.activityNameOverridesSha=overridesFile.sha;
     const syncedList=JSON.parse(syncedFile.content || '[]').map(item=>{
-      const key=String(item.run_id ?? '');
+      const key=activityNameOverrideKey(item);
       const sourceName=String(item.name || '');
-      return {...item,_sourceName:sourceName,name:String(STATE.activityNameOverrides[key] || sourceName)};
+      return {...item,_sourceName:sourceName,_overrideKey:key,name:String(STATE.activityNameOverrides[key] || sourceName)};
     });
     syncedList.sort((a,b)=>String(b.start_date_local).localeCompare(String(a.start_date_local)));
     STATE.syncedSportsData=syncedList;
@@ -6460,7 +6460,7 @@ function renderSportsTableContainer() {
                   <td>${escapeHTML(item.moving_time)}</td>
                   <td>${item.average_heartrate ? item.average_heartrate + ' bpm' : '-'}</td>
                   <td>
-                    <button class="btn sm" onclick="${isSynced?`openSyncedActivityNameModal('${escapeAttr(String(item.run_id))}')`:`openSportsModal('${escapeAttr(item.start_date_local)}')`}">${isSynced?'修改名称':'编辑'}</button>
+                    <button class="btn sm" onclick="${isSynced?`openSyncedActivityNameModal('${escapeAttr(item._overrideKey)}')`:`openSportsModal('${escapeAttr(item.start_date_local)}')`}">${isSynced?'修改名称':'编辑'}</button>
                   </td>
                 </tr>`;
               }).join('')}
@@ -6479,10 +6479,14 @@ function renderSportsTableContainer() {
     </div>`;
 }
 
+function activityNameOverrideKey(item){
+  return String(item?.start_date_local || item?.run_id || '').trim();
+}
+
 function openSyncedActivityNameModal(runId){
-  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===String(runId));
+  const item=STATE.syncedSportsData.find(record=>record._overrideKey===String(runId));
   if(!item){ toast('没有找到这条同步记录','error'); return; }
-  const key=String(item.run_id);
+  const key=item._overrideKey;
   const hasOverride=Object.prototype.hasOwnProperty.call(STATE.activityNameOverrides,key);
   document.getElementById('modal-container').innerHTML=`
     <div class="modal-overlay">
@@ -6515,7 +6519,7 @@ async function persistActivityNameOverride(runId,name){
   );
   STATE.activityNameOverrides=next;
   STATE.activityNameOverridesSha=result?.content?.sha || STATE.activityNameOverridesSha;
-  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===key);
+  const item=STATE.syncedSportsData.find(record=>record._overrideKey===key);
   if(item) item.name=name===null ? item._sourceName : name;
 }
 
@@ -6523,7 +6527,7 @@ async function saveSyncedActivityName(runId){
   const input=document.getElementById('synced-activity-name');
   const name=input?.value.trim() || '';
   if(!name){ toast('运动名称不能为空','error'); input?.focus(); return; }
-  const item=STATE.syncedSportsData.find(record=>String(record.run_id)===String(runId));
+  const item=STATE.syncedSportsData.find(record=>record._overrideKey===String(runId));
   if(!item){ toast('没有找到这条同步记录','error'); return; }
   try{
     toast('正在保存自定义名称…');
