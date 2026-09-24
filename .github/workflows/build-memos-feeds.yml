@@ -1,0 +1,31 @@
+name: Build limited Memos feeds
+
+on:
+  schedule:
+    # Run ten minutes after the existing Memos sync (Beijing 08:10–00:10).
+    - cron: "10 0,2,4,6,8,10,12,14,16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-limited-memos-feeds
+  cancel-in-progress: true
+
+jobs:
+  build-feeds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Build recent and random feeds
+        run: node .github/scripts/build-memos-feeds.js
+
+      - name: Commit feed updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update limited memos feeds'
+          file_pattern: 'static/memos-recent.json static/memos-random.json'

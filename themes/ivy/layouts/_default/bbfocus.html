@@ -1,0 +1,66 @@
+{{ partial "header.html" . }}
+
+<div class="bibi-switch" role="tablist" aria-label="哔哔浏览方式">
+  <button id="bibi-tab-recent" class="bibi-switch-button selected" type="button" role="tab" aria-selected="true" aria-controls="bber" data-bibi-mode="recent">最近</button>
+  <button id="bibi-tab-random" class="bibi-switch-button" type="button" role="tab" aria-selected="false" aria-controls="bber" data-bibi-mode="random">好运</button>
+</div>
+
+<div id="bber"></div>
+
+<script>
+  var bbFocus = {
+    recentUrl: '{{ "memos-recent.json" | relURL }}',
+    randomUrl: '{{ "memos-random.json" | relURL }}',
+    recentLimit: 60,
+    pageSize: 12,
+    randomBatchSize: 12,
+    domId: '#bber'
+  }
+</script>
+<script src="/js/marked.min.js"></script>
+<script src="/js/view-image.min.js"></script>
+<script src="/js/lately.min.js"></script>
+<script type="module" src="/js/emaction.js"></script>
+<script src="/js/bb-focus.js"></script>
+
+<style>
+  .bibi-switch {
+    display: flex;
+    width: fit-content;
+    margin: 1.5em auto 0;
+    padding: 5px;
+    gap: 8px;
+    border: 1px solid var(--border, #e5e5e5);
+    border-radius: 9999px;
+    background: var(--surface, #fff);
+    box-shadow: 0 1px 4px var(--shadow, rgba(0, 0, 0, .08));
+  }
+  .bibi-switch-button {
+    padding: 8px 28px;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--muted, #666);
+    font: inherit;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .bibi-switch-button:hover { background: var(--accent-soft, rgba(66, 185, 131, .1)); color: var(--accent-hover, #42b983); }
+  .bibi-switch-button.selected { background: var(--accent, #42b983); color: var(--accent-contrast, #fff); }
+  .bibi-switch-button:focus-visible { outline: 2px solid var(--accent, #42b983); outline-offset: 2px; }
+  #bber { margin-right: auto; margin-left: auto; }
+  #bber .bb-cont { overflow: visible !important; }
+  #bber .bb-cont blockquote {
+    margin: 10px 0;
+    padding: 8px 16px;
+    overflow: visible !important;
+    border-left: 4px solid color-mix(in srgb, var(--accent) 62%, var(--border)) !important;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface)) !important;
+    color: var(--quote);
+    font-size: .95em;
+  }
+  #bber .bb-cont blockquote::before { display: none !important; content: none !important; }
+</style>
+
+{{ partial "footer-empty.html" . }}
