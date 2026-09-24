@@ -2,8 +2,8 @@
   var options = [
     { id: 'wenkai', label: '霞鹜文楷', href: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css' },
     { id: 'zhuque', label: '朱雀仿宋', href: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css' },
-    { id: 'kinghwa', label: '京华老宋', href: 'https://ik.imagekit.io/fonts130/packages/jhlst/dist/%E4%BA%AC%E8%8F%AF%E8%80%81%E5%AE%8B%E4%BD%93v2_002/result.css' },
-    { id: 'zhisong', label: '新致宋', href: 'https://fontsapi.zeoseven.com/22/main/result.css' }
+    { id: 'zhisong', label: '新致宋', href: 'https://fontsapi.zeoseven.com/22/main/result.css' },
+    { id: 'xixihei', label: '霞鹜新晰黑', href: 'https://fontsapi.zeoseven.com/19/main/result.css' }
   ];
 
   var button = document.querySelector('.masthead .tagline');

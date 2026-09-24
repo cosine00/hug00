@@ -21,8 +21,8 @@
         var fonts = {
           wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
           zhuque: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',
-          kinghwa: 'https://ik.imagekit.io/fonts130/packages/jhlst/dist/%E4%BA%AC%E8%8F%AF%E8%80%81%E5%AE%8B%E4%BD%93v2_002/result.css',
-          zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css'
+          zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css',
+          xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css'
         };
         var selected = 'wenkai';
         try {
@@ -77,7 +77,7 @@
     {{ partial "head_highlightjs" . }}
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
-    <link rel="stylesheet" href="{{ "/css/palettes.css" | relURL }}" />
+    <link rel="stylesheet" href="{{ "/css/palettes.css?v=20260924-2" | relURL }}" />
     <script>
       (function () {
         var allowed = ['paper', 'night', 'sepia', 'mist'];
@@ -117,7 +117,7 @@
       });
     </script>
     <script defer src="{{ "/js/palette-switcher.js" | relURL }}"></script>
-    <script defer src="{{ "/js/font-switcher.js" | relURL }}"></script>
+    <script defer src="{{ "/js/font-switcher.js?v=20260924-2" | relURL }}"></script>
   </head>
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}

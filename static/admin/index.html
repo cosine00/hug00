@@ -31,6 +31,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
+  --admin-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
   --bg:#fff;--bg2:#f7f8fa;--bg3:#f1f3f5;--bg4:#eef1f6;
   --text:#1f2329;--text2:#4e5969;--text3:#86909c;--text4:#c9cdd4;
   --border:#e5e6eb;--border2:#d8dce4;
@@ -44,12 +45,12 @@
   --shadow:0 8px 24px rgba(29,33,41,.05),0 1px 2px rgba(29,33,41,.04);
   --shadow-soft:0 1px 3px rgba(29,33,41,.08);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-size:14px;color:var(--text);background:var(--bg2);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:var(--admin-font-family);font-size:14px;color:var(--text);background:var(--bg2);min-height:100vh;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font-family:inherit}
 a{color:inherit;text-decoration:none}
 
 /* Layout */
-.app{display:flex;height:100vh;overflow:hidden;background:var(--bg2)}
+.app{display:flex;height:100vh;overflow:hidden;background:var(--bg2);font-family:var(--admin-font-family)}
 .sidebar{width:236px;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:2px 0 12px rgba(29,33,41,.02);z-index:20}
 .main{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
 .topbar{height:60px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;backdrop-filter:saturate(160%) blur(10px);z-index:15}
@@ -1888,12 +1889,13 @@ const ADMIN_PALETTES={
   mist:{label:'晨曦',color:'#faf6f2',dark:false}
 };
 const ADMIN_FONTS=[
-  {id:'wenkai',label:'霞鹜文楷',href:'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',family:'"LXGW WenKai Screen","LXGW WenKai",sans-serif'},
-  {id:'zhuque',label:'朱雀仿宋',href:'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',family:'"Zhuque Fangsong","FangSong",serif'},
-  {id:'kinghwa',label:'京华老宋',href:'https://ik.imagekit.io/fonts130/packages/jhlst/dist/%E4%BA%AC%E8%8F%AF%E8%80%81%E5%AE%8B%E4%BD%93v2_002/result.css',family:'"KingHwa_OldSong","Songti SC",serif'},
-  {id:'zhisong',label:'新致宋',href:'https://fontsapi.zeoseven.com/22/main/result.css',family:'"LXGW Neo ZhiSong","Songti SC",SimSun,serif'}
+  {id:'wenkai',label:'霞鹜文楷',href:'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',face:'"LXGW WenKai Screen"',family:'"LXGW WenKai Screen","LXGW WenKai","KaiTi","STKaiti",serif'},
+  {id:'zhuque',label:'朱雀仿宋',href:'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',face:'"Zhuque Fangsong"',family:'"Zhuque Fangsong","FangSong","STFangsong",serif'},
+  {id:'zhisong',label:'新致宋',href:'https://fontsapi.zeoseven.com/22/main/result.css',face:'"LXGW Neo ZhiSong"',family:'"LXGW Neo ZhiSong","Songti SC",SimSun,serif'},
+  {id:'xixihei',label:'霞鹜新晰黑',href:'https://fontsapi.zeoseven.com/19/main/result.css',face:'"LXGW Neo XiHei"',family:'"LXGW Neo XiHei","Microsoft YaHei",sans-serif'}
 ];
 let adminPaletteRotation=Math.max(0,ADMIN_PALETTE_ORDER.indexOf(document.documentElement.dataset.theme))*90;
+let adminFontLoadSeq=0;
 
 function applyAdminPalette(name,persist=false){
   if(!ADMIN_PALETTES[name]) name='paper';
@@ -1928,17 +1930,50 @@ function initAdminPalette(){
   applyAdminPalette(document.documentElement.dataset.theme||'paper',false);
 }
 
-function applyAdminFont(option,persist=false){
+function loadAdminFontStylesheet(option){
+  const current=document.getElementById('admin-font-stylesheet');
+  if(current?.dataset.fontId===option.id && current.sheet) return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const next=document.createElement('link');
+    next.rel='stylesheet';
+    next.href=option.href;
+    next.dataset.fontId=option.id;
+    next.onload=()=>{
+      if(current && current!==next) current.remove();
+      next.id='admin-font-stylesheet';
+      resolve();
+    };
+    next.onerror=()=>{
+      next.remove();
+      reject(new Error(`字体样式加载失败：${option.label}`));
+    };
+    if(current) current.insertAdjacentElement('afterend',next);
+    else document.head.appendChild(next);
+  });
+}
+
+async function applyAdminFont(option,persist=false){
   if(!option) option=ADMIN_FONTS[0];
-  const stylesheet=document.getElementById('admin-font-stylesheet');
-  if(stylesheet) stylesheet.href=option.href;
+  const loadSeq=++adminFontLoadSeq;
   document.documentElement.dataset.font=option.id;
-  document.body.style.fontFamily=option.family;
+  document.documentElement.style.setProperty('--admin-font-family',option.family);
+  document.body.style.removeProperty('font-family');
   const copy=document.querySelector('.sidebar-logo-copy');
-  if(copy) copy.setAttribute('aria-label',`当前字体：${option.label}，点击切换`);
+  if(copy) copy.setAttribute('aria-label',`正在加载字体：${option.label}`);
   if(persist){
     try{localStorage.setItem('blog-font',option.id);}catch(e){}
-    toast(`已切换为${option.label}`,'success');
+  }
+  try{
+    await loadAdminFontStylesheet(option);
+    const loadedFaces=await document.fonts.load(`16px ${option.face}`,'博客控制台 文章管理 运动记录');
+    if(loadSeq!==adminFontLoadSeq) return;
+    if(!loadedFaces.length) throw new Error(`字体文件未注册：${option.label}`);
+    if(copy) copy.setAttribute('aria-label',`当前字体：${option.label}，点击切换`);
+    if(persist) toast(`已切换为${option.label}`,'success');
+  }catch(error){
+    if(loadSeq!==adminFontLoadSeq) return;
+    if(copy) copy.setAttribute('aria-label',`当前字体：${option.label}（系统后备字体），点击切换`);
+    if(persist) toast(`${option.label}加载失败，已使用系统后备字体`,'warning');
   }
 }
 
@@ -2251,7 +2286,15 @@ async function ghGraphQL(query, variables={}){
 
 async function getFileContent(path){
   const data=await ghFetch(`/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${encodeURIComponent(CFG.branch)}`);
-  const binary=atob(String(data.content||'').replace(/\n/g,''));
+  let encodedContent=String(data.content||'');
+  if(data.sha && (data.encoding==='none' || (!encodedContent && Number(data.size)>0))){
+    const blob=await ghFetch(`/git/blobs/${encodeURIComponent(data.sha)}`);
+    if(blob?.encoding!=='base64' || !blob.content){
+      throw new Error(`无法读取大文件：${path}`);
+    }
+    encodedContent=String(blob.content);
+  }
+  const binary=atob(encodedContent.replace(/\n/g,''));
   const bytes=Uint8Array.from(binary, c=>c.charCodeAt(0));
   return {content:new TextDecoder().decode(bytes), sha:data.sha, path:data.path};
 }
@@ -8849,7 +8892,8 @@ function renderMobileCreatePage(){
 async function initMobilePwa(){
   if(!document.documentElement.classList.contains('mobile-pwa-capable') || !('serviceWorker' in navigator)) return;
   try{
-    const registration=await navigator.serviceWorker.register('/admin/sw.js',{scope:'/admin/'});
+    const registration=await navigator.serviceWorker.register('/admin/sw.js',{scope:'/admin/',updateViaCache:'none'});
+    await registration.update();
     const showUpdate=worker=>{
       waitingPwaWorker=worker;
       if(navigator.serviceWorker.controller) document.getElementById('pwa-update')?.classList.add('show');

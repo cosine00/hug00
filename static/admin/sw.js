@@ -1,4 +1,4 @@
-const CACHE_NAME='counting-stars-admin-v10';
+const CACHE_NAME='counting-stars-admin-v14';
 const APP_SHELL=['/admin/','/admin/manifest.webmanifest','/admin/icon.svg'];
 
 self.addEventListener('install',event=>{

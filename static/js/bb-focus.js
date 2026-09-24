@@ -206,6 +206,12 @@
     render(state.randomVisibleItems, '好运不停');
   }
 
+  function refreshRandomMemos() {
+    state.randomVisibleItems = currentRandomBatch();
+    render(state.randomVisibleItems, '好运不停');
+    document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function loadMore() {
     if (state.mode === 'recent') {
       const maximum = Math.min(config.recentLimit, state.recent.length);
@@ -217,9 +223,7 @@
       }
       return;
     }
-    state.randomVisibleItems = currentRandomBatch();
-    render(state.randomVisibleItems, '好运不停');
-    document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    refreshRandomMemos();
   }
 
   async function loadMode(mode) {
@@ -252,7 +256,14 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-bibi-mode]').forEach(button => {
-      button.addEventListener('click', () => switchMode(button.dataset.bibiMode));
+      button.addEventListener('click', () => {
+        const mode = button.dataset.bibiMode;
+        if (mode === 'random' && state.mode === 'random' && state.random.length) {
+          refreshRandomMemos();
+          return;
+        }
+        switchMode(mode);
+      });
     });
     switchMode('recent');
   });
