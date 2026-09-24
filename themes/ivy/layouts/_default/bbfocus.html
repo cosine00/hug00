@@ -9,8 +9,7 @@
 
 <script>
   var bbFocus = {
-    recentUrl: '{{ "memos-recent.json" | relURL }}',
-    randomUrl: '{{ "memos-random.json" | relURL }}',
+    dataUrl: '{{ "memos.json" | relURL }}',
     recentLimit: 60,
     pageSize: 12,
     randomBatchSize: 12,
@@ -21,7 +20,7 @@
 <script src="/js/view-image.min.js"></script>
 <script src="/js/lately.min.js"></script>
 <script type="module" src="/js/emaction.js"></script>
-<script src="/js/bb-focus.js"></script>
+<script src="{{ "js/bb-focus.js" | relURL }}"></script>
 
 <style>
   .bibi-switch {

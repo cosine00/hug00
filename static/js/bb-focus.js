@@ -2,8 +2,7 @@
   'use strict';
 
   const config = Object.assign({
-    recentUrl: '/memos-recent.json',
-    randomUrl: '/memos-random.json',
+    dataUrl: '/memos.json',
     recentLimit: 60,
     pageSize: 12,
     randomBatchSize: 12,
@@ -43,14 +42,51 @@
 
   const state = {
     mode: 'recent',
+    all: [],
     recent: [],
-    random: [],
+    dataPromise: null,
     recentVisible: config.pageSize,
-    randomDeck: [],
-    randomCursor: 0,
     randomVisibleItems: [],
     requestId: 0
   };
+
+  // 同一浏览器标签页刷新时仍停留在上次选择的页签；重新抽取随机条目。
+  const selectedTabKey = 'bb-focus-selected-tab';
+
+  function rememberedTab() {
+    try {
+      return window.sessionStorage.getItem(selectedTabKey) === 'random' ? 'random' : 'recent';
+    } catch (_) {
+      return 'recent';
+    }
+  }
+
+  function rememberTab(mode) {
+    try {
+      window.sessionStorage.setItem(selectedTabKey, mode);
+    } catch (_) {
+      // 隐私模式或禁用存储时，页签切换仍可正常使用。
+    }
+  }
+
+  // 全站只请求同一份完整 memos.json；不使用预生成的随机分组文件。
+  async function ensureData() {
+    if (!state.dataPromise) {
+      state.dataPromise = (async () => {
+        const response = await fetch(config.dataUrl, { cache: 'no-cache' });
+        if (!response.ok) throw new Error(`${config.dataUrl} ${response.status}`);
+        const payload = await response.json();
+        const all = extractItems(payload).filter(item => item && item.content && item.createdTs);
+        all.sort((a, b) => Number(b.createdTs) - Number(a.createdTs));
+        state.all = all;
+        state.recent = all.slice(0, config.recentLimit);
+      })().catch(error => {
+        state.dataPromise = null; // 加载失败后，允许再次点击页签重试。
+        throw error;
+      });
+    }
+    return state.dataPromise;
+  }
 
   // Older Memos attachments were stored by resource id instead of R2 externalLink.
   const legacyResourceCutoff = Date.parse('2024-08-03T00:00:00+08:00') / 1000;
@@ -124,20 +160,9 @@
     return `<li><article class="bb-item"><div class="bb-cont">${content}</div><div class="bb-info" style="position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px"><span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${escapeAttr(item.id)}" style="line-height:normal;display:inline-flex"></emoji-reaction></span><span class="datatime" title="${escapeAttr(dateText)}">${escapeAttr(dateText)}</span>${tags}</div></article></li>`;
   }
 
-  function currentRandomBatch() {
-    if (!state.randomDeck.length) state.randomDeck = shuffle(state.random);
-    const batch = [];
-    while (batch.length < config.randomBatchSize && state.random.length) {
-      if (state.randomCursor >= state.randomDeck.length) {
-        state.randomDeck = shuffle(state.random);
-        state.randomCursor = 0;
-      }
-      const needed = config.randomBatchSize - batch.length;
-      const available = state.randomDeck.slice(state.randomCursor, state.randomCursor + needed);
-      batch.push(...available);
-      state.randomCursor += available.length;
-    }
-    return batch;
+  // 每次均从全库独立洗牌，取前 12 条；不会先限定最近 60 条或任何批次。
+  function chooseRandomMemos() {
+    return shuffle(state.all).slice(0, config.randomBatchSize);
   }
 
   function setTabs() {
@@ -195,26 +220,26 @@
   function renderMode() {
     setTabs();
     if (state.mode === 'recent') {
-      const maximum = Math.min(config.recentLimit, state.recent.length);
+      const maximum = state.recent.length;
       const visible = Math.min(state.recentVisible, maximum);
       render(state.recent.slice(0, visible), visible >= maximum ? '碰个运气' : '哔个不停');
       return;
     }
-    if (!state.randomVisibleItems.length) {
-      state.randomVisibleItems.push(...currentRandomBatch());
-    }
     render(state.randomVisibleItems, '好运不停');
   }
 
-  function refreshRandomMemos() {
-    state.randomVisibleItems = currentRandomBatch();
+  function refreshRandomMemos(scrollToTabs = false) {
+    if (state.mode !== 'random') return;
+    state.randomVisibleItems = chooseRandomMemos();
     render(state.randomVisibleItems, '好运不停');
-    document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (scrollToTabs) {
+      document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   function loadMore() {
     if (state.mode === 'recent') {
-      const maximum = Math.min(config.recentLimit, state.recent.length);
+      const maximum = state.recent.length;
       if (state.recentVisible < maximum) {
         state.recentVisible = Math.min(state.recentVisible + config.pageSize, maximum);
         renderMode();
@@ -223,34 +248,31 @@
       }
       return;
     }
-    refreshRandomMemos();
+    refreshRandomMemos(true);
   }
 
-  async function loadMode(mode) {
-    const key = mode === 'random' ? 'random' : 'recent';
-    if (state[key].length) return;
-    const url = key === 'random' ? config.randomUrl : config.recentUrl;
-    const response = await fetch(url, { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`${url} ${response.status}`);
-    state[key] = extractItems(await response.json());
-  }
-
-  async function switchMode(mode, scrollToTabs) {
+  async function switchMode(mode, scrollToTabs = false) {
     const requestId = ++state.requestId;
     state.mode = mode === 'random' ? 'random' : 'recent';
+    rememberTab(state.mode);
     setTabs();
     const root = document.querySelector(config.domId);
     if (root) root.innerHTML = '<div class="bb-focus-loader" role="status" aria-label="正在加载"></div>';
     try {
-      await loadMode(state.mode);
+      await ensureData();
       if (requestId !== state.requestId) return;
-      renderMode();
-      if (scrollToTabs) {
-        document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (state.mode === 'random') {
+        refreshRandomMemos(Boolean(scrollToTabs));
+      } else {
+        renderMode();
+        if (scrollToTabs) {
+          document.querySelector('.bibi-switch')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     } catch (error) {
+      if (requestId !== state.requestId) return;
       console.error(error);
-      if (root) root.innerHTML = '<p class="bb-focus-empty">哔哔加载失败，请稍后再试。</p>';
+      if (root) root.innerHTML = '<p class="bb-focus-empty">哔哔加载失败，请检查 memos.json 是否可访问。</p>';
     }
   }
 
@@ -258,13 +280,13 @@
     document.querySelectorAll('[data-bibi-mode]').forEach(button => {
       button.addEventListener('click', () => {
         const mode = button.dataset.bibiMode;
-        if (mode === 'random' && state.mode === 'random' && state.random.length) {
-          refreshRandomMemos();
+        if (mode === 'random' && state.mode === 'random' && state.dataPromise && state.all.length) {
+          refreshRandomMemos(true);
           return;
         }
         switchMode(mode);
       });
     });
-    switchMode('recent');
+    switchMode(rememberedTab());
   });
 })();
