@@ -10704,6 +10704,22 @@
 "streak": 2
 },
 {
+"run_id": 1790734340000,
+"name": "\u6668\u95f4\u884c\u8d70",
+"distance": 18625.19,
+"moving_time": "5:29:39.952000",
+"type": "Hike",
+"start_date": "2026-09-30 02:12:20",
+"start_date_local": "2026-09-30 10:12:20",
+"location_country": "",
+"summary_polyline": "{ubtF{ilaQ{EbCWbB|@rCq@cB\\EUC?k@vExGXQmCoLvCoEj@uCEuCwBoNFyAvOgHhI{JpBoE`BsGhCoZdCcLpBqEdDyEtIeG|wAg\\fmHkxAvRkGfxAen@jGe@pHj@vsArXtGrC|NnKbJpE~JbCtVhCh@vADg@?`HVh@WAn@o@rA@bBjCnBd@xBjBuJwD~KdF~E?FrAEyA|EEg@d@J]d@L]i@d@d@^OaAiCqAw@gEKLiBb@a@Fd@aAPsBeAE}IkEmA",
+"average_heartrate": 97.0,
+"average_speed": 0.941619586,
+"elevation_gain": 232.0,
+"source": "StravaGPX",
+"streak": 3
+},
+{
 "run_id": 9223370246082571807,
 "name": "\u8ffd\u98ce\u9010\u91ce",
 "distance": 5123.45458984375,
@@ -10752,6 +10768,38 @@
 "streak": 5
 },
 {
+"run_id": 1790999269000,
+"name": "\u5348\u95f4\u884c\u8d70",
+"distance": 22933.481,
+"moving_time": "6:58:32.161000",
+"type": "Hike",
+"start_date": "2026-10-03 03:47:49",
+"start_date_local": "2026-10-03 11:47:49",
+"location_country": "",
+"summary_polyline": "{ll_FwxcdQhFg@l@x@@~@AgAt@mAEgBt@k@pAdAUxIyPm@sGJsHi@ImKk@u@wmAmA{@R]r@u@zRqAlAaDj@ag@a@u@o@GoDg@c@ezKsJk{@qAa@mBzAojC_@_Zc@aHmF_YUkD`B}{B^aAz@[fl@hA|ChErAVn@mE\\Gl@x@x@eDd@ek@\\wBny@l@xBHY~@Q]PVRmC_@vCRA]a@G`@?_Aa@c@y@G?eAf@s@q@Vp@Wu@FcAiAj@q@dAGRF_@C[|DLx@jA?WP",
+"average_heartrate": 96.0,
+"average_speed": 0.913242009,
+"elevation_gain": 24.0,
+"source": "StravaGPX",
+"streak": 6
+},
+{
+"run_id": 1791091039000,
+"name": "\u5348\u540e\u884c\u8d70",
+"distance": 20209.917,
+"moving_time": "6:16:54.898000",
+"type": "Hike",
+"start_date": "2026-10-04 05:17:19",
+"start_date_local": "2026-10-04 13:17:19",
+"location_country": "",
+"summary_polyline": "klz_Fw{q_RGa@p_@qbA|^mhAps@i{A~f@kiAlDkFpEmDdM}E`LkBxuHkh@ziCaTp@Nl@hIU?_@}Gn@w@Bq@bMiAb@}AiAXuAqAiNe{@mDyD{IsEiCmD}H}RrCcAk@yCRx@ObBs@Tv@a@FiBGvBu@Tr@[LyAIzAc@Zm@@g@s@e@V}ArJZq@rBtExCyC|BnGfC`E|JpF`DfDfOj~@Vv@p@a@\\R",
+"average_heartrate": 99.0,
+"average_speed": 0.893655049,
+"elevation_gain": 36.0,
+"source": "StravaGPX",
+"streak": 7
+},
+{
 "run_id": 9223370245675722807,
 "name": "\u8ffd\u98ce\u9010\u91ce",
 "distance": 2872.2294921875,
@@ -10765,7 +10813,7 @@
 "average_speed": 0.39437450119284634,
 "elevation_gain": 187.2271977568994,
 "source": "Keep",
-"streak": 1
+"streak": 8
 },
 {
 "run_id": 9223370245669938807,
@@ -10781,7 +10829,7 @@
 "average_speed": 0.682118284407437,
 "elevation_gain": 27.351904685422596,
 "source": "Keep",
-"streak": 1
+"streak": 8
 },
 {
 "run_id": 9223370245592785807,
@@ -10797,7 +10845,7 @@
 "average_speed": 0.3967650868488992,
 "elevation_gain": 169.37609658427527,
 "source": "Keep",
-"streak": 2
+"streak": 9
 },
 {
 "run_id": 9223370245141548807,

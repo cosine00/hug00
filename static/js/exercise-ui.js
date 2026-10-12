@@ -361,51 +361,110 @@
           if (durHours > mMax.dur) monthStairMax.set(month, { dur: durHours, id: runIdStr });
         }
 
-        const formatCity = (rawStr) => {
-          if (!rawStr || rawStr === 'null' || rawStr === 'undefined') return { name: '深圳市', isForeign: false };
-          if (/香港|Hong\s*Kong|HK/i.test(rawStr)) return { name: '香港特别行政区', isForeign: false };
-          if (/澳门|Macao|Macau|嘉模堂区/i.test(rawStr)) return { name: '澳门特别行政区', isForeign: false };
-          if (/台湾|Taiwan/i.test(rawStr)) return { name: '台湾省', isForeign: false };
-          if (/珠海|香洲|金湾|斗门/i.test(rawStr)) return { name: '珠海市', isForeign: false };
-          if (/横琴/i.test(rawStr)) return { name: '珠海市', isForeign: false };
+        const formatCity = (rawValue) => {
+          // 没有定位信息时不再默认归入“深圳市”，避免足迹里程被虚增
+          if (rawValue == null) return null;
+
+          const rawStr = String(rawValue).trim();
+          if (!rawStr || /^(null|undefined)$/i.test(rawStr)) return null;
+
+          const cnProvinces = ['北京', '天津', '河北', '山西', '内蒙', '辽宁', '吉林', '黑龙江', '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆'];
+          const directCities = new Set(['北京市', '上海市', '天津市', '重庆市', '北京', '上海', '天津', '重庆']);
+
+          const normalizeDirectCity = (name) => {
+            if (!name) return '';
+            if (directCities.has(name)) return name.endsWith('市') ? name : `${name}市`;
+            return name;
+          };
+
+          const normalizeSpecialRegion = (text) => {
+            if (/香港|Hong\s*Kong|HK/i.test(text)) return { name: '香港特别行政区', isForeign: false };
+            if (/澳门|Macao|Macau|嘉模堂区/i.test(text)) return { name: '澳门特别行政区', isForeign: false };
+            if (/台湾|Taiwan/i.test(text)) return { name: '台湾省', isForeign: false };
+            return null;
+          };
+
+          // ------------------------------------------------------------------
+          // 1. 兼容 Keep 新数据：location_country 是“Python 字典字符串”
+          //    例如：{'country': '中国', 'province': '甘肃省',
+          //           'city': '酒泉市', 'district': '敦煌市', ...}
+          // ------------------------------------------------------------------
+          if (rawStr.startsWith('{')) {
+            const getField = (key) => {
+              const reg = new RegExp(`['\"]${key}['\"]\\s*:\\s*(?:['\"]([^'\"]*)['\"]|([^,}]+))`);
+              const match = rawStr.match(reg);
+              if (!match) return '';
+              const value = String(match[1] ?? match[2] ?? '').trim();
+              return /^(None|null|undefined)$/i.test(value) ? '' : value;
+            };
+
+            const country = getField('country');
+            const province = getField('province');
+            const city = getField('city');
+            const district = getField('district');
+            const locationText = [country, province, city, district].filter(Boolean).join(' ');
+
+            const special = normalizeSpecialRegion(locationText);
+            if (special) return special;
+
+            const isDomestic = /中国|China|PRC/i.test(country) || cnProvinces.some(prov => province.includes(prov));
+
+            // Keep 已经给出了明确的 city 字段，优先直接使用，
+            // 这样酒泉、张掖、嘉峪关、西宁、兰州、海西等都能正确统计。
+            if (city) {
+              return { name: normalizeDirectCity(city), isForeign: !isDomestic };
+            }
+
+            // 少数记录可能缺 city，国内退到 district；国外退到 province/country
+            if (isDomestic && district) return { name: district, isForeign: false };
+            if (province) return { name: province, isForeign: !isDomestic };
+            if (country) return { name: country, isForeign: !isDomestic };
+            return null;
+          }
+
+          // ------------------------------------------------------------------
+          // 2. 兼容原来的 Strava / 旧数据：普通逗号分隔地址字符串
+          // ------------------------------------------------------------------
+          const special = normalizeSpecialRegion(rawStr);
+          if (special) return special;
+
+          // 保留原有的常用区域兜底映射
+          if (/珠海|香洲|金湾|斗门|横琴/i.test(rawStr)) return { name: '珠海市', isForeign: false };
           if (/坪山|南山|福田|罗湖|宝安|龙岗|龙华|盐田|光明|大鹏/i.test(rawStr)) return { name: '深圳市', isForeign: false };
           if (/惠城|博罗|惠阳|惠东|龙门/i.test(rawStr)) return { name: '惠州市', isForeign: false };
 
-          let parts = rawStr.split(/[,，]/).map(p => p.trim()).filter(p => p);
+          let parts = rawStr.split(/[,，]/).map(p => p.trim()).filter(Boolean);
           let nonEnglishParts = parts.filter(p => !/^[\d\sA-Za-z&_.-]+$/.test(p));
           let validParts = nonEnglishParts.length > 0 ? nonEnglishParts : parts;
           validParts = validParts.filter(p => !/中国|China|PRC/i.test(p));
-          
-          if (validParts.length === 0) return { name: '深圳市', isForeign: false };
 
-          const cnProvinces = ['北京', '天津', '河北', '山西', '内蒙', '辽宁', '吉林', '黑龙江', '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆'];
-          const isDomestic = /中国|China/i.test(rawStr) || cnProvinces.some(prov => rawStr.includes(prov));
+          if (validParts.length === 0) return null;
 
-          let lastPart = validParts[validParts.length - 1];
-          if (!isDomestic) return { name: lastPart, isForeign: true }; 
+          const isDomestic = /中国|China|PRC/i.test(rawStr) || cnProvinces.some(prov => rawStr.includes(prov));
+
+          // 国外旧数据沿用原来的显示逻辑
+          if (!isDomestic) {
+            return { name: validParts[validParts.length - 1], isForeign: true };
+          }
 
           let city = '', district = '';
-          const directCities = new Set(['北京市', '上海市', '天津市', '重庆市', '北京', '上海', '天津', '重庆']);
-          let isDirectCity = false;
-          let directCityName = '';
-
           for (let i = validParts.length - 1; i >= 0; i--) {
-            let p = validParts[i];
+            const p = validParts[i];
             if (directCities.has(p)) {
-              isDirectCity = true;
-              directCityName = p.endsWith('市') ? p : p + '市'; 
-            } else if (p.endsWith('市') || p.endsWith('自治州') || p.endsWith('地区') || p.endsWith('盟')) {
-              if (!city) city = p;
-            } else if (p.endsWith('区') || p.endsWith('县') || p.endsWith('旗')) {
-              if (!district) district = p;
+              return { name: normalizeDirectCity(p), isForeign: false };
+            }
+            if (!city && (p.endsWith('市') || p.endsWith('自治州') || p.endsWith('地区') || p.endsWith('盟'))) {
+              city = p;
+            } else if (!district && (p.endsWith('区') || p.endsWith('县') || p.endsWith('旗'))) {
+              district = p;
             }
           }
 
-          if (isDirectCity) return { name: directCityName, isForeign: false };
-          if (city) return { name: city, isForeign: false }; 
-          if (district) return { name: district, isForeign: false }; 
+          if (city) return { name: city, isForeign: false };
+          if (district) return { name: district, isForeign: false };
 
-          return { name: '深圳市', isForeign: false }; 
+          // 无法可靠识别时直接跳过，不再错误计入深圳
+          return null;
         };
 
         let cityObj = formatCity(r.location_country);
