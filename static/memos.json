@@ -11174,15 +11174,6 @@
     ]
   },
   {
-    "id": 287,
-    "content": "绝了，Chrome自动更新到123版本之后，UI又改了，太吃藕了。\n回退旧UI，打开 chrome://flags/#customize-chrome-side-panel  选择Disabled，重启。\n隔三差五折腾 UI，你倒是早点出垂直标签页呀。\n",
-    "createdTs": 1711328342,
-    "resourceList": [],
-    "tags": [
-      "customize-chrome-side-panel"
-    ]
-  },
-  {
     "id": 285,
     "content": "#workout 早起运动，顺便充电。今天改跳绳45分钟。",
     "createdTs": 1711237703,
@@ -12933,15 +12924,6 @@
     "createdTs": 1702823407,
     "resourceList": [],
     "tags": []
-  },
-  {
-    "id": 148,
-    "content": "今天一早打开Chrome，发现 ui 很丑，原来是自动升级到120版本了。\n想着退回旧 ui，打开 chrome://flags/#chrome-refresh-2023   选择 Disabled，然后重启Chrome。",
-    "createdTs": 1702516626,
-    "resourceList": [],
-    "tags": [
-      "chrome-refresh-2023"
-    ]
   },
   {
     "id": 147,
