@@ -1,5 +1,12 @@
 [
   {
+    "id": 1224,
+    "content": "本周又单休，公司占用今天去东莞搞周年庆拓展活动。必须参加，没得补休，连地铁五折都木有。",
+    "createdTs": 1792192448,
+    "resourceList": [],
+    "tags": []
+  },
+  {
     "id": 1223,
     "content": "复刻了一个前端，后端数据来源于 Memos。99 年一年的 flomo。\n![memos-flomo.png](https://img.hux.ink/image/2026/10/memos-flomo-20261016-155822-2b5e09.png)",
     "createdTs": 1792137509,
