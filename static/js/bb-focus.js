@@ -122,8 +122,8 @@
   }
 
   function imageUrls(item) {
-    if (!item || !Array.isArray(item.resourceList)) return [];
-    return item.resourceList.map(resource => {
+    if (!item) return [];
+    const resourceImages = (Array.isArray(item.resourceList) ? item.resourceList : []).map(resource => {
       const timestamp = Number(item.createdTs);
       const isLegacy = Number.isFinite(timestamp) && timestamp < legacyResourceCutoff;
       const url = isLegacy && resource && resource.id != null
@@ -132,6 +132,24 @@
       const type = String(resource && resource.type || '').toLowerCase();
       return url && (type.startsWith('image') || /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(url)) ? url : '';
     }).filter(Boolean);
+    const markdownImages = markdownImageUrls(item.content);
+    return [...new Set([...resourceImages, ...markdownImages])];
+  }
+
+  function markdownImageUrls(content) {
+    const images = [];
+    String(content || '').replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, (match, bracketedUrl, plainUrl) => {
+      images.push(bracketedUrl || plainUrl);
+      return match;
+    });
+    return images;
+  }
+
+  function stripMarkdownImages(content) {
+    return String(content || '')
+      .replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
   }
 
   function imageButton(item) {
@@ -153,7 +171,7 @@
     if (!item || !item.content || !item.createdTs) return '';
     const date = new Date(Number(item.createdTs) * 1000);
     const dateText = date.toLocaleString();
-    const plain = String(item.content).replace(/#[^\s#]+/g, '').trim();
+    const plain = stripMarkdownImages(item.content).replace(/#[^\s#]+/g, '').trim();
     let content = window.marked ? window.marked.parse(plain.replace(/\n/g, '  \n')) : escapeAttr(plain).replace(/\n/g, '<br>');
     content = appendImageButton(content, imageButton(item));
     const tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter">#${escapeAttr(tag)}</span>`).join(' ');

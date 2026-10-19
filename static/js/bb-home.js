@@ -160,12 +160,30 @@ let currentPage = 0;
 let pageSize = parseInt(bbMemo.limit) || 10;
 
 function getMemoImageUrls(item) {
-  if (!item || !Array.isArray(item.resourceList)) return [];
-  return item.resourceList.map(res => {
+  if (!item) return [];
+  const resourceImages = (Array.isArray(item.resourceList) ? item.resourceList : []).map(res => {
     const url = res && (res.externalLink || res.publicUrl || res.filename || '');
     const type = String(res && res.type || '').toLowerCase();
     return url && (type.startsWith('image') || /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(url)) ? url : '';
   }).filter(Boolean);
+  const markdownImages = getMarkdownImageUrls(item.content);
+  return [...new Set([...resourceImages, ...markdownImages])];
+}
+
+function getMarkdownImageUrls(content) {
+  const images = [];
+  String(content || '').replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, (match, bracketedUrl, plainUrl) => {
+    images.push(bracketedUrl || plainUrl);
+    return match;
+  });
+  return images;
+}
+
+function stripMarkdownImages(content) {
+  return String(content || '')
+    .replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 function escapeMemoAttr(value) {
@@ -217,7 +235,7 @@ function renderMemosPaged(memos, page) {
     
     let attachBtn = renderMemoImageTrigger(item);
 
-    let contentText = item.content.replace(/#[^\s#]+/g, '').trim();
+    let contentText = stripMarkdownImages(item.content).replace(/#[^\s#]+/g, '').trim();
     // 1. 直接解析去除了标签的纯文本
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
     content = appendMemoImageTrigger(content, attachBtn);
@@ -300,7 +318,7 @@ function renderMemosPaged(memos, page) {
       e.preventDefault(); e.stopPropagation();
       const memoId = this.getAttribute('data-id');
       const memo = allMemos.find(m => m.id == memoId);
-      if (memo && memo.resourceList) {
+      if (memo && getMemoImageUrls(memo).length) {
         
         // 斩草除根：清理一切残留
         document.querySelectorAll('.temp-img-box').forEach(el => el.remove());

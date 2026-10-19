@@ -194,12 +194,30 @@ function getMemoResourceUrl(item, resource) {
 }
 
 function getMemoImageUrls(item) {
-  if (!item || !Array.isArray(item.resourceList)) return [];
-  return item.resourceList.map(res => {
+  if (!item) return [];
+  const resourceImages = (Array.isArray(item.resourceList) ? item.resourceList : []).map(res => {
     const url = getMemoResourceUrl(item, res);
     const type = String(res && res.type || '').toLowerCase();
     return url && (type.startsWith('image') || /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(url)) ? url : '';
   }).filter(Boolean);
+  const markdownImages = getMarkdownImageUrls(item.content);
+  return [...new Set([...resourceImages, ...markdownImages])];
+}
+
+function getMarkdownImageUrls(content) {
+  const images = [];
+  String(content || '').replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, (match, bracketedUrl, plainUrl) => {
+    images.push(bracketedUrl || plainUrl);
+    return match;
+  });
+  return images;
+}
+
+function stripMarkdownImages(content) {
+  return String(content || '')
+    .replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 function escapeMemoAttr(value) {
@@ -340,7 +358,7 @@ function renderMemosPaged(memos, page) {
     let tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter" data-tag="${tag}">#${tag}</span>`).join(' ');
     
     let attachBtn = renderMemoImageTrigger(item);
-    let contentText = item.content.replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
+    let contentText = stripMarkdownImages(item.content).replace(/#[^\s#]+/g, '').replace(/^\s+|\s+$/g, '');
     // 直接解析去除了标签的纯文本
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
     content = appendMemoImageTrigger(content, attachBtn);
@@ -401,7 +419,7 @@ function renderMemosPaged(memos, page) {
       const memoId = btn.getAttribute('data-id');
       const memo = allMemos.find(m => m.id == memoId);
 
-      if (memo && memo.resourceList && memo.resourceList.length > 0) {
+      if (memo && getMemoImageUrls(memo).length > 0) {
         
         // 🐛 核心修复：斩草除根！在创建新的图片容器前，先把之前残留的所有隐藏容器全部删掉
         document.querySelectorAll('div[id^="temp-image-viewer-"]').forEach(el => el.remove());
