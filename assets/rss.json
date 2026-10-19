@@ -388,12 +388,12 @@
       "title": "Typecho 曝出 SSRF 漏洞，我自己的博客也中了，顺手把补丁打上",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
+      "link": "https://9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
       "created": "2026-10-16 15:24:00",
       "updated": "2026-10-16 15:24:00",
       "excerpt": "今天刷到一个安全博客的更新，标题带着 CVE 编号，讲的是 Typecho 的一个 SSRF 漏洞。我博客用的就是 Typecho，看到这种跟自己有关的东西肯定要点进去看，看完之后心情有点复杂。...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 33
     },
     {
@@ -736,12 +736,12 @@
       "title": "从哪吒换到极简探针，移植主题加毛玻璃，准备慢慢全部转过来",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
+      "link": "https://9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
       "created": "2026-10-12 13:36:07",
       "updated": "2026-10-12 13:36:07",
       "excerpt": "最近逛论坛，看到一个探针项目，极简风格，一眼就喜欢上了。这两天刚好不忙，闲着也是闲着，又开始折腾啦。之前一直用的是哪吒探针，说实话功能是真的全，但对我来说有点过剩。我主要就想看看服务器在线不在线...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 62
     },
     {
@@ -844,12 +844,12 @@
       "title": "临时约的一场骑行，终点是邢台本地最大的朱庄水库",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
+      "link": "https://9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
       "created": "2026-10-11 12:35:46",
       "updated": "2026-10-11 12:35:46",
       "excerpt": "昨天跟朋友临时约着骑车，说想去朱庄水库转转。上午实在抽不开身，送完孩子又去把车胎补了下，一来二去就晚了，干脆改成下午出发。{mx_photo}{mx_photo}目标是邢台本地最大的水库，朱庄水...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 71
     },
     {
@@ -976,12 +976,12 @@
       "title": "送娃上学冻了一路，让我领教了早晚温差",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
+      "link": "https://9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
       "created": "2026-10-10 00:11:49",
       "updated": "2026-10-10 00:11:49",
       "excerpt": "这两天孩子学校开秋季运动会，天气看着挺好，就想着骑电车载他去。出门前媳妇说了句早上凉，给孩子套了件薄羽绒服，我自己也觉得挺有先见之明，顺手套了件外套。结果骑到半路，风一兜，我就知道想岔了，这一路...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 82
     },
     {
@@ -1180,12 +1180,12 @@
       "title": "核心影视，优化后的播放页面长这样，按钮、选集、线路全安排明白",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/core-movies-and-tv-shows-the-optimized-playback-page-length-is-like-this-with-clear-arrangement-of-buttons-selections-and-routes.html",
+      "link": "https://9sb.net/archives/core-movies-and-tv-shows-the-optimized-playback-page-length-is-like-this-with-clear-arrangement-of-buttons-selections-and-routes.html",
       "created": "2026-10-07 16:49:11",
       "updated": "2026-10-07 16:49:11",
       "excerpt": "今晚把核心影视的播放页面和播放器重新优化了一轮，图上是改完的样子，记录一下。先说选集这块。之前其实也可以，但总就是感觉差那么点意思，所以今天就下手它了。按钮也重新排过，选集、全屏、下一集，三个一...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 99
     },
     {
@@ -1396,12 +1396,12 @@
       "title": "导航栏做成悬浮还是直接压背景，大家给个意见",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/should-the-navigation-bar-be-made-floating-or-directly-pressed-against-the-background-please-give-your-opinion.html",
+      "link": "https://9sb.net/archives/should-the-navigation-bar-be-made-floating-or-directly-pressed-against-the-background-please-give-your-opinion.html",
       "created": "2026-10-03 16:40:31",
       "updated": "2026-10-03 16:40:31",
       "excerpt": "{mx_photo}{mx_photo}最近把博客导航栏来回倒腾，自己选花眼了，来听听大家的意见。现在有两个方案。一个是导航直接顶在渐变背景上，下面就一条细线，看着干净通透，这个就是现有不变的样...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 117
     },
     {
@@ -1552,12 +1552,12 @@
       "title": "试了一下午白茶，学习途中慢慢入坑，心系水仙",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/i-tried-white-tea-all-afternoon-and-slowly-fell-into-a-pit-on-the-way-to-study-with-my-heart-fixed-on-the-narcissus.html",
+      "link": "https://9sb.net/archives/i-tried-white-tea-all-afternoon-and-slowly-fell-into-a-pit-on-the-way-to-study-with-my-heart-fixed-on-the-narcissus.html",
       "created": "2026-09-30 14:54:03",
       "updated": "2026-09-30 14:54:03",
       "excerpt": "今天难得不忙，专门去茶店坐了一下午。跟平时爱喝茶的两个朋友学习去了，说是茶楼，其实更像一家茶铺，门口挂着 \"品瑞茗茶\" 的牌子。进去试了不少茶，主攻白茶。{mx_photo}{mx_photo}...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 130
     },
     {
@@ -1576,24 +1576,24 @@
       "title": "LlmsTxt 一个零依赖插件，让所有 AI 都能通读你全部文章",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/llmstxt-is-a-zero-dependency-plugin-that-allows-all-ai-to-read-through-all-your-articles.html",
+      "link": "https://9sb.net/archives/llmstxt-is-a-zero-dependency-plugin-that-allows-all-ai-to-read-through-all-your-articles.html",
       "created": "2026-09-30 00:00:00",
       "updated": "2026-09-30 00:00:00",
       "excerpt": "现在用 AI 查东西的人越来越多了。ChatGPT、OpenAI、DeepSeek，还有各种助手，很多人已经习惯直接问它们，而不是翻搜索引擎。可问题来了，你的博客写得再好，这些 AI 能不能读到...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 132
     },
     {
       "title": "自建音乐服务，浏览器直接听歌还支持多源搜索",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/self-built-music-service-allowing-direct-listening-to-music-through-the-browser-and-supporting-multisource-search.html",
+      "link": "https://9sb.net/archives/self-built-music-service-allowing-direct-listening-to-music-through-the-browser-and-supporting-multisource-search.html",
       "created": "2026-09-29 19:10:00",
       "updated": "2026-09-29 19:10:00",
       "excerpt": "最近在 GitHub 上翻到一个挺对口的项目，叫 lxserver，是洛雪音乐同步服务的增强版。用过洛雪的应该不陌生，它原本是给不同设备之间同步歌单、收藏用的。这个增强版在同步的基础上，直接内置...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 133
     },
     {
@@ -1720,12 +1720,12 @@
       "title": "中秋值班到中午溜号，还是没赶上家里那顿热饭",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/i-was-on-duty-until-noon-during-the-mid-autumn-festival-and-missed-the-hot-meal-at-home.html",
+      "link": "https://9sb.net/archives/i-was-on-duty-until-noon-during-the-mid-autumn-festival-and-missed-the-hot-meal-at-home.html",
       "created": "2026-09-25 10:29:47",
       "updated": "2026-09-25 10:29:47",
       "excerpt": "兄弟中秋节送过来一个木盒子，打开是一饼老白茶。米白色棉纸上三个大字，配着根棕缎带，旁边搁着一把茶刀，看着挺像回事。我平时也泡两杯，但对茶是真不懂，好坏全凭舌头高兴。说回中秋。先祝朋友们中秋快乐。...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 144
     },
     {
@@ -7203,9 +7203,9 @@
   ],
   "statistical_data": {
     "friends_num": 63,
-    "active_num": 56,
-    "error_num": 7,
+    "active_num": 55,
+    "error_num": 8,
     "article_num": 600,
-    "last_updated_time": "2026-10-19 15:37:55 UTC"
+    "last_updated_time": "2026-10-19 21:04:58 UTC"
   }
 }
