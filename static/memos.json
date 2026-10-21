@@ -1,5 +1,12 @@
 [
   {
+    "id": 1227,
+    "content": "这是“您的时代”。吃苦的时代。\n![ningdeshidai.png](https://img.hux.ink/image/2026/10/ningdeshidai-20261021-133848-1cf3d3.png)",
+    "createdTs": 1792561140,
+    "resourceList": [],
+    "tags": []
+  },
+  {
     "id": 1226,
     "content": "太懒了。科学上网工具一直无法开机自启，之前每次都是开机之后手动打开，今天花了点时间一次性解决了。顺带把开启虚拟网卡模式下无法访问公司内网服务的问题也一并解决了。",
     "createdTs": 1792545952,
