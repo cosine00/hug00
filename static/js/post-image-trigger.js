@@ -3,8 +3,17 @@
 
   var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"></path></svg>';
 
+  function isFullImage(image) {
+    try {
+      return new URL(image.getAttribute('src'), window.location.href).hash === '#full';
+    } catch (error) {
+      return false;
+    }
+  }
+
   function isArticleImage(image) {
-    return !image.closest('.post-image-preview') &&
+    return !isFullImage(image) &&
+      !image.closest('.post-image-preview') &&
       !image.matches('.avatar, .tk-avatar-img') &&
       !/emotion/i.test(image.getAttribute('src') || '');
   }
