@@ -1,6 +1,78 @@
 {
   "article_data": [
     {
+      "title": "博客的评论（回应）真的很重要吗？",
+      "author": "碎言",
+      "avatar": "https://icon.horse/icon/www.suiyan.cc",
+      "link": "https://www.suiyan.cc/blog/20261021212349",
+      "created": "2026-10-21 13:23:49",
+      "updated": "2026-10-21 13:23:49",
+      "excerpt": "博客的评论（回应）真的很重要吗？",
+      "site_url": "https://www.suiyan.cc/",
+      "feed_url": "https://www.suiyan.cc/rss.xml",
+      "floor": 1
+    },
+    {
+      "title": "逐渐“去虾化”",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/417.html",
+      "created": "2026-10-21 08:37:00",
+      "updated": "2026-10-21 08:37:00",
+      "excerpt": "今天还是决定了一件事：把在Hermes上运行的任务迁移至本地的workbuddy中。没办法，Token实在是太贵了。我的一台轻量云中部署了Hermes这个AI助手，我平时会用QQ来指挥它部署我的...",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/feed/",
+      "floor": 2
+    },
+    {
+      "title": "「听不懂话」的销售",
+      "author": "So!azy",
+      "avatar": "https://icon.horse/icon/blog.solazy.me",
+      "link": "https://blog.solazy.me/20261020/",
+      "created": "2026-10-21 08:00:09",
+      "updated": "2026-10-21 08:00:09",
+      "excerpt": "今天在机场候机的时候，接到了一个陌生电话。接起来听了两句，是去年我曾经咨询过的一家保险中介平台的顾问，打电话过来例行回访，顺便问问最近有没有购置保险的打算。 赶巧我最近确实在看一些重疾险的产品，索性就没挂电话，直接抛出了我这段时间最关心的一个问题：如果我和女朋友还没有结婚，我能不能直接给她买重疾险？ 我之所以特意问这个，是因为前阵子我自己查了好几个主流平台，发现重疾险在投保人关系上卡得很死，基本只能给本人的直系亲属或者法定配偶投保。如…",
+      "site_url": "https://blog.solazy.me/",
+      "feed_url": "https://blog.solazy.me/feed/",
+      "floor": 3
+    },
+    {
+      "title": "博客主题全新升级",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/406.html",
+      "created": "2026-10-21 07:05:00",
+      "updated": "2026-10-21 07:05:00",
+      "excerpt": "自从有了AI，人人都变成了发明家。今天花了一个上午的时间重新做了一个博客主题。其实本来不打算这样做，只是想在原来那个蓝色调子的基础上修修补补。可是改着改着，AI建议我改一下风格。于是干脆重做了。...",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/feed/",
+      "floor": 4
+    },
+    {
+      "title": "我妈接到冒充中国移动的诈骗电话",
+      "author": "Sheep5的博客",
+      "avatar": "https://icon.horse/icon/sheep5.net",
+      "link": "https://sheep5.net/archives/403.html",
+      "created": "2026-10-21 06:37:00",
+      "updated": "2026-10-21 06:37:00",
+      "excerpt": "昨天我妈忽然打来语音电话，问我家里的宽带和她的手机套餐是不是已经续过费了。我一听也有点懵，想不起来了。听我妈说完才知道，是一个自称是中国移动的人给她打电话说套餐到期了，而且没有现在的这个优惠了，...",
+      "site_url": "https://sheep5.net/",
+      "feed_url": "https://sheep5.net/feed/",
+      "floor": 5
+    },
+    {
+      "title": "Twikoo 为我发布了一个新版本",
+      "author": "Mr.He",
+      "avatar": "https://cravatar.cn/avatar/d07ff632a5fa1256a69d92e1f9e38ce8?s=96&d=mm&r=g",
+      "link": "https://www.mrhe.net/3761.html",
+      "created": "2026-10-21 05:51:00",
+      "updated": "2026-10-21 05:51:00",
+      "excerpt": "事情是这样的，这几天在折腾 Twikoo 评论系统，在自定义邮件回复时，发现缺少变量，于是在 Github 上提交了一个 Issues，没想到 24 小时内就增加了相应功能，并发布了 2.0.1...",
+      "site_url": "https://www.mrhe.net/",
+      "feed_url": "https://www.mrhe.net/feed/",
+      "floor": 6
+    },
+    {
       "title": "免费领阿里Qoder的奶茶咖啡免单卡",
       "author": "Sheep5的博客",
       "avatar": "https://icon.horse/icon/sheep5.net",
@@ -10,7 +82,7 @@
       "excerpt": "昨天收到了一条阿里云发的短信，大意是阿里最近正在推广Qoder。Qoder就是和WorkBuddy差不多的东西，都是AI编程。为了推广Qoder，阿里有新活动：注册后简单体验就可得一张价值18元...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 1
+      "floor": 7
     },
     {
       "title": "牛仔裤选择和胖一些不怕大病？",
@@ -22,7 +94,7 @@
       "excerpt": "偶然发现牛仔裤穿不下（小了），有延长...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 2
+      "floor": 8
     },
     {
       "title": "AI把我的想法，变成了看得见的东西",
@@ -34,7 +106,7 @@
       "excerpt": "熟悉的网友都知道，Pigeon的作者不更新，升级到PHP 8.0之后影响更大，主题以及插件很多功能都用不了，去年我只能换了一个其他主题过渡，可以用但是不满意。到如今，没想到AI发展速度那么快，有想法没能力的我，这就是把想法变成可以看到的内容。 主题修复/更...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 3
+      "floor": 9
     },
     {
       "title": "昨日团建",
@@ -46,7 +118,7 @@
       "excerpt": "之前预告团建，以为会因为天气延期呢！最后还是如期去了。昨晚7点多回到合肥，到家八九点了，又冷又疼又酸又累，难受 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 4
+      "floor": 10
     },
     {
       "title": "望东方，木刻艺术展",
@@ -58,7 +130,7 @@
       "excerpt": "中午下班，吃过饭，吧嗒吧嗒走啊走，迈入四川省美术馆，这里正在举行戴政生木刻艺术展。主题叫做“望东方”，刀木情深，丹心归属，参观完整个展览，感触颇深。记忆中的木刻艺术，就是一幅幅版画，脑海中浮现的就是木刻的鲁迅形象。而这次展览，彻底打破了我的刻板印象，原来木刻画还可以表达如此深邃的意境，可以融入如此烟火气的生活，可以洋溢着笑脸，可以迷醉着躯体。此时此刻，翻看拍下来的照片，依然心生欢喜，嘴角上扬，哈哈哈。 来，一起走进木板与刻刀的世界………",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 5
+      "floor": 11
     },
     {
       "title": "爹味罐头",
@@ -70,7 +142,7 @@
       "excerpt": "我想我也有爹味。 并不是在我成为爹之后才有的，但我不知道什么时候开始散发出来的。 那爹味到底是一种什么味道呢？我想还是不要轻易下定义的好，因为下了定义就要论证，是很累的。 爹味大概和男人味、女人味差不多，就是一种感觉吧。那大概和男人味、女人味一个样，也是不容易说清的。 那为什么叫爹味呢？ 对于女士应该叫妈味，相信意思应...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 6
+      "floor": 12
     },
     {
       "title": "三大自托管系统使用感受",
@@ -82,7 +154,7 @@
       "excerpt": "近半年来，先后折腾了 Artalk / Twikoo / Waline 三个主流自托管评论系统，各有优劣，我把自己的使用感受从以下几个维度简单聊一聊。部署难易度推荐 Twikoo，最新版本支持 ...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 7
+      "floor": 13
     },
     {
       "title": "失职与无助",
@@ -94,7 +166,7 @@
       "excerpt": "晚上下班前，老板临时叫我下楼，说随便吃口饭。职场待久了的人都懂，这种临时起意的「随便吃点」，通常都不太随便。 到了饭店推门进去，桌边除了老板，还坐着公司的 HR。我刚拉开椅子坐下，老板就冲 HR 抬了抬下巴：「来，你说吧，让他给你分析分析。」 话音刚落，我就知道这顿饭大概是个什么局了。 事情倒也不复杂。公司里有个刚转正不久的人事专员 A，最近工作状态掉得很厉害，连着办砸了好几件事，光是在我手上栽跟头的就有三件。今天组这个局，倒不是为了…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 8
+      "floor": 14
     },
     {
       "title": "包尖钢笔错误修复失败",
@@ -106,7 +178,7 @@
       "excerpt": "wife最近买了几个国产钢笔，5元左...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 9
+      "floor": 15
     },
     {
       "title": "污染源异常数据推送平台，为了值夜班搭了个推送平台",
@@ -118,7 +190,7 @@
       "excerpt": "值夜班总怕漏数据，半夜频繁的起床，太痛苦了，尤其年龄越来越大，的确有点吃不消，索性搭了个采集+推送平台。{mx_photo}{mx_photo}上夜班的时候，最怕电脑上的数据在跳，人却困得睁不开...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 10
+      "floor": 16
     },
     {
       "title": "看太阳，去追光",
@@ -130,7 +202,7 @@
       "excerpt": "周一，去单位路上，经过一个垃圾桶，看见保安大哥提了一袋垃圾过来扔。扔的时候瞥见桶里有个空牛奶盒，就顺手捡走了。他边走边哼着小曲，这是属于他的快乐，牛奶盒子是可以卖钱的。走到十字路口，远远看见天边的日出，路口满是等红灯的行人。突然就想，很多人去海边看日出，去登山看日出，去大草原看日出，大家看的难道不是同一个太阳？ 是啊，太阳本身没变，可各处感受到的美不一样。为什么觉得美？因为有海、有云、有山、有雾，有各种各样的参照物。在参照物的映照下，…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 11
+      "floor": 17
     },
     {
       "title": "技术依赖",
@@ -142,7 +214,7 @@
       "excerpt": "今天早上收到uniapp云空间续费的通知，看了下还有一个月到期，点击续费的时候发现最长时间选不到一年了。 看了 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 12
+      "floor": 18
     },
     {
       "title": "闺蜜圈 [v 5.2.30]",
@@ -154,7 +226,7 @@
       "excerpt": "更简单更智能的大姨妈记录app：https://guimiquan.cn 版本号：5.3.20 更新内容： 1 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 13
+      "floor": 19
     },
     {
       "title": "ccda大灾变类似游戏",
@@ -166,7 +238,7 @@
       "excerpt": "Releases · CleverR...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 14
+      "floor": 20
     },
     {
       "title": "把所有要看的东西集中到一个网页：最近我给自己搭了个个人面板",
@@ -178,7 +250,7 @@
       "excerpt": "先说为什么折腾我服务器上已经跑着一堆自部署服务：博客、RSS 阅读器、广告拦截、密码库、图床。服务多了，麻烦也来了——要看的东西太分散：博客访问量在一个后台，RSS 在一个后台，邮箱在一个后台，...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 15
+      "floor": 21
     },
     {
       "title": "你来啦！[1.44.20] — 正式上线 多端覆盖",
@@ -190,7 +262,7 @@
       "excerpt": "简单更新，支持广告屏蔽（安卓，ios暂未发版）。不得不说，手机上各种广告入侵，很多页面都直接没法看了。 实际效 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 16
+      "floor": 22
     },
     {
       "title": "最近听歌听吐了",
@@ -202,7 +274,7 @@
       "excerpt": "从三个音乐 App 到现在的 QQ 音乐之前我写过一篇文章，说自己很喜欢听音乐。那时候 QQ 音乐、汽水音乐、Apple Music 我都在用。不过自从换了港区 Apple ID 以后，Appl...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 17
+      "floor": 23
     },
     {
       "title": "关于想象医学和现代医学II",
@@ -214,7 +286,7 @@
       "excerpt": "感觉上一篇还没有说完，这就继续。 什么是想象医学 之前我说医学是一个系统科学，例如功能上包括预防、诊疗、康复、健康维护；从学科分为基础、临床、公共卫生、药学、技术等等。那什么是想象医学呢？想象医学自然就是靠简单的经验归纳和想象啊。例如经典书目中的寡妇床头灰可以入药，因为看到寡妇独居、床铺久不挪动、少人打扫，床头灰尘带有...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 18
+      "floor": 24
     },
     {
       "title": "无接触交通事故备案",
@@ -226,7 +298,7 @@
       "excerpt": "无接触交通事故备案",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 19
+      "floor": 25
     },
     {
       "title": "迷失在丰富里",
@@ -238,7 +310,7 @@
       "excerpt": "2026-10-19 迷失在丰富里 不止是物品，注意力也是同样。我想，我们每天获取的信息早就已经超越了自己所能处理的极限。以前是信息极度匮乏，无法做出好的决策。现在则是反过来，信息极度丰富，远远超出每个人的真实需求，于是同样让人无法做出好的决策。就是说，我们根本没有时间认真处理每一条消息，然后我们也可能根本没有时间为信息做优先级判断，原因是我们的注意力在面对极度丰富的信息时被无限稀释，每一条信息上只能分配到极为稀薄的一点点。 如果你也…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 20
+      "floor": 26
     },
     {
       "title": "厦门出差记（五）：攻略厦门植物园",
@@ -247,10 +319,10 @@
       "link": "https://bluehe.cn/archives/xiamen-business-trip-5",
       "created": "2026-10-18 22:16:00",
       "updated": "2026-10-18 22:16:00",
-      "excerpt": "2026年9月6日，早上在高德地图上买了一张厦门植物园的27元的成人票，我从岛内坐公交抵达西门，此时人不多，扫码检票入院，就只带了一瓶水，想着应该游览很快，但是我低估植物园的面积。 [photos] [/photos] 在微信小程序上购买观光车通票，...",
+      "excerpt": "2026年9月6日，早上在高德地图上买了一张厦门植物园的27元的成人票，我从岛内坐公交抵达西门，此时人不多，扫码检票入院，就只带了一瓶水，想着应该游览很快，但是我低估植物园的面积。 在微信小程序上购买观光车通票，10元6次，也就是覆盖约6个站点，足够了。具...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 21
+      "floor": 27
     },
     {
       "title": "周末流水账 1018",
@@ -262,7 +334,7 @@
       "excerpt": "今天是周日，给身体安排了一个彻底松弛的「体能充电日」。 早上睡到自然醒。这半年虽然在健身和饮食上没怎么维持自律，但睡眠节奏倒是被我调理得相当到位。当然，这也归功于前阵子把家里的床和床垫都换成了不错的款式，睡眠质量肉眼可见地上了个台阶。今天直接在 Apple Watch 和 iOS 健康 App 里拿到了一个「完美睡眠」的评价。 ▲ 完美睡眠（数据来自 Apple Watch + iOS 健康 App） 九点多醒来，在床上刷了一小会儿手…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 22
+      "floor": 28
     },
     {
       "title": "2026W42：桂博园和良渚遗址公园",
@@ -274,7 +346,7 @@
       "excerpt": "恢复写周记。",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 23
+      "floor": 29
     },
     {
       "title": "二三十年后，AI 将如何改变工作的价值？",
@@ -286,7 +358,7 @@
       "excerpt": "写作说明：本文借助 AI 收集和梳理相关研究、报道与不同观点，并结合个人思考完成。文中对未来的判断属于基于现有资料的推论，欢迎讨论与指正。 今天突然想到一个问题：再过二三十年，当 AI 更深入地参与生产与科研，社会的职业分工会发生怎样的变化？什么样的工作会变得更有价值？ 我们很容易把高学历、高技术门槛和职业安全联系起来。学习足够复杂的知识，掌握足够专业的技能，似乎就能在社会分工中占据一个比较稳固的位置。 但如果 AI 能越来越好地写程…",
       "site_url": "https://www.xiaoten.com/",
       "feed_url": "https://www.xiaoten.com/index.xml",
-      "floor": 24
+      "floor": 30
     },
     {
       "title": "忍者神龟3",
@@ -298,7 +370,7 @@
       "excerpt": "童年阴影系列，微笑继续。本篇又名：一块披萨引发的回忆。 这是当年包机房里的大热门游戏。名字有点歧义，甚至我20年前写《激龟忍者传》时的认知都是错的：日版是忍者神龟2，美版因为把激龟忍者传也算了进去，所以是忍者神龟3，盗版一般盗的是美版，所以也应该算3。 这次的阴影不少人也能猜到：打不死的斯雷德。当年游戏开发商为了防止盗版，给游戏上了特殊的加密。最有名的就包括一碰就死的《外星战将》，第二关BOSS不死的《特救指令》和本作，第六关BOSS…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 25
+      "floor": 31
     },
     {
       "title": "贵有贵的道理,何况还不算贵",
@@ -310,7 +382,7 @@
       "excerpt": "昨天vipcloud停机维护,导致了 博客无法访问,Sub2api也无法访问,AI也使用不了. 所以连夜把博客和其它项目迁移回腾讯云的日本轻量服务器. 目前线路看上去还可以,就是不知道晚高峰的情况如何了. 大厂还是可靠很多的,小厂的机子真就是玩具 这是MJJ的\"不可能三角\",稳定,价格,线路只能三选其二",
       "site_url": "https://www.imsun.org",
       "feed_url": "https://www.imsun.org/feed/",
-      "floor": 26
+      "floor": 32
     },
     {
       "title": "会飞的汽车",
@@ -322,7 +394,7 @@
       "excerpt": "前两天，老马带着他会飞的汽车出来秀场了。 我不知道世界上其他人有没有被震撼到，反正我有。昨天不是和AI聊故地重游之感吗？看到会飞的汽车让我回到了小时候看各种科幻电影里面的飞车情形。 印象最深的是《第五元素》。也曾幻想在空中开着飞车时，一个漂亮妹子从天而降，落到自己的后座。 然后看到马斯克的飞车，突然心头一震，真的实现了...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 27
+      "floor": 33
     },
     {
       "title": "地球online",
@@ -334,7 +406,7 @@
       "excerpt": "和wife他们看了个几个动物视频， ...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 28
+      "floor": 34
     },
     {
       "title": "留在手里的手机",
@@ -346,7 +418,7 @@
       "excerpt": "前两天闲下来，我低头看了一眼手里的 iPhone 17 Pro，顺手点进 Apple 官网，打开机型对比页面，把今年刚出的 iPhone 18 Pro 拉进来做了一个横向比对。 往下滑动屏幕的那几分钟里，我内心毫无波澜。所谓的跨代「升级」，几乎全堆砌在那些对日常使用无足轻重的「专业能力」上。更尴尬的是，即便是这些专业参数，今年的挤牙膏幅度也显得捉襟见肘。偏偏赶上 AI 时代上游基础设施的产能倾斜，内存与闪存颗粒价格疯涨，硬件成本被直接…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 29
+      "floor": 35
     },
     {
       "title": "厦门出差记（四）：博物馆与CCD海景",
@@ -355,10 +427,10 @@
       "link": "https://bluehe.cn/archives/xiamen-business-trip-4",
       "created": "2026-10-18 01:30:00",
       "updated": "2026-10-18 01:30:00",
-      "excerpt": "这天下午来到了厦门市博物馆（主馆），入馆前我还奇怪，为什么科技馆的人流量还多，打破了以往的认知，一进入才知现在开放馆比较少，总的算4个，不大，1个小时就可以游览完。 [photos] [/photos] 风狮爷是闽南重要的辟邪瑞物，地域特色的民俗造像。...",
+      "excerpt": "这天下午来到了厦门市博物馆（主馆），入馆前我还奇怪，为什么科技馆的人流量还多，打破了以往的认知，一进入才知现在开放馆比较少，总的算4个，不大，1个小时就可以游览完。 风狮爷是闽南重要的辟邪瑞物，地域特色的民俗造像。 躲过了炎热的气候，来到了一国两制沙滩，享...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 30
+      "floor": 36
     },
     {
       "title": "土豆牛肉",
@@ -370,7 +442,7 @@
       "excerpt": "今天去超市，看到一块牛肉贼漂亮，直接买了，2斤多一点，35元一斤，挺贵的，但是肉漂亮啊，我也是第一次买到这么好 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 31
+      "floor": 37
     },
     {
       "title": "为什么？",
@@ -382,7 +454,7 @@
       "excerpt": "最近给AI讲每次回答我要同时扮演“智慧老者”，“专门挑刺的人”，“专门捧臭脚的人”，然后以各自角度组织语言回答我的问题。今天下午就跟AI聊了不少东西，但我好像只关注我要问些啥了，没有太关心它怎么回答了。但的确聊得不亦乐乎。 读下来它的回答还是有点拍马屁或者叫自说自话。不过“专门挑刺的”讲的话的确让我有些启发。 记录一下...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 32
+      "floor": 38
     },
     {
       "title": "预告下周一团建",
@@ -394,7 +466,7 @@
       "excerpt": "莫名其妙要团建，从报名参加转变为全体参加。都去，你不去还不行，没有特殊理由，也不好意思不去。同事说，有吃有喝还 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 33
+      "floor": 39
     },
     {
       "title": "上博美洲文明展",
@@ -406,7 +478,7 @@
       "excerpt": "上博暨2024年办了《金字塔之巅：古埃及文明大展》后，今年暑期又联合墨西哥和秘鲁相关国家机构，推出了《世界树之 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 34
+      "floor": 40
     },
     {
       "title": "Ubuntu 下 WanGP 部署 MiniMax H3",
@@ -418,7 +490,7 @@
       "excerpt": "Ubuntu 下 WanGP 部署 MiniMax H3",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 35
+      "floor": 41
     },
     {
       "title": "基于长周期面波的全球震动事件检测",
@@ -430,7 +502,7 @@
       "excerpt": "我得写点正经的东西，要不然认识我的人看到我写的东西会觉得我不学无术啊。 相信大家都比较关心哪里发生地震了，什么时候发生的，震级是多少。那就先给大家推荐一下在哪里可以看到地震目录： 1. 中国地震台网中心的地震目录。 2. IRIS的Seismic Monitor。好像要梯子。 警告，有密集恐惧症患者慎点。 3. USG...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 36
+      "floor": 42
     },
     {
       "title": "一张好看的蓝天照片",
@@ -442,7 +514,7 @@
       "excerpt": "拍到了一张好看的蓝天照片，分享一下给大家欣赏。",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 37
+      "floor": 43
     },
     {
       "title": "Lark邮箱越来越慢了",
@@ -454,7 +526,7 @@
       "excerpt": "之前换成Lark家的域名邮箱主要还是因为受不了阿里邮箱App的一些Bug，尤其是在Mac上，时常遇到无法登陆的情况。研究了一会儿，甚至还专门写了一篇文章：盘点在中国好用的域名邮箱因为现在用的港区...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 38
+      "floor": 44
     },
     {
       "title": "棉花团",
@@ -466,7 +538,7 @@
       "excerpt": "昨晚，在楼下看到一只白色的喵喵，端端正正的坐在一户人家的车顶。看我靠近，歪着脑袋看了过来。嘿，可爱，白色的一团，软软糯糯，就像棉花一样。楼下的猫咪很多，可这只猫咪是第一次见，顿觉分外欢喜。心想，可真乖。 哈哈哈哈，或许是猫咪感知到了我在夸赞它。只见得它突然起身站了起来，来个闪身步，旋即向着我这边走了过来。哇，靠近我，再靠近我。本以为它看到我会立马躲开，看来是这一片的街溜子啊，一点都不怕人。 突然，停住了脚步。呃，只见猫咪非常陶醉的伸了…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 39
+      "floor": 45
     },
     {
       "title": "山",
@@ -478,7 +550,7 @@
       "excerpt": "上周末陪家人1.5倍速刷了这个ai片...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 40
+      "floor": 46
     },
     {
       "title": "耗费两千积分做了个家常菜谱 Recipe Hub",
@@ -490,7 +562,7 @@
       "excerpt": "家常菜谱 Recipe Hub · 项目速览碎碎念这个项目纯纯靠Workbuddy参考各个开源的菜谱程序，像是现有的开源菜谱程序，很多功能并不适配中文环境，用着总是别扭，这个项目前后靠AI打磨了...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 41
+      "floor": 47
     },
     {
       "title": "不防滑的马克杯",
@@ -502,7 +574,7 @@
       "excerpt": "吐槽一下我们公司定制的马克杯握手体验极差。 不知道是不是我的问题？总感觉我们公司的设计都有点反人类。刚用这个马 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 42
+      "floor": 48
     },
     {
       "title": "Typecho 曝出 SSRF 漏洞，我自己的博客也中了，顺手把补丁打上",
@@ -514,7 +586,7 @@
       "excerpt": "今天刷到一个安全博客的更新，标题带着 CVE 编号，讲的是 Typecho 的一个 SSRF 漏洞。我博客用的就是 Typecho，看到这种跟自己有关的东西肯定要点进去看，看完之后心情有点复杂。...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 43
+      "floor": 49
     },
     {
       "title": "找不到路的司机",
@@ -526,7 +598,7 @@
       "excerpt": "今天在深圳打车去机场，碰上一件挺扫兴的事。 我住在同泰万怡酒店，叫车的时候特意把上车点定在酒店正门。这是一家体量不小的酒店，院子宽敞，车道直接通向旋转门。按常理来说，这种地标级的位置对网约车司机最友好，导航明确，不用在窄巷子里会车，也不用担心违停被拍，师傅好找，我推着行李上车也省事。 结果软件显示车子到了附近，司机的电话进来了。他上来就说酒店进不来。我愣了一下，说可以进来的，一直都有车开到门口。他在那头含糊了一句「没看到哪里能进」，紧…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 44
+      "floor": 50
     },
     {
       "title": "装了一路的那本书",
@@ -538,7 +610,7 @@
       "excerpt": "这次出门一周，临走前收行李的时候，我特地从书架上抽了一本书塞进包里。 那是我很喜欢的一套藏书里的一本，高文麒老爷子早年深度旅游时写的。因为这趟行程里有长沙，我就顺手挑了讲荆楚文化和湘鄂的那册。理由特别充分，飞机上没网，高铁过隧道信号断断续续，总得找点东西打发时间。怕光看书会腻，我还打开小宇宙，提前下载了好几期播客离线存着。 把拉链拉上的那一刻，我觉得自己安排得滴水不漏。 结果一周跑下来，回到家把包打开，那本书原封不动地躺在内胆夹层里，…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 45
+      "floor": 51
     },
     {
       "title": "在家又长胖了",
@@ -550,7 +622,7 @@
       "excerpt": "在家是件很无聊的事情。自从腿受伤以后就一直躺在家里，已经第三个月了。刚开始被病痛折磨，后来病情开始稳定下来，就开始感觉到无聊了。本来体重就有点超标，车祸之前还在断断续续减肥，至少每天还能运动。现...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 46
+      "floor": 52
     },
     {
       "title": "好久没有看书了",
@@ -562,7 +634,7 @@
       "excerpt": "也不知道为什么，自从买了文石的电纸书以后，看书这件事好像是一股热乎劲。前前后后买了好几个电纸书，最后只剩下一个。我还开了一年的微信读书会员。刚开始的时候看的是挺频繁的，几乎天天看。后来就慢慢放下...",
       "site_url": "https://sheep5.net/",
       "feed_url": "https://sheep5.net/feed/",
-      "floor": 47
+      "floor": 53
     },
     {
       "title": "出去玩又要花钱",
@@ -574,7 +646,7 @@
       "excerpt": "接着昨天那件事再想，我感觉我爸那句话里，可能还不只是对“工作为什么会积下来”的理解不同，多少也夹杂着一点对我请假出去玩的不认同。 在他的观念里，请假本身就意味着少干活，少干活可能意味着少挣钱。出去旅游又是另一笔支出，交通、住宿、吃饭、门票，样样都要花钱。 所以从他的角度看，长时间请假出去玩，很容易变成一件“不划算”的事情：一边少挣，一边多花。 如果回来以后又刚好碰上加班，就更容易形成一种判断—-前面出去玩得太久，现在自然要把落下的事情…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 48
+      "floor": 54
     },
     {
       "title": "别人的东西就是香吗？",
@@ -586,7 +658,7 @@
       "excerpt": "别人的东西就是香吗？ 参考知乎习惯，先问是不是，再问为什么。 首先来看看这句话吧。 如果是自己的东西那会香吗？有人会珍惜自己的东西，有的人喜新厌旧，但显然我们不是在讲自己的东西。我们讲的是别人手里有的东西，既然在别人手里，那暂时就没在你的手里。那个东西可能不属于你。 别人的东西一定是香的吗？不一定，要是别人手上捧了一坨...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 49
+      "floor": 55
     },
     {
       "title": "战争召唤地狱之门110多g运行成功",
@@ -598,7 +670,7 @@
       "excerpt": "战争召唤地狱之门夸克网盘分享 战争号...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 50
+      "floor": 56
     },
     {
       "title": "从零搭建Obsidian每日日记工作流保姆教程",
@@ -610,7 +682,7 @@
       "excerpt": "{riven_notice type=”red”}之前写教程是最耗时间，一篇教程写下来 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 51
+      "floor": 57
     },
     {
       "title": "别人的东西就是香",
@@ -622,7 +694,7 @@
       "excerpt": "晚餐快好了，但饿极了的娃先泡了他爱吃的方便肥肠粉。 我们一般也比较爱吃粉，但他的那个方便肥肠粉通常散发出难闻的味道。娃每次吃，我和妻子一般都躲得远远的。 晚餐开吃了，有酸菜鱼。爱吃鱼的娃看到了我们的鱼，说道：“早知道有鱼我就不泡粉丝了啊。” 他嗦了几口粉丝，就把它推到一边，开始给自己盛饭。 这时，妻子看到了他的粉，居然...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 52
+      "floor": 58
     },
     {
       "title": "Ubuntu 配置多宽带",
@@ -634,7 +706,7 @@
       "excerpt": "本文介绍在 Linux 多宽带接入场景下，利用 NetworkManager 配置路由跃点（Metric）与禁用 DHCP 冗余默认路由，实现主备线路自动故障切换。通过公网 204 探针检测链路状态，确保流量平稳转移，并提供了出口验证与断网模拟测试方法。",
       "site_url": "https://www.eallion.com",
       "feed_url": "https://www.eallion.com/index.xml",
-      "floor": 53
+      "floor": 59
     },
     {
       "title": "来我博客做京官",
@@ -646,7 +718,7 @@
       "excerpt": "小区的桂花开了，这是第二茬，中秋节曾经开过。我们小区是 2012 年建成的，绿植几乎全是桂花树，常年绿色，叶子也掉的不多，容易打理，每到金秋时节，整个小区香气扑鼻,晚饭过后散步，感觉心旷神怡。今...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 54
+      "floor": 60
     },
     {
       "title": "松声｜廿六年·十月中·骤生变",
@@ -658,7 +730,7 @@
       "excerpt": "自己做饭最近穷！中午点外卖，基本上都能保证在十五块以上了，关键还不是很好吃，没办法自己整吧！一天也就中午有闲时间折腾了，前段时间公司门口的麻辣烫深得我心，想买火锅底料炒，但是不确定自己能做几顿，...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 55
+      "floor": 61
     },
     {
       "title": "失败即是乐趣",
@@ -670,7 +742,7 @@
       "excerpt": "看了一个介绍游戏的帖子，有一个图，感...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 56
+      "floor": 62
     },
     {
       "title": "工作的节奏",
@@ -682,7 +754,7 @@
       "excerpt": "昨天下班比平时晚了一点。 我回到家时，爸妈已经吃完晚饭，见我还没回来，就带着孩子在小区楼下玩。后来我到了，把孩子领上楼准备写作业。 我爸见到我，问了一句：“今天怎么这么晚？” 我说，加了一会儿班，晚下班了半个小时。 他接着说，大意是：“前段时间出去玩了那么久，现在是不是要把落下的工作补回来。” 他说的是前段时间中秋和国庆连休，我们去了青甘大环线远游，前后 13 天，其中请了 3 天假。 当时听到这句话，我心里有一点不舒服。因为最近工作…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 57
+      "floor": 63
     },
     {
       "title": "出站口外趴活的司机",
@@ -694,7 +766,7 @@
       "excerpt": "最近这一周都在外面出差，在几个城市的高铁站和机场之间连轴转。 我是一个习惯在出发前就把动线锁死的人。从踏出舱门或车厢的那一刻起，哪部电梯能最快下到到达层，网约车上车点在 P 几停车场，车牌号是多少，甚至这会儿是在 C 区还是 D 区候车，手机屏幕上早就有数了。我拉着箱子往前走的时候，步速是恒定的，眼神基本只看头顶的指示牌和地面导流线，整个人的状态非常明确：我有地方去，别打扰我。 但每次穿过通道往网约车停车点走的时候，总会遇到那群在柱子…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 58
+      "floor": 64
     },
     {
       "title": "20260901-碎碎念",
@@ -706,7 +778,7 @@
       "excerpt": "最近在听 tmd还是工作，现在我是相信了，每个人都会遇到属于自己的一坨shit，而且是伴随终生的，每份工作干的我都想毁灭算了。为什么有的工作流程乱七八糟的，我怎么记得住啊。 睡眠状况一如既往的糟糕，自从来到这家公司后再也没有睡过一个好觉。 在上海，换公司从来不是新的开始...",
       "site_url": "https://wangyunzi.com",
       "feed_url": "https://wangyunzi.com/rss.xml",
-      "floor": 59
+      "floor": 65
     },
     {
       "title": "小镇",
@@ -718,7 +790,7 @@
       "excerpt": "已经是第三次路过这个小镇。 我的车就停在旁边的停车场里。杆子还是老样子，抬起时会咯吱一声，就像一个相识的老人，勉强地从牙缝挤出一个“哼”来，和你打招呼。不用担心找不到停车位，似乎那个位置总是为我留着，又或者其实停车场一直都那么空荡。 小镇旁边是个宽阔的湖，湖水在夕阳下闪着金光。我缓步来到了湖旁边的广场。广场上稀稀落落走...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 60
+      "floor": 66
     },
     {
       "title": "战争召唤地狱之门",
@@ -730,19 +802,7 @@
       "excerpt": "这个游戏有个好友，就玩这个买的正版，...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 61
-    },
-    {
-      "title": "给Hermes新增了账单和博文助手两个Bot",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/375.html",
-      "created": "2026-10-14 05:34:00",
-      "updated": "2026-10-14 05:34:00",
-      "excerpt": "今天又研究了一下Hermes，也就是爱马仕。其实我在服务器上装它已经挺长时间了，之前大部分时间都是用它帮我装装软件、维护维护服务器。但我一直想把它当成生活助手，也一直在探索这件事。到现在为止，我...",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/feed/",
-      "floor": 62
+      "floor": 67
     },
     {
       "title": "大意失荆州 — 浅谈cdn后面的源站防护",
@@ -754,19 +814,7 @@
       "excerpt": "随着开发的服务和应用越来越多，当初为了省事直接通过后端提供服务的做法，从短期看来的确是省了再次部署的麻烦。但是 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 63
-    },
-    {
-      "title": "家里终于来水了",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/373.html",
-      "created": "2026-10-14 00:19:00",
-      "updated": "2026-10-14 00:19:00",
-      "excerpt": "前段时间一直让人头疼的胶州水荒，总算有了好转。之前我写过，胶州最近水不太够，棘洪滩水库水量变少，连家里的水压也跟着降了。那段时间用水真的很不方便，水流细细的，有时甚至让人担心会不会突然停水。至于...",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/feed/",
-      "floor": 64
+      "floor": 68
     },
     {
       "title": "赶路",
@@ -778,7 +826,7 @@
       "excerpt": "晨七点，这几天早晚倒是凉快了，中午还是出奇的热，昨天中午干到了29摄氏度，这哪里是秋天啊，夏天回光返照了么？国庆后这两周，事儿多。本想五点一刻准时下班走，奈何一年365天就没有哪天可以准时准点的下班。闭目，想了想，为啥这么多事情， 为啥别人就可以准时下班，为啥总是我在加班狗？嗯，问题出在自己身上😂，是的。 事情嘛，也要分个轻重缓急，有的是必须完成的， 有的是需要徐徐图之的，有的是紧急的，有的是……大道理都懂的嘛，咋个经常是一旦在工作中…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 65
+      "floor": 69
     },
     {
       "title": "国庆胶片影崇安",
@@ -790,19 +838,19 @@
       "excerpt": "国庆假期，手痒买了三卷新出的国产乐凯C400彩卷，装进Contax TVS，在崇安区随影了几处，并记流水账二篇 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 66
+      "floor": 70
     },
     {
       "title": "杂记-20261020",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/630/",
+      "link": "https://leolin86.com/archives/630/",
       "created": "2026-10-13 14:09:00",
       "updated": "2026-10-13 14:09:00",
       "excerpt": "浑浑噩噩的一个月，股市输钱无情绪价值，秋老虎暴晒下的广州，也不适合痛风患者出行，算上国庆假期窝酒店，已经窝了大半个月。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 67
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 71
     },
     {
       "title": "比闹钟醒得早，是一种勤劳么？",
@@ -814,7 +862,7 @@
       "excerpt": "闹钟设在 7 点 15 分，但我通常在 6 点 58 分或者 7 点整睁眼。 伸出手摸到手机，屏幕亮起的那几秒里，看着那个还没开始震动的闹钟界面，很多人大概会生出一种微妙的道德优越感：你看，我比设定的时间还要自律，我没有赖床，甚至连机器都没来得及催我。 社交网络上很喜欢把这种状态包装成自驱力、晨型人或者极致执行力的证明。但把这种生理反应直接等同于勤劳，往好听了说是误解，往难听了说，是对自己身体信号的一种盲目粉饰。 人在闹钟响之前自然醒…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 68
+      "floor": 72
     },
     {
       "title": "文字为什么需要化妆？",
@@ -826,19 +874,7 @@
       "excerpt": "本科的时候读过几本林清玄的书。已经忘记为什么要读他了，也许是为了解《第一次的亲密接触》的毒吧。 他的文字读起来让人觉得像是化了妆，好几层的妆。 好吧，用化妆来形容他的文字可能会让你觉得摸不着头脑。我重新描述一下我读到他的文字的感受。那就是太顺了，很优美，但充满了雕琢痕迹。相比起来，我自己的文字就像是个毛孔粗大到可以放牙...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 69
-    },
-    {
-      "title": "关停了在Cloudflare上的后付费服务",
-      "author": "Sheep5的博客",
-      "avatar": "https://icon.horse/icon/sheep5.net",
-      "link": "https://sheep5.net/archives/Cloudflare.html",
-      "created": "2026-10-13 08:47:00",
-      "updated": "2026-10-13 08:47:00",
-      "excerpt": "我用Cloudflare已经有一段时间了。从之前的Astro静态博客，我就用了R2作为我的博客图床。更久之前折腾NAS的时候我短暂的使用过Cloudflare Tunnel（内网穿透）。前段时间...",
-      "site_url": "https://sheep5.net/",
-      "feed_url": "https://sheep5.net/feed/",
-      "floor": 70
+      "floor": 73
     },
     {
       "title": "Typecho评论抽奖插件",
@@ -850,7 +886,7 @@
       "excerpt": "插件说明 在同一篇文章中创建多个限时抽奖活动，支持一轮结束后继续新增活动，也支持多个活动同时进行。每个活动截止后独立从本文符合其时间范围的顶层评论者中随机抽取 1 人 ，公示中奖昵称；无合格参与者则流局。支持实体和虚拟奖品：实体奖品邮件邀请中奖者填写收货地址，虚拟奖品将预设的兑换码、下载地址或说明直接发送到中奖邮箱。 安装与使用 下载仓库，将文件夹命名为 CommentLottery ，放到 Typecho 的 usr/plugins…",
       "site_url": "https://www.imsun.org",
       "feed_url": "https://www.imsun.org/feed/",
-      "floor": 71
+      "floor": 74
     },
     {
       "title": "出乎意料之中",
@@ -862,7 +898,7 @@
       "excerpt": "大宝周六时候讲了事情，这次考试全班唯...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 72
+      "floor": 75
     },
     {
       "title": "从哪吒换到极简探针，移植主题加毛玻璃，准备慢慢全部转过来",
@@ -874,7 +910,7 @@
       "excerpt": "最近逛论坛，看到一个探针项目，极简风格，一眼就喜欢上了。这两天刚好不忙，闲着也是闲着，又开始折腾啦。之前一直用的是哪吒探针，说实话功能是真的全，但对我来说有点过剩。我主要就想看看服务器在线不在线...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 73
+      "floor": 76
     },
     {
       "title": "随笔",
@@ -886,7 +922,7 @@
       "excerpt": "这两天有些工作上的事情在打搅我的脑子，因此就没有好好想写些什么，勉强又来写流水账了。 今天中午收到了快递送达的消息，才想起Blog Club寄过来的鼠标垫，已经在快递柜里面躺了两天了。赶紧小跑去快递柜拿。我还在好奇，难道除了鼠标垫还送了其他东西？到了快递柜，我一扫就得到一坨东西，有BC标志，又黑又粗但是软。然后再扫，没...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 74
+      "floor": 77
     },
     {
       "title": "scum二次测试",
@@ -898,7 +934,7 @@
       "excerpt": "从医院跑出来去了另一个岔路口，一支往...",
       "site_url": "https://acevs.com/",
       "feed_url": "https://acevs.com/feed/",
-      "floor": 75
+      "floor": 78
     },
     {
       "title": "拆东墙补西墙",
@@ -910,7 +946,7 @@
       "excerpt": "上周的时候看到有人提到关于评论区链接地址的安全性问题，这个所谓的安全性指的是访客的域名是不是还是一个健康的站点 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 76
+      "floor": 79
     },
     {
       "title": "再回十二桥，照无眠",
@@ -922,7 +958,7 @@
       "excerpt": "晚上十一点，没什么困意。今天参加一场中医类的考试，考室就是以前上中药学的教室。时隔八年，再一次认认真真逛了遍母校。19年疫情开始学校就封闭管理，再也没进来过，这次因为考试得以入内，也算一种因缘巧合。 这栋两层的小楼印象特别深，以前辅导员住过。她搬住处的时候，我们班好多同学去帮忙。 大二那年，中医学与辩证法编委会组织我们在这一楼培训，听了好多堂郝万山讲伤寒论，一群人围着讨论交流，转眼都是二十三年前的事儿。 继续走，看到了学生公寓。诺，这…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 77
+      "floor": 80
     },
     {
       "title": "假期带娃",
@@ -934,7 +970,7 @@
       "excerpt": "中秋加国庆连休13天，没有长途旅行，全程带娃 + 刷短剧。4月底，草莓3个半月大的时候，跟着岳父、岳母和南瓜回了高平老家，五一劳动节，我去高平待了几天，之后我回杭州上班，草莓则一直留在高平直到这...",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 78
+      "floor": 81
     },
     {
       "title": "老何杂记 33",
@@ -946,7 +982,7 @@
       "excerpt": "国庆过后，听到最好的的消息说今年的秋假在 11 月 18-20 号，连周末一起放 5 天，那时正是深秋时节，可以看到五彩斑斓的的山了，期待中。webp 图片看到大家都在用 webp，一直都没有什...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 79
+      "floor": 82
     },
     {
       "title": "周末流水账 1011",
@@ -958,7 +994,7 @@
       "excerpt": "今天是国庆后的单休周末，是无论如何都要将其记录下来的一天。 之所以这么说，是因为这一周有点忙碌，也有点充实。单休日过后，我就要踏入为期一周的出差之中了。 如果换做往常，我可能今天就是完全躺尸的一天。但是新的工作和忙碌的节奏，让我认知到，我需要做点什么，来让自己的生活状态更鲜活一点。 出差一周的话，就要冷落室友。所以今天就要从送她上班开始。所以，我早上 8:00 就起床了，简单准备了一下就和室友出发了。送完她，也才刚 8:40。索性开车…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 80
+      "floor": 83
     },
     {
       "title": "临时约的一场骑行，终点是邢台本地最大的朱庄水库",
@@ -970,7 +1006,7 @@
       "excerpt": "昨天跟朋友临时约着骑车，说想去朱庄水库转转。上午实在抽不开身，送完孩子又去把车胎补了下，一来二去就晚了，干脆改成下午出发。{mx_photo}{mx_photo}目标是邢台本地最大的水库，朱庄水...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 81
+      "floor": 84
     },
     {
       "title": "厦门出差记（三）：轮渡与山海健康步道",
@@ -979,10 +1015,10 @@
       "link": "https://bluehe.cn/archives/xiamen-business-trip-3",
       "created": "2026-10-11 09:31:00",
       "updated": "2026-10-11 09:31:00",
-      "excerpt": "2026年8月30日，我们墨迹了很多，看了许多攻略都不知道去哪儿，不久刷到了2元厦门轮渡的帖子，这才动身，先做BRT到第一码头，从岛外到岛内，走BRT是真的快。 厦门BRT是独立路权，直接在高架上，利用率很高，很多都是直线而不是绕弯，诠释了在天上飞，有步...",
+      "excerpt": "2026年8月30日，我们墨迹了很多，看了许多攻略都不知道去哪儿，不久刷到了2元厦门轮渡的帖子，这才动身，先做BRT到第一码头，从岛外到岛内，走BRT是真的快。 厦门BRT是独立路权，直接在高架上，利用率很高，很多都是直线而不是绕弯，诠释了在天上飞，有步行...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 82
+      "floor": 85
     },
     {
       "title": "人生如赌，而我带了计算器",
@@ -994,7 +1030,7 @@
       "excerpt": "How to Trade Your Life (Without Gambling It)这篇文章是给学校杂志的投稿，这期的主题是 How to ...（如何……）。左思右想，我最后还是决定结合几...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 83
+      "floor": 86
     },
     {
       "title": "骑在墙上的人",
@@ -1006,7 +1042,7 @@
       "excerpt": "有一个人骑在院子的围墙上。 围墙是普通红砖砌成的，约莫有两米高。围墙上沿用混凝土固定着玻璃，玻璃不长，一片片向四处张望。玻璃间也有些间隙，但你一定不愿抓着它攀爬。那人双腿张开，两条腿各悬在围墙两边，屁股坐在围墙上面，双手用力地撑着，身体向前蜷着，很稳，像是在骑马。但那样子像是双手使了很大力气，大概在分担屁股上的不适。...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 84
+      "floor": 87
     },
     {
       "title": "初次见面的及格线",
@@ -1018,7 +1054,7 @@
       "excerpt": "刚入职这家新公司没多久，周围的人和业务都还在建立坐标系。今天下午和一个负责一线拓展的销售对一个售前需求，原本以为就是走个过场、对对交付排期和客户诉求，没想到两个人路子挺对得上，话匣子一开，从具体的单子一路聊到了各自带项目时的做事习惯。 聊到团队配合与外部打交道时，他靠在椅背上笑了笑，说了一句挺有意思的话：「其实我这人跟人打交道特别简单，新认识的人在我这里默认都是及格的，大概 70 分左右。只要没什么太出格的事情，大家就是正常的合作者，…",
       "site_url": "https://blog.solazy.me/",
       "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 85
+      "floor": 88
     },
     {
       "title": "谢埭荡荷塘寻鲜",
@@ -1030,7 +1066,7 @@
       "excerpt": "9月27日，中秋节小长假最后一日，天气阴沉。 本来想着今天可能要下大雨就不出去了，但ld说这不还没下么，嚷着去 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 86
+      "floor": 89
     },
     {
       "title": "时过境迁",
@@ -1042,19 +1078,7 @@
       "excerpt": "对象开的那辆博越，后车窗贴的膜气泡越来越多，越来越大。侧面的玻璃上贴的膜也出现了一些水波纹，不仔细看还好，盯着 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 87
-    },
-    {
-      "title": "好记性不如烂笔头",
-      "author": "So!azy",
-      "avatar": "https://icon.horse/icon/blog.solazy.me",
-      "link": "https://blog.solazy.me/20261009/",
-      "created": "2026-10-10 05:42:54",
-      "updated": "2026-10-10 05:42:54",
-      "excerpt": "下午坐在电脑前准备写点东西，盯着空白的编辑器看了十分钟，一个字都没敲出来。 这挺讽刺的。因为就在两三天前，我走在路上或者洗手的时候，脑子里明明跳出来过一个特别有意思的切入点。当时甚至连开篇那句话怎么说、论据怎么落、最后收在什么态度上，都在脑子里过了一整遍。我甚至还暗自得意了一下，觉得自己脑子转得够快，这么生动的点子，怎么可能丢掉。 结果到了今天晚上，我只记得自己「曾经有过一个绝妙的想法」，至于那个想法到底是什么、那个带着毛刺的细节是什…",
-      "site_url": "https://blog.solazy.me/",
-      "feed_url": "https://blog.solazy.me/feed/",
-      "floor": 88
+      "floor": 90
     },
     {
       "title": "似乎所有人造物都有广告属性",
@@ -1066,7 +1090,7 @@
       "excerpt": "早上送娃上学路上，鬼使神差的我又给他说，Almost every man made stuff works as advertisement。他不置可否，说，你说过了啊。 然后最近训练出的脑回路就来驳了。1，是不是又在用一套理论或者一个说辞解释所有；2，是不是又自以为是地认为世界就是这样；3，是不是又在展示爹味；4，边...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 89
+      "floor": 91
     },
     {
       "title": "送娃上学冻了一路，让我领教了早晚温差",
@@ -1078,7 +1102,7 @@
       "excerpt": "这两天孩子学校开秋季运动会，天气看着挺好，就想着骑电车载他去。出门前媳妇说了句早上凉，给孩子套了件薄羽绒服，我自己也觉得挺有先见之明，顺手套了件外套。结果骑到半路，风一兜，我就知道想岔了，这一路...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 90
+      "floor": 92
     },
     {
       "title": "每夫吐槽（120）",
@@ -1090,7 +1114,7 @@
       "excerpt": "臭宝在家里难得看一回电视，几个小时之后，把机顶盒遥控器弄丢了。可能是扔到鸭脖残骸中当垃圾一起扔了。 她可以不看，但她想看的时候不可以看不成。那就再配一个遥控器吧。 机顶盒早已停产，某宝上搜，没仔细看，拍回来才发现是带红外接收器的。这带来个问题，就是用了遥控器就不能插U盘，给我装APP带来了极大的不便（不喜欢开共享）。退了。 再搜，发现同型号遥控器早已绝版。有二手的也卖得死贵，6、70一枚。小黄鱼上价格也差不多。有心买同品牌其它系列的，…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 91
+      "floor": 93
     },
     {
       "title": "2026 年十一假期",
@@ -1102,7 +1126,7 @@
       "excerpt": "今年十一没出门，因为没什么旅游的兴趣，怕了人山人海。境外热门地方也挤满了中国人。还有个原因是娃上小一了，有点紧张怕他请假影响学习，尽管我内心深处认为应该没啥影响。因为要给娃腾空间放学习桌，十一前一周我就开始收拾书房了，此项工作持续到假期最后一天。扔了十几大袋闲置或无用的物品，才发现有很多没拆封的玩具、书籍。有些是我买的，有些是别人送的，虽然可惜，但既然这么多",
       "site_url": "https://yipai.me/",
       "feed_url": "https://yipai.me/feed.xml",
-      "floor": 92
+      "floor": 94
     },
     {
       "title": "丙午之多事之秋",
@@ -1114,7 +1138,7 @@
       "excerpt": "丙午之多事之秋",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 93
+      "floor": 95
     },
     {
       "title": "到现在还活着真是不容易啊",
@@ -1126,7 +1150,7 @@
       "excerpt": "朋友圈三天两头都有某某教师，某某教授，某某网红英年早逝。 见一个我和妻子就要相互感叹一番，不好好活着做点自己喜欢做的事情就有点亏了。但有时又觉得也没个啥啊，因为我这个年纪做啥人家都会嫌老啊，除了死。因为如果我哪天突然死掉，别人才会感慨一句“阿细英年早逝啊，可惜了”。 之前不是晕倒吗？其实那不是离死亡最近的一次，或者说晕...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 94
+      "floor": 96
     },
     {
       "title": "Findu APP 4.0.6 — 好友定位 位置分享",
@@ -1138,7 +1162,7 @@
       "excerpt": "支持Carplay的『船新』版本： 【当前版本】4.0.6（build 489）— 2026-10-17 说明 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 95
+      "floor": 97
     },
     {
       "title": "竹子庵",
@@ -1150,19 +1174,19 @@
       "excerpt": "十一假期虽然没有远行，就近还是稍微转悠了一圈，多近呢？大约十来公里的路程吧。 没到假期的时候，宝子就开始各种打 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 96
+      "floor": 98
     },
     {
       "title": "杂记-20261008",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/624/",
+      "link": "https://leolin86.com/archives/624/",
       "created": "2026-10-08 16:33:00",
       "updated": "2026-10-08 16:33:00",
       "excerpt": "10月7日梅西的国家队退役友谊赛，阿根廷方碑广场聚满球迷，当世能有如此影响力的运动员，也仅是梅西了，我们也算是见证了历史，大概率前无古人也后无来者。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 97
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 99
     },
     {
       "title": "国庆，回老家住两天！",
@@ -1174,7 +1198,7 @@
       "excerpt": "今年儿子高三，开始通知国庆只放一天假，班主任的消息才发出没几分钟，接着又来发了一个通知，说是开学时间待定。十月 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 98
+      "floor": 100
     },
     {
       "title": "又见诺贝尔奖获奖消息",
@@ -1186,7 +1210,7 @@
       "excerpt": "最近诺贝尔奖公布各领域获奖人名单，朋友圈一时又稍稍热了一下。但感觉没有前些年那么热。 我也爱看这个热闹，尤其会看到很多人在各处争论为什么又没有中国人获得这个奖，肯定会有很多人各种找原因。另外我当然也幻想自己能够获奖，但也只那么幻想一下，做做梦还是可以的。不过好像没有专门为咱们专业设置的诺贝尔奖。我想要获得诺贝尔奖可能需...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 99
+      "floor": 101
     },
     {
       "title": "评论抽奖测试",
@@ -1198,7 +1222,7 @@
       "excerpt": "由于这个月开了4个GPT的team和2个plus感觉额度用不完 想跟朋友们一起分享 于是让codex写了一个评论抽奖的插件 顺便测试一下GPT 6.1 sol到底是不是弱智 在评论中先抽取一名幸运的朋友分享我自建的sub2API的账号邀请码 初始额度500刀 看使用情况再决定是否增加额度 [comment-lottery]",
       "site_url": "https://www.imsun.org",
       "feed_url": "https://www.imsun.org/feed/",
-      "floor": 100
+      "floor": 102
     },
     {
       "title": "针对mac 的验证码攻击",
@@ -1210,7 +1234,7 @@
       "excerpt": "今天想搜索下载个jaguar的壁纸，搜索来搜索区找到一张挺好看的。 结果点击打开相册之后，出现了一个非常奇怪的 […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 101
+      "floor": 103
     },
     {
       "title": "国庆新郑、新密三日纪行",
@@ -1222,7 +1246,7 @@
       "excerpt": "前言 今年国庆假期，原本计划带父母去一趟宝泉。 10月3日上午还在老家，临出发前才发现宝泉假日期间实行限流，计划日期已经无法订票。临时改去其他热门景区，同样很难避开人多、堵车和预约等问题。另外因工作原因，假期期间仍需随时待命，不适合跑得太远，于是把行程范围缩到了郑州周边。 最后选中了新郑和新密。两个地方距离郑州都不远，也都有相对集中的旅游资源。不过这次行程没有提前规划，后续去的景点，都是根据当天的时间、路况和现场情况临时决定。 第一天…",
       "site_url": "https://www.xiaoten.com/",
       "feed_url": "https://www.xiaoten.com/index.xml",
-      "floor": 102
+      "floor": 104
     },
     {
       "title": "292、寒露",
@@ -1234,7 +1258,7 @@
       "excerpt": "null 露华初白，金风转肃，天地在澄清与敛藏之间，拉满了一张无形的清寒之弓。 太阳行至黄经195°，寒露——秋之第五序，亦为深秋之门庭。 寒侵草木，万物知霜。鸿雁来宾，最后的队列以“人”字掠过南天的肃云，写下迁徙的终章；雀入大水为蛤，雀鸟隐入沧波，将踪迹藏进贝壳的纹络深处；菊有黄华，群芳谢尽之后，独向霜天擎起最后一炬金黄——这是一年中最清峻的寒冽，极寒之渐，无以复加。 天地以“寒”为名，以“露”为质；露气至此而将霜，万物至此而敛迹。…",
       "site_url": "https://1900.live",
       "feed_url": "https://1900.live/rss.xml",
-      "floor": 103
+      "floor": 105
     },
     {
       "title": "侠女内莉第一季",
@@ -1246,7 +1270,7 @@
       "excerpt": "2026-10-02 Neagley Season 1 《侠探杰克》第四季季终集播出当天（9月16日），《侠女内莉》第一季全部8集上线，无缝连接。我花了几天时间全部看完，心情仿佛经历了一次过山车。 《侠探杰克》从第一季到第三季，角色 Neagley 一直都有着长短不一的戏份，是主角 Reacher 的重要盟友和伙伴。Neagley 这个角色本身有许多可以开发的故事。在《侠探杰克》第二季中的闪回故事里，观众可以得知 Neagley 隶属…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 104
+      "floor": 106
     },
     {
       "title": "护肝人",
@@ -1258,7 +1282,7 @@
       "excerpt": "2026-10-03 Runner 难得看一部 Alan Ritchson 在 Reacher 以外的角色。上一次看是他的《狂暴对峙》，不过那部电影多少有一点抽象，几乎没有台词。 这一部《护肝人》的预告片某日推送到B站首页，我就知道资源出来的那一天我就能看到这部电影。没有预期，就是纯娱乐， 因为预告片几乎把故事都讲完了。看罢，还是有一些亮点的：Owen Wilson 饰演的角色从讨厌到共情，非常像他在《洛基》里面的演绎。剧情前部分有一…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 105
+      "floor": 107
     },
     {
       "title": "核心影视，优化后的播放页面长这样，按钮、选集、线路全安排明白",
@@ -1270,7 +1294,7 @@
       "excerpt": "今晚把核心影视的播放页面和播放器重新优化了一轮，图上是改完的样子，记录一下。先说选集这块。之前其实也可以，但总就是感觉差那么点意思，所以今天就下手它了。按钮也重新排过，选集、全屏、下一集，三个一...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 106
+      "floor": 108
     },
     {
       "title": "好好吃饭",
@@ -1282,7 +1306,7 @@
       "excerpt": "以往每次到假期的时候，总是匆匆忙忙，从一个地方赶往另外一个地方。要么在路上，要么被堵在路上，这次因为种种原因， […]",
       "site_url": "https://h4ck.org.cn/",
       "feed_url": "https://h4ck.org.cn/feed",
-      "floor": 107
+      "floor": 109
     },
     {
       "title": "快打旋风3",
@@ -1294,7 +1318,7 @@
       "excerpt": "这次选个直截了当的游戏清清脑子。 作为卡婊清版动作类的开山鼻祖，《快打旋风》 除了初代在各个平台疯狂炒冷饭以外，更多的是利用了角色的剩余价值。哈格、艾迪科迪、凯，乃至敌方角色苏杜姆、罗兰多、艾迪、毒药、安德鲁都在另外的卡普空宇宙中疯狂出场，但自身的正宗续作《快打旋风2》《快打旋风3》的自身水准和外部评价都不太高。3代比2代强一点。 这次玩的3代，在系统上对比1代其实改进非常多：加入了搓招、跑动攻击、超必杀，流畅性对比难度贼高的1代提升…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 108
+      "floor": 110
     },
     {
       "title": "吃得苦中苦方为人上人",
@@ -1306,7 +1330,7 @@
       "excerpt": "老话讲，吃得苦中苦，方为人上人。 我们长大的过程中，没少被这句话鞭笞啊。老师或家长会告诉你，在学习过程中，要懂得吃苦，然后你的成绩就能超过别人。 什么是吃苦？之前有过关于痛苦的歪论，我觉得成为人就会痛苦。因为热力学第二定律告诉我们，封闭系统会变得越来越混乱。而我们太有序了，很容易乱。乱对于我们来说就是苦的啊。因此推论下...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 109
+      "floor": 111
     },
     {
       "title": "厦门出差记（二）：从南普陀走到白城沙滩",
@@ -1315,10 +1339,10 @@
       "link": "https://bluehe.cn/archives/xiamen-business-trip-2-5-8",
       "created": "2026-10-06 17:15:00",
       "updated": "2026-10-06 17:15:00",
-      "excerpt": "2026年8月29日早，计划前往南普陀后山，越早去越好，害怕天气热，在酒店吃完早餐就骑着共享电动车前往集美学村地铁口，坐地铁1号线到中山公园站，出站步行公交站换乘 87 路，到南普陀下车。 网上说的高架跨海“海上地铁”，车厢里面已经很多人了，没法拍好全貌...",
+      "excerpt": "2026年8月29日早，计划前往南普陀后山，越早去越好，害怕天气热，在酒店吃完早餐就骑着共享电动车前往集美学村地铁口，坐地铁1号线到中山公园站，出站步行公交站换乘 87 路，到南普陀下车。 网上说的高架跨海“海上地铁”，车厢里面已经很多人了，没法拍好全貌，...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 110
+      "floor": 112
     },
     {
       "title": "长广金莲芦犹雪",
@@ -1330,19 +1354,19 @@
       "excerpt": "9月25日中秋节小长假首日，天气晴好。几天前刚去了长广溪湿地公园西南角的路耿下前村花海，今日便到溪对岸的湿地公 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 111
+      "floor": 113
     },
     {
       "title": "国庆南京",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/615/",
+      "link": "https://leolin86.com/archives/615/",
       "created": "2026-10-06 11:15:00",
       "updated": "2026-10-06 11:15:00",
       "excerpt": "今年国庆假期的南京之旅，除抵达当天在酒店附近逛一圈，托痛风的福，后面4日都窝在酒店没出房门半步。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 112
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 114
     },
     {
       "title": "形式熟悉，内容陌生，味道惊喜",
@@ -1354,7 +1378,7 @@
       "excerpt": "在国外住久了，试了许多中餐。炒菜、炖菜，常常总觉得差着一点意思。说不出究竟差在哪里，也许是菜不对，也许是火候不对，也许只是人在异乡，嘴也跟着挑剔起来。 面馆却常有意外之喜。 兰州牛肉面、陕西面、日式拉面、越南 Pho，都挺地道。欧美的朋友也吃得很开心，英国老板说她隔段时间就会带侄子去吃一家兰州拉面（三千拉面）。 这大约先要归功于原料。面粉、牛羊肉、辣椒、醋、葱蒜，在英国都不算难找，核心原料很全球通用。面食不像有些炒菜，非要某一种青菜、…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 113
+      "floor": 115
     },
     {
       "title": "登天柱得天助",
@@ -1366,7 +1390,7 @@
       "excerpt": "标题是天柱山风景区这两年想出来的宣传口号，家门口的 5A 景区，最近一次爬天柱山还是 2015 年，一转眼 10 多年过去了。去年 3 月份，东关开放，一直没有去成，国庆节 4 号天气放晴，就上...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 114
+      "floor": 116
     },
     {
       "title": "秋日暖阳，不知所云",
@@ -1378,7 +1402,7 @@
       "excerpt": "昨天，雨时停时下，确乎凉快了。今天，嘿，阳光明媚，国庆期间难得好天气，远眺过去，依稀可见雪山。发现 十年之约 更新了版本，简约漂亮，交互性强。十年，不只是一个人的孜孜不倦，更是一群人的携手并进。感谢这些用爱发电的小伙伴，让独立博客有了一个家。在这充斥AI，满眼假的网络时代，独立博客是为数不多，富有人情味的鲜活地带。 非常喜欢菜市场里面的色彩，青红皂白分的清清楚楚。红，就彻彻底底的红，简明而透彻。这些是自然界最朴素的美好呈现，开花结果，…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 115
+      "floor": 117
     },
     {
       "title": "为什么觉得父母故去后的老家像坟墓",
@@ -1390,7 +1414,7 @@
       "excerpt": "这就来回答妻子提出的问题。 为什么觉得父母故去后的老家像坟墓？我觉得主要原因就是现代城市化发展削弱了宗族势力。 为什么要讲宗族？以前古代，生产力低下，大家主要是农耕，基本是自给自足。男丁是十分重要的，因为要挑粪、耕地、施肥，一般都是男的干，女的干不动啊。 平时耕作，你不能独美其美啊。我的意思是，其实环境很残酷，很多资源...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 116
+      "floor": 118
     },
     {
       "title": "嘿，来看看我的新博客 —— 从 WordPress 到 Astro",
@@ -1402,7 +1426,7 @@
       "excerpt": "如果你最近打开过我的博客，应该已经发现，这个小破站换了一个新模样。花了几天时间，我将博客从用了四年的 WordPress 迁移到了 Astro，保留了原本的文章、评论和大部分功能及页面，也重新设计了博客的样式。",
       "site_url": "https://veryjack.com",
       "feed_url": "https://veryjack.com/feed.xml",
-      "floor": 117
+      "floor": 119
     },
     {
       "title": "入蜀记day3 departure",
@@ -1414,7 +1438,7 @@
       "excerpt": "这趟回乡之路才快嘞，这才到家第三天已经又在返程路上了。昨天白天不是晕了吗，晚上又享受了老妈的刮痧套餐。老妈可能把对我的思念都化作刮痧之力了吧，红得发紫。 前天晚上和妻子走在路上闲聊，聊到了家乡，聊到了乡愁，落叶归根啥的。 我们离家已经很多年，即使小时候是在家乡过的，但过了这些年，记忆还在，身体已经对家乡没有那么熟悉。我...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 118
+      "floor": 120
     },
     {
       "title": "厦门出差记（一）：抵达与初印象",
@@ -1423,10 +1447,10 @@
       "link": "https://bluehe.cn/archives/xiamen-business-trip-1",
       "created": "2026-10-05 03:48:00",
       "updated": "2026-10-05 03:48:00",
-      "excerpt": "2026年8月23日早六点，我们从城区前往吴圩机场，41公里37分钟抵达，前一天值机的时候已经晚了，但是看到南方航空有免费的升舱劵，就使用了，说实话优先登机不用人挤人舒服。 天气是真的好，一览无余，下面的山脉都看得清清楚楚，飞机也提前抵达。 高崎机场...",
+      "excerpt": "2026年8月23日早六点，我们从城区前往吴圩机场，41公里37分钟抵达，前一天值机的时候已经晚了，但是看到南方航空有免费的升舱劵，就使用了，说实话优先登机不用人挤人舒服。 天气是真的好，一览无余，下面的山脉都看得清清楚楚，飞机也提前抵达。 高崎机场在岛内...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 119
+      "floor": 121
     },
     {
       "title": "致敬，但特别emo",
@@ -1438,7 +1462,7 @@
       "excerpt": "这段时间四川美术馆正在进行长征主题的画展，闭目，满眼的爬雪山，过草地的场景，还有长髯的周总理，以及无数红军战士的形象。再往前，想到四渡赤水，飞夺泸定桥，在国庆的这个时间点，再次接受革命的洗礼，内心几多激动。看，这幅画雪染的风采，丰碑下的军人，坚毅果敢无畏，眼神中透着满满力量感。对，这就是中国军人！致敬！ 这幅画也是，特有风骨，中国红军的旗帜🚩在凛冽风雪之中傲然飞扬。 这张是雪域征途，为纪念红军长征胜利九十周年，写红军翻越雪山之壮举。似…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 120
+      "floor": 122
     },
     {
       "title": "Mac Mini M6",
@@ -1450,7 +1474,7 @@
       "excerpt": "前段时间趁着 M4 高价把它给出了，赚了近 2K,心里很高兴，但是高兴劲没过多久，处理相机照片时，家里的 PC 很不给力，降噪需要十几分钟，4K 160HZ 的显示器也没有用武之地，非常后悔。最...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 121
+      "floor": 123
     },
     {
       "title": "入蜀记day2 pass out",
@@ -1462,7 +1486,7 @@
       "excerpt": "我想我这破乌鸦嘴是不是还挺灵。前天才说分分钟倒给你看，今天真的就“表演”了一遍。 今天本来同妻子娃还有岳父母到公园里面骑多人观光自行车。自己发狠努力蹬了几脚，然后难受的要死，喜提中暑感。到站掏出手机正要付钱，结果手机定位出了问题，怎么都付不了钱，工作人员小哥过来拿了我的手机。然后，世界关上了门。 我似乎做了梦，梦里还有...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 122
+      "floor": 124
     },
     {
       "title": "Mac版Feedglot正式上架Mac App Store",
@@ -1474,7 +1498,7 @@
       "excerpt": "继iOS版之后，Mac版Feedglot也于10月1日正式审核通过了，欢迎大家下载使用。Mac下载地址： Mac App StoreiOS下载地址：iOS App Store",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 123
+      "floor": 125
     },
     {
       "title": "导航栏做成悬浮还是直接压背景，大家给个意见",
@@ -1486,7 +1510,7 @@
       "excerpt": "{mx_photo}{mx_photo}最近把博客导航栏来回倒腾，自己选花眼了，来听听大家的意见。现在有两个方案。一个是导航直接顶在渐变背景上，下面就一条细线，看着干净通透，这个就是现有不变的样...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 124
+      "floor": 126
     },
     {
       "title": "网易云音乐3个月车机会员",
@@ -1498,7 +1522,7 @@
       "excerpt": "很久之前一直用网易音乐，自从有VIP之后就没怎么用了，收藏了很多我喜欢听的歌曲。而现在都下载到本地NAS了。今 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 125
+      "floor": 127
     },
     {
       "title": "路耿下前村花海",
@@ -1510,7 +1534,7 @@
       "excerpt": "要说网友就是有才，不知是谁发现了雪浪山脚路耿下前村马路对面的长广溪湿地公园西南角空地上种植了一片花海，还是免费 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 126
+      "floor": 128
     },
     {
       "title": "中秋国庆双节快乐",
@@ -1519,10 +1543,10 @@
       "link": "https://bluehe.cn/archives/zhongqiu-guoqing",
       "created": "2026-10-03 05:35:00",
       "updated": "2026-10-03 05:35:00",
-      "excerpt": "9月23日晚，从厦门飞回南宁，结束了一个月的出差，24日调休的我早上便回了老家。 天气很热，过桥看到南宁港又升级了，很多1000吨船只会停靠这里，换成2000吨船在往平路运河出海，同理往南宁方向则相反。 在厦门没看到的日落，回到广西乡村，却是天...",
+      "excerpt": "9月23日晚，从厦门飞回南宁，结束了一个月的出差，24日调休的我早上便回了老家。 天气很热，过桥看到南宁港又升级了，很多1000吨船只会停靠这里，换成2000吨船在往平路运河出海，同理往南宁方向则相反。 在厦门没看到的日落，回到广西乡村，却是天天可见，在家...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 127
+      "floor": 129
     },
     {
       "title": "关于想象医学和现代医学",
@@ -1534,7 +1558,7 @@
       "excerpt": "突然想要谈谈关于医学的看法。因为在知乎看过相关问题以后就三天两头给我推送，没有办法啊。 但我就不指名道姓了，否则正反方都会炸出一堆红黑粉。另外再次声明，这篇又是胡说，千万别当真。 什么是病 在宏观世界，几乎所有事物都是连续的，我的意思是从没病到病也是连续的。病就是和平常不一样，就是异常的情况，但要说多异常才算是病这我就...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 128
+      "floor": 130
     },
     {
       "title": "安庆大观亭历史文化街区",
@@ -1546,7 +1570,7 @@
       "excerpt": "历时两年，安庆大观亭历史文化街区于国庆节正式对外开放。大观亭历史始于东汉，盛于唐宋 。明清时期，与武昌黄鹤楼、江洲庾楼并称为“长江三楼”，素有“皖省第一名胜之区”之称，曾被列为“安庆古八景”之首...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 129
+      "floor": 131
     },
     {
       "title": "读《陶庵梦忆》（三、报恩塔）",
@@ -1558,7 +1582,7 @@
       "excerpt": "中国之大古董，永乐之大窰器，则报恩塔是也。报恩塔成于永乐初年，非成祖开国之精神，开国之物力，开国之功令，其胆智才略足以吞吐此塔者，不能成焉。塔上下金刚佛像千百亿金身。一金身，琉璃砖十数块凑成之，其衣摺不爽分，其面目不爽毫，其须眉不爽忽，斗笋合缝，信属鬼工。闻烧成时，具三塔相，成其一，埋其二，编号识之。今塔上损砖一块，以字号报工部，发一砖补之，如生成焉。夜必灯，岁费油若干斛。天日高霁，霏霏霭霭，摇摇曳曳，有光怪出其上，如香烟缭绕，半日方…",
       "site_url": "https://justgoidea.com/",
       "feed_url": "https://justgoidea.com/feed/",
-      "floor": 130
+      "floor": 132
     },
     {
       "title": "博客主题与写作编辑",
@@ -1570,7 +1594,7 @@
       "excerpt": "好久没写技术分享的文章了。随笔和思考类的文章写多了，经常会忘记自己的计算机技术着实不错。除去为学校及其社团做的数个网站、APP 之外，我自己还是有蛮多值得说道的项目的。这篇浅谈里就简单讲讲其中两...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 131
+      "floor": 133
     },
     {
       "title": "西北三日游",
@@ -1582,7 +1606,7 @@
       "excerpt": "一次简单的兰州、西宁三日游。",
       "site_url": "https://atpx.com/",
       "feed_url": "https://atpx.com/feed.xml",
-      "floor": 132
+      "floor": 134
     },
     {
       "title": "溜达间的遐想",
@@ -1594,7 +1618,7 @@
       "excerpt": "国庆第二天，到西体快走，上了跑道索性放下耳机，不听故事也不听音乐，就好好听身边环境的声音。 有鸟叫，有装修的电锯声，有跑步的脚步声，还有风擦过耳边的声响。眼睛平视着前方，一路看过去：有快速跑步的，有慢悠悠快走的，有站成一堆指着前方说话的，也有低着头刷手机的。有满身肌肉的跑者，有脚步拖地的行人，有逆向迎面跑来的人；远处是楼房，两旁是树木和草坪，有人靠着栏杆压腿。场子里什么颜色的衣服都有，黑的、红黑相间的、蓝的、白的、紫的、花色的，还有穿…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 133
+      "floor": 135
     },
     {
       "title": "黄山之行",
@@ -1606,7 +1630,7 @@
       "excerpt": "好像我不是旅游博主，我不准备随时报备我的行程了。 那就回忆一下黄山之旅吧。 有句话叫做五岳归来不看山，黄山归来不看岳。是不是说，你先去多看一些普通的山，然后再去看看五岳的山，最后去看看黄山，然后其他的山都看不上了。 然后就糟糕了，普通的山我都还没看，五岳也没去过，我的第一站就是黄山，还一下子去了三次。真的是把奢侈感拉满...",
       "site_url": "https://www.seis-jun.xyz/",
       "feed_url": "https://www.seis-jun.xyz/atom.xml",
-      "floor": 134
+      "floor": 136
     },
     {
       "title": "Ubuntu 安装 Fcitx5 中州韵 Rime",
@@ -1618,7 +1642,7 @@
       "excerpt": "本文为多年之前的草稿笔记，经过 AI 润色发布。详细介绍了在 Ubuntu 上安装 Fcitx5 Rime（中州韵）输入法并深度调优的完整流程，涵盖一键脚本部署、方案锁定、五笔拼音优化、终端默认英文模式、全局状态记忆、自定义符号表和短语词库，以及多设备备份规范等，旨在解决默认安装的常见问题并提供工程化配置方案。",
       "site_url": "https://www.eallion.com",
       "feed_url": "https://www.eallion.com/index.xml",
-      "floor": 135
+      "floor": 137
     },
     {
       "title": "试了一下午白茶，学习途中慢慢入坑，心系水仙",
@@ -1630,7 +1654,7 @@
       "excerpt": "今天难得不忙，专门去茶店坐了一下午。跟平时爱喝茶的两个朋友学习去了，说是茶楼，其实更像一家茶铺，门口挂着 \"品瑞茗茶\" 的牌子。进去试了不少茶，主攻白茶。{mx_photo}{mx_photo}...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 136
+      "floor": 138
     },
     {
       "title": "松声｜廿六年·九月末·秋雨寒",
@@ -1642,7 +1666,7 @@
       "excerpt": "勤劳的小蜜蜂到底是年底了，感觉各个单位都在冲击kpi，小区门口两边之前没有划线的车位停一天都没啥事，最近临近中午小蜜蜂们会频繁出现，只要是没划线的挨个贴！因为之前出现被贴的事，门口实在没位置，我...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 137
+      "floor": 139
     },
     {
       "title": "LlmsTxt 一个零依赖插件，让所有 AI 都能通读你全部文章",
@@ -1654,7 +1678,7 @@
       "excerpt": "现在用 AI 查东西的人越来越多了。ChatGPT、OpenAI、DeepSeek，还有各种助手，很多人已经习惯直接问它们，而不是翻搜索引擎。可问题来了，你的博客写得再好，这些 AI 能不能读到...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 138
+      "floor": 140
     },
     {
       "title": "自建音乐服务，浏览器直接听歌还支持多源搜索",
@@ -1666,7 +1690,7 @@
       "excerpt": "最近在 GitHub 上翻到一个挺对口的项目，叫 lxserver，是洛雪音乐同步服务的增强版。用过洛雪的应该不陌生，它原本是给不同设备之间同步歌单、收藏用的。这个增强版在同步的基础上，直接内置...",
       "site_url": "https://9sb.net/",
       "feed_url": "https://9sb.net/feed/",
-      "floor": 139
+      "floor": 141
     },
     {
       "title": "执铜者：在河南博物院看见亚欧大陆的青铜世界",
@@ -1678,7 +1702,7 @@
       "excerpt": "前言 我就是那个请了 3 天公休，硬是凑出 13 天长假的人。 9月29日，再次去了趟河南博物院。本以为工作日人会少一些，结果馆里依旧人山人海。 人山人海的场馆（手机拍摄） 今年1月，我曾利用工作日的午休时间，把河南博物院的常设展览重新走了一遍。从贾湖骨笛、妇好鸮尊，到四神云气图、汝窑天蓝釉刻花鹅颈瓶，再到云纹铜禁，前前后后写成了三篇 《河南博物院两小时纪行》 。 原本以为，至少短时间内不会再专门来逛一次河南博物院。结果休假在家待着无…",
       "site_url": "https://www.xiaoten.com/",
       "feed_url": "https://www.xiaoten.com/index.xml",
-      "floor": 140
+      "floor": 142
     },
     {
       "title": "挨踢路十八年纪念",
@@ -1690,7 +1714,7 @@
       "excerpt": "十八年敲键逐梦，十八载云上深耕。不知不觉，真的就过了十八年，没错，这个博客从前世算起，就是十八年。能坚持到现在，不是自己有多厉害，而是一种散养状态，反正能访问就凑合着。数据偶尔手工备份一下，域名...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 141
+      "floor": 143
     },
     {
       "title": "这些天，我又折腾了些啥！？",
@@ -1702,19 +1726,19 @@
       "excerpt": "开学时才注册了workbuddy，正赶上又薅了教师节的羊毛，攒了一些积分。想着这些积分可不能浪费了，就又开始折 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 142
+      "floor": 144
     },
     {
       "title": "帝国改革",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/614/",
+      "link": "https://leolin86.com/archives/614/",
       "created": "2026-09-28 04:56:59",
       "updated": "2026-09-28 04:56:59",
       "excerpt": "黄宗羲定律指历代税费改革后，农民负担先降后升，最终比改革前更重的历史现象。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 143
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 145
     },
     {
       "title": "与女儿参加志愿者活动、七公里爬山徒步",
@@ -1726,7 +1750,7 @@
       "excerpt": "这事已经过去半个月了，现在才来记录，这个月的博客更新属实懈怠了。 上上周六起了个洪荒大早，6点起床，6点半出门，我一整年都没起这么早了。 起因是女儿报名了一个上周末的山野清洁义工活动，我作为家长陪同。学校要求高中生做满40小时义工/志愿服务，之前初中也有这样的义工时长要求。女儿觉得反正都得花这个时间，上山捡垃圾既能保护环境也能亲近自然。 活动的集合地点比较远，且要八点前集合，所以我六点半就出门了，先地铁坐到离几公里的地方再转车。 活动…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 144
+      "floor": 146
     },
     {
       "title": "63岁",
@@ -1738,7 +1762,7 @@
       "excerpt": "中秋尾巴，63岁的刘欢离我们而去，顺着这个信息看了过去，原来吴妈和妹爷也都在今年离世，那个陈翔六点半里面有趣的两位老人。有时候想，他们不都还年轻么，怎么就走了呢？再一看自己，呃，我都四十三岁了，那些儿时的明星们岂不都是七八十岁了，敬一丹71岁，游本昌93岁，郭兰英97岁……成住坏空，一代又一代人的不断更迭，无可奈何花落去。 晨，秋天了，蚊子可真多，秋蚊子惹不起。突然在想蚊子能活多久呢？蚊子寿命因性别和环境不同，雄蚊通常活1-2周，雌蚊…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 145
+      "floor": 147
     },
     {
       "title": "重温老片《烈火金钢》",
@@ -1750,7 +1774,7 @@
       "excerpt": "这是两部印象很深的包场电影。首先它制作精良，离谱程度适度，令没见过什么大场面的90年代小学生大受震撼。其次它分成上下集两次看完，中间隔了两个多月，是包场片中唯二的存在（另一部是大决战）。第三它有原著加成。第四嘛，我写的观后感被老师批评了—— “咱班不少同学看完电影都没记住片名是什么，给我写变形金刚的刚……” 原著并不是说小屁孩看过小说，而是我们都听过评书。《肖飞买药》可是袁阔成先生的代表作之一。大约1990年左右辽宁台的18：00的评…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 146
+      "floor": 148
     },
     {
       "title": "潮涨云涌贡湖堤",
@@ -1762,7 +1786,7 @@
       "excerpt": "9月5日，台风过后前往贡湖湾太湖大堤。 风起云涌，潮涨潮落，且游客稀少，非常适合出片。 好有爱的设计，堤坝上喷 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 147
+      "floor": 149
     },
     {
       "title": "Ubuntu升级后显卡驱动丢失的恢复方法",
@@ -1774,7 +1798,7 @@
       "excerpt": "Ubuntu升级后显卡驱动丢失的恢复方法",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 148
+      "floor": 150
     },
     {
       "title": "南宁人民公园：富士胶片滤镜",
@@ -1786,7 +1810,7 @@
       "excerpt": "不是那种修修剪剪的规整绿，是树叶子叠着树叶子、光从缝里漏下来砸在脸上的那种绿，2026年8月16日记。",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
-      "floor": 149
+      "floor": 151
     },
     {
       "title": "环秀山庄叠石奇",
@@ -1798,7 +1822,7 @@
       "excerpt": "8月23日，退房后再去一个小众园林环秀山庄。 环秀山庄，位于江苏省苏州市姑苏区景德路272号。原为五代钱氏金谷 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 150
+      "floor": 152
     },
     {
       "title": "天展钓Tenkara和在Folkestone挖化石",
@@ -1810,7 +1834,7 @@
       "excerpt": "天展钓 Tenkara 在英国试了试天展钓。 它原本是日本山地溪流里的一种钓法。没有线轮，也不需要复杂的饵和线组。 主体就是一根竿，一根线，一只毛钩。 Less is more，钓鱼这件事变得更依赖人本身。要观察鱼在哪里，看水从石头哪一边流过，哪里形成回水，哪里有树荫，哪里水深突然变化。固定长度的线也意味着，你不能站在岸边把毛钩一直抛向远处，很多时候必须自己走过去。 它甚至不需要真正的饵料。毛钩本身只是羽毛、丝线等材料扎成的人工拟饵。…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 151
+      "floor": 153
     },
     {
       "title": "iOS版Feedglot正式上架App Store",
@@ -1822,19 +1846,19 @@
       "excerpt": "本周二收到App Store邮件通知，iOS版Feedglot已审核通过，终于上架了。Feedglot是一款支持沉浸式翻译能力的RSS阅读器，源于我自己订阅、阅读英文博客的需求。更多介绍可以参考...",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 152
+      "floor": 154
     },
     {
       "title": "杂记-20260924",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/602/",
+      "link": "https://leolin86.com/archives/602/",
       "created": "2026-09-24 14:11:00",
       "updated": "2026-09-24 14:11:00",
       "excerpt": "主卧的网络信号一直不好，这2天闲来无事，JD购买了网络测试仪和AP面板，把主卧的网络信号问题解决。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 153
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 155
     },
     {
       "title": "第三年中秋福利",
@@ -1846,7 +1870,7 @@
       "excerpt": "第三年了，今年我们公司的中秋福利还算不错，除了看到的小甜食外，还有200块门店消费代金券。只不过老板不想我们把 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 154
+      "floor": 156
     },
     {
       "title": "水天一色",
@@ -1858,7 +1882,7 @@
       "excerpt": "时间很快，转眼中秋。阴雨绵绵，不见月明。上周还在大连，乾坤大挪移。今天终于把工会的事情向前推了一大步，累，但总归有变化。闭目，上周，飞机上，不经意间看着窗外。呵，天可真蓝。天空中有一道白线，呃，这是天尽头么？再往下瞧，嘿，这个是啥？好像是一艘轮船。恍然，这个是大海！那道白线是水天相接处，大脑立刻冒出“水天一色”这个词。 今天看到报道，游本昌老先生离世。耳畔还回响着“帽儿破，鞋儿破，身上的袈裟破……”老爷子自带道济和尚的那种仙风道骨，一…",
       "site_url": "https://www.xiangshitan.com/",
       "feed_url": "https://www.xiangshitan.com/feed.php",
-      "floor": 155
+      "floor": 157
     },
     {
       "title": "qclaw这么快就要下线了",
@@ -1870,7 +1894,7 @@
       "excerpt": "QClaw，虽然我不怎么用，但这是我用过最多的AI了，那个语音插件就是用它生成的。感觉还没开始，就要结束了。 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 156
+      "floor": 158
     },
     {
       "title": "青甘行 序曲",
@@ -1882,7 +1906,7 @@
       "excerpt": "「中秋」说每年带娃出去旅行一趟，今年继续执行。 今年选择的目的地是青海—甘肃大环线自驾游。她原本的计划是国庆期间去海南环岛游，问我要不要去当司机。我说与其去海南，不如再请三天假，与中秋节连休，组个超长假去新疆或走一趟青甘环线。 一拍即合，选定了青甘行。一个多月前，我提前报备请假获批，「中秋」同学便正式开始研究路线、规划行程和预订住宿，前前后后折腾了一个多月，终于把这趟旅行安排得七七八八。 深圳直飞太贵了，为了省点钱，去程选择了高铁到南…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 157
+      "floor": 159
     },
     {
       "title": "Plog 7 乱序生活",
@@ -1894,7 +1918,7 @@
       "excerpt": "英国的盛夏，热的睡不着，结果隔壁养老院着火了… 好久没去动物园，还挺开心的。 Cotswolds 的微缩小镇，在 Bourton-on-the-Water 闲逛是真的很舒服，不愧为英国最美乡村。 玛莎和 Kew Garden 联名的饮料，好喝！ 第一次看到这么小的南瓜。 意料之外好吃的薯片，特别上头！ 落日的美好，照片拍不出。 划了次船，一直在转圈圈，最后腰酸背痛。 一直想玩一次万智牌，看到有降世神通版的新手套装，忍不住入手了。 御三…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 158
+      "floor": 160
     },
     {
       "title": "PIVOT Vol.21",
@@ -1906,7 +1930,7 @@
       "excerpt": "不定期更新的 Newsletter。 Mak5er/AirCard 可以在不越狱的情况下修改 Apple Wallet 卡面和锁屏界面，最近还增加了 iOS 版： Mak5er/AirCard-iOS 。 tamaNOTchi 网页版电子宠物，能贴到自己的博客上当挂件。支持静态博客等多种网站格式！ Anthropeum 大都会博物馆版的 GeoGuessr：给你一件文物，猜年代和产地，每天一题，能像 Wordle 那样分享成绩。适合地…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 159
+      "floor": 161
     },
     {
       "title": "聊聊自费上班这件事儿",
@@ -1918,7 +1942,7 @@
       "excerpt": "承认最近很忙，毕竟公司效益不好，总得有个积极的态度，虽然没什么用，最起码老板看着舒坦。这不，趁着让AI写代码的功夫，忙里偷闲写篇文章。前段时间部门领导过来问一个同事，说你们研发部门用AI工具了没...",
       "site_url": "https://zhoutian.com/",
       "feed_url": "https://zhoutian.com/feed/",
-      "floor": 160
+      "floor": 162
     },
     {
       "title": "公共交通的变化",
@@ -1930,7 +1954,7 @@
       "excerpt": "有一天搭公交车，发现公交车居然贴着有车载Wi-Fi，有点不可思议，临下车时试着连一下，发现是骗人的，根本无法上网，那么这个车载Wi-Fi的意义是什么？又是一些半死不活的工程吗？感谢你们帮忙花了纳...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 161
+      "floor": 163
     },
     {
       "title": "291、秋分",
@@ -1942,7 +1966,7 @@
       "excerpt": "null 秋分至，昼夜在这一日重新分庭而立，暑气退到季节的背面，秋意则在晨昏交替之间，显出清晰而从容的轮廓。田野里的风不再带着盛夏的急促，穿过渐黄的稻穗与渐疏的枝叶，携来一阵阵成熟的气息——秋分，便是在这样的平衡里到来。 太阳行至黄经180°，秋分——一年之中，昼夜再次等长的时节。太阳直射赤道，南北半球所受的光照趋于均衡；此后，北半球的白昼渐短，夜晚渐长，天地由明盛慢慢转向幽深，秋天也由“渐临”走入真正的中段。 雷始收声，夏日里偶尔震…",
       "site_url": "https://1900.live",
       "feed_url": "https://1900.live/rss.xml",
-      "floor": 162
+      "floor": 164
     },
     {
       "title": "好好运动",
@@ -1954,7 +1978,7 @@
       "excerpt": "好好运动 好好生活 天天向上",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 163
+      "floor": 165
     },
     {
       "title": "小狼毫 万象拼音 + 极点五笔 三方案部署教程",
@@ -1966,7 +1990,7 @@
       "excerpt": "1997年读师范的时候学习的计算机，那个时候输入法学习的五笔，那个天天背字根呀！感觉用五笔输入法特别的自豪，因 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 164
+      "floor": 166
     },
     {
       "title": "写作与执着",
@@ -1978,7 +2002,7 @@
       "excerpt": "这是我不知道第几次谈论“写作”这个话题。小站这四五个月来的文章里，谈写作的也有不少。为什么这个话题如此让我感兴趣？作为写博客的人，探索我正在做的事的意义与方法，似乎是再正常不过的了。此外，很多关...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 165
+      "floor": 167
     },
     {
       "title": "日常漫步 Vol.25 之逛公园",
@@ -1990,19 +2014,19 @@
       "excerpt": "逛公园，看泉，看人，看小昆虫。 地点：珠海石溪公园 By 理光 GR3",
       "site_url": "https://yayu.net/",
       "feed_url": "https://yayu.net/feed/",
-      "floor": 166
+      "floor": 168
     },
     {
       "title": "闲来杂记",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/599/",
+      "link": "https://leolin86.com/archives/599/",
       "created": "2026-09-21 12:21:00",
       "updated": "2026-09-21 12:21:00",
       "excerpt": "1、《明朝那些事》作者石悦：普通人干不成什么事，能成事的都不是普通人。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 167
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 169
     },
     {
       "title": "我做市场调查的方法",
@@ -2014,7 +2038,7 @@
       "excerpt": "首次写于2023年1月，简单，粗略，非常不完善。 假设已经确定好要做的产品和市场，首先从市场出发，调研以下几个因素： 市场容量（蛋糕有多大，主要玩家有多少个） 市场竞争度（主要竞争对手） 市场发展趋势（增量市场还是存量市场） 垄断和专利情况（类目壁垒） 分析这个市场这个品类下有多少流量（最重要的），预估竞品大致的销量。分析他们的价格，做活动的重点时期，观察类目是否具有季节属性，供应链端生产周期，目标市场的发货和补货的周期。 找到最主要…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 168
+      "floor": 170
     },
     {
       "title": "访问量指标",
@@ -2026,7 +2050,7 @@
       "excerpt": "几个容易搞混的亚马逊访问量指标： Page View 页面浏览量：客户浏览商品详情页面的次数，一个客户可以多次浏览详情页面（以加载完首屏内容为浏览标准） 业务报告中的 PV 包含自然浏览和广告进入浏览 Sessions 会话：在24小时内访问该亚马逊商品详情页面的客户数（24小时内多次点击进入该详情页面算为一次） Click 点击：总点击次数（点击这个行为本身） 包含自然点击和广告点击，总共有多少次点击行为发生在该链接身上 商品会话百…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 169
+      "floor": 171
     },
     {
       "title": "亚马逊广告投放原则",
@@ -2038,7 +2062,7 @@
       "excerpt": "个人野路子经验草稿，酌情参考 写于2023年1月3日，持续更新 假设运营一家亚马逊店铺，走品牌/精品路线，总 SKU 数量不超过50个，按具体产品 SKU （和不同站点，如有的话）分类创建单独广告活动 单个广告活动对应一个广告组，每个广告组对应一个子 ASIN，对于关键词投放活动，组内通常有且仅有一个投放动作，例如一个 ASIN 下建立一个广告活动 A，这个活动下只有一个广告组，广告组精准投放一个子 ASIN 的一个关键词 iPhon…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 170
+      "floor": 172
     },
     {
       "title": "碎碎念W38",
@@ -2050,7 +2074,7 @@
       "excerpt": "近期挤压起来的各种压力，在跟咨询师以开场痛哭的方式下缓解了很多。甚至上班都恢复了一点元气，老板娘虽然也唠叨但没有以前多，她下班的时候还抱了抱我，表示理解，但她开门做生意，我也理解她。当然她不理解我，为什么放弃了国内那么好的工作和前途，来这里 …",
       "site_url": "https://hisherry.com/",
       "feed_url": "https://hisherry.com/feed/",
-      "floor": 171
+      "floor": 173
     },
     {
       "title": "黄山行组图之二",
@@ -2062,7 +2086,7 @@
       "excerpt": "九宫格装不下黄山的美，我的镜头只能记录有限的空间，上篇发布的几张图片完全不能概括黄山的万分之一，于是晚上又找了一部分竖拍的图，勉强凑一下。这组图的云雾稍小，奈何图床的带宽有限，大家将就看一下压缩...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 172
+      "floor": 174
     },
     {
       "title": "虚无",
@@ -2074,7 +2098,7 @@
       "excerpt": "虚无",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 173
+      "floor": 175
     },
     {
       "title": "近期的一些折腾",
@@ -2086,7 +2110,7 @@
       "excerpt": "生命不息折腾不止。白嫖 CF 失败前两天看到 Tkoinx 上了一个项目，基于 Typecho 完整重写的博客系统，可以运行在 Astro + Cloudflare Workers + D1 之...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 174
+      "floor": 176
     },
     {
       "title": "呵护你",
@@ -2098,7 +2122,7 @@
       "excerpt": "一直拖着没给群晖配上 UPS，借口之一是一年到头家里异常断电的次数可能也就一两回，抱着侥幸心理，觉得应该不会出什么问题，硬盘总不至于这么脆弱吧？借口之二则是 UPS 电源确实有点贵。就这样，买 UPS 的计划一拖再拖，直到上周二。 上周二，在公司发现 Synology Drive 同步文件时断时续，DSM 管理后台也一直登不上去，当时以为只是网络出了点问题，并没有太在意。下班回家后，想着登录后台看看究竟是什么情况，结果发现即便是在局域…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 175
+      "floor": 177
     },
     {
       "title": "游黄山天下无山",
@@ -2110,7 +2134,7 @@
       "excerpt": "作为安徽人，黄山一直都没有去过，这一次终于成行，一天的时间，游览了大部分景点，古人云“黄山归来不看岳”，果真是名不虚传，镜头装不下黄山的美，以我的的文笔也写不出黄山的美。交通非常发达，G3京台高...",
       "site_url": "https://www.mrhe.net/",
       "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 176
+      "floor": 178
     },
     {
       "title": "苏超苏州会南京",
@@ -2122,7 +2146,7 @@
       "excerpt": "前文说过，8月19日突然抽中8月22日“苏超”苏州对南京的球票，于是在结束西园寺游览后，回到酒店把娃和老人安顿 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 177
+      "floor": 179
     },
     {
       "title": "能修则修",
@@ -2134,7 +2158,7 @@
       "excerpt": "这台埃安Yp两年半跑了20万公里，正常消耗品如轮胎已更换两次，小蓄电池一年半时换过一个，其他零部件近月也陆续出现问题… 第一个空调系统，副驾驶储物箱位置偶尔会有异响，15万公里前（未过保）...",
       "site_url": "https://zhou.ge/",
       "feed_url": "https://zhou.ge/feed/",
-      "floor": 178
+      "floor": 180
     },
     {
       "title": "侠探杰克第四季",
@@ -2146,7 +2170,7 @@
       "excerpt": "2026-09-17 Reacher Season 4 这个系列很快来到第四季了。不同于《夜魔侠》或者《暗夜情报员》，每一季都可以当作一个单独的故事来看。这部剧最大的看点就是 Jack Reacher 这个角色，四肢发达头脑也发达，故事比传统的“看你不爽就是干”进步到“我动动脑子也能把你干了”的级别。 到了第四季，Reacher 反而越来越像一个工具人了。这一季里，真正的灵魂角色是小镇警探 Jacob Merrick，他以及他身边人（…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 179
+      "floor": 181
     },
     {
       "title": "例行检查身体",
@@ -2158,7 +2182,7 @@
       "excerpt": "#早起 今早定的5点闹钟，起来晕乎乎的煮了饭，炒了青菜。一碟辣椒炒肉是昨晚炒的，荤菜费时，都提前炒好。早起炒个 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 180
+      "floor": 182
     },
     {
       "title": "不可思议的南博事件后续，徐某判三年",
@@ -2170,19 +2194,19 @@
       "excerpt": "今天已经到处都在说徐某平被判三年，开除党籍。说真的，对一个80多岁的老头来说，有个几把用？不是说犯法不用究，当然要追究。只是，这完全就是搞搞举起，轻轻放下，罚酒三倍的味道。时隔7个月，能出来这个...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 181
+      "floor": 183
     },
     {
       "title": "潮人茶事",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/595/",
+      "link": "https://leolin86.com/archives/595/",
       "created": "2026-09-16 15:12:00",
       "updated": "2026-09-16 15:12:00",
       "excerpt": "潮汕人从小就喝功夫茶，家家户户有一套功夫茶具，人来客往坐下来就开始泡茶，逢年过节更是去哪都喝一整天。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 182
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 184
     },
     {
       "title": "我用的Obsidian插件",
@@ -2194,7 +2218,7 @@
       "excerpt": "2023年我《放弃思源笔记，还是选择了多端同步Obsidian笔记软件》，我使用笔记软件只是记录每天的流水，但 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 183
+      "floor": 185
     },
     {
       "title": "松声｜廿六年·九月中·正秋收",
@@ -2206,7 +2230,7 @@
       "excerpt": "小学生 大宝解锁了人生新身份，小学生，如同去幼儿园一样，期待了好久，作为老父亲，生怕不适应，当然有些想法是多余的，屁颠屁颠的就去上学了。晚上回家，老父亲能够清晰的感觉到她不开心，大概是第一天结...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 184
+      "floor": 186
     },
     {
       "title": "遇见你",
@@ -2218,7 +2242,7 @@
       "excerpt": "因 B 站 UP 主安州牧的一期视频《重返历史现场》，看完后 Loop 了两个多小时的博物馆系列。 继续刷到 UP 主破产兄弟有关博物馆入坑入门的两期视频，里面有一段文案击中人心。 “它生命当中遇到的第一个人是匠人，匠人带着非凡的技艺和观念把它制作了出来，然后它遇到了物主人，主人用一生去爱护它，甚至爱到要带它入土去往来世，但是不料几百年后它还是遇到了盗贼，就这样它开始了一段颠沛流离的岁月。 它起初在潮湿的船舱底部飘摇，后来在灰暗的库房…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 185
+      "floor": 187
     },
     {
       "title": "我读懂了丁香结",
@@ -2230,7 +2254,7 @@
       "excerpt": "小学时候学过一篇宗璞先生的散文《丁香结》，最后一段是这样写的： 丁香结，这三个字给人许多想象。再联想到那些诗句，真觉得它们负担着解不开的愁怨了。每个人一辈子都有许多不顺心的事，一件完了一件又来。所以丁香结年年都有。结是解不完的；人生中的问题也是解不完的，不然，岂不太平淡无味了么？ 初读此文，不知丁香为何物，更不知愁是何滋味。但随着岁月的增长，经历的事与人多了，即使我从来没有见过丁香花，更不知丁香结长什么样子，却实实在在感受到，每个人一…",
       "site_url": "https://yinji.org/",
       "feed_url": "https://yinji.org/feed.xml",
-      "floor": 186
+      "floor": 188
     },
     {
       "title": "腾讯云的COS，真不是一般难用，极其复杂",
@@ -2242,7 +2266,7 @@
       "excerpt": "上篇文章写到又拍云的问题，这不得谋划第二条备选方案，其中一个就是腾讯云COS。首先，腾讯云COS是支持直接备份数据存储，这点表扬，至少不那么复杂，我能使用得起来。但当我真的要绑定域名，设定支持公...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 187
+      "floor": 189
     },
     {
       "title": "Fitbit Air: 近期最喜欢的数码产品",
@@ -2254,7 +2278,7 @@
       "excerpt": "引 过去一直是 Apple Watch 的忠实用户，听说过 Whoop，但我总觉得它只是无屏幕版的 Apple Watch，很酷，也很贵，没必要再买一款功能相近的产品。小米手环比它划算多了，设计的跟老款无屏小米手环差不多呀。 但用了一个多月，Fitbit Air 真的远超我的预期，跟 Apple Watch 和小米手环不是一个类型的产品。 使用感受 Fitbit Air 和 WHOOP 这类产品最强的地方，是软硬件都围绕一个目标设计：…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 188
+      "floor": 190
     },
     {
       "title": "你别吹牛了",
@@ -2266,7 +2290,7 @@
       "excerpt": "开学后，旁边小学的操场又恢复了晚间开放，周一到周五是 19:00—21:00 每天两小时开放。早上送安安上学时，我跟他约好晚上 7 点一起去操场运动，于是晚上 6 点下班后，我赶回家，和他一起亲子运动。 旁边小学开放的只有 200 米跑道和跑道中间的篮球场，我们一般预约跑道，再带上篮球、足球、跳绳这些装备。凭入场码进入操场后，安安通常会先拿篮球去“投篮”。说是投篮，其实更像是往上抛，以他现在的力气，还没办法像大人一样把篮球托起来向上发…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 189
+      "floor": 191
     },
     {
       "title": "喜力星银·2026大连草莓音乐节第一场",
@@ -2278,7 +2302,7 @@
       "excerpt": "打车去的场地，想图个少走路。结果低估了年轻人的热情，出了海底隧道就人车汹涌，在比地铁站更远的路口下了车，走了更多的路，到场地的时候，阿肆的表演已经进行到一半了。好在没耽误看她吃“炸鸡”。 有时候天气太好也是缺点。13:50，28℃，少云，无风。 阿肆的气息不太好，很多时候要靠伴奏和和声的帮忙。倒数第二首“吃炸鸡”前，问台下吃午饭了没，得到的回答是“没有”，她似乎很意外。我也挺意外的，这帮小年轻就要这么战斗到晚上9点？ 实在太热，趁转场…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 190
+      "floor": 192
     },
     {
       "title": "这很苹果",
@@ -2290,7 +2314,7 @@
       "excerpt": "今早苹果秋季新品发布会，是库克卸任后的第一场。发布会结束没多久，iOS 27 RC 版也紧接着放了出来。 特努斯主持的首场发布会，一口气带来了多款新品。 iPhone 18 Pro / Pro Max 常规升级：换上 A 20 Pro 芯片，主摄加入可变光圈。两款新配色——勃艮第酒红和冰川蓝——都比去年的橙色顺眼不少。去年换 iPhone 17 Pro 时实在接受不了那个橙色，最后只能选了银色。 Apple Watch 这边，Seri…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 191
+      "floor": 193
     },
     {
       "title": "博客阅读随感：也谈记忆",
@@ -2302,7 +2326,7 @@
       "excerpt": "聊聊虚假的记忆",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 192
+      "floor": 194
     },
     {
       "title": "西园戒幢猫伴禅",
@@ -2314,7 +2338,7 @@
       "excerpt": "苏州园林这么多年，仿佛永远也走不完，这不ld建议去附近西园寺小逛，又填了我的漏了。 西园路南拐西环路，见老人在 […]",
       "site_url": "https://synyan.cn/",
       "feed_url": "https://synyan.cn/feed/",
-      "floor": 193
+      "floor": 195
     },
     {
       "title": "9月的旅行",
@@ -2326,7 +2350,7 @@
       "excerpt": "其实上月也出去玩了一周，实在是没有心思记录，只拍了一些流水账的照片，不太想码字。 上月我们去了淮北、淮南、南京、镇江、扬州，算是绕着苏北转了一圈。 比较让我记忆犹新的是镇江的各种面，其实锅盖面里的面都差不多，精巧的是各家面条的浇头不同，已经没法用评分去粗略的给它们各家打分，x离开后久久不能释怀，第二天到了扬州还说想再吃锅盖面。 可以想象，有多好吃… 这次的旅行，我们一路向西，到达西安后，又转向南，准备绕个大环线回去。 巫山烟雨 最早听…",
       "site_url": "https://ihaihe.cn",
       "feed_url": "https://ihaihe.cn/feed",
-      "floor": 194
+      "floor": 196
     },
     {
       "title": "爱是注意力",
@@ -2338,19 +2362,7 @@
       "excerpt": "在上一篇《让爱回来》中，我提到了“自爱”这个概念。那篇文章里，我详细阐述了为什么“爱总是流向不缺爱的人”，以及对抗缺爱的方法之一——自爱。今天这篇文章，我想和你一起探讨一个更本质的问题——什么是...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 195
-    },
-    {
-      "title": "老何杂记 32",
-      "author": "Mr.He",
-      "avatar": "https://cravatar.cn/avatar/d07ff632a5fa1256a69d92e1f9e38ce8?s=96&d=mm&r=g",
-      "link": "https://www.mrhe.net/3674.html",
-      "created": "2026-09-11 02:45:00",
-      "updated": "2026-09-11 02:45:00",
-      "excerpt": "开学 10 天，迎来了老何执教的第 29 个教师节，已经淡然了，好友发来信息“甘苦自知”，很切合实际。再上北京我们春假从北京回来跟岳父岳母说，暑假也带他们去看看，他俩一口答应了下来，天安门是我们...",
-      "site_url": "https://www.mrhe.net/",
-      "feed_url": "https://www.mrhe.net/feed/",
-      "floor": 196
+      "floor": 197
     },
     {
       "title": "未成年人保护法究竟保护了谁",
@@ -2362,7 +2374,7 @@
       "excerpt": "该护的护住了吗？该管的管住了吗？ 先看两件事，越看越拧巴 4岁男童被指“性骚扰” 就长沙那个事。 一个4岁小男孩在餐厅里跑，手碰到了一个女的屁股。监控里看，孩子就是在跑，手甩来甩去，根本不像故意摸。 法律上也讲得很清楚：4岁孩子连“性”是啥都不懂，哪来的性骚扰故意？ 结果呢？视频一发，标签一贴，“性骚扰”帽子直接扣上。真正该被保护的幼童，反而被网暴、被围观、被当成流量素材。 你说这算保护谁？ 14岁女生被围殴，施暴者处理却分年龄 再看…",
       "site_url": "https://www.imsun.org",
       "feed_url": "https://www.imsun.org/feed/",
-      "floor": 197
+      "floor": 198
     },
     {
       "title": "开源我的个人基因分析流程",
@@ -2374,7 +2386,7 @@
       "excerpt": "去年做完 WeGene 的全基因组测序之后，就一直想自己分析试试，于是有了这个项目。 整个项目是和 Claude 一起完成的，把分析流程整理成了 Skills 的形式，并开源到了 GitHub： https://github.com/DayuGuo/genome-atlas-skill WeGene 测序数据分两种，过滤过的基因型数据表（15 MB左右）和 FASTQ/BAM/CRAM 等格式的原始测序文件（30-90 GB）。所以我…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 198
+      "floor": 199
     },
     {
       "title": "大疆 Pocket 4P",
@@ -2386,7 +2398,7 @@
       "excerpt": "昨晚和朋友吃完饭之后逛商场，路过一家影石门店，进去看了下 Luna。本来只想自己安静看看，结果店员实在太热情，从我进门起就一直跟在旁边巴拉巴拉介绍个不停。我向来不太喜欢这种购物环境，别人越跟着讲，我就越想赶紧逃。 正好最近一直对大疆 Pocket 4 P 心心念念、蠢蠢欲动，中秋国庆假期又计划去青甘环线自驾，本来就想着买一个拿来旅拍。中秋同学之前还提议，到时候租一个就行，我说租个锤子。 一直没下单，除了之前大疆卖期货之外，主要还是缺一…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 199
+      "floor": 200
     },
     {
       "title": "曾经用过的那些“灯”！",
@@ -2398,7 +2410,7 @@
       "excerpt": "不知道我们那个村是什么时候通电的，但自我有记忆起好像就有”电灯”的概念。即使是通了电但 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 200
+      "floor": 201
     },
     {
       "title": "让五追七",
@@ -2410,7 +2422,7 @@
       "excerpt": "正在进行中的美网公开赛，郑钦文\"让五追七\"的好戏接连上演。 我对网球不了解，甚至连最基础的规则都不清楚。主动探寻一番才弄明白，所谓\"让五追七\"，就是一盘比赛已经 0:5 落后，对手再赢一局基本就能拿下这一盘，而郑钦文却硬是连赢 7 局，以 7:5 把这一盘翻了回来。 我是个足球伪球迷，问 GPT 说如何用足球来帮助理解，它回答说这种观感有点像 0:3 落后后的超级大逆转，甚至会让人想到伊斯坦布尔奇迹—-眼看比赛已经快没了，结果硬生生把…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 201
+      "floor": 202
     },
     {
       "title": "2026 上半年购物总结",
@@ -2422,7 +2434,7 @@
       "excerpt": "8月书影音总结欠债，这两个月都在沉迷于《Wentworth》（温特沃斯）、游泳和超级猩猩。健康充实的8月！ 吃喝 KeepCreapure 肌酸 好东西，连续吃了有三个月。吃完脑袋清醒，脑雾不再出现了。训练时明显感觉耐力在变强，以前练到第三组就觉得累，吃完之后可以做五组。缺点呢，就是一股墙皮味道，必须迅速地舀起一勺，争分夺秒倒在舌头上，趁它即将融化在味蕾和鼻腔之际，赶紧喝水吞下去。 伏特加、百加得、汾酒 买来泡梅子酒和菠萝话梅酒。快三…",
       "site_url": "https://www.javis.me/",
       "feed_url": "https://www.javis.me/feed/",
-      "floor": 202
+      "floor": 203
     },
     {
       "title": "一些随感和碎言",
@@ -2434,7 +2446,7 @@
       "excerpt": "一些随感和碎言",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 203
+      "floor": 204
     },
     {
       "title": "290、白露",
@@ -2446,7 +2458,7 @@
       "excerpt": "null 露从今夜白，暑气在一场场渐凉的晨风里，终于褪去最后的锋芒。长夏的余温尚未完全散尽，草叶之间却已先一步凝起清莹的水光——白露，便是在这样的静默里到来。 太阳行至黄经165°，白露——秋意由“可感”走向“可见”的时节。夜间地面温度下降，空气中的水汽遇冷凝结，附在草木之上，清晨看去，仿佛天地一夜之间撒落了细碎的白玉。 鸿雁来，北雁循着渐冷的风向南而行，长空之下，雁阵写出季节迁徙的章法；玄鸟归，燕子收起檐下的呢喃，告别熟悉的屋梁与庭…",
       "site_url": "https://1900.live",
       "feed_url": "https://1900.live/rss.xml",
-      "floor": 204
+      "floor": 205
     },
     {
       "title": "洛杉矶劫案",
@@ -2458,19 +2470,19 @@
       "excerpt": "2026-09-06 Crime 101 这个卡司就是观影驱动器：克里斯·海姆斯沃斯、马克·鲁法洛、哈莉·贝瑞甚至巴里·基奥恩。最后这位演员风格特别，辨识度极高，原先曾在《浴血黑帮：不朽传奇》《敦刻尔克》《新蝙蝠侠》《永恒族》等作品一睹过芳容。他身上有一种神秘和神经质，怪吸引人的。除了他以外，我仿佛在看雷神、浩克和暴风女组队演戏，背景是 GTA5 的地图洛圣都（Los Santos 缝合了大部分洛杉矶著名地点，如好莱坞、比佛利山庄，洛…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 205
+      "floor": 206
     },
     {
       "title": "父母难当",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/593/",
+      "link": "https://leolin86.com/archives/593/",
       "created": "2026-09-06 13:35:00",
       "updated": "2026-09-06 13:35:00",
       "excerpt": "同学说小学初中一直散养的儿子送进管理严格的私立高中后被老师洗脑了一周，似乎萌发想好好读书的念头，周末回家主动去买学习辅导书。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 206
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 207
     },
     {
       "title": "欢迎来龙餐馆",
@@ -2482,7 +2494,7 @@
       "excerpt": "2026-08-22 Once Upon a Time in the Middle East 事实证明，一个优秀的喜剧演员，首先是一个优秀的演员。沈腾在这一部电影里面的表演，让我完全忘了他是小品和喜剧演员出身，忘了《夏洛特烦恼》、《西虹市首富》、《抓娃娃》甚至《飞驰人生》（年初的《飞驰人生3》着实没有1和2好看）。 我冲着本片上映后的口碑去看的电影，观影前没有看过预告片或者演职员表，只知道这是导演文牧野在《奇迹·笨小孩》后最新的一部电…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 207
+      "floor": 208
     },
     {
       "title": "又拍云联盟下架，没有羊毛可薅",
@@ -2494,7 +2506,7 @@
       "excerpt": "博客在使用又拍云的服务已经很久，从最早期的相册，到后来的又拍云，然后又使用推出联盟活动，尽管我也在又拍云上充钱，但看了下真的不多，使用这个服务这么多年，可以说是免费的。直到前几天，才发现又拍联盟...",
       "site_url": "https://itlu.net/",
       "feed_url": "https://itlu.net/feed/",
-      "floor": 208
+      "floor": 209
     },
     {
       "title": "小神兽终于上幼儿园了",
@@ -2506,7 +2518,7 @@
       "excerpt": "不得不说，孩子是个双刃剑，不在家的时候还有点儿想，在家的时候真是快要被吵疯了。我家闺女典型的在外内向(相对而言)，在内外向，平时不怕人，心情好碰到陌生人都会打招呼，心情一般即使你对着她耳朵叫唤，...",
       "site_url": "https://zhoutian.com/",
       "feed_url": "https://zhoutian.com/feed/",
-      "floor": 209
+      "floor": 210
     },
     {
       "title": "水中的荷花它的叶子已残",
@@ -2518,7 +2530,7 @@
       "excerpt": "虽然对于一个歌手来说，30年不出新歌跟死了没差多少。 但真到了这天，还是有些唏嘘。 青春里的符号，又抹去了一个。 他们已经不在了 这个世界 我在想念他们 这是一个礼物 在我睡着的时候 他们与我共舞 R.I.P. (1)：Street Fighter = 陆港街头霸王=台快打旋风，Final Fight = 陆港快打旋风 = 台街头快打 (2)：阿肆的成名作：《我在人民广场吃炸鸡》 (3)：后海大鲨鱼主唱 (4)：万能青年旅社代表作《杀…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 210
+      "floor": 211
     },
     {
       "title": "以后就不麻烦您了",
@@ -2530,7 +2542,7 @@
       "excerpt": "2014 年入市，最开始用的是华泰证券。2016 年股灾后，华泰不再支持同花顺第三方登录，于是弃之。重新开了个国金证券的账户，一用就是十余年。 这些年用下来，除了始终怀疑账户被下了“中不了新股”的诅咒，其他方面都挺好。以前也有客户经理，但基本不打电话营销，没什么存在感，正合我意。券商提供交易通道，我在里面自生自灭，大家互不打扰，非常纯粹的赌博环境。 直到今年，给我换了一个客户经理。 昨天突然接到他的电话，说前天有只新股挺不错，问我有没…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 211
+      "floor": 212
     },
     {
       "title": "听说你又在搭建博客了",
@@ -2542,7 +2554,7 @@
       "excerpt": "听说你又在搭建博客了，正巧某云有续费活动，为了庆祝这第三台云主机，你决定给博客改头换面，豪华装修，改版后好好写 […]",
       "site_url": "https://yayu.net/",
       "feed_url": "https://yayu.net/feed/",
-      "floor": 212
+      "floor": 213
     },
     {
       "title": "CiCi读小学了",
@@ -2554,19 +2566,19 @@
       "excerpt": "9月1日，和全国的小朋友一样，CiCi也正式迈入了小学的大门。相比于三年的幼儿园时光，从家长的角度来说，小学入学带给我的感受要深得多，还是有很多不同。 入学的条件不同。 幼儿园时，我们没有刻意择校，选了离家最近的那所，入学条件也相对简单，当时并没有太多在意。但北京的小学入学涉及学区派位，家附近虽有一所全区排名第二的学校，却因近年政策调整而充满变数。从信息采集、资格审核，到入学报名、等待录取通知，一路忐忑下来，好在最终得偿所愿。 学习的…",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 213
+      "floor": 214
     },
     {
       "title": "理想MEGA",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/587/",
+      "link": "https://leolin86.com/archives/587/",
       "created": "2026-09-03 15:11:00",
       "updated": "2026-09-03 15:11:00",
       "excerpt": "理想MEGA2024年上市时，子弹头的前卫车型就让我眼前一亮，有充值的冲动，奈何家里已经有6座的X7满足家庭外出需求，且上市后外观口碑的分化影响了林太，转而入手小米Su7 Max。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 214
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 215
     },
     {
       "title": "2026暑假的收获",
@@ -2578,7 +2590,7 @@
       "excerpt": "“时间过的真快，眨眼之间暑假就过去了。”，每当在家里感慨说这句话的时候，闺女就会说，& […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 215
+      "floor": 216
     },
     {
       "title": "敬我这半份乡愁",
@@ -2590,7 +2602,7 @@
       "excerpt": "周末和父母视频，其实每次也没什么新鲜事，看到彼此都身体依旧，互相都很放心。挂完电话，似乎惹出我一丝乡愁来了。 以前的人有浓浓的乡愁，很大因素是回家乡太难，物理意义上的难，现在不存在这个困难了。现在的回家难，也是权衡后的选择，有时候是有其他事情，有时候是懒得折腾，况且回老家也没什么事，帮不上啥大忙。但想父母是真的，虽然不是挂在嘴上，但是总会挂在心里，当父母越久，似乎越会想自己的父母了，就像他们会念叨我有没有按时吃饭、有没有好好休息。如果…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 216
+      "floor": 217
     },
     {
       "title": "人人都能玩的 AI 玩具 —— AI Passport",
@@ -2602,7 +2614,7 @@
       "excerpt": "最近 TRAE AI 创意大会上的一款“电子工牌” AI Passport 受到了广大网友的关注。它只有一张卡片大小，配备一块 240 × 320 的小屏幕，没有触屏，控制全靠几个实体按钮，内存也只有区区 8 MB。放在当下，这个硬件配置可谓是“拉完了”，但在网络上却异常火热。早鸟价仅 99 元，在正式售卖前，闲鱼上的价格甚至被炒到了好几百。",
       "site_url": "https://veryjack.com",
       "feed_url": "https://veryjack.com/feed.xml",
-      "floor": 217
+      "floor": 218
     },
     {
       "title": "时代在召唤",
@@ -2614,7 +2626,7 @@
       "excerpt": "今天 9 月 1 日，正式开学。作为一年级萌新，娃在前两天已经到小学进行了为期一天半的适应性训练。今天，迎来了真正意义上的小学生活。 昨天发新书，说好的晚上和他一起包书皮，结果包着包着，他跑去玩玩具去了，留我一人给他一本一本包。 包书皮的时候，20 多年前的一些记忆自动浮现。那时候我们包书皮用的是报纸，不像现在，直接买透明书膜，裁剪一下就能用。 但有个问题一直想不明白：明明那时候家里没人订报纸，也没人读报纸，那些包书皮的报纸到底从哪里…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 218
+      "floor": 219
     },
     {
       "title": "奥德赛",
@@ -2626,7 +2638,7 @@
       "excerpt": "2026-08-29 The Odyssey 今年七月，我在犹豫要不要去电影院观看《奥德赛》，因为预告片中的服化道以及公开的选角都出现严重问题。自从8月14日在中国大陆上映以后，这部电影的火爆程度远远超出想象：我没有想到《奥德赛》在国内的受欢迎程度有这么高，上映不到十天票房就破四亿，半个月已经砍下近六亿票房。 以下部分包含剧透 关于技术 诺兰的电影，首先视听语言就是保证。影史首部全程使用 IMAX 胶片拍摄的电影，IMAX 70mm…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 219
+      "floor": 220
     },
     {
       "title": "松声｜廿六年·八月末·夜渐凉",
@@ -2638,7 +2650,7 @@
       "excerpt": "转眼间二宝都两岁了，时间过得真快啊！生日选择了巴庄，虽然有生日歌，但是后面估计大概率不会再来了，等孩子长大了在考虑来这里，毕竟两边老人吃火锅，多少有点不适应。事后我妈说没吃饱，的确如我一开始想象...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 220
+      "floor": 221
     },
     {
       "title": "博客文章回应的双向选择",
@@ -2650,7 +2662,7 @@
       "excerpt": "关于博客文章各种回应方式的一些胡思乱想",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 221
+      "floor": 222
     },
     {
       "title": "秋夜清影",
@@ -2662,7 +2674,7 @@
       "excerpt": "2026 年 8 月 30 日夜，漫步里斯本万国公园水岸，见月色，有感而作。 梧桐疏影凤高飞，远浦轻澜荡翠微。 碎月凌波还自静，清光不改照山扉。 |",
       "site_url": "https://justgoidea.com/",
       "feed_url": "https://justgoidea.com/feed/",
-      "floor": 222
+      "floor": 223
     },
     {
       "title": "每夫吐槽（119）",
@@ -2674,19 +2686,19 @@
       "excerpt": "单位聚餐。 坐定后，饭店按照惯例鼓励扫码发评论，送饮料。 小云忽然冲服务员蹦出来一句：“我VIP7，可以发单独发笔记，你去跟经理商量商量。” 这几个词单独出现都认识，组合到一起可就超出我认知范围了。 前台和经理商量了一阵，表示可以给我们送一荤一素两个菜。 小云脸上登时流光溢彩起来。 哦，原来饭吃的多且话多还有这种好处。 我一点儿也不稀罕。吃个饭还要写作文，累不累啊。某软件我都没装。 小云是真心爱好拍照和打卡。去西安前她甚至问了每个人的…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 223
+      "floor": 224
     },
     {
       "title": "神兽归笼",
       "author": "拾风草堂",
       "avatar": "https://icon.horse/icon/www.leolin86.com",
-      "link": "https://www.leolin86.com/archives/583/",
+      "link": "https://leolin86.com/archives/583/",
       "created": "2026-08-30 15:42:00",
       "updated": "2026-08-30 15:42:00",
       "excerpt": "明天神兽归笼，老父亲一定要强忍住激动的心情，坚持住不笑出声。",
       "site_url": "https://www.leolin86.com/",
-      "feed_url": "https://www.leolin86.com/feed/",
-      "floor": 224
+      "feed_url": "https://leolin86.com/feed/",
+      "floor": 225
     },
     {
       "title": "超级礼物",
@@ -2698,7 +2710,7 @@
       "excerpt": "2026-08-30 The Ultimate Gift 《超级礼物》像是巴菲特或者瑞达利欧之类的富豪，写了一本鸡汤书籍，用来激励年轻人。创作组把这个富豪加以美化，然后改编成一部温情脉脉的电影。 电影本身确实很温情，故事很俗套，像一部纯白无瑕的童话，小女孩的故事让人感动。观影结束后却不经细想。电影中没有明说的是富豪财务来源，体制对穷人的压迫，还有那条无处不在的斩杀线。电影中的“礼物”，被已逝的富豪具体化为工作、金钱、朋友、学习、问题、…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 225
+      "floor": 226
     },
     {
       "title": "碎碎念W35",
@@ -2710,7 +2722,7 @@
       "excerpt": "虽然开始了人生新篇章，不过旧篇章的余韵还在，新的生活轨迹尚未成型，有点晃晃悠悠的日子过得过于纯粹了。 现在获取新闻信息的途径都是通过Radio-Canada，浓浓的魁省法语味道，不过听习惯了好像也没那么难听，当一种方言听就还好了。不过我听着 …",
       "site_url": "https://hisherry.com/",
       "feed_url": "https://hisherry.com/feed/",
-      "floor": 226
+      "floor": 227
     },
     {
       "title": "博客阅读随感 关于宠物",
@@ -2722,7 +2734,7 @@
       "excerpt": "一些关于猫猫狗狗不成文的随感",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 227
+      "floor": 228
     },
     {
       "title": "Deepseek Harness有点儿东西",
@@ -2734,7 +2746,7 @@
       "excerpt": "之前看到Deepseek开源了Harness，其实还是有点儿兴趣，但是一直没空研究，这不昨天下午正好有点儿空，就部署来玩玩，踩了些坑，不过都是小问题，好在最后都解决了，整体上来说Harness还...",
       "site_url": "https://zhoutian.com/",
       "feed_url": "https://zhoutian.com/feed/",
-      "floor": 228
+      "floor": 229
     },
     {
       "title": "刷新",
@@ -2746,7 +2758,7 @@
       "excerpt": "数日未乘公交上班，这两天再走向熟悉的公交车站，我发现有些场景跟一年前都没有变过。 我在新公司和前前公司都是乘坐同一辆公交。从家里出门到公交站，我会路过一个人行天桥，电鸡也能走。每天早晨，我都能看到行人和骑手来来往往。此外我还经常见到一位老哥，站在人行天桥正中间，架起手机，对着这座城市的主干道开着直播。每每路过这位哥们，总是能听见他用某地口音，讲述当前路况和天气环境。五天起码有三天他都在这里，仿佛对着主干道直播是他的工作。 下了人行天桥…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 229
+      "floor": 230
     },
     {
       "title": "我为什么要记录自己一天说过的话？",
@@ -2758,7 +2770,7 @@
       "excerpt": "截至 2026 年 8 月 25 日，我在 Day One 里写了 1784 天日记，共有 4109 篇条目。按自然日去重，同一天多篇仍只算一天；最早一篇是 2021 年 9 月 3 日。 今年年初，我开始用声音记录自己。7 月 10 日，我第一次认真录下几乎完整的一天。一开始，我只是想对抗遗忘。一天结束后，日记通常只剩几件印象最深的事。大量普通交流、临时判断和情绪变化，睡一觉就散了。 DC_Agent 就是我的个人分身，也是我的伙伴…",
       "site_url": "https://demochen.com/",
       "feed_url": "https://demochen.com/atom.xml",
-      "floor": 230
+      "floor": 231
     },
     {
       "title": "高加索三国旅行",
@@ -2770,7 +2782,7 @@
       "excerpt": "本文作者：南瓜2026年6月16日 — 6月30日 · 阿塞拜疆 / 格鲁吉亚 / 亚美尼亚从高加索回来已经两个月了，懒惰的人让豆包根据当时的朋友圈、相册和随记整理流水账游记。",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 231
+      "floor": 232
     },
     {
       "title": "不是 Bug,是 Feature",
@@ -2782,7 +2794,7 @@
       "excerpt": "最近借助 Codex，把博客前台、管理后台和 Obsidian 零零碎碎折腾了一轮，主要是把一些长期用着不太顺手、看着不太舒服的地方重新收拾了一遍。 先是博客前台： 增加主题切换，目前有明亮、夜幕、霜灰、晨曦四组主题色调。 除了原有的霞鹜文楷，又加入朱雀仿宋、京华老宋体、霞鹜新致宋三款可选字体。 左上角增加随机诗词展示。 增加返回顶部按钮。 文章页不再直接展开大图，只保留一个图片图标，假装“纯文本主义”。 去掉原来的文章收藏页，改成「…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 232
+      "floor": 233
     },
     {
       "title": "配匙糟心经历",
@@ -2794,7 +2806,7 @@
       "excerpt": "老宅大门锁标配五把原装业主钥匙、两把装修钥匙。装修完成后，只要用业主钥匙开过锁，两把装修钥匙便会自动失效。 当初我自留一把业主钥匙，父亲居家也拿了一把，余下三把原装钥匙一直装在盒子里。每次...",
       "site_url": "https://zhou.ge/",
       "feed_url": "https://zhou.ge/feed/",
-      "floor": 233
+      "floor": 234
     },
     {
       "title": "看了女儿的高中，对比她老爸的高中",
@@ -2806,7 +2818,7 @@
       "excerpt": "周末的下午，去参加了女儿学校的高一新生家长会。之前通知说要验什么通知短信入校，我到那边的时候一看，大门口就俩保安，也就只能偶尔形式主义的抽查一位，大部分都是直接进去了，我也是。 家长会在学校里的一间报告厅，跟电影院差不多，但没提前开足空调，以至于我在里面流了两个小时的汗，发的一瓶水被我喝完了。一位副校长花了一小时讲自己学校的厉害，我比较无感，在深圳已经近距离目睹过了那些顶级厉害的学校有多厉害，再看其它都是其它，我看旁边已经有人打呵欠。…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 234
+      "floor": 235
     },
     {
       "title": "跑步不香了",
@@ -2818,7 +2830,7 @@
       "excerpt": "进入 8 月份，天空终于舍得放晴，不再天天漏雨。买来吃灰的小折叠也终于有机会多出去遛遛。骑了几次 20～50 公里后，对比之前跑步，有了几点不同的感受。 首先是骑行更有趣。跑步通常就在家附近，固定的路线来回跑，比如布吉河、洪湖公园。有时担心回到家就不出门了，干脆下班直接跑回去，路上绕荔枝公园一圈，刚好 5 公里。我常跑的定格距离 5.20、7.11、10.24 或 13.14 公里，这些数字在固定路线上分别会停在何处，我都一清二楚。出…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 235
+      "floor": 236
     },
     {
       "title": "我家的生态缸",
@@ -2830,7 +2842,7 @@
       "excerpt": "我一直有个鱼缸，后来因为工作和媳妇反对，放在阳台处于荒废状态。最近因为临近孩子小学开学，家里需要重新调整布置，我借此机会将荒废的生态缸搬到了客厅。 当然，一切折腾的过程自己是最享受的，感觉自己在按想象中的样子创造一个微型生态世界。 但往往这种折腾我媳妇是不同意的，觉得占用了客厅空间，是在瞎折腾。为了说服妻子，我的理由是： 1、生态缸是一种装饰，是一个随着时间和季节变化的动态雕塑，是集合了鱼缸、盆景、苔藓缸为一体的造型； 2、生态缸会正…",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 236
+      "floor": 237
     },
     {
       "title": "从 WordPress 到 Quartz",
@@ -2842,7 +2854,7 @@
       "excerpt": "8月19日，我发现我的 WordPress 博客被黑了。 早在今年4月，我便归档了我的 WordPress 博客，所有内容更新发布到这里。在那之后，我便很少上 WP 后台。偶尔上去会看到多了一些留言，大部分还是 spam。上周再打开 imzm.im，我发现首页突然多了一篇文章，标题为 Hacked by Chinafans，发布日期2026年8月15日，正文是两条 t.me 链接。显然入侵者已经拿到了我的后台权限，能够发布文章。通过虚…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 237
+      "floor": 238
     },
     {
       "title": "怒之杀",
@@ -2854,7 +2866,7 @@
       "excerpt": "2026-08-23 Mutiny 感谢亚马逊，让我省下了一笔电影票费用。大陆上映推迟以后，前两天网上就泄露了高清片源，我还觉得诧异，后来发现美国8月21日就上映了，台湾省更是比美国早两天上映。 如同之前看过的所有斯坦森年货一样，这一部《怒之杀》的味道没有变过，早前写在《庇护之地》和《养蜂人》的观后感稍加修改可以放到这篇。况且这已经是斯坦森今年第二部年货了。 文戏跟斯坦森最近十部电影一样无聊且可预测。但谁看斯坦森电影看文戏呢？好在这一…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 238
+      "floor": 239
     },
     {
       "title": "近期碎碎念",
@@ -2866,7 +2878,7 @@
       "excerpt": "最近又被领导进行了一次思想教育，大意是说我态度不好让他心里不舒服了，诶，这年头打工还要时刻关注领导心理问题，真的是让人摸不着头脑，可能像我这样的性格只能做一个普普通通的打工仔永远也不能向上爬了吧。 习惯真是个可怕的东西，以前在单独办公室的时候天天下午和同事分享各种零食吃...",
       "site_url": "https://wangyunzi.com",
       "feed_url": "https://wangyunzi.com/rss.xml",
-      "floor": 239
+      "floor": 240
     },
     {
       "title": "试戴 Looki 一周：我很喜欢，最后还是决定退货",
@@ -2878,7 +2890,7 @@
       "excerpt": "先说结论：我喜欢 Looki 所代表的方向，它也确实补上了我现有记录系统里缺失的画面。但试戴一周后，我决定退货。它已经让我看到个人 AI 记忆的未来，现阶段还没有达到让我长期佩戴的程度。 从录音走向录像 体验 looki 之前，我在用 DJI Mic Mini 2S 来记录自己的一天，主要是自己说过的话，晚上插在电脑后，Agent 会自动处理当天的内容，将其转录后分发存档到日记里，但不能录像，这一点 Looki 可以做到；其实 loo…",
       "site_url": "https://demochen.com/",
       "feed_url": "https://demochen.com/atom.xml",
-      "floor": 240
+      "floor": 241
     },
     {
       "title": "290、处暑",
@@ -2890,7 +2902,7 @@
       "excerpt": "null 蝉声渐远，暑气将阑，长夏在最后一场雷雨里缓缓收手，天地的蒸腾之中，第一次渗出可以言说的清凉。 太阳行至黄经150°，处暑——出暑之日，亦是盛夏与清秋正式换防的门槛。 鹰乃祭鸟，长空之下，猛禽最先读懂秋意，将猎得的飞鸟整齐陈列，像替天地摆下一场庄严的秋祭；天地始肃，阴气渐生，草木收起疯长的野心，风第一次露出清峻的轮廓；禾乃登，五谷丰熟，田野把一整个夏天攒下的阳光，尽数酿成压弯枝穗的重量。此时虽已出伏，“秋老虎”仍会回马一枪，白…",
       "site_url": "https://1900.live",
       "feed_url": "https://1900.live/rss.xml",
-      "floor": 241
+      "floor": 242
     },
     {
       "title": "骨科病房『趣事』",
@@ -2902,7 +2914,7 @@
       "excerpt": "骨科病房的一些『趣事』",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 242
+      "floor": 243
     },
     {
       "title": "空枪",
@@ -2914,7 +2926,7 @@
       "excerpt": "2026-08-19 V 我不知道导演和编剧在想什么，眼睁睁看着一部往8分方向走的电影一路跌到6分甚至4分的，浪费了这么一票豪华阵容：梁家辉、卫诗雅、惠英红、袁富华，还有中生代优秀演员朱一龙、檀健次，还看到了林雪、叶童、张兆辉、李治廷和俞灏明等熟面孔。可惜，非常可惜，这么强的阵容，仿佛都不知道编剧想要讲一个什么样的故事，160分钟的长度越到后面越是让人如坐针毡。 这部电影只有第一部分是可以一看的。朱一龙和檀健次都有过优秀表演（我很喜欢…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 243
+      "floor": 244
     },
     {
       "title": "Obsidian 笔记同步插件-Fast Note Sync For Obsidian",
@@ -2926,7 +2938,7 @@
       "excerpt": "写博客的博友们十有八九都折腾过笔记软件，笔记软件我是折腾了不少，现在主力是obsidian，Trilium做备 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 244
+      "floor": 245
     },
     {
       "title": "Feedglot内测邀请",
@@ -2938,7 +2950,7 @@
       "excerpt": "最近做了一个RSS阅读器产品，叫Feedglot。做了两个月，目前完成度比较高，计划招募一些内测用户。",
       "site_url": "https://www.skyue.com/",
       "feed_url": "https://www.skyue.com/feed/",
-      "floor": 245
+      "floor": 246
     },
     {
       "title": "网站挂了好几天",
@@ -2950,7 +2962,7 @@
       "excerpt": "首先要感谢@keyle ，下午发微信给我，告诉我网站挂了，数据库连接失败，我当时在开车，打开网站一看，果然冷冰冰的几个字显示在页面里，我在想，难不成被黑了，晚上闲下来才有时间打开电脑去处理，上次登宝塔后台，得是一年前了，发现后台居然限制外地IP登录，人都麻了，服务器root密码也忘了，找了半天，进去一看，我日，50G的空间，全被用光了，于是开始一顿删，发现日志文件占了30多G，真离谱，删除完重启服务器，好了，过阵子有空了看看把博客换静…",
       "site_url": "https://ihaihe.cn",
       "feed_url": "https://ihaihe.cn/feed",
-      "floor": 246
+      "floor": 247
     },
     {
       "title": "博客阅读随感：也谈人工智能是否会有自主意识",
@@ -2962,7 +2974,7 @@
       "excerpt": "从哲学角度探讨人工智能是否会产生自主意识，结合无限猴子定理和模拟论证进行思考",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 247
+      "floor": 248
     },
     {
       "title": "acme.sh 从Webroot改为 NameSilo DNS 申请通配符证书踩坑记",
@@ -2974,7 +2986,7 @@
       "excerpt": "我这边虽然用的是BT面板，但其在某次升级之后自动申请SSL证书功能就不好用了，所以一直用的是crontab + acme.sh自行更新证书。 当时的教程在这里： https://itlanyan.com/use-acme-sh-get-free-cert/ 前情提要 不说清楚我之前干了什么，就说不清楚我改了什么。其实都是照着上面的教程搞的，只不过沿用了宝塔的文件结构，相当简单。 安装 curl https://get.acme.sh…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 248
+      "floor": 249
     },
     {
       "title": "楼下的官方催生海报，七夕跟生育关联起来了",
@@ -2986,7 +2998,7 @@
       "excerpt": "中午在楼下看到这个官方的七夕活动文宣，感觉挺有喜感的，又看到了官方催生的节奏。胡乱联想到一些问题。 前几天看到的一则热门新闻，说的是某银行内设置了婚姻登记处。当一个大的政策方向被细化为基层kpi时，各种抽象的事情都不奇怪，以上这两件事完全是在非常温和的范围内。 可能很多人听过，某些地方政府为了政绩kpi，美化结婚率的数据，而拿出一些啼笑皆非的操作，比如重金奖励外出工作的当地人回当地登记结婚，比如给以前没有结婚证的高龄老人统一补发结婚证…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 249
+      "floor": 250
     },
     {
       "title": "看图不说话20260819",
@@ -2998,7 +3010,7 @@
       "excerpt": "(1)：Street Fighter = 陆港街头霸王=台快打旋风，Final Fight = 陆港快打旋风 = 台街头快打 (2)：阿肆的成名作：《我在人民广场吃炸鸡》 (3)：后海大鲨鱼主唱 (4)：万能青年旅社代表作《杀死那个石家庄人》 (5)：老婆有影院次数卡，看啥都20。 《 看图不说话20260819 》采用 署名-非商业性使用-禁止演绎 许可协议进行许可。 『 破袜子 』期待与您交流。 相关推荐: 干啥啥不行，喂屎第一名…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 250
+      "floor": 251
     },
     {
       "title": "二十年前的礼物",
@@ -3010,7 +3022,7 @@
       "excerpt": "2026年的七夕，我没有刻意准备什么惊喜，一如往年，也没有特别的计划。 然而，命运总爱在不经意间，为你递上一份跨越时光的礼物。 这几天，我偶然翻出了高中时代与妻子互写的信件（我们曾是彼此的笔友），在一封2006年12月的旧信中，一张折叠了很多次泛黄的画悄然被发现——那是她生日时，我亲手为她画的一幅国画“龙”（为什么给女生画龙？因为我们同属龙）。她曾将这幅画贴在宿舍的床头，如今，纸页已染上岁月的微黄，边缘也磨损了毛边，还能看到粘贴的痕迹…",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 251
+      "floor": 252
     },
     {
       "title": "复议&老宅",
@@ -3022,7 +3034,7 @@
       "excerpt": "监控系统 布线时预留了四条监控线，前门一个角两根，后院一个角两根分别摄向四个不同方向，另加上推房重建时买的一个网络监控共5个摄像头，基本实现屋外无死角监控，这两天自己把家里的四个监控和网络联通...",
       "site_url": "https://zhou.ge/",
       "feed_url": "https://zhou.ge/feed/",
-      "floor": 252
+      "floor": 253
     },
     {
       "title": "成为蜘蛛侠",
@@ -3034,7 +3046,7 @@
       "excerpt": "2026-07-29 Spider-Man: Brand New Day 《蜘蛛侠：崭新之日》是荷兰弟最好的蜘蛛侠电影。它的故事背景里没有托尼斯塔克/钢铁侠，没有奇异博士，没有复仇者联盟，也没有多元宇宙，甚至没有本叔叔和梅姨。这部电影就是非常纯粹的，彼得·帕克。故事很简单，讲述荷兰弟版彼得·帕克如何适应被世人遗忘的事实，并且接纳自己蜘蛛侠的身份。电影里没有正派反派，也没有最终 boss，只有不同身份立场的角色互相角力。 以下内容涉及剧…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 253
+      "floor": 254
     },
     {
       "title": "我的帽子哪去了？",
@@ -3046,7 +3058,7 @@
       "excerpt": "我的帽子哪去了？",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 254
+      "floor": 255
     },
     {
       "title": "今日我们都下班比较早，孩子没有学习游泳课",
@@ -3058,7 +3070,7 @@
       "excerpt": "今日我们都下班比较早，孩子没有学习游泳课 趁着下午做一顿晚餐，每人调一杯酒",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 255
+      "floor": 256
     },
     {
       "title": "小名“CiCi”诞生记",
@@ -3070,7 +3082,7 @@
       "excerpt": "这个周末和朋友闲聊，话题不知怎么就绕到了孩子身上。因为是用微信打字，我一会儿敲出“嘻嘻”，一会儿又换成“CiCi”，过会儿又打成了“CC”。朋友终于忍不住问：“你家孩子小名到底叫啥？”😂 这事儿说来话长。 我和孩子妈妈对名字都有些“完美主义”的执念，总希望能给孩子取一个既有意义又与众不同的名字。小名这事，我们一直悬而未决。 直到有一天，家里新换了电视，为了测试效果，我随手点开了一部动画片。恰好，播放的是Super JoJo的字母歌C集…",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 256
+      "floor": 257
     },
     {
       "title": "博客阅读随感20260817",
@@ -3082,7 +3094,7 @@
       "excerpt": "一些阅读随感",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 257
+      "floor": 258
     },
     {
       "title": "牛来",
@@ -3094,7 +3106,7 @@
       "excerpt": "周末去看了《奥德赛》，感觉还行吧。就是时间有点太长了，九点开始，十一点半都过了才结束。看完回去再查下资料，了解下奥德赛原本的故事脉络，就凌晨一点了。同期上映的还有《牛来》。有人很反感这部《牛来》，在没人去看的时候，认为是粗制滥造，怎么审核通过的？票房起来之后，又认为是资本的操控。我倒是觉得挺正常的，没有什么值得奇怪的。寄希望审查制度的，是巨婴。一方面，审查制",
       "site_url": "https://yipai.me/",
       "feed_url": "https://yipai.me/feed.xml",
-      "floor": 258
+      "floor": 259
     },
     {
       "title": "三个月首保",
@@ -3106,7 +3118,7 @@
       "excerpt": "不知道为啥规定首保是三个月或者5000km，我的爱车不知不觉开了三个月才2000km，首保是免费的，但仅限于第 […]",
       "site_url": "https://hjyl.org/",
       "feed_url": "https://hjyl.org/feed/",
-      "floor": 259
+      "floor": 260
     },
     {
       "title": "一手遮天",
@@ -3118,7 +3130,7 @@
       "excerpt": "2026-07-26 The Butcher’s Blade 从受害者变成加害者，只隔着很短的距离，这段距离叫做欲望。它可以是金钱，也可以是权力，从古到今似乎都遵循这个规律，并且事态的发展有时并不以人的意志为转移，而是被系统强制推着做出选择。 “咱这是办案还是分赃啊？” “拿了，才是自己人。” 轻刀快马团队至今最新的网大作品《手遮天》，这个名字总让我想起前段时间的《火遮眼》。不过二者故事完全不相关。演职员表中，常年演反派的刘峰超，终于…",
       "site_url": "https://jefftay.com/",
       "feed_url": "https://jefftay.com/index.xml",
-      "floor": 260
+      "floor": 261
     },
     {
       "title": "松声｜廿六年·八月中·秋意近",
@@ -3130,7 +3142,7 @@
       "excerpt": "我是一个不喜欢麻烦的人，在家附近的超市采购一些食材，买了三个大土豆，差不多一个土豆可以炒一盘菜的样子，中午做饭，其中一个土豆中间已经坏了，按照我的习惯，扔了即可，毕竟土豆这玩意不值钱，结果LD不...",
       "site_url": "https://xyzbz.cn/",
       "feed_url": "https://xyzbz.cn/feed/",
-      "floor": 261
+      "floor": 262
     },
     {
       "title": "忙碌夏日",
@@ -3142,7 +3154,7 @@
       "excerpt": "忙忙碌碌，殊不知夏天已过。 前段时间忙着搬家，忙着项目，终于得出闲来。最近学着养了一小缸鱼，学着种了一些水草，茶余饭后，闲情雅致又回来了。",
       "site_url": "https://yayu.net/",
       "feed_url": "https://yayu.net/feed/",
-      "floor": 262
+      "floor": 263
     },
     {
       "title": "国产大模型开始割韭菜了？",
@@ -3154,7 +3166,7 @@
       "excerpt": "国产大模型开始割韭菜了？聊聊国产大模型最近的涨价潮",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 263
+      "floor": 264
     },
     {
       "title": "清风与明月",
@@ -3166,7 +3178,7 @@
       "excerpt": "最近愈发意识到自己管理能力的欠缺，找来一本《硬核晋升》读。作者 Julie Zhuo 曾任 Facebook 产品设计副总裁，她在序言中提到，自己有一个自我教育的办法：写博客。 我知道我早上起床的时候是谁，但是我想我这一天下来一定是变了很多回了，在未来的某天，我想象着自己回顾自己写的所有帖子，可以好好地回味我走过的这一路。 这里有我所有的挣扎。 这里有我学会的一切。 她的博客叫作“对镜自照之年（The Year of the Look…",
       "site_url": "https://hux.ink",
       "feed_url": "https://hux.ink/index.xml",
-      "floor": 264
+      "floor": 265
     },
     {
       "title": "大雨过后的宁静",
@@ -3178,7 +3190,7 @@
       "excerpt": "大雨过后的宁静 貌似只有在有屋檐的院子才可以感受到降雨的美好",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 265
+      "floor": 266
     },
     {
       "title": "博客阅读随感20260813",
@@ -3190,7 +3202,7 @@
       "excerpt": "博客阅读随感20260813",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 266
+      "floor": 267
     },
     {
       "title": "悼朱公以平水一东韵",
@@ -3202,7 +3214,7 @@
       "excerpt": "棠坡 1 云起悼朱公，半世风霜一寸衷。 曾负右名 2 经劫火，更扶危局立潮中。 雷霆手段千家痛，毁誉纷纭孰定功。 众议由来归史笔，人间俯仰送孤鸿。 | 棠坡，今湖南省长沙县安沙镇和平村，朱镕基故里；棠坡恬园为其旧居。 ↩ 右名，指「右派」之名。1958 年 1 月，朱镕基在国家计委工作时，因在「大鸣大放」中向党组提意见，被划为右派、开除党籍；1970 年下放国家计委「五七」干校劳动，1978 年获平反，恢复党籍与职务。 ↩",
       "site_url": "https://justgoidea.com/",
       "feed_url": "https://justgoidea.com/feed/",
-      "floor": 267
+      "floor": 268
     },
     {
       "title": "我的背包",
@@ -3214,7 +3226,7 @@
       "excerpt": "背包可能是除了电脑之外，我最看重的通勤装备。过去用的是 Bellroy，起了换包的念头，是因为几次大雨把包淋透之后，开始有点担心里面的电子产品。英国的雨来的太不讲道理。 新背包现在用了 10 个月，非常满意，是 21L 的 Able Carry Daily Plus。这个容量很适合通勤，不会显得臃肿，也足够放下日常所需。 它的外观比较内敛，但又与常规电脑包不同，没那么中规中矩，保留了一些辨识度。 以下是我比较喜欢它的几个地方，加粗为我…",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
-      "floor": 268
+      "floor": 269
     },
     {
       "title": "无线Wifi方案敲定:AC+AP",
@@ -3226,7 +3238,7 @@
       "excerpt": "去年十一月份的时候《DIY人生第一台NAS-硬件篇》，花费了近七千五百块大洋，短短十个月时间，这套NAS价格又 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 269
+      "floor": 270
     },
     {
       "title": "社会真相耐人寻味",
@@ -3238,7 +3250,7 @@
       "excerpt": "现在看很多书看不进去，因为书写的和社会实际脱节，反倒是很多文学小说写的很真实。 普世价值是出厂设置，从小到大被 […]",
       "site_url": "https://www.jeffer.xyz/",
       "feed_url": "https://www.jeffer.xyz/feed",
-      "floor": 270
+      "floor": 271
     },
     {
       "title": "一毛钱体验阿里云百炼 Token Plan？",
@@ -3250,7 +3262,7 @@
       "excerpt": "一毛钱体验阿里云百炼 Token Plan？我也是醉了。",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 271
+      "floor": 272
     },
     {
       "title": "关于友情链接",
@@ -3262,7 +3274,7 @@
       "excerpt": "关于博客的友情链接，或许很多人看重的是它在SEO上的价值，但于我而言，我更愿意将它视为互联网世界里一次美好的相遇。这就像是在茫茫的数据汪洋中，两个原本平行的灵魂，偶然间投以会心的一笑。 我极少主动去敲别人的门，请求交换链接。我的友链，大多是从单向的关注开始的。有时是因为对方文字里透出的细腻与真诚，有时是被某个精巧的页面设计所吸引，有时则是因为在字里行间，瞥见了一段与自己相似的人生轨迹，或是一种令我向往的生活气息。 就这样，在漫长的网络…",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 272
+      "floor": 273
     },
     {
       "title": "我会记住那个陪爸爸散步的准高中女孩",
@@ -3274,7 +3286,7 @@
       "excerpt": "周末天气不错，带女儿去了趟洪湖公园。这个公园以前也走过多次，不过基本只走小半圈，大概几百米，十几分钟轻轻松松就能走完。这次因为是暑假，时间充裕，所以我带她走比较长的大圈，大约三公里多，慢走四十分钟走完。她是有点不情愿走这么远的，中途还抱怨了一阵子，不过她虽然兴致不高，但是行动上没有拉胯。 其实我知道她是不太乐意出来的，对她来说，还有什么比窝在家里玩游戏更安逸的呢？并非我向来不惮以最坏的恶意揣度她，但看她做功课时心不在焉的样子，提及户外…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 273
+      "floor": 274
     },
     {
       "title": "一则日记：收到留言后的触动",
@@ -3286,7 +3298,7 @@
       "excerpt": "今天早上收到一个留言，看到之后我有些触动。 您好，我们上个月收到 XXX 班主任的反馈，学生有点厌学，不听话，助学金请暂时不要汇出，等我们9月份回访跟学生具体聊聊之后再反馈您。 起因是我在 2024 年 9 月份决定开始资助一位初一的学生读书，每学期开学之前，我会给他汇一笔学费。当然，这个学生是由另外一个组织去线下走访调研并提供资料，最后筛选和确定出来符合资助条件的。当时在官网上看到组织方对他的家庭现状描述时（考虑到孩子个人信息，我就…",
       "site_url": "https://demochen.com/",
       "feed_url": "https://demochen.com/atom.xml",
-      "floor": 274
+      "floor": 275
     },
     {
       "title": "系列博客：Leo 的交易之路",
@@ -3298,7 +3310,7 @@
       "excerpt": "你好！很高兴与你在空中见面。一直以来，我致力于将子夜集打造成一个温馨的小空间，可以存放我的思想和成长轨迹。我对于小窝的定位是一个生活类/思想类的博客。不少读者对我的思考比较感兴趣，因此阅读我的博...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 275
+      "floor": 276
     },
     {
       "title": "谁不焦虑？",
@@ -3310,7 +3322,7 @@
       "excerpt": "谁不焦虑？人这一生要焦虑的事情太多了！",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 276
+      "floor": 277
     },
     {
       "title": "𝔼𝕟𝕛𝕠𝕪 𝕒 𝕙𝕒𝕡𝕡𝕪 𝕨𝕖𝕖𝕜𝕖𝕟…",
@@ -3322,7 +3334,7 @@
       "excerpt": "𝔼𝕟𝕛𝕠𝕪 𝕒 𝕙𝕒𝕡𝕡𝕪 𝕨𝕖𝕖𝕜𝕖𝕟𝕕 夏日炎炎 有水就凉",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 277
+      "floor": 278
     },
     {
       "title": "失眠遐想",
@@ -3334,7 +3346,7 @@
       "excerpt": "今晚又失眠。失眠是因为脑袋总是停不下来。想到很多事情，也很乱。第一件，是儿子上小学的事儿。我比他先焦虑了，总是很担心无法适应。比如担心上课不守纪律，学习成绩太差。上课不认真是从小的问题，没有纪律性。虽然我们对他没有什么要求，不属于鸡娃的，但也担心干扰别人学习。幼儿园比较宽松，他经常躺地上，上课神游，也没什么影响。但小学跟幼儿园肯定是不一样的，老师管的比较严，",
       "site_url": "https://yipai.me/",
       "feed_url": "https://yipai.me/feed.xml",
-      "floor": 278
+      "floor": 279
     },
     {
       "title": "Journal du 5 août",
@@ -3346,7 +3358,7 @@
       "excerpt": "（没有经过AI修改，可能有很多错误，翻译软件应该可以翻译出大概意思吧，从小事开始说起：） Pas grande-chose. J’ai rangé presque toutes mes affaires. Cependant, hier s …",
       "site_url": "https://hisherry.com/",
       "feed_url": "https://hisherry.com/feed/",
-      "floor": 279
+      "floor": 280
     },
     {
       "title": "小朋友的#饮料",
@@ -3358,7 +3370,7 @@
       "excerpt": "小朋友的#饮料 小朋友看到大人在喝酒，不想自己和纯水。 想了个办法，纯水中放入🍑，她很开心 称呼其为 #水桃。",
       "site_url": "https://www.winegrower.cn/",
       "feed_url": "https://www.winegrower.cn/index.xml",
-      "floor": 280
+      "floor": 281
     },
     {
       "title": "推荐一款win桌面整理工具-DeskBox",
@@ -3370,7 +3382,7 @@
       "excerpt": "以前在没有使用win桌面整理工具的时候，应用程序图标、文件等堆满了整个桌面，不仅乱也不好找东西。加之以前XP年 […]",
       "site_url": "https://laozhang.org",
       "feed_url": "https://laozhang.org/feed",
-      "floor": 281
+      "floor": 282
     },
     {
       "title": "游戏中的对话设计",
@@ -3382,7 +3394,7 @@
       "excerpt": "游戏中的对话设计的一些思考",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 282
+      "floor": 283
     },
     {
       "title": "长安二十时辰",
@@ -3394,7 +3406,7 @@
       "excerpt": "新公司第一年，孙老板为了鼓舞士气，决定搞一次有家属参与的团建：“要搞就搞远一点儿，一定要入关。” 时间本来定在6月，考虑几个中学生缺课不好，改到了暑假。 同样是为了给孩子们“搞点教育意义”，最终地点选中了西安，一个又热又热门的地方。 现在出门都要做攻略。虽然我没有装短视频APP，不等于不需要做功课。 直接问徐二哥，让他以一个西安女婿的角度给我推荐一点行程。 徐二哥给我推荐了三样：“早餐胡辣汤+肉夹馍、晚餐某某烧烤，以及抢陕历博的票。”…",
       "site_url": "https://pewae.com/",
       "feed_url": "https://pewae.com/feed",
-      "floor": 283
+      "floor": 284
     },
     {
       "title": "羡慕",
@@ -3406,7 +3418,7 @@
       "excerpt": "离开山东一个季度有余了，来到这边，目前还没有交朋友，之前的老友也只能偶尔微信聊几句，从自己乌托邦的舒适圈里跨出来，挺难。 三十多岁，很难再遇到合得来的「朋友」，真的挺难的，就算我不是gay，三十多岁没结婚的直男，我想，他们也应该会有同样的感觉，身边的朋友们陆续结婚、携家带口，之前几通电话便能约出来一堆人，好不痛快。现在是心情不好或者心情太好，想发个信息给谁诉苦、分享，都找不到个合适的人。 我不知道是不是因为我是天蝎座的缘故，从小我朋友…",
       "site_url": "https://ihaihe.cn",
       "feed_url": "https://ihaihe.cn/feed",
-      "floor": 284
+      "floor": 285
     },
     {
       "title": "我的出柜",
@@ -3418,7 +3430,7 @@
       "excerpt": "内容预警本文包含性少数群体（LGBTQ+）、家庭、出柜等内容，若对以上话题感到不适，您可以阅读小站的其他文章。若您愿意了解这个故事，请往下阅读。我背负了一条命案。每一个未出柜的性少数群体都背负着...",
       "site_url": "https://leoreo.me/",
       "feed_url": "https://leoreo.me/feed/",
-      "floor": 285
+      "floor": 286
     },
     {
       "title": "只是忘了",
@@ -3430,7 +3442,7 @@
       "excerpt": "以前以为，药山惟俨禅师说「我有一句子，未曾向人说」，是要人参究：那句从未说出的句子，究竟是什么？ 仿佛祖师心中藏着一个答案，只是没有用语言表达出来。参话头，不就是要越过语言，把那隐藏的真意找出来吗？ 近日才忽然意识到：想要知道那一句是什么，本身便是虚妄。 一旦生起「我要知道」，能所便已分别。仿若真有一个想要了悟的我，等待着一句被了悟的话，乃至最终可以得到答案。 如此参究，即使所求名为空、真如、本来面目，也仍只是在心中另立一境。想到这里…",
       "site_url": "https://justgoidea.com/",
       "feed_url": "https://justgoidea.com/feed/",
-      "floor": 286
+      "floor": 287
     },
     {
       "title": "289、立秋",
@@ -3442,7 +3454,7 @@
       "excerpt": "null 蝉声渐稀，暑气未退，天地仍在长夏的余烬里蒸腾，却已有一缕不易察觉的清意，悄然穿过浓荫与晚风。 太阳行至黄经135°，立秋——秋之初序，亦是盛夏向深秋缓缓转身的门槛。 梧桐将落未落，叶尖先染微黄；鹰始击，长空之上，暑云渐散，风的骨骼开始变得清峻；禾乃登，田野里的谷穗低下头颅，在烈日与暴雨共同锻造过的土地上，悄然蓄满沉甸甸的金色。此时虽名为“秋”，暑意仍浓，伏天未尽，雷雨依旧来去如潮——秋不是骤然降临，而是在盛夏最深处，先递来一…",
       "site_url": "https://1900.live",
       "feed_url": "https://1900.live/rss.xml",
-      "floor": 287
+      "floor": 288
     },
     {
       "title": "北京一周游",
@@ -3454,7 +3466,7 @@
       "excerpt": "我老婆带着儿子跟闺蜜、舅妈组了个“妈妈带娃团”，三对母子在北京逛了一周。前六天按计划走完了天安门、故宫、长城、科技馆、清华、颐和园、圆明园和环球影城，几个男孩全靠雪糕和盖章本撑着一路玩下来。结果第七天返程时碰上暴雨停运，回程票作废，好一番折腾才买到经郑州、武汉中转的无座票，儿子也头一回尝到了无座动车的滋味。",
       "site_url": "https://www.eallion.com",
       "feed_url": "https://www.eallion.com/index.xml",
-      "floor": 288
+      "floor": 289
     },
     {
       "title": "我的几位老板们，大概率进入中国富豪榜TOP-500了",
@@ -3466,7 +3478,7 @@
       "excerpt": "前天，公司在深交所上市，市值冲上千亿，应该也能进中国企业几百强了。我的老板们，身价翻倍，三位大老板大概率进入中国富豪榜TOP-500了，几位小老板也都身价数亿以上了。我羡慕，但不嫉妒也不恨，更多是钦佩！(为免麻烦，文中不提公司名和姓名，但不难知道) 我与老板们相比，实力和财富差了十万八千里，最接近的就是年龄了。三位大老板，其中两位比我大一岁，一位比我小两岁。后面几位小老板有好几个比我小的。同样吃了那么多年的饭，我就这么一年混过一年，人…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 289
+      "floor": 290
     },
     {
       "title": "为什么 AI 也会有缓存命中",
@@ -3478,7 +3490,7 @@
       "excerpt": "很疑惑最近总是很困。比如昨天太困早睡了，睡眠时间达到了 9 个小时，但今天还是困。今天正好看到一篇文章说困可能是“输出”太少。想想挺有道理。最近每次骑完车虽然很累，但比出门骑车前精神要好。我猜这就是体力输出导致的结果。最近实在太闲，本来事儿就少，还都用 AI 完成了，大脑自己的输出量极少。估计这就是最近精神状态不行的原因。所以得输出一些东西。但就像有句话说：",
       "site_url": "https://yipai.me/",
       "feed_url": "https://yipai.me/feed.xml",
-      "floor": 290
+      "floor": 291
     },
     {
       "title": "Hello，未来世界的代理人们",
@@ -3490,7 +3502,7 @@
       "excerpt": "我曾在《 当 AI 开始互相写信 》一文中设想过未来的赛博世界。当 Agent 邮箱成为一种基础设施，人与人之间的关系就可以交给代理来维系。AI 代理在生活和工作中充当前置的预演角色，替我们先沟通、先确认、先处理一些容易产生误解的事情。那样的世界，也许会少一些焦虑、猜测和戾气。 如果说 Agent 邮箱是踏入未来的第一把钥匙，那么，WebMCP 可以理解为迈进未来世界的阶梯。未来的赛博世界不会突然到来，它会从一个个小功能开始，一点点被…",
       "site_url": "https://dongjunke.cn",
       "feed_url": "https://dongjunke.cn/atom.xml",
-      "floor": 291
+      "floor": 292
     },
     {
       "title": "博客阅读随感20260806",
@@ -3502,7 +3514,7 @@
       "excerpt": "博客阅读随感20260806",
       "site_url": "https://www.suiyan.cc/",
       "feed_url": "https://www.suiyan.cc/rss.xml",
-      "floor": 292
+      "floor": 293
     },
     {
       "title": "2026-07 书影音总结",
@@ -3514,7 +3526,7 @@
       "excerpt": "7 月看了好几场世界杯比赛，以前对世界杯兴趣寥寥，今年才是真正看下去并且看进去了。“越位”规则是我每次读到都会查一遍，但下次又会忘记的规则，直到这次完整看了一场比赛才更加清晰得了解到其奥义！果然是伟大的发明，非常漂亮的动态博弈。 最近发现一个非常好用的网站—— 读迹 ，微信读书的阅读记录可视化，可以看到阅读时长和阅读热力图，对我最有用处的是最后一部分“书架”，点击书籍封面，侧边栏出现这本书的划线和想法，相比微信读书本身“打开新页面”的…",
       "site_url": "https://www.javis.me/",
       "feed_url": "https://www.javis.me/feed/",
-      "floor": 293
+      "floor": 294
     },
     {
       "title": "考不上湘潭大学，但可以考上南开大学博士、北京大学博士后",
@@ -3526,18 +3538,6 @@
       "excerpt": "前两天看到一个新闻，说二十多年前，一家两个儿子，哥哥用弟弟的高考录取书上了湘潭大学后来考研考博一路到了北大博士后，前阵子弟弟向大学举报哥哥冒名顶替的事，哥哥的学位全部被撤销了，好像是因为哥哥借用了弟弟的北京买房资格买了房，北京房价一路飙涨使得房子增值了几倍，哥哥想把房子过户到自己名下，弟弟要补偿，哥哥起初不答应，弟弟去举报，哥哥答应给三百多万，于是弟弟撤销举报，但哥哥给了一百多万后剩下的两百万没给，弟弟再次举报，哥哥顶替的事才爆了。这…",
       "site_url": "https://cuixiping.com/",
       "feed_url": "https://cuixiping.com/blog/feed/",
-      "floor": 294
-    },
-    {
-      "title": "评论、邮件，为什么不是Webmention？",
-      "author": "碎言",
-      "avatar": "https://icon.horse/icon/www.suiyan.cc",
-      "link": "https://www.suiyan.cc/blog/20260804194203",
-      "created": "2026-08-04 11:42:03",
-      "updated": "2026-08-04 11:42:03",
-      "excerpt": "评论、邮件，为什么不是Webmention？",
-      "site_url": "https://www.suiyan.cc/",
-      "feed_url": "https://www.suiyan.cc/rss.xml",
       "floor": 295
     },
     {
@@ -4315,7 +4315,7 @@
       "link": "https://bluehe.cn/archives/2026-diary",
       "created": "2026-07-04 11:32:00",
       "updated": "2026-07-04 11:32:00",
-      "excerpt": "畅游阁 抖音刷到畅游阁终于开放了，这不周末就出去看了，可以乘坐电梯直达顶层，电梯很迷小较小，阁楼外视野开阔，可以看到很多爱好者在邕江玩桨板，但是最近频繁上热搜，路过来来往往的船，部分人游出安全水域，接近航道，很危险。 聚餐 这家南宁连锁的烧烤店，很好...",
+      "excerpt": "畅游阁 抖音刷到畅游阁终于开放了，这不周末就出去看了，可以乘坐电梯直达顶层，电梯很迷小较小，阁楼外视野开阔，可以看到很多爱好者在邕江玩桨板，但是最近频繁上热搜，路过来来往往的船，部分人游出安全水域，接近航道，很危险。 聚餐 这家南宁连锁的烧烤店，很好吃的果...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 360
@@ -4435,7 +4435,7 @@
       "link": "https://bluehe.cn/archives/2026-CC",
       "created": "2026-06-29 10:28:00",
       "updated": "2026-06-29 10:28:00",
-      "excerpt": "2026年6月12日（星期五）下午7:40分，收到了腾讯云流量包用量耗尽的通知，我感到奇怪，每个月的流量顶多不超过50G，怎么会一下子耗尽。 刚准备吃饭的我懵了，这不对劲，马上登录服务器看情况，果然还在刷，一下子就超了，我只能把服务器关机了，腾讯云里面还...",
+      "excerpt": "2026年6月12日（星期五）下午7:40分，收到了腾讯云流量包用量耗尽的通知，我感到奇怪，每个月的流量顶多不超过50G，怎么会一下子耗尽。 刚准备吃饭的我懵了，这不对劲，马上登录服务器看情况，果然还在刷，一下子就超了，我只能把服务器关机了，腾讯云里面还有...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 370
@@ -4987,7 +4987,7 @@
       "link": "https://bluehe.cn/archives/sanxingdui-guide",
       "created": "2026-05-23 10:44:00",
       "updated": "2026-05-23 10:44:00",
-      "excerpt": "5月3日早7:30，我们起床收拾行李下楼，很搞笑的是，我们三个男的都记错了，其实是7:30出发，吃了一碗粉便启程，往理小路方向。 海拔逐渐升高，大伙的声音都变小了，感觉到氧气的稀薄，最后穿过理小路隧道，打开录像，却发现是大雾天气，两侧的雪山根本无法看着，...",
+      "excerpt": "5月3日早7:30，我们起床收拾行李下楼，很搞笑的是，我们三个男的都记错了，其实是7:30出发，吃了一碗粉便启程，往理小路方向。 海拔逐渐升高，大伙的声音都变小了，感觉到氧气的稀薄，最后穿过理小路隧道，打开录像，却发现是大雾天气，两侧的雪山根本无法看着，大...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 416
@@ -5083,7 +5083,7 @@
       "link": "https://bluehe.cn/archives/chuanxi-selfdrive-route",
       "created": "2026-05-10 14:13:00",
       "updated": "2026-05-10 14:13:00",
-      "excerpt": "五一的出行，我们又相聚在一块，出发规划好的行程，4月30日晚直接从南宁自驾前往四姑娘山，高德行程1380km，预计15小时45分钟。总结很多，写了都是回忆，注本文99张图片，需慢欣赏。 G351 一直开到雅安高速出口方向，这里隧道出口直接堵了，我们还以为...",
+      "excerpt": "五一的出行，我们又相聚在一块，出发规划好的行程，4月30日晚直接从南宁自驾前往四姑娘山，高德行程1380km，预计15小时45分钟。总结很多，写了都是回忆，注本文99张图片，需慢欣赏。 G351 一直开到雅安高速出口方向，这里隧道出口直接堵了，我们还以为是...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 424
@@ -5287,7 +5287,7 @@
       "link": "https://bluehe.cn/archives/guangxi-sanyuesan",
       "created": "2026-04-20 04:00:00",
       "updated": "2026-04-20 04:00:00",
-      "excerpt": "2026年4月18日，三月三活动还是跟以往一样，一直宣传民歌湖，但是我还没去过。 抵达时，电动车已经停满了，过马路也需要交警管控，沿湖的道路已经堵满。 虽然有着南宁民歌湖的演出表，但实际情况很乱很复杂，许多活动地点不能如期进行，各个区域各个商家自行安排...",
+      "excerpt": "2026年4月18日，三月三活动还是跟以往一样，一直宣传民歌湖，但是我还没去过。 抵达时，电动车已经停满了，过马路也需要交警管控，沿湖的道路已经堵满。 虽然有着南宁民歌湖的演出表，但实际情况很乱很复杂，许多活动地点不能如期进行，各个区域各个商家自行安排活动...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 441
@@ -5347,7 +5347,7 @@
       "link": "https://bluehe.cn/archives/spring-festival-2026",
       "created": "2026-04-12 14:25:00",
       "updated": "2026-04-12 14:25:00",
-      "excerpt": "自从忙起来后，更新速度直线下降，希望能在五一前，把库存都清空了。 调休后我于2月15日就回到了镇上，父亲来接我，先带去我拜神的地方换一把锁，功德箱这里不久前被人砸开了，这几年都很流行修缮，以前就是在树木后面，没有明显的特点，现在砍掉空地，铺上上水泥，干净...",
+      "excerpt": "自从忙起来后，更新速度直线下降，希望能在五一前，把库存都清空了。 调休后我于2月15日就回到了镇上，父亲来接我，先带去我拜神的地方换一把锁，功德箱这里不久前被人砸开了，这几年都很流行修缮，以前就是在树木后面，没有明显的特点，现在砍掉空地，铺上上水泥，干净了...",
       "site_url": "https://bluehe.cn/",
       "feed_url": "https://bluehe.cn/rss.xml",
       "floor": 446
@@ -7203,9 +7203,9 @@
   ],
   "statistical_data": {
     "friends_num": 63,
-    "active_num": 55,
-    "error_num": 8,
+    "active_num": 54,
+    "error_num": 9,
     "article_num": 600,
-    "last_updated_time": "2026-10-21 04:48:48 UTC"
+    "last_updated_time": "2026-10-21 13:50:24 UTC"
   }
 }
