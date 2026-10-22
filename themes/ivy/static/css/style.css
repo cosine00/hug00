@@ -560,13 +560,37 @@ figure img{max-width:100%;border-radius:0;display: inline-block;margin-block-sta
  background-position: 0 100%;
 }
 
-.post-content p:has(> img:nth-child(2)){column-count:2;column-gap:8px;margin:6px 0;}
-.post-content p:has(> img:nth-child(3)){column-count:3;}
-.post-content p:has(> img:nth-child(4)){column-count:4;}
-.post-content p:has(> img:nth-child(5)){column-count:5;}
-.post-content p:has(> img:nth-child(6)){column-count:4;}
-.post-content p:has(> img:nth-child(2)) img{display:inherit;}
-.post-content p:has(> img:nth-child(6)) img{margin-bottom:8px;}
+/* Preserve every photo's native ratio while keeping each gallery row aligned. */
+.post-justified-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin:6px 0;
+}
+.post-justified-gallery.is-ready{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.post-justified-gallery > img{
+  display:block;
+  width:100%;
+  height:auto;
+  margin:0;
+}
+.post-justified-gallery-row{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  width:100%;
+}
+.post-justified-gallery.is-ready .post-justified-gallery-row > img{
+  display:block;
+  flex:0 0 auto;
+  max-width:none;
+  margin:0;
+  object-fit:contain;
+}
 
 /* Photos */
 

@@ -32,27 +32,27 @@ draft: false
 虽然粗糙，但踏实了。
 
 
-![hugo01](https://img.hux.ink/image/2026/07/20260730174951-8mvdq-hugo01.webp)
+![hugo01](https://img.hux.ink/image/2026/07/20260730174951-8mvdq-hugo01.webp#icon)
 
-![hugo02](https://img.hux.ink/image/2026/07/20260730174953-z5ofa-hugo02.webp)
+![hugo02](https://img.hux.ink/image/2026/07/20260730174953-z5ofa-hugo02.webp#icon)
 
-![hugo03](https://img.hux.ink/image/2026/07/20260730174955-6lhoq-hugo03.webp)
+![hugo03](https://img.hux.ink/image/2026/07/20260730174955-6lhoq-hugo03.webp#icon)
 
-![hugo04](https://img.hux.ink/image/2026/07/20260730174957-wmp95-hugo04.webp)
+![hugo04](https://img.hux.ink/image/2026/07/20260730174957-wmp95-hugo04.webp#icon)
 
-![hugo05](https://img.hux.ink/image/2026/07/20260730174959-ynn9k-hugo05.webp)
+![hugo05](https://img.hux.ink/image/2026/07/20260730174959-ynn9k-hugo05.webp#icon)
 
-![hugo06](https://img.hux.ink/image/2026/07/20260730175001-qfg1v-hugo06.webp)
+![hugo06](https://img.hux.ink/image/2026/07/20260730175001-qfg1v-hugo06.webp#icon)
 
-![hugo07](https://img.hux.ink/image/2026/07/20260730175003-jugtp-hugo07.webp)
+![hugo07](https://img.hux.ink/image/2026/07/20260730175003-jugtp-hugo07.webp#icon)
 
-![hugo08](https://img.hux.ink/image/2026/07/20260730175005-4durd-hugo08.webp)
+![hugo08](https://img.hux.ink/image/2026/07/20260730175005-4durd-hugo08.webp#icon)
 
-![hugo09](https://img.hux.ink/image/2026/07/20260730175006-jofn5-hugo09.webp)
+![hugo09](https://img.hux.ink/image/2026/07/20260730175006-jofn5-hugo09.webp#icon)
 
-![hugo10](https://img.hux.ink/image/2026/07/20260730175008-eg1m5-hugo10.webp)
+![hugo10](https://img.hux.ink/image/2026/07/20260730175008-eg1m5-hugo10.webp#icon)
 
-![hugo11](https://img.hux.ink/image/2026/07/20260730175010-qwk5u-hugo11.webp)
+![hugo11](https://img.hux.ink/image/2026/07/20260730175010-qwk5u-hugo11.webp#icon)
 
 
 ❤

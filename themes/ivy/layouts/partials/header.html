@@ -37,7 +37,7 @@
     <script defer src="/js/poster-review.js"></script>
     <script>
     //图片灯箱
-    window.ViewImage && ViewImage.init('.main img:not(.avatar,.tk-avatar-img)')
+    window.ViewImage && ViewImage.init('.main img:not(.avatar):not(.tk-avatar-img):not(#tcomment img)')
     </script>
     <!-- require APlayer <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"> <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script> -->
     <!-- require MetingJS <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script> -->
@@ -75,7 +75,7 @@
     <link href="{{ .RelPermalink }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" />
     {{ end }}
     {{ partial "head_highlightjs" . }}
-    <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
+    <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}?v=20261022-1" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/palettes.css?v=20260924-2" | relURL }}" />
     <script>

@@ -3,16 +3,16 @@
 
   var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"></path></svg>';
 
-  function isFullImage(image) {
+  function isIconImage(image) {
     try {
-      return new URL(image.getAttribute('src'), window.location.href).hash === '#full';
+      return new URL(image.getAttribute('src'), window.location.href).hash === '#icon';
     } catch (error) {
       return false;
     }
   }
 
   function isArticleImage(image) {
-    return !isFullImage(image) &&
+    return isIconImage(image) &&
       !image.closest('.post-image-preview') &&
       !image.matches('.avatar, .tk-avatar-img') &&
       !/emotion/i.test(image.getAttribute('src') || '');
@@ -49,6 +49,10 @@
     return block && content.contains(block) ? block : image;
   }
 
+  function hasUncollapsedImage(block) {
+    return !!block.querySelector('img:not(.post-image-source)');
+  }
+
   function makeTrigger(images, articleImages) {
     var button = document.createElement('button');
     button.type = 'button';
@@ -57,7 +61,7 @@
     button.setAttribute('aria-label', '查看' + images.length + '张图片');
     button.innerHTML = ICON +
       (images.length > 1 ? '<span class="post-image-count">+' + (images.length - 1) + '</span>' : '') +
-      '<span class="post-image-preview" aria-hidden="true"><img src="" alt="" loading="lazy" decoding="async"></span>';
+      '<span class="post-image-preview" aria-hidden="true"><img src="" alt="" loading="lazy" decoding="async" no-view></span>';
     button.querySelector('.post-image-preview img').src = images[0].currentSrc || images[0].src;
     button.addEventListener('click', function () {
       var urls = articleImages.map(function (image) { return image.currentSrc || image.src; });
@@ -95,6 +99,7 @@
       if (group.blocks.indexOf(block) === -1) group.blocks.push(block);
       group.images.push(image);
       image.classList.add('post-image-source');
+      image.setAttribute('no-view', '');
       image.hidden = true;
     });
 
@@ -110,7 +115,7 @@
         group.firstBlock.parentNode.insertBefore(holder, group.firstBlock);
       }
       group.blocks.forEach(function (block) {
-        if (!hasReadableText(block)) {
+        if (!hasReadableText(block) && !hasUncollapsedImage(block)) {
           block.classList.add('post-image-source-block');
           block.hidden = true;
         }
