@@ -8253,6 +8253,17 @@ function r2ReplaceFileExt(name, ext){
   return `${safe || 'image'}${ext}`;
 }
 async function r2DecodeHeicFile(file){
+  // Some file pickers hand an HEIC selection to the browser as JPEG bytes
+  // while retaining the .heic filename, and some browsers decode HEIC natively.
+  // In either case prefer the browser decoder: heic2any deliberately rejects
+  // JPEG/PNG/GIF input after inspecting the file signature.
+  try{
+    await r2LoadImage(file);
+    return file;
+  }catch(_nativeDecodeError){
+    // Fall through to heic2any for a genuine, browser-unreadable HEIC/HEIF.
+  }
+
   const converter=typeof window.heic2any==='function'
     ? window.heic2any
     : (typeof heic2any==='function' ? heic2any : null);
@@ -8262,7 +8273,12 @@ async function r2DecodeHeicFile(file){
 
   let converted;
   try{
-    converted=await converter({blob:file, toType:'image/jpeg', quality:0.94});
+    const declaredType=String(file?.type||'').toLowerCase();
+    const heicType=/\.heif$/i.test(file?.name||'') ? 'image/heif' : 'image/heic';
+    const sourceBlob=/^image\/hei[cf]$/i.test(declaredType)
+      ? file
+      : new Blob([file], {type:heicType});
+    converted=await converter({blob:sourceBlob, toType:'image/jpeg', quality:0.94});
   }catch(error){
     const message=error?.message || String(error || '未知解码错误');
     throw new Error(`HEIC 解码失败：${message}`);
