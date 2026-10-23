@@ -300,6 +300,194 @@
     }
   }
 
+/* Article table of contents: a quiet right-edge tab that opens on hover/focus. */
+.post-toc {
+  position: fixed;
+  top: clamp(9rem, 28vh, 18rem);
+  right: 0;
+  z-index: 460;
+  display: block;
+  width: min(18rem, calc(100vw - 2rem));
+  max-height: min(62vh, 34rem);
+  color: var(--text);
+  pointer-events: none;
+  transform: translateX(calc(100% - 2.5rem));
+  transition: transform .22s cubic-bezier(.22, 1, .36, 1);
+}
+
+.post-toc:hover,
+.post-toc:focus-within {
+  transform: translateX(0);
+}
+
+.post-toc-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: color-mix(in srgb, var(--surface) 91%, transparent);
+  color: var(--muted);
+  box-shadow: -5px 6px 18px color-mix(in srgb, var(--shadow) 62%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(112%);
+  backdrop-filter: blur(14px) saturate(112%);
+  line-height: 1;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.post-toc:hover .post-toc-tab,
+.post-toc:focus-within .post-toc-tab {
+  top: .6rem;
+  right: .6rem;
+  left: auto;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.post-toc-tab svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.post-toc-panel {
+  width: 100%;
+  max-height: min(62vh, 34rem);
+  overflow: hidden auto;
+  padding: 1rem 3.6rem 1.05rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: -10px 12px 30px color-mix(in srgb, var(--shadow) 70%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(112%);
+  backdrop-filter: blur(16px) saturate(112%);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .12s ease, visibility 0s linear .12s;
+}
+
+.post-toc:hover .post-toc-panel,
+.post-toc:focus-within .post-toc-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.post-toc #TableOfContents {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-size: .78rem;
+  line-height: 1.55;
+}
+
+.post-toc #TableOfContents ul {
+  margin: 0;
+  padding-left: .95rem;
+  list-style: none;
+}
+
+.post-toc #TableOfContents > ul {
+  padding-left: 0;
+}
+
+/* Hugo inserts empty list levels when the first heading starts at H2-H6. */
+.post-toc #TableOfContents li:not(:has(> a)) {
+  margin: 0;
+}
+
+.post-toc #TableOfContents li:not(:has(> a)) > ul {
+  padding-left: 0;
+}
+
+.post-toc #TableOfContents li {
+  position: relative;
+  margin: .18rem 0;
+}
+
+.post-toc #TableOfContents li:has(> a) {
+  padding-left: .75rem;
+}
+
+.post-toc #TableOfContents li:has(> a)::before {
+  content: "";
+  position: absolute;
+  top: .84rem;
+  left: .08rem;
+  width: 5px;
+  height: 5px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  transform: translateY(-50%);
+}
+
+.post-toc #TableOfContents a {
+  display: block;
+  padding: .24rem .35rem;
+  border: 0;
+  border-radius: 5px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  transition: color .16s ease, background-color .16s ease, transform .16s ease;
+}
+
+.post-toc #TableOfContents a:hover,
+.post-toc #TableOfContents a:focus-visible {
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  transform: translateX(2px);
+}
+
+/* Keep one breathing line above headings reached from the floating TOC. */
+.post-content :is(h1, h2, h3, h4, h5, h6)[id] {
+  scroll-margin-top: 3rem;
+}
+
+.post-toc #TableOfContents a:focus-visible {
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+}
+
+@media screen and (max-width: 1100px), (hover: none), (pointer: coarse) {
+  .post-toc {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-toc,
+  .post-toc #TableOfContents a {
+    transition: none;
+  }
+}
+
+@media print {
+  .post-toc {
+    display: none;
+  }
+}
+
 /* 页脚：后台 Home 图标 + RSS 三弧线图标 */
 .copyright a[href$="index.xml"]::before {
   content: "";

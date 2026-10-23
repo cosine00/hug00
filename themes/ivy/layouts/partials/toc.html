@@ -1,0 +1,14 @@
+{{- $headers := findRE "<h[1-6].*?>(.|\n])+?</h[1-6]>" .Content -}}
+{{- $showToc := ne (.Param "ShowToc") false -}}
+{{- if and (eq .Section "posts") $showToc (ge (len $headers) 2) -}}
+<aside class="post-toc" aria-label="文章目录">
+  <button class="post-toc-tab" type="button" aria-label="展开文章目录">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" />
+    </svg>
+  </button>
+  <nav class="post-toc-panel" aria-label="本文目录">
+    {{- .TableOfContents -}}
+  </nav>
+</aside>
+{{- end -}}

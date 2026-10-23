@@ -88,7 +88,7 @@ unsafe = true
 autoHeadingIDType = "blackfriday"
 
 [markup.tableOfContents]
-endLevel = 3
+endLevel = 6
 ordered = false
 startLevel = 1
 
