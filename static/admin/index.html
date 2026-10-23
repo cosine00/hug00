@@ -8165,7 +8165,7 @@ async function r2UploadFile(file){
   };
 }
 async function r2ListObjects(prefix=r2SelectedPrefix()){
-  const signed=await r2SignRequest('GET','',{query:{'list-type':'2', prefix, 'max-keys':'100'}, payloadHash:await sha256Hex('')});
+  const signed=await r2SignRequest('GET','',{query:{'list-type':'2', prefix, 'max-keys':'200'}, payloadHash:await sha256Hex('')});
   const res=await fetch(signed.url, {method:'GET', headers:signed.headers});
   if(!res.ok){ const text=await res.text().catch(()=>res.statusText); throw new Error(`R2 列表读取失败：${res.status} ${text}`); }
   const xml=await res.text();
