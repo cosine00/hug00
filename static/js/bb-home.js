@@ -25,8 +25,25 @@ function loadCssCode(code){
 const allCSS = `
 #bber{margin-top:1rem;width:auto!important;min-height:100vh;}
 .bb-timeline ul{margin:0;padding:0;}
-.bb-timeline ul li{margin-bottom:3rem;list-style-type:none;}
-.bb-timeline .bb-item,.bb-load button{border:1px solid #dcdcdc;border-radius:8px;box-shadow:3px 3px 5px rgba(0,0,0,.1);}
+.bb-timeline ul li{margin-bottom:2rem;list-style-type:none;}
+.bb-timeline .bb-item {
+    border: none !important;
+    border-bottom: 1px solid transparent !important;
+    border-image: linear-gradient(
+        to right,
+        transparent,
+        rgba(145,145,145,0.2),
+        transparent
+    ) 1 !important;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.bb-load button {
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    box-shadow: 3px 3px 5px rgba(0,0,0,.1);
+}
 .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;}
 .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px;}
 .bb-timeline .datatime{font-size:15px;}
@@ -139,18 +156,25 @@ const allCSS = `
   color: #42b983;
 }
 
-/* --- 置顶卡片专属外框样式 (回归极简) --- */
-.bb-timeline .bb-item.pinned-bg {
-  border: 1px solid rgba(156, 39, 176, 0.2) !important; /* 仅保留极淡的紫色边线，起微微勾勒作用 */
-  box-shadow: none !important; /* 彻底去掉阴影，不让它浮起来 */
-  background-color: transparent !important; /* 绝对透明，完美融入你的深灰/纯白底色 */
-  transition: all 0.3s ease;
+/* 置顶动态：默认淡紫色描边 */
+.bb-timeline .bb-item.is-pinned {
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(156, 39, 176, 0.12) !important;
+    background-color: transparent;
+    transition:
+        box-shadow 0.35s ease,
+        background-color 0.35s ease;
 }
 
-/* 暗色模式适配 */
-.dark-theme .bb-timeline .bb-item.pinned-bg {
-  border: 1px solid rgba(156, 39, 176, 0.3) !important; /* 暗色模式下稍微提亮一点点边框，但依然保持极细 */
-  background-color: transparent !important; /* 坚决不要背景色 */
+/* 鼠标悬停：边框逐渐显现 */
+.bb-timeline .bb-item.is-pinned:hover {
+    box-shadow: inset 0 0 0 1px rgba(156, 39, 176, 0.45) !important;
+    background-color: rgba(156, 39, 176, 0.025);
+}
+
+/* 暗色模式 */
+.dark-theme .bb-timeline .bb-item.is-pinned:hover {
+    background-color: rgba(156, 39, 176, 0.06);
 }
 `
 loadCssCode(allCSS);
@@ -242,7 +266,7 @@ function renderMemosPaged(memos, page) {
 
     result += `
       <li>
-       <div class="bb-item" style="position:relative; ${item.isPinned ? 'border: 1px solid rgba(156, 39, 176, 0.3) !important;' : ''}">
+       <div class="bb-item${item.isPinned ? ' is-pinned' : ''}" style="position:relative;">
           <div class="bb-cont">${content}</div>
           <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:inline-flex; align-items:center; gap:12px;">
@@ -297,16 +321,6 @@ function renderMemosPaged(memos, page) {
       e.stopPropagation();
       doToggle(this.getAttribute('data-id'), this.getAttribute('data-twienv'));
     };
-  });
-
-  // 标签筛选功能
-  document.querySelectorAll('.tag-span.tag-filter').forEach(span => {
-    span.onclick = function() {
-      const tag = this.getAttribute('data-tag');
-      const filtered = allMemos.filter(m => (m.tags || []).includes(tag));
-      currentPage = 0;
-      renderMemosPaged(filtered, currentPage);
-    }
   });
 
   if (window.ViewImage) ViewImage.init('.bb-cont img:not(.bb-image-preview-image)');
