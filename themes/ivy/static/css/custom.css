@@ -303,7 +303,7 @@
 /* Article table of contents: a quiet right-edge tab that opens on hover/focus. */
 .post-toc {
   position: fixed;
-  top: clamp(9rem, 28vh, 18rem);
+  top: clamp(6rem, 20vh, 13rem);
   right: 0;
   z-index: 460;
   display: block;
