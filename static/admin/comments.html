@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>评论管理 · Counting Stars</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #fff;
+      --text: #2f3338;
+      --muted: #8b919a;
+      --border: #e5e7eb;
+      --accent: #42b983;
+      --danger: #e5484d;
+      --warn: #c98a00;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input, select, button, textarea {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(66,185,131,.12); }
+    button { cursor: pointer; transition: all .16s ease; white-space: nowrap; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button.primary:hover { filter: brightness(.95); }
+    button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+    button.danger:hover { border-color: var(--danger); color: var(--danger); }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab {
+      padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border);
+      background: #fff; color: var(--muted); cursor: pointer; font-size: 13px;
+    }
+    .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+    }
+    .item-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .nick { font-weight: 600; }
+    .meta { color: var(--muted); font-size: 12px; }
+    .target {
+      color: var(--accent); text-decoration: none; font-size: 12px;
+      border: 1px solid rgba(66,185,131,.35); border-radius: 999px; padding: 1px 9px;
+    }
+    .target:hover { background: rgba(66,185,131,.08); }
+    .content {
+      white-space: pre-wrap; word-break: break-word;
+      background: #fafbfc; border-left: 3px solid var(--border);
+      padding: 8px 12px; border-radius: 4px; margin: 8px 0;
+    }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-pending { color: var(--warn); }
+    .status-spam { color: var(--danger); }
+    .status-approved { color: var(--accent); }
+    .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .migrate { border-top: 1px dashed var(--border); margin-top: 12px; padding-top: 12px; }
+    .migrate h2 { font-size: 14px; margin: 0 0 6px; }
+    .migrate .row { margin-bottom: 8px; }
+    .file {
+      font-size: 12px; color: var(--muted);
+      border: 1px dashed var(--border); border-radius: 8px;
+      padding: 8px 12px; cursor: pointer;
+    }
+    .file:hover { border-color: var(--accent); color: var(--accent); }
+    .file input { display: none; }
+    .migrate-log {
+      font-size: 12px; line-height: 1.7; margin-top: 6px;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .migrate-log.ok { color: var(--accent); }
+    .migrate-log.err { color: var(--danger); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>评论管理</h1>
+  <div class="sub">仅本地浏览器持有口令，服务端凭 COMMENTS_ADMIN_TOKEN 校验。</div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="token" type="password" placeholder="管理口令（COMMENTS_ADMIN_TOKEN）" style="flex:1;min-width:240px;">
+      <input id="api" type="text" placeholder="https://comments.hux.ink/api/comments" style="flex:1;min-width:240px;">
+      <button class="primary" id="save">保存并加载</button>
+    </div>
+    <div class="hint">填 Worker 的地址：本地调试用 http://localhost:8787/api/comments，上线后填 https://你的域名/api/comments</div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-status="approved">已通过</div>
+    <div class="tab" data-status="spam">垃圾</div>
+    <div class="tab" data-status="deleted">已删除</div>
+    <div class="tab" data-status="all">全部</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="filter" type="text" placeholder="按 thread key 过滤，例如 memo:1233" style="flex:1;min-width:240px;">
+      <button class="ghost" id="reload">刷新</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="migrate">
+      <h2>数据迁移</h2>
+      <div class="hint" style="margin-top:0">
+        导出的 Twikoo 格式分两个文件：评论（comment.json）与阅读量（counter.json）。
+        哪天不想用这套评论了，把这两个文件丢回 Twikoo 管理面板的「导入」就能继续用。
+      </div>
+      <div class="row">
+        <button class="primary" id="export-twikoo">导出 Twikoo 格式</button>
+        <button class="ghost" id="export-native">导出原始备份（本系统）</button>
+      </div>
+      <div class="row">
+        <label class="file">
+          选择 Twikoo 导出文件（可多选）
+          <input type="file" id="import-file" accept=".json,application/json" multiple>
+        </label>
+        <button class="ghost" id="import-run">开始导入</button>
+      </div>
+      <div class="migrate-log" id="migrate-log"></div>
+    </div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var state = { status: 'approved', token: '', api: '' };
+
+  var tokenInput = document.getElementById('token');
+  var apiInput = document.getElementById('api');
+  var filterInput = document.getElementById('filter');
+  var list = document.getElementById('list');
+
+  state.token = sessionStorage.getItem('cm-admin-token') || '';
+  state.api = localStorage.getItem('cm-admin-api') || '';
+  tokenInput.value = state.token;
+  apiInput.value = state.api;
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function timeText(ts) {
+    var d = new Date(ts * 1000);
+    function p(n) { return n < 10 ? '0' + n : n; }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function targetUrl(row) {
+    var key = row.thread_key || '';
+    if (key.indexOf('memo:') === 0) return '/m/' + key.replace('memo:', '') + '/';
+    if (key.indexOf('post:') === 0) return key.replace('post:', '');
+    if (key.indexOf('page:') === 0) return key.replace('page:', '');
+    return '';
+  }
+
+  function load() {
+    state.token = tokenInput.value.trim();
+    state.api = apiInput.value.trim().replace(/\/+$/, '');
+    sessionStorage.setItem('cm-admin-token', state.token);
+    localStorage.setItem('cm-admin-api', state.api);
+
+    if (!state.api) {
+      list.innerHTML = '<div class="empty">请先填写 API 地址</div>';
+      return;
+    }
+    if (!state.token) {
+      list.innerHTML = '<div class="empty">请先填写管理口令</div>';
+      return;
+    }
+
+    var params = new URLSearchParams({ status: state.status, limit: '100' });
+    var filter = filterInput.value.trim();
+    if (filter) params.set('thread', filter);
+
+    list.innerHTML = '<div class="empty">加载中…</div>';
+
+    fetch(state.api + '/admin?' + params.toString(), {
+      headers: { 'x-admin-token': state.token }
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.ok) throw new Error((data.error && data.error.message) || '加载失败');
+        render(data.rows || []);
+      })
+      .catch(function (error) {
+        list.innerHTML = '<div class="empty">' + esc(error.message) + '</div>';
+      });
+  }
+
+  function render(rows) {
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty">没有符合条件的评论</div>';
+      return;
+    }
+    list.innerHTML = rows.map(function (row) {
+      var url = targetUrl(row);
+      return '<div class="item" data-id="' + row.id + '">' +
+        '<div class="item-head">' +
+          '<span class="nick">' + esc(row.nick) + '</span>' +
+          (row.is_admin ? '<span class="meta" style="color:#e5484d">博主</span>' : '') +
+          '<span class="meta">#' + row.id + '</span>' +
+          '<span class="meta">' + timeText(row.created_at) + '</span>' +
+          '<span class="meta status-' + esc(row.status) + '">' + esc(row.status) + '</span>' +
+          (url ? '<a class="target" href="' + esc(url) + '" target="_blank">' + esc(row.thread_key) + '</a>' : '<span class="meta">' + esc(row.thread_key) + '</span>') +
+        '</div>' +
+        '<div class="meta">' + esc(row.email || '无邮箱') + (row.region ? ' · ' + esc(row.region) : '') + '</div>' +
+        '<div class="content">' + esc(row.content) + '</div>' +
+        '<div class="actions">' +
+          (row.status !== 'approved' ? '<button class="ghost" data-action="approve">恢复显示</button>' : '') +
+          (row.status !== 'spam' ? '<button class="ghost" data-action="spam">标记垃圾</button>' : '') +
+          '<button class="danger" data-action="delete">删除</button>' +
+          '<button class="danger" data-action="hard-delete" title="连回复一起永久删除">彻底删除</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  list.addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-action]');
+    if (!btn) return;
+    var item = btn.closest('.item');
+    var id = item.getAttribute('data-id');
+    var action = btn.getAttribute('data-action');
+    if (action === 'delete' && !confirm('确定删除这条评论？（之后可在“已删除”中恢复）')) return;
+    if (action === 'hard-delete' && !confirm('彻底删除后无法恢复，确定？')) return;
+
+    btn.disabled = true;
+    fetch(state.api + '/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': state.token },
+      body: JSON.stringify({ action: action, id: Number(id) })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.ok) throw new Error(data.message || '操作失败');
+        item.style.opacity = '0.45';
+        setTimeout(load, 260);
+      })
+      .catch(function (error) {
+        alert(error.message);
+      })
+      .finally(function () { btn.disabled = false; });
+  });
+
+  document.getElementById('tabs').addEventListener('click', function (event) {
+    var tab = event.target.closest('.tab');
+    if (!tab) return;
+    document.querySelectorAll('.tab').forEach(function (node) { node.classList.remove('active'); });
+    tab.classList.add('active');
+    state.status = tab.getAttribute('data-status');
+    load();
+  });
+
+  document.getElementById('save').addEventListener('click', load);
+  document.getElementById('reload').addEventListener('click', load);
+  filterInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') load();
+  });
+
+  /* ------------------------------ 数据迁移 ------------------------------ */
+
+  var migrateLog = document.getElementById('migrate-log');
+  var importInput = document.getElementById('import-file');
+
+  function sayMigrate(text, tone) {
+    migrateLog.textContent = text;
+    migrateLog.className = 'migrate-log' + (tone ? ' ' + tone : '');
+  }
+
+  function needReady() {
+    if (!state.api || !state.token) {
+      sayMigrate('先在上面填好 API 地址和管理口令。', 'err');
+      return false;
+    }
+    return true;
+  }
+
+  function download(name, data) {
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  async function exportAllPages(format) {
+    var offset = 0, comments = [], first = null;
+    do {
+      var suffix = '?limit=1000&offset=' + offset + (format === 'twikoo' ? '&format=twikoo' : '');
+      var res = await fetch(state.api + '/admin/export' + suffix, {
+        headers: { 'x-admin-token': state.token }
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error((data.error && data.error.message) || '导出失败');
+      if (!first) first = data;
+      comments = comments.concat(format === 'twikoo' ? (data.comment || []) : (data.comments || []));
+      var page = data.pagination || { hasMore: false };
+      offset += format === 'twikoo' ? (data.comment || []).length : (data.comments || []).length;
+      sayMigrate('正在导出… 已读取 ' + comments.length + ' / ' + (page.total || comments.length));
+      if (!page.hasMore) break;
+    } while (true);
+
+    if (format === 'twikoo') return { comment: comments, counter: first.counter || [] };
+    return {
+      format: 'comments-native-v2',
+      exportedAt: new Date().toISOString(),
+      threads: first.threads || [],
+      comments: comments,
+      threadStats: first.threadStats || []
+    };
+  }
+
+  document.getElementById('export-twikoo').addEventListener('click', async function () {
+    if (!needReady()) return;
+    sayMigrate('正在导出…');
+    try {
+      var data = await exportAllPages('twikoo');
+      var stamp = new Date().toISOString().slice(0, 10);
+      download('comment-' + stamp + '.json', data.comment);
+      setTimeout(function () { download('counter-' + stamp + '.json', data.counter); }, 300);
+      sayMigrate('已完整导出 ' + data.comment.length + ' 条评论、' + data.counter.length + ' 条阅读量记录。', 'ok');
+    } catch (error) { sayMigrate('导出失败：' + error.message, 'err'); }
+  });
+
+  document.getElementById('export-native').addEventListener('click', async function () {
+    if (!needReady()) return;
+    sayMigrate('正在导出…');
+    try {
+      var data = await exportAllPages('native');
+      var stamp = new Date().toISOString().slice(0, 10);
+      download('comments-backup-' + stamp + '.json', data);
+      sayMigrate('已导出可恢复原始备份：' + data.comments.length + ' 条评论。', 'ok');
+    } catch (error) { sayMigrate('导出失败：' + error.message, 'err'); }
+  });
+
+  document.getElementById('import-run').addEventListener('click', function () {
+    if (!needReady()) return;
+    var files = Array.prototype.slice.call(importInput.files || []);
+    if (!files.length) { sayMigrate('先选一个 Twikoo 导出的 JSON 文件。', 'err'); return; }
+
+    var bundle = { comment: [], counter: [] };
+    Promise.all(files.map(function (file) {
+      return file.text().then(function (text) {
+        var data = JSON.parse(text);
+        if (Array.isArray(data)) {
+          // 数组有两种可能：评论或阅读量，看第一条的字段判断
+          var first = data[0] || {};
+          if (first.comment != null || first.mail != null) bundle.comment = bundle.comment.concat(data);
+          else if (first.time != null || first.url != null) bundle.counter = bundle.counter.concat(data);
+        } else {
+          if (Array.isArray(data.comment)) bundle.comment = bundle.comment.concat(data.comment);
+          if (Array.isArray(data.counter)) bundle.counter = bundle.counter.concat(data.counter);
+        }
+      });
+    })).then(function () {
+      if (!bundle.comment.length && !bundle.counter.length) {
+        throw new Error('文件里没读到评论或阅读量');
+      }
+      if (!confirm('即将导入 ' + bundle.comment.length + ' 条评论、' + bundle.counter.length +
+                   ' 条阅读量。\n重复导入同一份文件不会产生重复评论（会按内容跳过），继续？')) {
+        return null;
+      }
+      // 一次 POST 塞太多行会把 Worker 跑超时，按 50 条一批慢慢来
+      var out = { imported: 0, skipped: 0, counters: 0 };
+      var batches = [];
+      for (var i = 0; i < bundle.comment.length; i += 50) batches.push(bundle.comment.slice(i, i + 50));
+      batches.push([]);  // 最后一批只带阅读量
+      return batches.reduce(function (chain, rows, index) {
+        return chain.then(function () {
+          var body = { comment: rows };
+          if (index === batches.length - 1) body.counter = bundle.counter;
+          var done = index === 0 ? 0 : Math.min(index * 50, bundle.comment.length);
+          sayMigrate('正在导入… 评论 ' + done + ' / ' + bundle.comment.length);
+          return fetch(state.api + '/admin/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-admin-token': state.token },
+            body: JSON.stringify(body)
+          }).then(function (res) { return res.json(); }).then(function (data) {
+            if (!data.ok) throw new Error((data.error && data.error.message) || '导入失败');
+            out.imported += Number(data.imported || 0);
+            out.skipped += Number(data.skipped || 0);
+            out.counters += Number(data.counters || 0);
+          });
+        });
+      }, Promise.resolve()).then(function () { return out; });
+    }).then(function (data) {
+      if (!data) return;
+      sayMigrate('导入完成：新增 ' + data.imported + ' 条，跳过 ' + data.skipped +
+                 ' 条（含已存在的），阅读量写回 ' + data.counters + ' 条。', 'ok');
+      importInput.value = '';
+      load();
+    }).catch(function (error) {
+      sayMigrate('导入失败：' + error.message, 'err');
+    });
+  });
+
+  if (state.token) load();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{{- /*
+  返回「管理入口暗号」的 sha256 值（空串表示不开启入口）。
+  前端只拿到哈希，页面源码里不会出现暗号原文；
+  真正的门禁是 Worker 的 COMMENTS_ADMIN_TOKEN。
+*/ -}}
+{{- $hash := "" -}}
+{{- with site.Params.comments -}}
+  {{- with .adminNick -}}
+    {{- $hash = crypto.SHA256 (trim . " ") -}}
+  {{- end -}}
+{{- end -}}
+{{- return $hash -}}

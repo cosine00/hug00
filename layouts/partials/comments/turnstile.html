@@ -1,0 +1,6 @@
+{{- /* Cloudflare Turnstile 的公开 site key；secret 只放 Worker secret。 */ -}}
+{{- $key := "" -}}
+{{- with site.Params.comments -}}
+  {{- with .turnstileSiteKey -}}{{- $key = . -}}{{- end -}}
+{{- end -}}
+{{- return $key -}}

@@ -19,8 +19,29 @@
 <script src="/js/marked.min.js"></script>
 <script src="/js/view-image.min.js"></script>
 <script src="/js/lately.min.js"></script>
-<script type="module" src="/js/emaction.js"></script>
-<script src="{{ "js/bb-focus.js" | relURL }}?v=20261019-1"></script>
+<script type="module" src="/js/emaction.js?v=20261027-16"></script>
+<script src="{{ "js/bb-focus.js" | relURL }}?v=20261027-16"></script>
+
+{{- $useNewComments := partial "comments/enabled.html" . -}}
+{{- if $useNewComments -}}
+{{- $newApi := partial "comments/api.html" . -}}
+{{- $adminHash := partial "comments/admin-hash.html" . -}}
+{{- $avatar := partial "comments/avatar.html" . -}}
+{{- $turnstile := partial "comments/turnstile.html" . -}}
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261027-23">
+<script>
+  window.bbComments = {
+    api: '{{ $newApi }}',
+    memosUrl: '{{ "memos.json" | relURL }}',
+    listIndex: '/bb/',
+    adminHash: '{{ $adminHash }}',
+    avatar: '{{ $avatar }}',
+    turnstileSiteKey: '{{ $turnstile }}'
+  };
+</script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261027-23"></script>
+<script src="{{ "js/bb-comments.js" | relURL }}?v=20261027-23"></script>
+{{- end -}}
 
 <style>
   .bibi-switch {

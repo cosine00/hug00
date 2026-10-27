@@ -1,0 +1,17 @@
+{{- /*
+  返回评论系统 API 的基础地址（字符串）。
+  本地 hugo server 默认指向 http://localhost:8787/api/comments，
+  可通过 params.comments.localApi 改；生产用 params.comments.api。
+*/ -}}
+{{- $api := "/api/comments" -}}
+{{- with site.Params.comments -}}
+  {{- with .api -}}{{- $api = . -}}{{- end -}}
+{{- end -}}
+{{- if hugo.IsServer -}}
+  {{- $local := "http://localhost:8787/api/comments" -}}
+  {{- with site.Params.comments -}}
+    {{- with .localApi -}}{{- $local = . -}}{{- end -}}
+  {{- end -}}
+  {{- $api = $local -}}
+{{- end -}}
+{{- return $api -}}

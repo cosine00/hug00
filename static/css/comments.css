@@ -1,0 +1,1608 @@
+/* ==========================================================================
+   评论区样式
+   全部取用 ivy 主题的设计变量（surface / text / border / accent / shadow），
+   因此四套配色（paper / night / sepia / mist）与深色模式都会自动跟随，
+   字体一律 inherit，博客切换字体时评论区同步变化。
+   ========================================================================== */
+
+.cm-app {
+  --cm-radius: 12px;
+  --cm-danger: #c2554f;
+
+  /* 主题变量缺失时的兜底 */
+  --cm-surface: var(--surface, #ffffff);
+  --cm-surface-soft: var(--surface-soft, #f3f4f2);
+  --cm-text: var(--text, #2f3332);
+  --cm-text-strong: var(--text-strong, #171a19);
+  --cm-muted: var(--muted, #707673);
+  --cm-faint: var(--faint, #9ba09d);
+  --cm-border: var(--border, #dedfdb);
+  --cm-border-strong: var(--border-strong, #b9bdb9);
+  --cm-accent: var(--accent, #6870a8);
+  --cm-accent-hover: var(--accent-hover, #4f578f);
+  --cm-accent-contrast: var(--accent-contrast, #ffffff);
+  --cm-code-bg: var(--code-bg, #f0f2ef);
+  --cm-code-border: var(--code-border, #d9ddd9);
+  --cm-quote: var(--quote, #59645f);
+  --cm-shadow: var(--shadow, rgba(30, 39, 35, 0.12));
+
+  margin: 2.5rem 0 1rem;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--cm-text);
+  text-align: left;
+}
+
+.cm-app *,
+.cm-app *::before,
+.cm-app *::after {
+  box-sizing: border-box;
+}
+
+html[data-theme="night"] .cm-app {
+  --cm-danger: #e07a75;
+}
+
+/* --------------------------------- 头部 --------------------------------- */
+
+.cm-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--cm-border);
+}
+
+.cm-head-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cm-head h3 {
+  position: relative;
+  margin: 0;
+  padding-left: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--cm-text-strong);
+}
+
+.cm-head h3::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 15px;
+  border-radius: 2px;
+  background: var(--cm-accent);
+  transform: translateY(-50%);
+}
+
+.cm-total {
+  font-size: 13px;
+  color: var(--cm-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-head-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+}
+
+.cm-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-stats[hidden] {
+  display: none;
+}
+
+.cm-views,
+.cm-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+}
+
+.cm-views svg,
+.cm-like svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.cm-like {
+  padding: 2px 9px 2px 7px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.cm-like:hover {
+  color: var(--cm-accent-hover);
+  border-color: color-mix(in srgb, var(--cm-accent) 30%, var(--cm-border));
+  background: color-mix(in srgb, var(--cm-accent) 7%, transparent);
+}
+
+.cm-like.is-on {
+  color: #c2554f;
+}
+
+.cm-like.is-on svg {
+  fill: currentColor;
+  opacity: 1;
+}
+
+.cm-like.is-on:hover {
+  color: #c2554f;
+  border-color: color-mix(in srgb, #c2554f 45%, var(--cm-border));
+  background: color-mix(in srgb, #c2554f 8%, transparent);
+}
+
+html[data-theme="night"] .cm-like.is-on {
+  color: #e2a09a;
+}
+
+.cm-entry {
+  padding: 2px 11px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--cm-muted);
+  background: var(--cm-surface-soft);
+  border: 1px solid var(--cm-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.cm-entry:hover {
+  color: var(--cm-accent-hover);
+  border-color: color-mix(in srgb, var(--cm-accent) 45%, var(--cm-border));
+}
+
+.cm-admin-flag {
+  color: var(--cm-accent-hover);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-logout {
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--cm-muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.cm-logout:hover {
+  color: var(--cm-danger);
+}
+
+/* 「忘掉」：公共电脑上用来连口令一起清掉，比「退出」更彻底，所以做得更轻 */
+.cm-forget {
+  margin-left: 6px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--cm-faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cm-forget:hover {
+  color: var(--cm-danger);
+}
+
+.cm-entry[hidden],
+.cm-admin-flag[hidden],
+.cm-login[hidden] {
+  display: none;
+}
+
+/* --------------------------------- 表单 --------------------------------- */
+
+/* 表单是"主入口"，比零散条目要更立得住：
+   条目靠投影托出来，表单再补一圈主色描边，一眼能分出"这是输入区"。
+   内部排布照 Twikoo——左边一枚头像，右边"三格带标签的输入 + 大文本框 + 底部工具条"。 */
+.cm-form {
+  display: flex;
+  gap: 14px;
+  margin: 0 0 18px;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--cm-accent) 18%, var(--cm-border));
+  border-radius: var(--cm-radius);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--cm-shadow) 62%, transparent);
+}
+
+/* 默认头像：没填身份时是一枚灰色人形；填了昵称先显示首字母，填了邮箱再盖上 Gravatar */
+.cm-form-avatar {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  color: var(--cm-faint);
+  background: var(--cm-surface-soft);
+  border: 1px solid var(--cm-border);
+  border-radius: 50%;
+}
+
+/* 首字母头像在这个位置铺满整枚圆 */
+.cm-form-avatar .cm-avatar--letter {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  border-radius: 50%;
+}
+
+.cm-form-avatar-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.cm-form-avatar svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.cm-form-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cm-form-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* 一格输入 = 左侧标签 + 右侧输入，外圈一条线，聚焦时整格亮起来 */
+.cm-field {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid var(--cm-border);
+  border-radius: 9px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cm-field:focus-within {
+  border-color: var(--cm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cm-accent) 18%, transparent);
+}
+
+.cm-field-label {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--cm-muted);
+  background: var(--cm-surface-soft);
+  border-right: 1px solid var(--cm-border);
+  user-select: none;
+}
+
+.cm-field .cm-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.cm-field .cm-input:focus {
+  box-shadow: none;
+}
+
+/* 文本框：字数提示压在右下角，不占排版 */
+.cm-editor {
+  position: relative;
+}
+
+.cm-counter {
+  position: absolute;
+  right: 16px; /* 让开右下角的缩放把手 */
+  bottom: 7px;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--cm-faint);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  border-radius: 999px;
+  background: transparent;
+}
+
+/* 只有真写了字（占位符被顶掉）才垫薄底：文字写满后最后一行会流到这里，
+   不垫一层数字就糊在字上了；空框时保持干净，不出现一颗灰药丸。 */
+.cm-editor:has(.cm-textarea:not(:placeholder-shown)) .cm-counter {
+  background: color-mix(in srgb, var(--cm-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.cm-counter b {
+  font-weight: 500;
+}
+
+.cm-input,
+.cm-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--cm-text);
+  background: transparent;
+  border: 1px solid var(--cm-border);
+  border-radius: 9px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.cm-input::placeholder,
+.cm-textarea::placeholder {
+  color: var(--cm-faint);
+}
+
+.cm-input:focus,
+.cm-textarea:focus {
+  background: transparent;
+  border-color: var(--cm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cm-accent) 18%, transparent);
+}
+
+.cm-textarea {
+  min-height: 104px;
+  padding-bottom: 26px;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.cm-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.cm-form-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.cm-notify {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cm-muted);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cm-notify input { accent-color: var(--cm-accent); }
+
+.cm-turnstile {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.cm-turnstile.is-error { color: var(--cm-danger); font-size: 12px; }
+
+.cm-content img {
+  display: block;
+  max-width: min(100%, 520px);
+  max-height: 520px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+/* 提示语去掉后，按钮自己顶到右边 */
+.cm-form-foot > .cm-submit {
+  margin-left: auto;
+}
+
+/* --------------------------------- 表情 --------------------------------- */
+
+.cm-emoji-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 17px;
+  line-height: 1;
+  background: var(--cm-surface-soft);
+  border: 1px solid var(--cm-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+}
+
+.cm-emoji-btn:hover {
+  border-color: color-mix(in srgb, var(--cm-accent) 40%, var(--cm-border));
+  transform: translateY(-1px);
+}
+
+/* 面板贴着输入框下方、横着铺开（参考 Twikoo 那种排法）：
+   它在文档流里，展开时把底部工具条往下推，不会盖住输入的文字，
+   也就不需要 z-index / 翻转位置的补丁了。 */
+.cm-emoji-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--cm-surface-soft) 55%, transparent);
+  border: 1px solid var(--cm-border);
+  border-radius: 9px;
+}
+
+.cm-emoji-panel[hidden] {
+  display: none;
+}
+
+.cm-emoji-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 17px;
+  line-height: 1;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.14s ease, transform 0.14s ease;
+}
+
+.cm-emoji-item:hover {
+  background: var(--cm-surface-soft);
+  transform: translateY(-1px);
+}
+
+.cm-submit {
+  padding: 8px 24px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cm-accent-contrast);
+  background: var(--cm-accent);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.cm-submit:hover:not(:disabled) {
+  background: var(--cm-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--cm-shadow) 90%, transparent);
+}
+
+.cm-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cm-cancel {
+  margin-left: 8px;
+  padding: 0 4px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--cm-muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cm-cancel:hover {
+  color: var(--cm-accent-hover);
+}
+
+/* 没有头部时，管理入口落在表单行里 */
+.cm-form-foot .cm-head-tools {
+  font-size: 12px;
+}
+
+.cm-message {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cm-message:empty {
+  display: none;
+}
+
+.cm-message.is-error {
+  color: var(--cm-danger);
+}
+
+.cm-message.is-ok {
+  color: var(--cm-accent-hover);
+}
+
+.cm-message.is-warn {
+  color: #a9782c;
+}
+
+html[data-theme="night"] .cm-message.is-warn {
+  color: #d9b26a;
+}
+
+/* ------------------------------ 管理口令面板 ------------------------------ */
+
+.cm-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  background: var(--cm-surface-soft);
+  border: 1px dashed var(--cm-border-strong);
+  border-radius: 10px;
+}
+
+.cm-login-label {
+  font-size: 13px;
+  color: var(--cm-muted);
+}
+
+.cm-login-input {
+  flex: 1 1 170px;
+  min-width: 0;
+  padding: 7px 12px;
+  font-size: 13px;
+}
+
+.cm-login .cm-submit {
+  padding: 6px 18px;
+  font-size: 13px;
+}
+
+/* --------------------------------- 列表 --------------------------------- */
+
+.cm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 条目：照搬首页那 6 条哔哔的真实观感——
+   无实心边框、背景透明，靠 0 1px 4px 的柔和投影托出轮廓，
+   只有底边一条中间实、两端渐隐的细线；悬停时投影加深并整体浮起 1px。 */
+.cm-item {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  padding: 10px 16px 5px;
+  list-style: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--cm-accent) 46%, transparent),
+      transparent
+    ) 1;
+  border-radius: var(--cm-radius);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--cm-shadow) 58%, transparent);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+/* 左上角：主色描一道稍粗的圆角弧线，条目之间更好区分 */
+.cm-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-top: 2px solid color-mix(in srgb, var(--cm-accent) 20%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--cm-accent) 20%, transparent);
+  border-top-left-radius: var(--cm-radius);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cm-item:hover {
+    border-color: color-mix(in srgb, var(--cm-accent) 34%, var(--cm-border));
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--cm-shadow) 72%, transparent);
+    transform: translateY(-1px);
+  }
+  .cm-item:hover::before {
+    border-color: var(--cm-accent-hover);
+  }
+}
+
+.cm-item > .cm-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 头像：字母垫底，取到真头像再盖上去 */
+.cm-avatar-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.cm-avatar {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--cm-border);
+  background: transparent;
+}
+
+.cm-avatar--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 50%;
+  user-select: none;
+  text-transform: uppercase;
+}
+
+/* 元信息行 */
+.cm-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--cm-muted);
+}
+
+.cm-nick {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--cm-text-strong);
+  text-decoration: none;
+}
+
+a.cm-nick:hover {
+  color: var(--cm-accent-hover);
+}
+
+.cm-floor,
+.cm-time {
+  font-size: 12.5px;
+  color: var(--cm-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.cm-reply-btn {
+  padding: 0;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+
+.cm-reply-btn:hover {
+  color: var(--cm-accent-hover);
+}
+
+/* 徽章 */
+.cm-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.cm-badge--admin {
+  color: var(--cm-accent-contrast);
+  background: var(--cm-accent);
+  border-color: var(--cm-accent);
+}
+
+/* 页面上只保留「博主」这一种徽章，其余等级不再渲染 */
+/* 归属地 / 浏览器 / 系统 */
+.cm-sub {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cm-muted);
+}
+
+.cm-sub span + span::before {
+  content: "·";
+  margin: 0 6px;
+  color: var(--cm-border-strong);
+}
+
+/* 正文 */
+.cm-content {
+  margin-top: 9px;
+  font-size: 15px;
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+  color: var(--cm-text);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* 行内改稿：把正文原位换成一个 textarea，改完当场看效果，不跳页 */
+.cm-content.is-editing {
+  margin-top: 7px;
+}
+
+.cm-edit-area {
+  min-height: 76px;
+  padding: 9px 11px;
+  font-family: inherit;
+  font-size: 14.5px;
+  line-height: 1.75;
+  resize: vertical;
+}
+
+.cm-edit-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.cm-edit-counter {
+  margin-right: auto;
+  font-size: 11.5px;
+  color: var(--cm-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 客人这边只能改 1 分钟，剩 20 秒以内才把倒计时亮出来，剩 10 秒转红 */
+.cm-edit-timer {
+  font-size: 11.5px;
+  line-height: 1.6;
+  padding: 1px 7px;
+  color: var(--cm-faint);
+  background: color-mix(in srgb, var(--cm-surface-soft) 65%, transparent);
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-edit-timer.is-urgent {
+  color: var(--cm-danger);
+  background: color-mix(in srgb, var(--cm-danger) 9%, transparent);
+}
+
+.cm-edit-save,
+.cm-edit-foot .cm-cancel {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  border-radius: 8px;
+}
+
+.cm-edit-save {
+  color: var(--cm-accent-contrast);
+  background: var(--cm-accent);
+  border: 1px solid var(--cm-accent);
+}
+
+.cm-edit-save:hover {
+  background: var(--cm-accent-hover);
+  border-color: var(--cm-accent-hover);
+}
+
+.cm-edit-btn {
+  color: var(--cm-faint);
+}
+
+.cm-content p {
+  margin: 0 0 0.55em;
+}
+
+.cm-content p:last-child {
+  margin-bottom: 0;
+}
+
+.cm-content a {
+  color: var(--cm-accent-hover);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--cm-accent) 45%, transparent);
+}
+
+.cm-content a:hover {
+  border-bottom-color: var(--cm-accent);
+}
+
+.cm-content strong {
+  color: var(--cm-text-strong);
+}
+
+.cm-content code {
+  padding: 2px 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  color: var(--cm-text-strong);
+  background: var(--cm-code-bg);
+  border: 1px solid var(--cm-code-border);
+  border-radius: 4px;
+}
+
+.cm-content pre {
+  margin: 9px 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  background: var(--cm-code-bg);
+  border: 1px solid var(--cm-code-border);
+  border-radius: 8px;
+}
+
+.cm-content pre code {
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  background: none;
+  border: 0;
+}
+
+.cm-quote {
+  display: block;
+  padding: 2px 12px;
+  margin: 4px 0;
+  color: var(--cm-quote);
+  border-left: 3px solid color-mix(in srgb, var(--cm-accent) 55%, var(--cm-border));
+}
+
+.cm-at {
+  margin-right: 0.55em;
+  font-weight: 500;
+  color: var(--cm-accent-hover);
+}
+
+/* ---------------------------- 就近展开的回复框 ---------------------------- */
+
+.cm-reply-box {
+  margin: 12px 0 4px;
+  padding: 12px 14px;
+  background: var(--cm-surface-soft);
+  border: 1px solid var(--cm-border);
+  border-left: 2px solid color-mix(in srgb, var(--cm-accent) 55%, var(--cm-border));
+  border-radius: 10px;
+  animation: cm-reply-in 0.18s ease;
+}
+
+@keyframes cm-reply-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cm-reply-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--cm-muted);
+}
+
+.cm-reply-head strong {
+  font-weight: 600;
+  color: var(--cm-accent-hover);
+}
+
+.cm-reply-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.cm-reply-id {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cm-reply-box .cm-textarea {
+  min-height: 84px;
+  background: var(--cm-surface);
+}
+
+.cm-reply-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cm-reply-foot .cm-submit {
+  margin-left: auto;
+  padding: 5px 18px;
+  font-size: 13px;
+}
+
+.cm-reply-msg {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--cm-muted);
+}
+
+.cm-reply-msg.is-error {
+  color: var(--cm-danger);
+}
+
+.cm-reply-msg.is-ok {
+  color: var(--cm-accent-hover);
+}
+
+.cm-reply-msg.is-warn {
+  color: #a9782c;
+}
+
+html[data-theme="night"] .cm-reply-msg.is-warn {
+  color: #d9b26a;
+}
+
+/* 删除 / 垃圾的二次确认 */
+.cm-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--cm-muted);
+  white-space: nowrap;
+}
+
+.cm-confirm button {
+  padding: 1px 9px;
+  font-family: inherit;
+  font-size: 11.5px;
+  line-height: 1.6;
+  background: var(--cm-surface);
+  border: 1px solid var(--cm-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.cm-confirm .cm-confirm-yes {
+  color: #ffffff;
+  background: var(--cm-danger);
+  border-color: var(--cm-danger);
+}
+
+html[data-theme="night"] .cm-confirm .cm-confirm-yes {
+  color: #1b1e1d;
+}
+
+.cm-confirm button:hover {
+  filter: brightness(1.05);
+}
+
+/* 楼中楼：外层已经靠投影托起来了，里面不再叠阴影，只留一条渐隐细线 */
+.cm-children {
+  margin: 20px 0 0;
+  padding: 0 0 0 14px;
+  list-style: none;
+  border-left: 2px solid color-mix(in srgb, var(--cm-accent) 22%, var(--cm-border));
+}
+
+.cm-children .cm-item {
+  padding: 8px 0 5px;
+  background: none;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--cm-accent) 28%, transparent),
+      transparent
+    ) 1;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.cm-children .cm-item:hover {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.cm-children .cm-item:first-child {
+  padding-top: 2px;
+}
+
+.cm-children .cm-item:last-child {
+  /* 与"没有楼中楼"的条目对齐：文字到条目底部一律只留条目自身的 padding */
+  padding-bottom: 0;
+  border-bottom: 0;
+  border-image: none;
+}
+
+/* 没有楼中楼时 commentHtml 仍会留一个空的 .cm-children，别让它白占 20px 外边距 */
+.cm-children:empty {
+  margin: 0;
+}
+
+/* 折叠：楼中楼超过 5 条时，尾巴上挂一枚"展开另外 N 条回复" */
+.cm-more {
+  padding: 6px 0 2px;
+  list-style: none;
+}
+
+.cm-more:last-child {
+  padding-bottom: 0;
+}
+
+.cm-more-btn {
+  padding: 0;
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--cm-accent-hover);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: opacity 0.16s ease;
+}
+
+.cm-more-btn:hover {
+  opacity: 0.72;
+}
+
+.cm-more-btn::before {
+  content: "▾ ";
+  font-size: 10px;
+  vertical-align: 1px;
+}
+
+.cm-more-btn[data-less]::before {
+  content: "▴ ";
+}
+
+/* 分页条：跟条目同一套克制风格，不抢视线 */
+.cm-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.cm-pager[hidden] {
+  display: none;
+}
+
+.cm-page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 9px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+
+.cm-page-btn:hover:not(:disabled):not(.is-current) {
+  color: var(--cm-text);
+  background: color-mix(in srgb, var(--cm-surface-soft) 70%, transparent);
+  border-color: var(--cm-border);
+}
+
+.cm-page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cm-page-btn.is-current {
+  color: var(--cm-accent-contrast);
+  background: var(--cm-accent);
+  border-color: var(--cm-accent);
+  cursor: default;
+}
+
+.cm-page-gap {
+  padding: 0 2px;
+  font-size: 12.5px;
+  color: var(--cm-muted);
+}
+
+.cm-page-info {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--cm-muted);
+}
+
+.cm-children .cm-avatar-wrap,
+.cm-children .cm-avatar--letter {
+  width: 30px;
+  height: 30px;
+}
+
+.cm-children .cm-avatar--letter {
+  font-size: 13px;
+}
+
+.cm-children .cm-content {
+  font-size: 14.5px;
+}
+
+.cm-children .cm-nick {
+  font-size: 14px;
+}
+
+/* 管理操作按钮 */
+.cm-mod {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 10px;
+  border-left: 1px solid var(--cm-border);
+}
+
+.cm-mod button {
+  padding: 1px 9px;
+  font-family: inherit;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--cm-muted);
+  background: var(--cm-surface-soft);
+  border: 1px solid var(--cm-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
+}
+
+.cm-mod button:hover {
+  color: var(--cm-text-strong);
+  border-color: var(--cm-border-strong);
+}
+
+.cm-mod button[data-mod="approve"] {
+  color: var(--cm-accent-hover);
+  border-color: color-mix(in srgb, var(--cm-accent) 40%, var(--cm-border));
+}
+
+.cm-mod button[data-mod="delete"]:hover {
+  color: var(--cm-danger);
+  border-color: var(--cm-danger);
+}
+
+.cm-mod button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 高亮定位过来的评论 */
+.cm-item.is-target {
+  animation: cm-flash 2.2s ease;
+}
+
+@keyframes cm-flash {
+  0%, 55% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--cm-accent) 26%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.cm-empty {
+  padding: 30px 0 20px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--cm-muted);
+}
+
+.cm-loading {
+  padding: 26px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cm-faint);
+}
+
+/* ------------------------------ 毛玻璃（配合 sepia） ----------------------------- */
+
+html[data-theme="sepia"] .cm-form {
+  -webkit-backdrop-filter: blur(12px) saturate(112%);
+  backdrop-filter: blur(12px) saturate(112%);
+}
+
+/* --------------------------------- 响应式 -------------------------------- */
+
+@media (max-width: 640px) {
+  .cm-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cm-form {
+    padding: 14px;
+  }
+
+  .cm-item {
+    gap: 11px;
+    padding: 10px 14px 5px;
+  }
+
+  /* 小屏里楼中楼不要再叠一层内边距，卡片会显得憋 */
+  .cm-children .cm-item {
+    padding: 8px 0 5px;
+  }
+
+  .cm-avatar-wrap,
+  .cm-avatar--letter {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cm-actions {
+    gap: 8px;
+  }
+
+  .cm-meta {
+    gap: 6px;
+  }
+
+  .cm-children {
+    padding-left: 11px;
+  }
+
+  .cm-reply-id {
+    grid-template-columns: 1fr;
+  }
+
+  .cm-emoji-panel {
+    padding: 7px 8px;
+  }
+}
+
+/* ======================================================================
+   哔哔列表里的入口按钮（由 bb-comments.js 注入，可能不在 .cm-app 内）
+   ====================================================================== */
+
+.cm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1;
+  color: var(--muted, #707673);
+  background: transparent;
+  border: 1px solid var(--border, #dedfdb);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.cm-pill:hover {
+  color: var(--accent-hover, #4f578f);
+  border-color: color-mix(in srgb, var(--accent, #6870a8) 45%, var(--border, #dedfdb));
+  background: color-mix(in srgb, var(--accent, #6870a8) 8%, transparent);
+}
+
+.cm-pill.has-comments {
+  color: var(--accent-hover, #4f578f);
+  border-color: color-mix(in srgb, var(--accent, #6870a8) 40%, var(--border, #dedfdb));
+}
+
+.cm-pill svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cm-pill-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-inline-thread {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border, #dedfdb);
+}
+
+.cm-inline-thread[hidden] {
+  display: none;
+}
+
+.cm-inline-thread .cm-app {
+  margin: 0;
+}
+
+/* ======================================================================
+   单条哔哔的独立页面（/m/:id）
+   ====================================================================== */
+
+.cm-single-memo {
+  max-width: 680px;
+  margin: 2.5rem auto 1rem;
+  font-family: inherit;
+}
+
+.cm-single-loading {
+  margin: 3rem auto;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--muted, #707673);
+}
+
+.cm-single-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 1.2rem;
+  font-size: 13.5px;
+}
+
+.cm-single-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted, #707673);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.cm-single-back:hover {
+  color: var(--accent-hover, #4f578f);
+}
+
+.cm-memo-card {
+  padding: 1.15rem 1.3rem;
+  margin-bottom: 1.4rem;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #dedfdb);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--shadow, rgba(30, 39, 35, 0.12)) 55%, transparent);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--text, #2f3332);
+}
+
+html[data-theme="sepia"] .cm-memo-card {
+  -webkit-backdrop-filter: blur(12px) saturate(112%);
+  backdrop-filter: blur(12px) saturate(112%);
+}
+
+.cm-memo-content p {
+  margin: 0 0 0.7em;
+  letter-spacing: 0.5px;
+}
+
+.cm-memo-content p:last-child {
+  margin-bottom: 0;
+}
+
+.cm-memo-content ul,
+.cm-memo-content ol {
+  margin: 0.6em 0;
+  padding-left: 1.6em;
+}
+
+.cm-memo-content blockquote {
+  margin: 0.6em 0;
+  padding: 4px 14px;
+  color: var(--quote, #59645f);
+  background: color-mix(in srgb, var(--accent, #6870a8) 7%, var(--surface, #ffffff));
+  border-left: 3px solid color-mix(in srgb, var(--accent, #6870a8) 55%, var(--border, #dedfdb));
+  border-radius: 6px;
+}
+
+/* 图片跟文章正文一致：不设高度上限、7px 圆角、连续图片交给同一套等高画廊排版 */
+.cm-memo-content img {
+  display: inline;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin: 0;
+  border-radius: 7px;
+  vertical-align: baseline;
+  cursor: zoom-in;
+  object-fit: contain;
+}
+
+/* 画廊内部由主题的 .post-justified-gallery 接管宽高与间距 */
+.cm-memo-content .post-justified-gallery img {
+  margin: 0;
+  border-radius: 7px;
+}
+
+/* 只有一张图（没有成行）时，按段落图片处理，上下留一点呼吸感 */
+.cm-memo-content p.cm-memo-images:not(.post-justified-gallery) img {
+  margin: 0.35em 0;
+}
+
+.cm-memo-content a {
+  color: var(--accent-hover, #4f578f);
+  text-decoration: none;
+}
+
+.cm-memo-content code {
+  padding: 2px 5px;
+  font-size: 0.88em;
+  background: var(--code-bg, #f0f2ef);
+  border: 1px solid var(--code-border, #d9ddd9);
+  border-radius: 4px;
+}
+
+.cm-memo-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.9rem;
+  font-size: 12.5px;
+  color: var(--faint, #9ba09d);
+}
+
+.cm-memo-tag {
+  padding: 1px 9px;
+  font-size: 12px;
+  color: var(--accent-hover, #4f578f);
+  border: 1px solid color-mix(in srgb, var(--accent, #6870a8) 35%, transparent);
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.cm-single-memo .cm-app {
+  padding-top: 0.5rem;
+}
+
+/* ======================================================================
+   药丸提示气泡
+   与主题里 palette-trigger / back-to-top 的 control-tooltip 同一套参数：
+   999px 圆角、1px 主题色微边框、surface 92% 半透 + 背景模糊、极轻投影。
+   挂在 body 上（position: fixed），所以这里不能用 --cm-* 变量，只能取主题根变量。
+   ====================================================================== */
+
+.cm-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  max-width: min(300px, calc(100vw - 16px));
+  padding: 3px 10px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent, #6870a8) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface, #fff) 92%, transparent);
+  color: var(--text, #2f3332);
+  box-shadow: 0 6px 18px rgba(18, 34, 27, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  font: 600 11px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(2px) scale(0.96);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
+}
+
+.cm-tip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-delay: 0.06s, 0.06s, 0s;
+}
+
+/* 上方放不下时翻到下方，动画方向跟着翻 */
+.cm-tip[data-place="bottom"] {
+  transform: translateY(-2px) scale(0.96);
+}
+
+.cm-tip[data-place="bottom"].is-visible {
+  transform: translateY(0) scale(1);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cm-tip {
+    display: none;
+  }
+}

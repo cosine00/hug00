@@ -74,6 +74,30 @@ footnotereturnlinkcontents = "↩"
 [params.twikoo]
 	enable = true
 
+# 新的无服务器评论系统（Cloudflare Workers + D1）
+# enable = false 时生产环境完全沿用 Twikoo，互不影响。
+# hugo server 本地预览会自动启用，便于联调。
+[params.comments]
+	enable = true
+	# Worker 的接口地址（2026-10-27 部署到 https://comments.hux.ink）
+	api = "https://comments.hux.ink/api/comments"
+	# 本地 hugo server 联调用的地址（wrangler dev 默认端口 8787）
+	localApi = "http://localhost:8787/api/comments"
+
+	# 管理入口暗号：在评论区「昵称」里输入这个词，右侧就会冒出「管理」按钮，
+	# 点开再输入 Worker 里的 COMMENTS_ADMIN_TOKEN 才能进入。
+	# 改这里就等于改暗号；页面源码里只出现它的 sha256，不会出现原文。
+	adminNick = "hux-keeper"
+	# 可选：Cloudflare Turnstile 公开 site key。secret 用 wrangler secret 写入，不能放这里。
+	# turnstileSiteKey = "0x4AAAA..."
+
+	# 头像源（可选）。填了邮箱的读者会按
+	#   Cravatar → WeAvatar → Gravatar
+	# 顺序取头像，都取不到就用昵称首字。
+	#   avatar = "https://cravatar.cn/avatar/"   只用某个源
+	#   avatar = "letter"                        完全不去外面取图，只用昵称首字
+	# avatar = "letter"
+
 [blackfriday]
 extensionsmask = [ "noIntraEmphasis" ]
 fractions = false

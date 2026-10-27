@@ -1,0 +1,6 @@
+# 本地开发用的密钥（不要提交到 git，已加入 .gitignore）
+# 复制成 .dev.vars 后按需修改
+COMMENTS_ADMIN_TOKEN = "devtoken"
+# 配了才发邮件通知，本地一般不需要
+# RESEND_API_KEY = "re_xxx"
+# COMMENTS_MAIL_FROM = "博客评论 <comment@hux.ink>"

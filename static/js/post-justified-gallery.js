@@ -144,17 +144,23 @@
     });
   }
 
-  function initJustifiedGalleries() {
-    var content = document.querySelector('.post-content');
-    if (!content) return;
-    Array.prototype.forEach.call(content.querySelectorAll('p'), function (block) {
-      var images = directVisibleImages(block);
-      if (images.length > 1 && isImageOnlyBlock(block)) makeGallery(block, images);
+  function initJustifiedGalleries(root) {
+    var roots = typeof root === 'string'
+      ? Array.prototype.slice.call(document.querySelectorAll(root))
+      : (root && root.nodeType === 1 ? [root] : Array.prototype.slice.call(document.querySelectorAll('.post-content, .cm-memo-content')));
+
+    roots.forEach(function (content) {
+      Array.prototype.forEach.call(content.querySelectorAll('p'), function (block) {
+        var images = directVisibleImages(block);
+        if (images.length > 1 && isImageOnlyBlock(block)) makeGallery(block, images);
+      });
     });
   }
 
+  window.PostGallery = { init: initJustifiedGalleries };
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initJustifiedGalleries);
+    document.addEventListener('DOMContentLoaded', function () { initJustifiedGalleries(); });
   } else {
     initJustifiedGalleries();
   }

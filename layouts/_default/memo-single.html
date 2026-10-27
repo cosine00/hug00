@@ -1,0 +1,24 @@
+{{ partial "header.html" . }}
+
+{{- $api := partial "comments/api.html" . -}}
+{{- $adminHash := partial "comments/admin-hash.html" . -}}
+{{- $avatar := partial "comments/avatar.html" . -}}
+{{- $turnstile := partial "comments/turnstile.html" . -}}
+
+<div class="cm-single-memo" id="memo-single"
+     data-memo-api="{{ $api }}"
+     data-memo-source="{{ "memos.json" | relURL }}"
+     data-memo-index="{{ "bb/" | relURL }}"
+     data-memo-admin-hash="{{ $adminHash }}"
+     data-memo-turnstile="{{ $turnstile }}"
+     data-memo-avatar="{{ $avatar }}">
+  <div class="cm-single-loading">正在载入这条哔哔…</div>
+</div>
+
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261027-23">
+<script src="{{ "js/marked.min.js" | relURL }}"></script>
+<script src="{{ "js/view-image.min.js" | relURL }}"></script>
+<script src="{{ "js/lately.min.js" | relURL }}"></script>
+<script src="{{ "js/post-justified-gallery.js" | relURL }}?v=20261027-20"></script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261027-23"></script>
+<script src="{{ "js/bb-comments.js" | relURL }}?v=20261027-23"></script>

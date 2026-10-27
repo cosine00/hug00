@@ -1,0 +1,28 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "comments"
+main = "worker/src/index.js"
+compatibility_date = "2025-01-01"
+
+# 本地开发：npx wrangler dev  → http://localhost:8787
+# 线上部署：npx wrangler deploy
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blog-comment"
+# 2026-10-27 建库时拿到的真实 ID，改库名/换库都要同步改这里
+database_id = "1277c260-70f4-4d38-8532-53bec7e42c93"
+
+[vars]
+# 允许调用 API 的来源（CORS）。多个用逗号分隔
+COMMENTS_ALLOWED_ORIGIN = "https://hux.ink,https://www.hux.ink"
+# 站长邮箱：用这个邮箱填表留言会被识别为博主（红色徽章），同时也是新评论通知的收件人
+COMMENTS_ADMIN_EMAIL = "huxin1216@qq.com"
+# 评论没有审核环节，写完即公开；防机器人靠 service.js 里的频率限制与垃圾分阈值
+
+# 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
+[[routes]]
+pattern = "comments.hux.ink/*"
+zone_name = "hux.ink"
+
+[observability]
+enabled = true

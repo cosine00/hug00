@@ -12,12 +12,14 @@
 
   const css = `
     #bber{margin-top:1rem;width:auto!important;min-height:100vh}
-    .bb-timeline ul{margin:0;padding:0}.bb-timeline ul li{margin-bottom:2.5rem;list-style-type:none}.bb-timeline ul li .bb-cont ul li{margin-bottom:0}
+    .bb-timeline>ul{margin:0;padding:0}.bb-timeline>ul>li{margin-bottom:2.5rem;list-style-type:none}.bb-timeline>ul>li .bb-cont ul li{margin-bottom:0}
     .bb-timeline .bb-item,.bb-load button{border:1px solid var(--border,#dcdcdc);border-radius:8px;box-shadow:3px 3px 5px var(--shadow,rgba(0,0,0,.1))}
     .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;background:var(--surface,transparent)}
     .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px}.bb-timeline .bb-info a{text-decoration:none}.bb-timeline .datatime{font-size:15px}
+    .bb-timeline a.datatime{color:inherit;border-bottom:1px dotted transparent;transition:color .18s ease,border-color .18s ease}.bb-timeline a.datatime:hover{color:var(--accent,#42b983);border-bottom-color:currentColor}
+    .bb-timeline .bb-foot-right{margin-left:auto;display:inline-flex;align-items:center;gap:.5rem;flex-wrap:nowrap}
     .bb-timeline .bb-cont{overflow-x:hidden;margin-top:.5rem}.bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto}
-    .bb-timeline p{margin:0;min-height:18px;color:var(--text,#3b3d42);letter-spacing:1px;line-height:28px}.bb-timeline pre{color:#aaa}.bb-timeline pre p{display:inline-block}.bb-timeline pre p:empty{display:none}
+    .bb-timeline .bb-cont p{margin:0;min-height:18px;color:var(--text,#3b3d42);letter-spacing:1px;line-height:28px}.bb-timeline .bb-cont pre{color:#aaa}.bb-timeline .bb-cont pre p{display:inline-block}.bb-timeline .bb-cont pre p:empty{display:none}
     .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none}.bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem}
     .tag-span{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 10px;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--accent,#42b983) 40%,transparent);border-radius:9999px;background:transparent;color:var(--accent,#42b983);font-size:13px;font-weight:normal;margin-right:4px;transition:all .2s ease}
     .tag-span.tag-filter{cursor:pointer;text-decoration:none}.tag-span.tag-filter:hover{background:var(--accent-soft,rgba(66,185,131,.1));border-color:var(--accent,#42b983);color:var(--accent-hover,#42b983)}
@@ -175,7 +177,9 @@
     let content = window.marked ? window.marked.parse(plain.replace(/\n/g, '  \n')) : escapeAttr(plain).replace(/\n/g, '<br>');
     content = appendImageButton(content, imageButton(item));
     const tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter">#${escapeAttr(tag)}</span>`).join(' ');
-    return `<li><article class="bb-item"><div class="bb-cont">${content}</div><div class="bb-info" style="position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px"><span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${escapeAttr(item.id)}" style="line-height:normal;display:inline-flex"></emoji-reaction></span><span class="datatime" title="${escapeAttr(dateText)}">${escapeAttr(dateText)}</span>${tags}</div></article></li>`;
+    const footRight = `<span class="bb-foot-right"><div style="display:inline-flex"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${escapeAttr(item.id)}" style="line-height:normal;display:inline-flex"></emoji-reaction></div></span>`;
+    // 底排与首页 6 条一致：左边时间+标签，右边表情+评论按钮（评论按钮由 bb-comments.js 注入）
+    return `<li><article class="bb-item"><div class="bb-cont">${content}</div><div class="bb-info" style="position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px"><a class="datatime" href="/m/${escapeAttr(item.id)}/" data-tip="${escapeAttr(dateText)}">${escapeAttr(dateText)}</a>${tags}${footRight}</div></article></li>`;
   }
 
   // 每次均从全库独立洗牌，取前 12 条；不会先限定最近 60 条或任何批次。

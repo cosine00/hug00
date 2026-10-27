@@ -1,0 +1,8 @@
+{{- /*
+  返回自定义头像源（可选）。留空则前端使用 Cravatar → WeAvatar → Gravatar 逐级降级。
+*/ -}}
+{{- $avatar := "" -}}
+{{- with site.Params.comments -}}
+  {{- with .avatar -}}{{- $avatar = . -}}{{- end -}}
+{{- end -}}
+{{- return $avatar -}}

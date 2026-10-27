@@ -1,0 +1,31 @@
+{{ partial "header.html" . }}
+
+<div class="cm-404">
+  <p class="cm-404-code">404</p>
+  <p class="cm-404-text">这里什么都没有，也许链接已经飘走了。</p>
+  <p class="cm-404-links">
+    <a href="{{ "/" | relURL }}">回到首页</a>
+    <a href="{{ "/bb/" | relURL }}">去看看哔哔</a>
+    <a href="{{ "/archives/" | relURL }}">翻翻归档</a>
+  </p>
+</div>
+
+{{/* 兜底：某些边缘情况下 /m/<id>/ 没有被 rewrite 命中时，转到单条哔哔页 */}}
+<script>
+  (function () {
+    var match = window.location.pathname.match(/^\/m\/(\d+)\/?$/);
+    if (match) {
+      window.location.replace('/memo/?memo=' + match[1]);
+    }
+  })();
+</script>
+
+<style>
+  .cm-404 { max-width: 640px; margin: 4rem auto; text-align: center; }
+  .cm-404-code { font-size: 3.5rem; font-weight: 700; color: #42b983; margin: 0 0 0.2em; letter-spacing: 0.05em; }
+  .cm-404-text { color: #8f959e; margin: 0 0 1.5em; }
+  .cm-404-links { display: flex; gap: 18px; justify-content: center; font-size: 14px; }
+  .cm-404-links a { color: #42b983; text-decoration: none; border-bottom: 1px dashed rgba(66, 185, 131, 0.5); padding-bottom: 2px; }
+</style>
+
+{{ partial "footer.html" . }}

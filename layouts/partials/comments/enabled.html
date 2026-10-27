@@ -1,0 +1,10 @@
+{{- /*
+  返回布尔值：是否启用新的无服务器评论系统。
+  params.comments.enable = true 时启用；hugo server 本地预览自动启用。
+*/ -}}
+{{- $enabled := false -}}
+{{- with site.Params.comments -}}
+  {{- if .enable -}}{{- $enabled = true -}}{{- end -}}
+{{- end -}}
+{{- if hugo.IsServer -}}{{- $enabled = true -}}{{- end -}}
+{{- return $enabled -}}

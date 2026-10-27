@@ -1,20 +1,41 @@
 <div id="bber"></div>
+{{- $useNewComments := partial "comments/enabled.html" . -}}
+{{- $newApi := partial "comments/api.html" . -}}
+{{- $adminHash := partial "comments/admin-hash.html" . -}}
+{{- $avatar := partial "comments/avatar.html" . -}}
+{{- $turnstile := partial "comments/turnstile.html" . -}}
 <script type="text/javascript">
   var bbMemos = {
     memos : '/memos.json', // 使用本地json文件
     limit : '6',            // 默认每次显示 10条
     creatorId:'1',
     domId: '#bber',        // 必须指定为 #bber
-    twiEnv:'https://i.hux.ink:2334/', // 如需评论可配置
+    twiEnv:'{{ if $useNewComments }}{{ else }}https://i.hux.ink:2334/{{ end }}', // 旧 Twikoo 环境
   }
+  {{ if $useNewComments }}
+  window.bbComments = {
+    api: '{{ $newApi }}',
+    memosUrl: '/memos.json',
+    listIndex: '/bb/',
+    adminHash: '{{ $adminHash }}',
+    avatar: '{{ $avatar }}',
+    turnstileSiteKey: '{{ $turnstile }}'
+  };
+  {{ end }}
 </script>
 <!-- 加载依赖：先加载解析器和查看器，再加载页面逻辑 -->
 <script src="/js/marked.min.js"></script>
 <script src="/js/view-image.min.js"></script>
 <script src="/js/lately.min.js"></script>
+{{ if $useNewComments }}
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261027-23">
+<script src="{{ "js/comments.js" | relURL }}?v=20261027-23"></script>
+<script src="{{ "js/bb-comments.js" | relURL }}?v=20261027-23"></script>
+{{ else }}
 <script src="/js/twikoo.all.min.js"></script>
-<script type="module" src="/js/emaction.js"></script>
-<script src="/js/bb-home.js?v=20261019-1"></script>
+{{ end }}
+<script type="module" src="/js/emaction.js?v=20261027-16"></script>
+<script src="/js/bb-home.js?v=20261027-16"></script>
 
 <style>
 #bber{margin-top:2em;width:580px;}

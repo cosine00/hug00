@@ -24,22 +24,25 @@ function loadCssCode(code){
 
 const allCSS = `
 #bber{margin-top:1rem;width:auto!important;min-height:100vh;}
-.bb-timeline ul{margin:0;padding:0;}
-.bb-timeline ul li{margin-bottom:3rem;list-style-type:none;}
-.bb-timeline ul li .bb-cont ul li{margin-bottom:0;}
+.bb-timeline>ul{margin:0;padding:0;}
+.bb-timeline>ul>li{margin-bottom:3rem;list-style-type:none;}
+.bb-timeline>ul>li .bb-cont ul li{margin-bottom:0;}
 .bb-timeline .bb-item,.bb-load button{border:1px solid #dcdcdc;border-radius:8px;box-shadow:3px 3px 5px rgba(0,0,0,.1);}
 .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;}
 .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px;}
 .bb-timeline .bb-info a{text-decoration:none;}
 .bb-timeline .datatime{font-size:15px;}
+.bb-timeline a.datatime{color:inherit;border-bottom:1px dotted transparent;transition:color .18s ease,border-color .18s ease;}
+.bb-timeline a.datatime:hover{color:var(--accent,#42b983);border-bottom-color:currentColor;}
+.bb-timeline .bb-foot-right{margin-left:auto;display:inline-flex;align-items:center;gap:.5rem;flex-wrap:nowrap;}
 .bb-timeline .bb-cont{overflow-x:hidden;margin-top:.5rem;}
 .bb-timeline .datacount{position:absolute;right:0;bottom:0;cursor:pointer;display:flex;align-items:center;color:#42b983;font-size:1em;background:none;border:none;outline:none;padding:0 6px;}
 .bb-timeline .datacount svg{margin-left:4px;vertical-align:middle;}
 .bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto;}
-.bb-timeline p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
-.bb-timeline pre{color:#aaa;}
-.bb-timeline pre p{display:inline-block;}
-.bb-timeline pre p:empty{display:none;}
+.bb-timeline .bb-cont p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
+.bb-timeline .bb-cont pre{color:#aaa;}
+.bb-timeline .bb-cont pre p{display:inline-block;}
+.bb-timeline .bb-cont pre p:empty{display:none;}
 .bb-cont blockquote{position:relative;margin:0 0 0 1rem;padding:.25rem 2rem;border-left:0 none;}
 .bb-cont blockquote::before{position:absolute;top:5px;left:10px;content:'“';font-weight:700;font-size:28px;line-height:2rem;}
 .tag-span{color:#42b983;font-weight:normal;background:transparent;border:1px solid rgba(66,185,131,0.4);border-radius:9999px;padding:0 10px;font-size:13px;display:inline-flex;align-items:center;justify-content:center;height:26px;box-sizing:border-box;margin-right:4px;}
@@ -363,7 +366,7 @@ function renderMemosPaged(memos, page) {
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
     content = appendMemoImageTrigger(content, attachBtn);
 
-    let emojiBar = `<span class="emoji-reaction-bar" style="display:inline-flex;vertical-align:middle;"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></span>`;
+    let emojiBar = `<span class="bb-foot-right"><div style="display:inline-flex;"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;display:inline-flex;"></emoji-reaction></div></span>`;
     
     let datacountDOM = `
       <span class="datacount" data-twienv="${bbMemo.twiEnv}" data-id="${item.id}" title="评论">
@@ -380,7 +383,7 @@ function renderMemosPaged(memos, page) {
             ${content}
           </div>
           <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-            ${emojiBar}<span class="datatime" title="${dateStr}">${dateStr}</span>${tags}
+            <a class="datatime" href="/m/${item.id}/" data-tip="${dateStr}">${dateStr}</a>${tags}${emojiBar}
           </div>
           <div class="item-attach attach-${item.id} d-none"></div>
         </div>

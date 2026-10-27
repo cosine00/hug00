@@ -1,0 +1,43 @@
+{{/*
+  评论区（项目级覆盖，删除本文件即回到主题自带的 Twikoo 版本）
+  双轨开关：
+    params.comments.enable = true   启用新的无服务器评论系统
+    params.twikoo.enable      = true   启用旧的 Twikoo（两者同时开启时优先新系统）
+  hugo server 本地预览时自动启用新系统，方便联调。
+*/}}
+
+{{- $useNew := partial "comments/enabled.html" . -}}
+
+{{- if $useNew -}}
+  {{- $api := partial "comments/api.html" . -}}
+  {{- $adminHash := partial "comments/admin-hash.html" . -}}
+  {{- $avatar := partial "comments/avatar.html" . -}}
+  {{- $turnstile := partial "comments/turnstile.html" . -}}
+  {{/* thread key 必须和 worker 的 normalizeThreadKey 对齐：
+       只有 /posts/ 下的才是文章（post:），其余页面一律 page:。
+       早先用 .Kind 判断是错的——普通页面和文章页的 .Kind 都是 page，
+       结果 /about/ 被写成 post:/about/，和库里导入的 page:/about/ 对不上，评论区看着像空的。 */}}
+  {{- $threadKey := printf "page:%s" .RelPermalink -}}
+  {{- if strings.HasPrefix .RelPermalink "/posts/" -}}
+    {{- $threadKey = printf "post:%s" .RelPermalink -}}
+  {{- end -}}
+  <link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261027-23">
+  <div id="comments"
+       data-cm-thread="{{ $threadKey }}"
+       data-cm-url="{{ .Permalink }}"
+       data-cm-title="{{ .Title }}"
+       data-cm-api="{{ $api }}"
+       data-cm-admin-hash="{{ $adminHash }}"
+       data-cm-turnstile="{{ $turnstile }}"
+       data-cm-avatar="{{ $avatar }}"></div>
+  <script src="{{ "js/comments.js" | relURL }}?v=20261027-23" defer></script>
+{{- else -}}
+  {{- if .Site.Params.twikoo.enable -}}
+  <div class="pagination__title" style="margin-bottom: 30px;">
+    <span class="pagination__title-h">欢迎评论</span>
+  </div>
+  <div id="tcomment"></div>
+  <script src="https://fastly.jsdelivr.net/npm/twikoo@1.6.42/dist/twikoo.min.js"></script>
+  <script>twikoo.init({ envId: 'https://i.hux.ink:2334/', el: '#tcomment' })</script>
+  {{- end -}}
+{{- end -}}

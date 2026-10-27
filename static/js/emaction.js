@@ -172,6 +172,14 @@ class EmojiReaction extends s {
     </style>
     <!-- container -->
     <div style="flex-wrap: nowrap; max-width: 100%; display: flex; gap: 0.375rem;height: 1.5rem;" class="${this?.theme === 'dark' || (this?.theme === 'system' && system_theme === 'dark') ? 'container-dark' : 'container'}">
+      <!-- reactions got -->
+      <div style="display: flex; overflow-x: auto; gap: 0.375rem;">
+        ${this.availableReactions.map(item => x`
+          <div @click=${this._react} data-name="${item.reaction_name}" class="${item.meReacted ? 'reaction-got-reacted' : 'reaction-got-not-reacted'}" style="display: ${item?.count && item.count > 0 ? 'flex' : 'none'}; user-select: none; cursor: pointer; justify-content: center; align-items: center; border-radius: 108px; padding: 0 0.25rem; font-size: 0.75rem;">
+            <span style="pointer-events: none;">${item.emoji}</span><span style="padding:0 0.375rem; pointer-events: none;">${item.count}</span>
+          </div>
+        `)}
+      </div>
       <!-- 灰色笑脸 -->
       <div style="position: relative; user-select: none;">
         <div id="start-smile" @click="${this._showAvailable}"
@@ -188,14 +196,6 @@ class EmojiReaction extends s {
             <span @click=${this._react} data-name="${item.reaction_name}" class="reaction-available-emoji ${item.meReacted ? 'reaction-available-emoji-reacted' : ''}" style="cursor: pointer; margin: 0.25rem 0.25rem; padding: 0.25rem 0.35rem; border-radius: 0.375rem;">${item.emoji}</span>
           `)}
         </div>
-      </div>
-      <!-- reactions got -->
-      <div style="display: flex; overflow-x: auto; gap: 0.375rem;">
-        ${this.availableReactions.map(item => x`
-          <div @click=${this._react} data-name="${item.reaction_name}" class="${item.meReacted ? 'reaction-got-reacted' : 'reaction-got-not-reacted'}" style="display: ${item?.count && item.count > 0 ? 'flex' : 'none'}; user-select: none; cursor: pointer; justify-content: center; align-items: center; border-radius: 108px; padding: 0 0.25rem; font-size: 0.75rem;">
-            <span style="pointer-events: none;">${item.emoji}</span><span style="padding:0 0.375rem; pointer-events: none;">${item.count}</span>
-          </div>
-        `)}
       </div>
     </div>
     `;

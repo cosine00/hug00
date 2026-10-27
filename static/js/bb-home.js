@@ -24,8 +24,8 @@ function loadCssCode(code){
 
 const allCSS = `
 #bber{margin-top:1rem;width:auto!important;min-height:100vh;}
-.bb-timeline ul{margin:0;padding:0;}
-.bb-timeline ul li{margin-bottom:2rem;list-style-type:none;}
+.bb-timeline>ul{margin:0;padding:0;}
+.bb-timeline>ul>li{margin-bottom:2rem;list-style-type:none;}
 .bb-timeline .bb-item {
     border: none !important;
     border-bottom: 1px solid transparent !important;
@@ -46,11 +46,14 @@ const allCSS = `
 }
 .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;}
 .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px;}
-.bb-timeline .datatime{font-size:15px;}
+.bb-timeline .datatime{font-size:15px;color:inherit;text-decoration:none;border-bottom:1px dotted transparent;transition:color .18s ease,border-color .18s ease;}
+.bb-timeline a.datatime:hover{color:var(--accent,#42b983);border-bottom-color:currentColor;}
+/* 底部右侧：表情 + 评论按钮，时间不再兼任入口 */
+.bb-timeline .bb-foot-right{margin-left:auto;display:inline-flex;align-items:center;gap:.5rem;flex-wrap:nowrap;}
 .bb-timeline .bb-cont{overflow-x:hidden;margin-top:.5rem;}
 .bb-timeline .datacount{position:absolute;right:0;bottom:0;cursor:pointer;display:flex;align-items:center;color:#42b983;font-size:1em;background:none;border:none;outline:none;padding:0 6px;}
 .bb-timeline .bb-cont img[src*=emotion]{display:inline-block;width:auto;}
-.bb-timeline p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
+.bb-timeline .bb-cont p{margin:0;min-height:18px;color:#3b3d42;letter-spacing:1px;line-height:28px;}
 .tag-span{color:#42b983;font-weight:normal;background:transparent;border:1px solid rgba(66,185,131,0.4);border-radius:9999px;padding:0 10px;font-size:13px;display:inline-flex;align-items:center;justify-content:center;height:26px;box-sizing:border-box;margin-right:4px;}
 .tag-span.tag-filter {cursor: pointer;text-decoration: underline;}
 .loader {position: relative;margin:3rem auto;width: 100px;}
@@ -269,20 +272,20 @@ function renderMemosPaged(memos, page) {
        <div class="bb-item${item.isPinned ? ' is-pinned' : ''}" style="position:relative;">
           <div class="bb-cont">${content}</div>
           <div class="bb-info" style="position:relative; display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div style="display:inline-flex; align-items:center; gap:12px;">
+            ${item.isPinned ? '' : `<a class="datatime" href="/m/${item.id}/" data-tip="${dateStr}">${dateStr}</a>`}
+            ${tags}
+            ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
+
+            <span class="bb-foot-right">
+              <div style="display:inline-flex;">
+                <emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;"></emoji-reaction>
+              </div>
+
               <div class="comment-pill-btn twikoo-badge-${item.id}" data-id="${item.id}" data-twienv="${bbMemo.twiEnv}" title="点击评论">
                 <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                 <span class="count-num" style="display: none; padding-top: 1px;">0</span>
               </div>
-              
-              <div style="display:inline-flex;">
-                <emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${item.id}" style="line-height:normal;"></emoji-reaction>
-              </div>
-            </div>
-            
-            ${item.isPinned ? '' : `&nbsp;&nbsp;<span class="datatime" title="${dateStr}">${dateStr}</span>`}
-            ${tags}
-            ${item.isPinned ? `<span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; color:#9c27b0; border:1px solid rgba(156, 39, 176, 0.3); font-size:13px; padding:2px 8px; border-radius:14px; height:26px; box-sizing:border-box;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>置顶</span>` : ''}
+            </span>
           </div>
           
           <div class="item-attach attach-${item.id} d-none"></div>
