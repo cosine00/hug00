@@ -87,7 +87,7 @@ footnotereturnlinkcontents = "↩"
 	# 管理入口暗号：在评论区「昵称」里输入这个词，右侧就会冒出「管理」按钮，
 	# 点开再输入 Worker 里的 COMMENTS_ADMIN_TOKEN 才能进入。
 	# 改这里就等于改暗号；页面源码里只出现它的 sha256，不会出现原文。
-	adminNick = "hux-keeper"
+	adminNick = "落落vici"
 	# 可选：Cloudflare Turnstile 公开 site key。secret 用 wrangler secret 写入，不能放这里。
 	# turnstileSiteKey = "0x4AAAA..."
 
