@@ -5,8 +5,8 @@
 */ -}}
 {{- $hash := "" -}}
 {{- with site.Params.comments -}}
-  {{- with .adminNick -}}
-    {{- $hash = crypto.SHA256 (trim . " ") -}}
+  {{- with .adminEmail -}}
+    {{- $hash = crypto.SHA256 (lower (trim . " ")) -}}
   {{- end -}}
 {{- end -}}
 {{- return $hash -}}

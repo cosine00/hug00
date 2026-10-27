@@ -99,7 +99,7 @@
       var label = pill.querySelector('.cm-pill-count');
       if (label) label.textContent = count > 0 ? count : '';
       pill.classList.toggle('has-comments', count > 0);
-      pill.setAttribute('data-tip', count > 0 ? count + ' 条评论' : '还没有评论，来说一句');
+      pill.setAttribute('data-tip', count > 0 ? count + ' 条评论' : '等风，也等你');
     });
   }
 
@@ -311,7 +311,6 @@
         root.innerHTML =
           '<div class="cm-single-nav">' +
             '<a class="cm-single-back" href="' + esc(index) + '">← 返回哔哔列表</a>' +
-            '<a class="cm-single-back" href="#cm-single-thread" id="cm-jump-comments">↓ 直接看评论</a>' +
           '</div>' +
           '<div id="cm-single-thread"></div>';
 

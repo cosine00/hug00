@@ -242,6 +242,7 @@ async function handleComments(request, env, url, ctx) {
       const isSelf = Boolean(authorEmail) && authorEmail === adminEmail;
 
       const tasks = [];
+      const createdAt = (result.comment && result.comment.createdAt) || 0;
       if (!isSelf) {
         tasks.push(
           notifyNewComment(env, {
@@ -251,6 +252,7 @@ async function handleComments(request, env, url, ctx) {
             content: value.content,
             website: value.website,
             region,
+            createdAt,
           })
         );
       }
@@ -265,7 +267,10 @@ async function handleComments(request, env, url, ctx) {
             threadUrl: result.thread && result.thread.url,
             nick: value.nick,
             content: value.content,
+            createdAt,
             parentNick: result.notify.parentNick,
+            parentContent: result.notify.parentContent,
+            parentCreatedAt: result.notify.parentCreatedAt,
             unsubscribeUrl: result.notify.parentNotifyToken
               ? new URL(`/api/comments/unsubscribe?token=${encodeURIComponent(result.notify.parentNotifyToken)}`, request.url).href
               : '',

@@ -19,6 +19,13 @@ COMMENTS_ALLOWED_ORIGIN = "https://hux.ink,https://www.hux.ink"
 COMMENTS_ADMIN_EMAIL = "huxin1216@qq.com"
 # 评论没有审核环节，写完即公开；防机器人靠 service.js 里的频率限制与垃圾分阈值
 
+# 邮件通知外观（可选）。不写则用默认：#6870a8 主色 + 「Counting Stars💫」品牌名。
+# 想换主色只改这里，例如换成主题里那套砖红 #c86f67
+COMMENTS_MAIL_BRAND = "Counting Stars💫"
+COMMENTS_MAIL_ACCENT = "#6870a8"
+# 站点主页：邮件页脚里的品牌名会链到这里
+COMMENTS_SITE_URL = "https://hux.ink"
+
 # 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
 [[routes]]
 pattern = "comments.hux.ink/*"

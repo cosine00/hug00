@@ -84,10 +84,11 @@ footnotereturnlinkcontents = "↩"
 	# 本地 hugo server 联调用的地址（wrangler dev 默认端口 8787）
 	localApi = "http://localhost:8787/api/comments"
 
-	# 管理入口暗号：在评论区「昵称」里输入这个词，右侧就会冒出「管理」按钮，
+	# 管理入口识别：在评论区「邮箱」里填入下面这个地址，右侧就会冒出「管理」按钮，
 	# 点开再输入 Worker 里的 COMMENTS_ADMIN_TOKEN 才能进入。
-	# 改这里就等于改暗号；页面源码里只出现它的 sha256，不会出现原文。
-	adminNick = "落落vici"
+	# 改这里就等于改识别邮箱；页面源码里只出现它的 sha256，不会出现原文。
+	# 用邮箱而非昵称：避免手机输入法把中文后的英文首字母自动大写，导致暗号失配。
+	adminEmail = "huxin1216@qq.com"
 	# 可选：Cloudflare Turnstile 公开 site key。secret 用 wrangler secret 写入，不能放这里。
 	# turnstileSiteKey = "0x4AAAA..."
 

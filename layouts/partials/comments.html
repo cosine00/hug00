@@ -21,7 +21,7 @@
   {{- if strings.HasPrefix .RelPermalink "/posts/" -}}
     {{- $threadKey = printf "post:%s" .RelPermalink -}}
   {{- end -}}
-  <link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261027-23">
+  <link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261028-03">
   <div id="comments"
        data-cm-thread="{{ $threadKey }}"
        data-cm-url="{{ .Permalink }}"
@@ -30,7 +30,7 @@
        data-cm-admin-hash="{{ $adminHash }}"
        data-cm-turnstile="{{ $turnstile }}"
        data-cm-avatar="{{ $avatar }}"></div>
-  <script src="{{ "js/comments.js" | relURL }}?v=20261027-24" defer></script>
+  <script src="{{ "js/comments.js" | relURL }}?v=20261028-03" defer></script>
 {{- else -}}
   {{- if .Site.Params.twikoo.enable -}}
   <div class="pagination__title" style="margin-bottom: 30px;">

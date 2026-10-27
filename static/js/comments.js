@@ -7,7 +7,7 @@
        threadUrl: 'https://hux.ink/m/1233/',
        threadTitle: '哔哔',
        api: '/api/comments',
-       adminHash: '<暗号昵称的 sha256>'
+       adminHash: '<管理入口邮箱的 sha256>'
      })
    ========================================================================== */
 
@@ -338,7 +338,7 @@
       avatar: '',
       adminHash: '',
       turnstileSiteKey: '',
-      placeholder: '等风，也等你…（支持 Markdown 粗体、代码、链接）',
+      placeholder: '等风，也等你…',
       showHeader: true,
       showStats: true,
       pageSize: 10
@@ -520,7 +520,7 @@
         '<input class="cm-input" name="' + name + '"' + (type ? ' type="' + type + '"' : '') +
           ' maxlength="' + max + '" placeholder="' + escapeHtml(hint) + '"' +
           ' autocomplete="' + autocomplete + '" value="' + escapeHtml(value || '') + '"' +
-          (name === 'website' ? '' : ' required') + '>' +
+          (name === 'website' ? '' : ' aria-required="true"') + '>' +
       '</label>';
     }
 
@@ -530,18 +530,18 @@
         '<div class="cm-form-row">' +
           field('nick', '昵称', '必填', saved.nick, '', 'nickname') +
           field('email', '邮箱', '必填，不公开', saved.email, 'email', 'email') +
-          field('website', '网址', '选填，可不写 https://', saved.website, '', 'url') +
+          field('website', '网址', '选填', saved.website, '', 'url') +
         '</div>' +
         '<div class="cm-editor">' +
-          '<textarea class="cm-textarea" name="content" maxlength="500" placeholder="' +
-            escapeHtml(opts.placeholder) + '" required></textarea>' +
+          '<textarea class="cm-textarea" name="content" maxlength="500" aria-required="true" placeholder="' +
+            escapeHtml(opts.placeholder) + '"></textarea>' +
           '<span class="cm-counter"><b>0</b>/500</span>' +
         '</div>' +
         emojiPanel() +
         '<div class="cm-hp"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"></div>' +
         '<div class="cm-form-foot">' +
           emojiButton() +
-          '<label class="cm-notify"><input type="checkbox" name="notify" checked> 有人回复时邮件提醒我</label>' +
+          '<label class="cm-notify"><input type="checkbox" name="notify" checked> 有人回复时邮件通知我</label>' +
           '<button type="submit" class="cm-submit">发表评论</button>' +
         '</div>' +
         (opts.turnstileSiteKey ? '<div class="cm-turnstile"></div>' : '') +
@@ -718,20 +718,27 @@
     }
 
     // 只显示一种：博主。评论没有审核环节，写上来就是公开的。
+    // 2026-10 改成「花边印章 + 白色对勾」（参考 Twikoo 那款）：外圈是 8 瓣花边，
+    // 每瓣用一段半径 4.07 的圆弧，弧与弧在「凹口」处相切于半径 9.8 的圆，
+    // 所以既有圆润的凸起又有收进去的腰；纯 SVG 路径，不依赖图片；
+    // 颜色走 --cm-accent / --cm-accent-contrast，四套配色和深色模式自动跟随。
     function badgeHtml(comment) {
-      if (comment.isAdmin) return '<span class="cm-badge cm-badge--admin">博主</span>';
-      return '';
+      if (!comment.isAdmin) return '';
+      return '<span class="cm-badge cm-badge--admin" data-tip="博主" aria-label="博主">' +
+          '<svg class="cm-badge-seal" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+            '<path fill="currentColor" d="M21.03 15.74A4.07 4.07 0 0 0 21.03 8.26A4.07 4.07 0 0 0 15.74 2.97' +
+              'A4.07 4.07 0 0 0 8.26 2.97A4.07 4.07 0 0 0 2.97 8.26A4.07 4.07 0 0 0 2.97 15.74' +
+              'A4.07 4.07 0 0 0 8.26 21.03A4.07 4.07 0 0 0 15.74 21.03A4.07 4.07 0 0 0 21.03 15.74Z"/>' +
+            '<path d="M6.9 12.7 10 14.8 16.1 8" fill="none" style="stroke:var(--cm-accent-contrast)"' +
+              ' stroke-width="2.45" stroke-linecap="butt" stroke-linejoin="miter"/>' +
+          '</svg>' +
+        '</span>';
     }
 
+    // 不再展示留言者的「地区 / 浏览器 / 系统」那一行信息（用户要求）。
+    // region / browser / os 字段服务端仍在采集，只是前端不渲染了。
     function subLine(comment) {
-      var parts = [];
-      if (comment.region) parts.push(escapeHtml(comment.region));
-      if (comment.browser) parts.push(escapeHtml(comment.browser));
-      if (comment.os) parts.push(escapeHtml(comment.os));
-      if (!parts.length) return '';
-      return '<div class="cm-sub">' + parts.map(function (p) {
-        return '<span>' + p + '</span>';
-      }).join('') + '</div>';
+      return '';
     }
 
     function replyPrefix(comment) {
@@ -782,7 +789,25 @@
       return 'https://' + value.replace(/^\/+/, '');
     }
 
-    function commentHtml(comment, floor) {
+    // 回复按钮：气泡图标（原来是「回复」两个字）。
+    // 顶层楼右侧带这一楼下的回复条数，回复本身没有下级，永远是空气泡。
+    // 数字按整楼总条数算（含被折叠起来的），所以「展开/收起」不会让它变来变去；
+    // 新回复写进来后 renderList 重算 tree，数字自然跟着涨。
+    function replyActionHtml(comment, replyCount) {
+      var n = Number(replyCount) || 0;
+      if (n < 0) n = 0;
+      return '<button type="button" class="cm-reply-btn' + (n ? ' has-count' : '') +
+          '" data-reply="' + comment.id + '" data-tip="回复"' +
+          ' aria-label="回复' + (n ? '，这一楼已有 ' + n + ' 条回复' : '') + '">' +
+          '<svg class="cm-reply-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+            '<path d="M10 3.6c4.05 0 7.3 2.66 7.3 5.94 0 3.28-3.25 5.94-7.3 5.94-.86 0-1.7-.12-2.48-.34l-3.7 1.44 1.02-3.06C3.4 12.4 2.7 11.16 2.7 9.54 2.7 6.26 5.95 3.6 10 3.6Z"' +
+              ' fill="none" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round"/>' +
+          '</svg>' +
+          (n ? '<span class="cm-reply-count">' + n + '</span>' : '') +
+        '</button>';
+    }
+
+    function commentHtml(comment, floor, replyCount) {
       var isReply = Boolean(comment.parentId);
       return '<li class="cm-item" id="cm-c-' + comment.id +
           '" data-id="' + comment.id + '">' +
@@ -797,7 +822,7 @@
             '<time class="cm-time" datetime="' + new Date(comment.createdAt * 1000).toISOString() +
               '" data-tip="' + fullTime(comment.createdAt) + '">' + timeAgo(comment.createdAt) + '</time>' +
             '<span class="cm-actions">' +
-              '<button type="button" class="cm-reply-btn" data-reply="' + comment.id + '">回复</button>' +
+              replyActionHtml(comment, replyCount) +
               (canEdit(comment)
                 ? '<button type="button" class="cm-reply-btn cm-edit-btn" data-edit="' + comment.id + '">编辑</button>'
                 : '') +
@@ -882,7 +907,7 @@
       var shown = showAll ? kids : kids.slice(0, REPLY_COLLAPSE_AT);
 
       var html = shown.map(function (kid) {
-        return commentHtml(kid, floorOf[kid.id] || 0);
+        return commentHtml(kid, floorOf[kid.id] || 0, 0);
       }).join('');
 
       if (!showAll) {
@@ -958,8 +983,8 @@
       var start = (state.page - 1) * state.pageSize;
 
       var html = tree.tops.slice(start, start + state.pageSize).map(function (comment) {
-        var item = commentHtml(comment, floorOf[comment.id] || 0);
         var kids = tree.children[comment.id] || [];
+        var item = commentHtml(comment, floorOf[comment.id] || 0, kids.length);
         if (!kids.length) return item;
         return item.replace('<ul class="cm-children"></ul>',
           '<ul class="cm-children">' + childrenHtmlOf(comment.id, kids, floorOf) + '</ul>');
@@ -1470,6 +1495,9 @@
           button: submit,
           textarea: textarea,
           messageEl: box.querySelector('.cm-reply-msg'),
+          nickEl: box.querySelector('[name=nick]'),
+          emailEl: box.querySelector('[name=email]'),
+          contentEl: textarea,
           onSuccess: closeReplyForm
         });
       });
@@ -1549,7 +1577,7 @@
     var triggerTimer = null;
     function checkTrigger() {
       if (!opts.adminHash || state.adminToken) return;
-      var value = nickInput.value.trim();
+      var value = (emailInput ? emailInput.value : '').trim().toLowerCase();
       clearTimeout(triggerTimer);
       if (!value) {
         revealEntry(false);
@@ -1562,7 +1590,8 @@
       }, 160);
     }
 
-    if (nickInput) nickInput.addEventListener('input', checkTrigger);
+    // 管理入口改为「邮箱识别」：在邮箱框填入指定地址即露出「管理」按钮（大小写不敏感）
+    if (emailInput) emailInput.addEventListener('input', checkTrigger);
 
     if (entryBtn) {
       entryBtn.addEventListener('click', function () {
@@ -1721,12 +1750,13 @@
         if (tone) el.classList.add('is-' + tone);
       };
 
-      if (!data.nick) return say('请填写昵称', 'error');
-      if (!data.email) return say('请填写邮箱，它只用来识别身份和接收回复提醒', 'error');
+      if (!data.nick) { flashTip(data.nickEl, '请填写昵称'); return say('请填写昵称', 'error'); }
+      if (!data.email) { flashTip(data.emailEl, '请填写邮箱'); return say('请填写邮箱，它只用来识别身份和接收回复提醒', 'error'); }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email)) {
+        flashTip(data.emailEl, '邮箱格式不太对');
         return say('邮箱格式不太对', 'error');
       }
-      if (!data.content) return say('说点什么吧', 'error');
+      if (!data.content) { flashTip(data.contentEl || data.textarea, '说点什么吧'); return say('说点什么吧', 'error'); }
 
       state.submitting = true;
       var button = data.button;
@@ -1845,7 +1875,10 @@
         container: form,
         button: submitBtn,
         isMain: true,
-        messageEl: msg
+        messageEl: msg,
+        nickEl: nickInput,
+        emailEl: emailInput,
+        contentEl: contentInput
       });
     });
 
@@ -1943,6 +1976,22 @@
     if (target && tipTarget && tipTarget !== target) return;
     tipTarget = null;
     tipNode.classList.remove('is-visible');
+  }
+
+  // 主动在输入控件上方弹出药丸提示（用于表单校验），替代浏览器原生方角校验气泡
+  function flashTip(target, text) {
+    if (!target) return;
+    target.setAttribute('data-tip', text);
+    try { target.focus(); } catch (e) {}
+    showTip(target);
+    var cleanup = function () {
+      target.removeAttribute('data-tip');
+      if (tipTarget === target) hideTip(target);
+      target.removeEventListener('input', cleanup);
+      target.removeEventListener('blur', cleanup);
+    };
+    target.addEventListener('input', cleanup);
+    target.addEventListener('blur', cleanup);
   }
 
   function tipHostOf(node) {

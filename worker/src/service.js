@@ -255,7 +255,8 @@ export async function createComment(env, input, context = {}) {
   if (input.parentId) {
     parentRow = await first(
       env,
-      `SELECT id, root_id, thread_key, email, email_hash, nick, status, notify, notify_token
+      `SELECT id, root_id, thread_key, email, email_hash, nick, status, notify, notify_token,
+              content, is_admin, created_at
          FROM comments WHERE id = ?`,
       [input.parentId]
     );
@@ -351,6 +352,10 @@ export async function createComment(env, input, context = {}) {
       parentWantsNotify: parentRow ? Number(parentRow.notify) !== 0 : false,
       parentNotifyToken: parentRow ? parentRow.notify_token || '' : '',
       parentNick: parentRow ? parentRow.nick : '',
+      // 邮件里要展示「原评论」引用块，所以把内容和时间一并带出去
+      parentContent: parentRow ? parentRow.content || '' : '',
+      parentCreatedAt: parentRow ? Number(parentRow.created_at) || 0 : 0,
+      parentIsAdmin: parentRow ? Number(parentRow.is_admin) === 1 : false,
       parentId,
     },
     ip: ipHash,
