@@ -6,15 +6,12 @@
   "description": "Hugo blog + serverless comment system (Cloudflare Workers + D1)",
   "scripts": {
     "comments:dev": "wrangler dev",
-    "comments:db:local": "wrangler d1 execute comments --local --file=worker/schema.sql",
-    "comments:db:init": "wrangler d1 execute comments --remote --file=worker/schema.sql",
+    "comments:db:local": "wrangler d1 execute blog-comment --local --file=worker/schema.sql",
+    "comments:db:init": "wrangler d1 execute blog-comment --remote --file=worker/schema.sql",
     "comments:deploy": "wrangler deploy",
     "comments:export": "node scripts/comments-export.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.42.0"
-  },
-  "engines": {
-    "node": ">=20"
   }
 }
