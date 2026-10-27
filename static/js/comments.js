@@ -672,7 +672,18 @@
       total.textContent = text;
     }
 
+    // 正文里的阅读量占位：<span data-cm-page-views>0</span>
+    // 页面任意位置放一个就能显示本页阅读量，和评论区工具条共用同一份统计
+    function syncPageViews() {
+      if (!state.stats.loaded) return;
+      var nodes = document.querySelectorAll('[data-cm-page-views]');
+      for (var i = 0; i < nodes.length; i += 1) {
+        nodes[i].textContent = String(state.stats.views);
+      }
+    }
+
     function renderStats() {
+      syncPageViews();
       if (!statsBar) return;
       statsBar.hidden = !state.stats.loaded;
       if (!state.stats.loaded) return;
