@@ -236,16 +236,24 @@ async function handleComments(request, env, url, ctx) {
 
     // 通知是副作用：await 后落定，失败不影响提交结果（Worker 里不能用浮动 Promise）
     if (result.comment && !result.spam) {
-      const tasks = [
-        notifyNewComment(env, {
-          threadTitle: value.threadTitle,
-          threadUrl: result.thread && result.thread.url,
-          nick: value.nick,
-          content: value.content,
-          website: value.website,
-          region,
-        }),
-      ];
+      // 博主自己发的评论不给自己发通知（用博主邮箱提交即视为本人，不管有没有带口令）
+      const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
+      const authorEmail = String(value.email || '').trim().toLowerCase();
+      const isSelf = Boolean(authorEmail) && authorEmail === adminEmail;
+
+      const tasks = [];
+      if (!isSelf) {
+        tasks.push(
+          notifyNewComment(env, {
+            threadTitle: value.threadTitle,
+            threadUrl: result.thread && result.thread.url,
+            nick: value.nick,
+            content: value.content,
+            website: value.website,
+            region,
+          })
+        );
+      }
 
       const parentEmail = result.notify && result.notify.parentEmail;
       const parentWantsNotify = result.notify && result.notify.parentWantsNotify;
