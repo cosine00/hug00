@@ -7,7 +7,9 @@
 {{- with site.Params.comments -}}
   {{- with .api -}}{{- $api = . -}}{{- end -}}
 {{- end -}}
-{{- if hugo.IsServer -}}
+{{- /* hugo.Environment 在 0.71+ 就有；hugo.IsServer 要 0.120+，
+       Vercel 默认装的是 0.92，用它会导致构建失败 */ -}}
+{{- if eq hugo.Environment "development" -}}
   {{- $local := "http://localhost:8787/api/comments" -}}
   {{- with site.Params.comments -}}
     {{- with .localApi -}}{{- $local = . -}}{{- end -}}

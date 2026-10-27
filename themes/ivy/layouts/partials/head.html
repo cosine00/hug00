@@ -26,7 +26,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-{{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
+{{- if and (or (eq hugo.Environment "production") (eq site.Params.env "production")) (ne .Params.robotsNoIndex true) }}
 <meta name="robots" content="index, follow">
 {{- else }}
 <meta name="robots" content="noindex, nofollow">
@@ -188,6 +188,6 @@
 {{- partial "extend_head.html" . -}}
 
 {{- /* Misc */}}
-{{- if hugo.IsProduction | or (eq site.Params.env "production") }}
+{{- if or (eq hugo.Environment "production") (eq site.Params.env "production") }}
 {{- template "_internal/google_analytics.html" . }}
 {{- end -}}

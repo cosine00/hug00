@@ -6,5 +6,5 @@
 {{- with site.Params.comments -}}
   {{- if .enable -}}{{- $enabled = true -}}{{- end -}}
 {{- end -}}
-{{- if hugo.IsServer -}}{{- $enabled = true -}}{{- end -}}
+{{- if eq hugo.Environment "development" -}}{{- $enabled = true -}}{{- end -}}
 {{- return $enabled -}}
