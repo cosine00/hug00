@@ -1591,7 +1591,20 @@
     }
 
     // 管理入口改为「邮箱识别」：在邮箱框填入指定地址即露出「管理」按钮（大小写不敏感）
-    if (emailInput) emailInput.addEventListener('input', checkTrigger);
+    //
+    // 注意这里不能只监听 input：邮箱框的值有两个来源不经过键盘——
+    //   1) 记住的身份直接写进 HTML 的 value 属性（元素一生成就有值）；
+    //   2) 浏览器/密码管理器的自动填充（可能在脚本跑完之后才填）。
+    // 两种情况都不会触发 input，所以绑定时先主动探一次，再补两记延迟兜底，
+    // 否则带着已记住邮箱回来的人永远看不到「管理」按钮。
+    if (emailInput) {
+      ['input', 'change', 'blur', 'focus'].forEach(function (type) {
+        emailInput.addEventListener(type, checkTrigger);
+      });
+      checkTrigger();
+      window.setTimeout(checkTrigger, 800);
+      window.setTimeout(checkTrigger, 2500);
+    }
 
     if (entryBtn) {
       entryBtn.addEventListener('click', function () {
@@ -1814,6 +1827,8 @@
             if (nickInput) nickInput.value = payload.nick;
             if (emailInput) emailInput.value = payload.email;
             if (websiteInput) websiteInput.value = payload.website || '';
+            // 赋值不触发 input，邮箱换了可能该冒出/收起「管理」按钮，手动探一次
+            checkTrigger();
           }
 
           if (state.adminToken && body.comment && !body.comment.isAdmin) {
