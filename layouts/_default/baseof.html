@@ -1,0 +1,10 @@
+{{- /*
+  兜底骨架。
+  本站模板绝大多数是「partial header.html 开头 + partial footer.html 收尾」的独立式，
+  不经过 baseof，因此这个文件对现有页面零影响（构建产物已验证逐字节一致）。
+  它的唯一作用是：将来若有人写 {{ define "main" }} 风格模板而忘了自己收尾，
+  Hugo 会走这里渲染，而不是静默输出一张空白页。
+*/ -}}
+{{ partial "header.html" . }}
+<main class="main">{{ block "main" . }}{{ end }}</main>
+{{ partial "footer.html" . }}

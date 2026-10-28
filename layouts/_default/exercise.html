@@ -1,0 +1,816 @@
+{{ define "body_classes" }}page-exercise{{ end }}
+{{ partial "header.html" . }}
+
+<style>
+/* 美化顶部口号文字为按钮形状 */
+.pagetitle a {
+  display: inline-block;
+  padding: 5px 16px;              /* 按钮内边距，上下 5px，左右 16px */
+  font-size: 1.0rem;              /* 稍微缩小字号，让它看起来更像一个精致的标签/按钮 */
+  color: var(--accent-hover, #245d4b) !important;
+  background-color: var(--accent-soft, #e1eee8);
+  border: 1px solid color-mix(in srgb, var(--accent, #357a63) 42%, var(--border, #d8ddd9));
+  text-decoration: none !important;/* 去掉默认的下划线 */
+  border-radius: 9999px;          /* 完美的跑道圆/胶囊形状 */  
+  box-shadow: 0 1px 4px var(--shadow, rgba(0,0,0,.08));
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  
+  /* 关键：拉开与下方年份导航的距离，保持和下方一样的视觉呼吸感 */
+  margin-bottom: 20px;            
+}
+
+/* 鼠标悬停时的动态效果 */
+.pagetitle a:hover {
+  background-color: var(--accent, #357a63);
+  border-color: var(--accent, #357a63);
+  color: var(--accent-contrast, #fff) !important;
+  box-shadow: 0 4px 12px var(--shadow, rgba(0,0,0,.12));
+  transform: translateY(-1px);    /* 微微悬浮效果 */
+}
+
+.pagetitle a:focus-visible {
+  outline: 2px solid var(--accent, #357a63);
+  outline-offset: 3px;
+}
+
+.pagetitle a:active {
+  background-color: var(--accent-hover, #245d4b);
+  border-color: var(--accent-hover, #245d4b);
+  color: var(--accent-contrast, #fff) !important;
+  box-shadow: 0 1px 3px var(--shadow, rgba(0,0,0,.08));
+  transform: translateY(0);
+}
+
+/* ====================== 1. 顶部年份导航胶囊与动态箭头 ====================== */
+.exercise-container { max-width: 100%; margin: 0 auto; padding: 20px 15px; }
+.pagetitle { text-align: center; font-size: 1.05rem; color: var(--text-info-color, #666); margin-bottom: 5px; line-height: 1.5; }
+.pagetitle p { margin: 0; padding: 0; } 
+.pagetitle:empty { display: none; margin: 0; } 
+
+#year-nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 25px auto;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px;
+  padding: 2px 4px; 
+  box-sizing: border-box;
+}
+
+.year-list {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  max-width: 310px; 
+}
+.year-list::-webkit-scrollbar { display: none; }
+
+.button {
+  font-size: 0.9rem; padding: 8px 20px; border-radius: 9999px;
+  cursor: pointer; color: var(--text-info-color, #666);
+  transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
+}
+.button.selected {
+  background: var(--exercise-text-highlight-color, #42b983); color: #fff !important;
+}
+
+.scroll-btn {
+  cursor: pointer;
+  color: #dcdcdc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px; 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: transparent;
+  border: none;
+  flex-shrink: 0; 
+}
+
+.scroll-btn.active-left { color: #9b59b6; }
+.scroll-btn.active-right { color: #3498db; }
+.scroll-btn.active-left:hover { color: #8e44ad; transform: scale(1.2); }
+.scroll-btn.active-right:hover { color: #2980b9; transform: scale(1.2); }
+
+/* ====================== 2. 数据卡片基础样式 ====================== */
+.calendarSection, .globalSection, .runCard {
+  background: var(--background-card-color, #fff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 16px; padding: 18px; margin-bottom: 15px;
+}
+
+.cardList { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) { .cardList { grid-template-columns: repeat(2, 1fr); } }
+
+.globalSportStats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+  z-index: 1;
+}
+.globalSportStat {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 5px 3px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+.globalSportStat:not(.is-static):hover {
+  border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.globalSportStat:not(.is-static):active { transform: scale(.97); }
+.globalSportStat.is-active {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--background-card-color, #fff));
+}
+.globalSportLabel { color: var(--muted, #999); font-size: 10px; line-height: 1.2; }
+.globalSportValue { color: var(--text-strong, #333); font-size: 14px; font-weight: 600; line-height: 1.25; }
+.globalSportValue small { margin-left: 1px; color: var(--muted, #999); font-size: 9px; font-weight: 400; }
+.globalSportStat.is-active .globalSportLabel,
+.globalSportStat.is-active .globalSportValue { color: var(--accent); }
+.globalSportStat.is-static { cursor: default; }
+
+.monthlyDashboard {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.25fr) minmax(0, 1.75fr);
+  gap: 12px;
+  align-items: stretch;
+  height: 330px;
+  min-height: 0;
+  overflow: hidden;
+}
+.calendarCard {
+  position: relative;
+  container-type: inline-size;
+  order: 2;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  padding: 12px 14px 62px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.calendarCard > div:first-child { margin-bottom: 7px !important; }
+.calendarCard .grid { gap: 1px 2px !important; }
+.calendarCard .dayCell { height: 31px !important; }
+.monthlyInsights {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.monthlyInsights .insightCard {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+.monthlyInsights .insightHeader {
+  flex: 0 0 auto;
+  margin-bottom: 0 !important;
+}
+.monthlyInsights .insightContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.monthlyInsights .punchCard,
+.monthlyInsights .zoneChart {
+  flex: 1;
+  width: 100%;
+  height: auto !important;
+  min-height: 58px;
+  gap: 6px !important;
+  align-items: flex-end;
+  padding-top: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border, #e5e5e5) 72%, transparent);
+  box-sizing: border-box;
+}
+.monthlyInsights .barWrapper {
+  display: flex;
+  align-items: flex-end;
+}
+.monthlyInsights .punchHole {
+  border-radius: 6px 6px 2px 2px;
+  background: color-mix(in srgb, var(--accent) var(--bar-strength, 38%), var(--surface)) !important;
+  box-shadow: none;
+  opacity: 1 !important;
+}
+.monthlyInsights .punchHole.isEmpty,
+.monthlyInsights .zoneBar.isEmpty {
+  visibility: hidden;
+  height: 0 !important;
+  box-shadow: none;
+}
+.monthlyInsights .zoneBar {
+  border-radius: 6px 6px 2px 2px;
+  background: color-mix(in srgb, var(--zone-color, var(--accent)) var(--bar-strength, 38%), var(--surface)) !important;
+  box-shadow: none;
+}
+.monthlyInsights .insightLabels {
+  flex: 0 0 auto;
+  margin-top: 9px !important;
+  padding: 0 1px 2px;
+}
+.yearHeatmapCard {
+  display: flex;
+  order: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+  padding: 14px 15px;
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 16px;
+  background: var(--background-card-color, #fff);
+  box-shadow: 0 1px 5px var(--shadow, rgba(0,0,0,.08));
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.yearHeatmapHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--text-strong, #333);
+  font-size: .85rem;
+  font-weight: 650;
+}
+.yearHeatmapHeader small { color: var(--muted, #999); font-size: .62rem; font-weight: 400; }
+.yearHeatmapContinuous {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.yearHeatGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--heat-cols, 20), var(--heat-cell, 8px));
+  grid-auto-rows: var(--heat-cell, 8px);
+  gap: 3px;
+  align-content: center;
+  justify-content: center;
+}
+.yearHeatCell,
+.yearHeatmapLegend i {
+  display: block;
+  border-radius: 2px;
+  background: var(--heatmap-empty, #eef0f5);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.yearHeatCell { width: var(--heat-cell, 8px); height: var(--heat-cell, 8px); }
+.yearHeatCell {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+}
+.yearHeatCell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.yearHeatCell.is-blank { visibility: hidden; }
+.yearHeatCell.level-1, .yearHeatmapLegend .level-1 { background: color-mix(in srgb, var(--heatmap-active) 32%, var(--heatmap-empty)); }
+.yearHeatCell.level-2, .yearHeatmapLegend .level-2 { background: color-mix(in srgb, var(--heatmap-active) 50%, var(--heatmap-empty)); }
+.yearHeatCell.level-3, .yearHeatmapLegend .level-3 { background: color-mix(in srgb, var(--heatmap-active) 68%, var(--heatmap-empty)); }
+.yearHeatCell.level-4, .yearHeatmapLegend .level-4 { background: color-mix(in srgb, var(--heatmap-active) 86%, var(--heatmap-empty)); }
+.yearHeatmapCard.is-filtering .yearHeatCell.level-0 { opacity: .42; }
+.yearHeatmapCard.is-filtering .yearHeatCell:not(.level-0) {
+  animation: heatmapToneIn .32s ease both;
+}
+@keyframes heatmapToneIn {
+  from { opacity: .28; }
+  to { opacity: 1; }
+}
+.yearHeatCell:not(.is-blank):hover { position: relative; z-index: 2; transform: scale(1.45); box-shadow: 0 1px 5px var(--shadow, rgba(0,0,0,.18)); }
+.yearHeatmapLegend { display: flex; align-items: center; justify-content: flex-end; gap: 3px; margin-top: 10px; color: var(--muted, #999); font-size: .54rem; }
+.yearHeatmapLegend i { width: 8px; height: 8px; aspect-ratio: auto; }
+.monthStats {
+  display: flex;
+  height: 48px;
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  left: 14px;
+  margin-top: 0;
+  padding-top: 7px;
+  border-top: 1px dashed var(--border, #eee);
+  color: var(--muted, #999);
+  overflow: hidden;
+  font-size: clamp(10px, 1.5cqw, 12px);
+  line-height: 1.25;
+  white-space: nowrap;
+  text-align: left;
+  box-sizing: border-box;
+}
+.monthStatsTrack {
+  display: inline-flex;
+  min-width: max-content;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(2px, .4cqw, 6px);
+  margin-inline: auto;
+  will-change: transform;
+}
+.monthStatsRow { display: contents; }
+.monthStats strong { color: var(--text-strong, #333); }
+.exercise-load-more-wrap {
+  margin: 2em 0 1em;
+  text-align: center;
+}
+.exercise-load-more-wrap[hidden] {
+  display: none !important;
+}
+.exercise-load-more-wrap .button-load {
+  padding: 8px 24px;
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 767px) {
+  .monthlyDashboard { grid-template-columns: 1fr; height: auto; }
+  .monthlyInsights { grid-template-rows: none; grid-template-columns: 1fr; }
+  .yearHeatmapCard { min-height: 380px; height: auto; }
+  .calendarCard { height: auto; overflow: visible; }
+  .calendarCard { padding: 16px !important; }
+  .calendarCard > div:first-child { margin-bottom: 12px !important; }
+  .calendarCard .grid { gap: 2px !important; }
+  .calendarCard .dayCell { height: 38px !important; }
+  .monthStats {
+    display: grid;
+    height: auto;
+    gap: 8px;
+    position: static;
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 11px;
+    white-space: normal;
+    text-align: center;
+  }
+  .monthStatsTrack {
+    display: grid;
+    min-width: 0;
+    gap: 8px;
+    transform: none !important;
+  }
+  .monthStatsRow { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+}
+
+.runCard { display: flex; align-items: center; padding: 16px 20px; position: relative; }
+.iconRing {
+  width: 42px; height: 42px; margin-right: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-info-color, #666);
+}
+
+/* ====================== 3. 悬浮必需的 CSS ====================== */
+.map-placeholder { width: 100%; height: 400px; margin-bottom: 30px; position: relative; }
+#map-wrapper { width: 100%; height: 100%; border-radius: 24px; overflow: hidden; z-index: 10; transition: all 0.4s ease; }
+#map-wrapper.is-floating {
+    position: fixed !important; top: 20px; right: 20px; width: 320px !important; height: 200px !important;
+    z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid var(--accent, #6870a8);
+}
+
+/* ====================== 4. 气泡弹窗与底部图表必需样式 ====================== */
+.runTooltip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(10px);
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid #eeebe6;
+  border-radius: 12px; padding: 12px 16px; z-index: 100; opacity: 0; visibility: hidden; white-space: nowrap;
+  cursor: default; transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 8px 24px rgba(0,0,0,0.08); pointer-events: none; 
+}
+
+.runCard:hover .runTooltip, .dayCell:hover .runTooltip, .barWrapper:hover .runTooltip, .zoneCol:hover .runTooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+.ttList { display: flex; flex-direction: column; gap: 8px; }
+.ttItem { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.ttNameWrap { display: flex; align-items: center; gap: 6px; }
+.ttName { color: #666; font-size: 0.8rem; }
+.ttUnitTag { padding: 2px 6px; background: #f0eee9; border-radius: 4px; font-size: 0.65rem; color: #666; }
+.ttNum { color: #333; font-size: 0.85rem; font-weight: 600; text-align: right; }
+.ttNum small { font-weight: 400; color: #999; margin-left: 2px; }
+
+.punchCard { display: flex; gap: 4px; height: 16px; width: 100%; }
+.barWrapper { flex: 1; position: relative; cursor: pointer; height: 100%; }
+.punchHole { width: 100%; height: 100%; border-radius: 3px; transition: all 0.2s ease; }
+.barWrapper:hover .punchHole { filter: brightness(0.9); }
+
+.zoneChart { display: flex; gap: 8px; height: 16px; align-items: flex-end; width: 100%; }
+.zoneCol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; position: relative; height: 100%; cursor: pointer;}
+.zoneBar { width: 100%; border-radius: 3px; min-height: 3px; transition: all 0.2s ease; }
+.zoneCol:hover .zoneBar { filter: brightness(0.9); }
+
+.grid > div:nth-child(7n + 1) .runTooltip, .barWrapper:first-child .runTooltip, .zoneCol:first-child .runTooltip { left: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n + 1):hover .runTooltip, .barWrapper:first-child:hover .runTooltip, .zoneCol:first-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+.grid > div:nth-child(7n) .runTooltip, .barWrapper:last-child .runTooltip, .zoneCol:last-child .runTooltip { left: auto !important; right: 0 !important; transform: translateX(0) translateY(10px); }
+.grid > div:nth-child(7n):hover .runTooltip, .barWrapper:last-child:hover .runTooltip, .zoneCol:last-child:hover .runTooltip { transform: translateX(0) translateY(0); }
+
+/* ====================== 5. 底部列表卡片紧凑排版 (全新胶囊样式) ====================== */
+.controlsArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 15px auto;
+  background: var(--background-card-color, #ffffff);
+  border: 1px solid var(--background-card-border-color, #e5e5e5);
+  border-radius: 9999px;
+  padding: 2px 4px; 
+  box-sizing: border-box;
+}
+
+.filterBar { 
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; align-items: center; 
+  margin: 0; padding: 3px; max-width: 310px; scroll-behavior: smooth;
+}
+.filterBar::-webkit-scrollbar { display: none; }
+
+/* 深度定制 js 生成的 filterPill 样式 */
+.filterPill { 
+  font-size: 0.8rem; padding: 6px 16px; border-radius: 9999px; 
+  cursor: pointer; color: var(--text-info-color, #666); 
+  transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; 
+  border: none; background: transparent;
+}
+.filterPill.activePill { 
+  background: var(--exercise-text-highlight-color, #42b983) !important; 
+  color: #fff !important; 
+  font-weight: normal; 
+}
+.filterPill:hover:not(.activePill) {
+  color: var(--exercise-text-highlight-color, #42b983);
+}
+.monthLabel { display: none !important; } /* 隐藏内部原有的说明文字，保持纯净胶囊 */
+
+.cardContent { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+.leftInfo { display: flex; flex-direction: column; gap: 2px; }
+.runName { color: #666; font-size: 0.85rem; display: flex; flex-wrap: wrap; align-items: center; row-gap: 2px; }
+.runDistance { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.distUnit { font-size: 0.75rem; margin-left: 3px; font-weight: normal; color: #999; }
+.rightInfo { text-align: right; }
+.runDate { color: #999; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+/* ====================== 6. 地图详情面板（海报）样式 ====================== */
+.runDetailCard {
+  position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px); border-radius: 16px; padding: 16px; z-index: 20; box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  display: flex; flex-direction: column; gap: 12px; animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.runDetailCard .detailHeader { font-size: 0.8rem; color: #999; display: flex; justify-content: space-between; align-items: center; }
+.runDetailCard .detailGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.runDetailCard .detailItem { display: flex; flex-direction: column; }
+.runDetailCard .detailLabel { font-size: 0.7rem; color: #bbb; margin-bottom: 2px; }
+.runDetailCard .detailValue { font-size: 1rem; font-weight: 600; color: #333; }
+.runDetailCard .detailValue small { font-size: 0.6rem; font-weight: 400; color: #999; margin-left: 2px; }
+
+.shareBtn {
+  position: absolute; top: -50px; left: 0; width: 36px; height: 36px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; border: none; color: #666; transition: all 0.2s;
+}
+.shareBtn:hover { transform: scale(1.1); color: var(--accent, #6870a8); }
+
+/* ====================== 7. 新增特性样式（成就徽章与动态图标） ====================== */
+.card-achievement-pill { font-size: 0.65rem; padding: 1px 5px; border-radius: 9999px; margin-left: 6px; font-weight: 500; vertical-align: middle; display: inline-block; white-space: nowrap;}
+.gold-pill { background: rgba(255, 193, 7, 0.15); color: #D48806; border: 1px solid rgba(255, 193, 7, 0.3); }
+.silver-pill { background: rgba(158, 158, 158, 0.1); color: #666; border: 1px solid rgba(158, 158, 158, 0.2); }
+.ttAchieveRow { display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 0.75rem; color: #D48806; margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(212, 136, 6, 0.2); }
+.titleTag { background: rgba(212, 136, 6, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.65rem; }
+.runCard.is-active .iconRing { color: var(--active-icon-color) !important; }
+.dayCell.is-active .calIconRing { color: var(--active-icon-color) !important; }
+.custom-sport-icon { width: 100%; height: 100%; opacity: 0.9; }
+</style>
+
+{{ $rawActivities := resources.Get "activities.json" | unmarshal }}
+{{ $rawAct := resources.Get "act.json" | unmarshal }}
+{{ $activityNameOverrides := resources.Get "activity-name-overrides.json" | unmarshal }}
+
+{{ $activities := slice }}
+{{ $themeMap := dict
+  "Ride"         (dict "color" "#32D74B") 
+  "VirtualRide"  (dict "color" "#32D74B")
+  "EBikeRide"    (dict "color" "#32D74B")
+  "Run"          (dict "color" "#F58200")
+  "TrailRun"     (dict "color" "#F58200")
+  "Treadmill"    (dict "color" "#F58200")
+  "VirtualRun"   (dict "color" "#F58200")  
+  "Walk"         (dict "color" "#DF40C4")
+  "Hike"         (dict "color" "#DF40C4")
+  "Swim"         (dict "color" "#0BAEE6")
+  "WaterSport"   (dict "color" "#0BAEE6")
+  "StairStepper" (dict "color" "#AF52DE")
+  "Stair"        (dict "color" "#007AFF")
+  "RopeSkipping" (dict "color" "#6e41d6")
+  "Workout"      (dict "color" "#b2d75c")
+}}
+{{ $defaultTheme := dict "color" "#32D74B" }}
+
+{{ range $rawActivities }}
+  {{ $overrideName := index $activityNameOverrides .start_date_local }}
+  {{ if $overrideName }}
+    {{ $activities = $activities | append (merge . (dict "name" $overrideName)) }}
+  {{ else }}
+    {{ $activities = $activities | append . }}
+  {{ end }}
+{{ end }}
+
+{{ range $rawAct }}
+  {{ $activities = $activities | append . }}
+{{ end }}
+
+{{ $sortedActivities := sort $activities "start_date_local" "desc" }}
+
+{{ $years := slice }}
+{{ range $sortedActivities }}{{ $years = $years | append (substr .start_date_local 0 4) }}{{ end }}
+{{ $years = sort ($years | uniq) "value" "desc" }}
+
+<div class="exercise-container">
+  <div class="pagetitle">{{ .Content }}</div>
+
+  <div id="year-nav-container">
+    <div class="scroll-btn" id="scroll-left-btn" onclick="scrollYearNav('left')">
+       <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none" aria-hidden="true">
+         <path d="M11 6.5 5.5 12 11 17.5 13 15.5 9.5 12 13 8.5Z"></path>
+         <path d="M18 6.5 12.5 12 18 17.5 20 15.5 16.5 12 20 8.5Z"></path>
+       </svg>
+    </div>
+    
+    <ul class="year-list" id="year-nav">
+      {{ range $index, $year := $years }}
+        <li class="button {{ if eq $index 0 }}selected{{ end }}" data-year="{{ . }}" onclick="window.KoobaiRun.ui.setYear('{{ . }}')">{{ . }}</li>
+      {{ end }}
+      <!-- 👈 追加全部按钮 -->
+      <li class="button" data-year="All" onclick="window.KoobaiRun.ui.setYear('All')">全部</li>
+    </ul>
+    
+    <div class="scroll-btn" id="scroll-right-btn" onclick="scrollYearNav('right')">
+       <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none" aria-hidden="true">
+         <path d="M6 6.5 11.5 12 6 17.5 4 15.5 7.5 12 4 8.5Z"></path>
+         <path d="M13 6.5 18.5 12 13 17.5 11 15.5 14.5 12 11 8.5Z"></path>
+       </svg>
+    </div>
+  </div>
+
+  <div class="globalSection" id="global-stats"></div>
+  <div class="calendarSection">
+    <div id="calendar-board-container"></div>
+  </div>
+
+  <div class="map-placeholder" id="map-trigger">
+    <div id="map-wrapper">
+      <div id="mapbox-container" style="width: 100%; height: 100%;"></div>
+    </div>
+  </div>
+
+  <div class="shuju-list">
+    
+    <div class="controlsArea" id="month-nav-container">
+      <div class="scroll-btn" id="scroll-left-month-btn" onclick="scrollMonthNav('left')">
+         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none" aria-hidden="true">
+           <path d="M11 6.5 5.5 12 11 17.5 13 15.5 9.5 12 13 8.5Z"></path>
+           <path d="M18 6.5 12.5 12 18 17.5 20 15.5 16.5 12 20 8.5Z"></path>
+         </svg>
+      </div>
+      
+      <div class="filterBar" id="month-filter-bar"></div>
+      
+      <div class="scroll-btn" id="scroll-right-month-btn" onclick="scrollMonthNav('right')">
+         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none" aria-hidden="true">
+           <path d="M6 6.5 11.5 12 6 17.5 4 15.5 7.5 12 4 8.5Z"></path>
+           <path d="M13 6.5 18.5 12 13 17.5 11 15.5 14.5 12 11 8.5Z"></path>
+         </svg>
+      </div>
+    </div>
+
+    <div class="cardList" id="run-list">
+      {{ range $sortedActivities }}
+        {{ $y := substr .start_date_local 0 4 }}
+        {{ $m := substr .start_date_local 5 2 }}
+        {{ $theme := default $defaultTheme (index $themeMap .type) }}
+        
+        <div class="runCard item-year-{{ $y }} item-month-{{ $m }}" 
+             data-run-id="{{ .run_id }}" 
+             data-run-type="{{ .type }}"
+             onclick="window.KoobaiRun.map.flyTo('{{ .run_id }}')" 
+             style="cursor: pointer; {{ if ne $y (index $years 0) }}display: none;{{ end }}">
+          
+          <div class="iconRing" data-polyline="{{ .summary_polyline }}"></div>
+          
+          <div class="cardContent">
+            <div class="leftInfo">
+              <div class="runName">{{ .name }}</div>
+
+              <div class="runDistance" style="color: {{ $theme.color }}">
+                {{ if in (slice "Stair" "RopeSkipping" "Workout") .type }}
+
+                  {{ $timeParts := split .moving_time ":" }}
+                  {{ $hours := int (float (index $timeParts 0)) }}
+                  {{ $minutes := int (float (index $timeParts 1)) }}
+                  {{ $totalMinutes := add (mul $hours 60) $minutes }}
+
+                  {{ $totalMinutes }}
+                  <span class="distUnit">min</span>                
+
+                {{ else }}
+
+                  {{ printf "%.2f" (div (math.Floor (div .distance 10.0)) 100.0) }}
+                  <span class="distUnit">km</span>
+
+                {{ end }}
+              </div>
+            </div>
+
+            <div class="rightInfo">
+              <time class="runDate">
+                {{ substr .start_date_local 5 5 }} {{ substr .start_date_local 11 5 }}
+              </time>
+            </div>
+          </div>
+
+          <div class="runTooltip">
+            <div class="ttList">
+              <div class="ttItem">
+                <div class="ttNameWrap"><span class="ttName">用时</span></div>
+                <span class="ttNum">{{ default "--" .moving_time }}</span>
+              </div>
+              
+              {{ if and .average_speed (gt .average_speed 0) }}
+                {{ $speedLabel := "配速" }}
+                {{ $speedVal := "--" }}
+                {{ $speedUnit := "min/km" }} {{ if in (slice "Ride" "VirtualRide" "EBikeRide") .type }}
+                  {{ $speedLabel = "均速" }}
+                  {{ $speedVal = printf "%.1f" (mul .average_speed 3.6) }}
+                  {{ $speedUnit = "km/h" }} {{ else }}
+                  {{ $speedLabel = "配速" }}
+                  {{ $totalSecs := cast.ToInt (math.Round (div 1000.0 .average_speed)) }}
+                  {{ $paceMin := div $totalSecs 60 }}
+                  {{ $paceSec := mod $totalSecs 60 }}
+                  {{ $speedVal = printf "%d'%02d\"" $paceMin $paceSec }}
+                {{ end }}
+                
+                <div class="ttItem">
+                  <div class="ttNameWrap">
+                    <span class="ttName">{{ $speedLabel }}</span>
+                  </div>
+                  <span class="ttNum">{{ $speedVal }} <small>{{ $speedUnit }}</small></span>
+                </div>
+              {{ end }}
+
+              {{ if .average_heartrate }}
+                <div class="ttItem">
+                  <div class="ttNameWrap"><span class="ttName">心率</span></div>
+                  <span class="ttNum">{{ .average_heartrate }} <small>BPM</small></span>
+                </div>
+              {{ end }}
+            </div>
+          </div>
+
+        </div>
+      {{ end }}
+    </div>
+    <div class="exercise-load-more-wrap" id="exercise-load-more-wrap" hidden>
+      <button type="button" class="button-load" onclick="window.KoobaiRun.ui.loadMoreRuns()">继续扑腾</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+
+<script>
+  // 1. 年份导航箭头更新逻辑
+  function updateYearScrollArrows() {
+    const nav = document.getElementById('year-nav');
+    const leftBtn = document.getElementById('scroll-left-btn');
+    const rightBtn = document.getElementById('scroll-right-btn');
+    if (!nav || !leftBtn || !rightBtn) return;
+
+    if (nav.scrollLeft > 2) leftBtn.classList.add('active-left');
+    else leftBtn.classList.remove('active-left');
+
+    if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) rightBtn.classList.add('active-right');
+    else rightBtn.classList.remove('active-right');
+  }
+
+  function scrollYearNav(dir) {
+    const nav = document.getElementById('year-nav');
+    if (dir === 'left') nav.scrollBy({ left: -160, behavior: 'smooth' });
+    if (dir === 'right') nav.scrollBy({ left: 160, behavior: 'smooth' });
+  }
+
+  // 2. 月份导航箭头更新逻辑
+  function updateMonthScrollArrows() {
+    const nav = document.getElementById('month-filter-bar');
+    const leftBtn = document.getElementById('scroll-left-month-btn');
+    const rightBtn = document.getElementById('scroll-right-month-btn');
+    if (!nav || !leftBtn || !rightBtn) return;
+
+    if (nav.scrollWidth <= nav.clientWidth) {
+      leftBtn.classList.remove('active-left');
+      rightBtn.classList.remove('active-right');
+      return;
+    }
+
+    if (nav.scrollLeft > 2) leftBtn.classList.add('active-left');
+    else leftBtn.classList.remove('active-left');
+
+    if (Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 2) rightBtn.classList.add('active-right');
+    else rightBtn.classList.remove('active-right');
+  }
+
+  function scrollMonthNav(dir) {
+    const nav = document.getElementById('month-filter-bar');
+    if (dir === 'left') nav.scrollBy({ left: -160, behavior: 'smooth' });
+    if (dir === 'right') nav.scrollBy({ left: 160, behavior: 'smooth' });
+  }
+
+  // 3. 注册事件监听器
+  document.addEventListener('DOMContentLoaded', () => {
+    // 绑定年份监听
+    const yearNav = document.getElementById('year-nav');
+    if (yearNav) {
+      yearNav.addEventListener('scroll', updateYearScrollArrows);
+      setTimeout(updateYearScrollArrows, 150);
+      window.addEventListener('resize', updateYearScrollArrows);
+    }
+
+    // 绑定月份监听（结合 MutationObserver，因为它是 JS 动态生成的）
+    const monthNav = document.getElementById('month-filter-bar');
+    if (monthNav) {
+      monthNav.addEventListener('scroll', updateMonthScrollArrows);
+      const observer = new MutationObserver(() => {
+        setTimeout(updateMonthScrollArrows, 50);
+      });
+      observer.observe(monthNav, { childList: true, subtree: true });
+      window.addEventListener('resize', updateMonthScrollArrows);
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const links = document.querySelectorAll('a');
+  links.forEach(link => {
+    // 如果链接是绝对路径（包含 http）且不是当前域名，则在新窗口打开
+    if (link.hostname && link.hostname !== window.location.hostname) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer'; // 提升安全性
+    }
+  });
+});
+
+  window.KoobaiRun = {
+    data: {{ $sortedActivities | jsonify | safeJS }},
+    config: { MAPBOX_TOKEN: "pk.eyJ1IjoiYmVuLTI5IiwiYSI6ImNrZ3Q4Ym9mMDBqMGYyeXFvODV2dWl6YzQifQ.gSKoWF-fMjhzU67TuDezJQ" },
+    ui: null,
+    map: null
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.getElementById('map-wrapper');
+    const trigger = document.getElementById('map-trigger');
+
+    window.addEventListener('scroll', () => {
+      if (!wrapper || !trigger) return;
+      const triggerBottom = trigger.offsetTop + trigger.offsetHeight;
+      if (window.scrollY > triggerBottom - 50) {
+        wrapper.classList.add('is-floating');
+      } else {
+        wrapper.classList.remove('is-floating');
+      }
+    }, { passive: true });
+  });
+</script>
+
+<script defer src="/js/exercise-ui.js"></script>
+<script defer src="/js/exercise-map.js"></script>
+
+{{ partial "footer-empty.html" . }}

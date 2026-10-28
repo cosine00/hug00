@@ -1,9 +1,7 @@
 baseURL = "https://hux.ink/"
-languageCode = "en-us"
+languageCode = "zh-cn"
 timeZone = 'Asia/Shanghai'
 title = "Counting Stars💫"
-theme = "ivy"
-disqusShortname = "落落vici"
 hasCJKLanguage = true
 enableEmoji = true
 footnotereturnlinkcontents = "↩"
@@ -71,8 +69,10 @@ footnotereturnlinkcontents = "↩"
 
   
 
+# 旧 Twikoo 评论：已由 [params.comments] 的 Cloudflare Workers + D1 方案完全接管。
+# 关掉后 comments.html / recent-memo.html 不再加载 twikoo CDN 与本地 twikoo.all.min.js（545KB）。
 [params.twikoo]
-	enable = true
+	enable = false
 
 # 新的无服务器评论系统（Cloudflare Workers + D1）
 # enable = false 时生产环境完全沿用 Twikoo，互不影响。
@@ -99,10 +99,6 @@ footnotereturnlinkcontents = "↩"
 	#   avatar = "letter"                        完全不去外面取图，只用昵称首字
 	# avatar = "letter"
 
-[blackfriday]
-extensionsmask = [ "noIntraEmphasis" ]
-fractions = false
-
 [markup.highlight]
 codeFences = false
 
@@ -117,6 +113,8 @@ endLevel = 6
 ordered = false
 startLevel = 1
 
+# 首页只输出 HTML 与 RSS。/index.json（约 800KB）原先是本地搜索的数据源，
+# 搜索功能已下线（content/search.md、search.js、fastsearch.js 均已移除），故不再生成。
 [outputs]
-  home = ["HTML","RSS","JSON"] # <domain>/atom.xml
+  home = ["HTML","RSS"]
   page = ["HTML"]
