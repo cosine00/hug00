@@ -280,11 +280,10 @@ export async function createComment(env, input, context = {}) {
   const inputEmail = String(input.email || '').trim().toLowerCase();
   // 邮箱是谁都能填的，不能当凭据；口令是凭据，但不能"进了管理模式就自动是博主"。
   // 两个都得对上：口令 + 邮箱 == COMMENTS_ADMIN_EMAIL，才算博主。
-  const hasToken = Boolean(context.admin);
   const emailMatchesAdmin = Boolean(adminEmail && inputEmail && inputEmail === adminEmail);
-  const isAdmin = hasToken && emailMatchesAdmin;
-  // 填了博主邮箱但没口令 —— 冒充者。没有审核可压，就按普通访客存：
-  // 反正「博主」标只认 is_admin，光填对邮箱什么也拿不到。
+  // 身份只认邮箱（2026-10-28 起）：填了博主邮箱就是博主，不再要求口令。
+  // 口令只管管理模式本身 —— 批量删/标垃圾，以及编辑自己的历史评论。
+  const isAdmin = emailMatchesAdmin;
 
   // 改稿凭据：每条都发一把，只回给提交人。客人在 1 分钟内可以改自己的错别字，
   // 过期后只能由博主改（服务端按时间判断，前端只管藏不藏按钮）。

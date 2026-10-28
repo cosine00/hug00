@@ -1788,7 +1788,8 @@
       }
 
       var postHeaders = { 'Content-Type': 'application/json' };
-      // 已用口令解锁时带上，服务端才会凭口令认博主身份（邮箱本身不算凭据）
+      // 管理模式解锁后带上，用于管理模式操作（删除/标垃圾、改历史评论）；
+      // 博主身份现在只认邮箱，带不带它都不影响挂「博主」标
       if (state.adminToken) postHeaders['x-admin-token'] = state.adminToken;
 
       fetch(opts.api, {

@@ -101,9 +101,8 @@ function mailTheme(env) {
   const accent = /^(#[0-9a-f]{3,8}|[a-z]{3,20})$/i.test(accentRaw) ? accentRaw : '#6870a8';
   const brand = String(env.COMMENTS_MAIL_BRAND || 'Counting Stars💫').trim().slice(0, 80);
   const year = new Date().getFullYear();
-  const footer = String(env.COMMENTS_MAIL_FOOTER || `Copyright © 2023 - ${year} ${brand}`)
-    .trim()
-    .slice(0, 160);
+  // 页脚版权行默认不显示（2026-10-28 用户要求去掉）；显式配置 COMMENTS_MAIL_FOOTER 才渲染
+  const footer = String(env.COMMENTS_MAIL_FOOTER || '').trim().slice(0, 160);
   const logoRaw = String(env.COMMENTS_MAIL_LOGO || '').trim();
   let logo = '';
   try {
@@ -203,8 +202,8 @@ function envelope(theme, { eyebrow, heading, body, action }) {
                 <tr>
                   <td style="padding:22px 26px 0;">
                     ${theme.logo ? `<img src="${escapeHtml(theme.logo)}" width="26" height="26" alt="" style="display:block;border:0;border-radius:7px;margin-bottom:12px;">` : ''}
-                    <div style="font-family:${FONT_STACK};font-size:12px;font-weight:600;line-height:1.4;letter-spacing:0.06em;color:#a6a49d;">${escapeHtml(eyebrow)}</div>
-                    <div style="margin-top:9px;font-family:${FONT_STACK};font-size:21px;font-weight:700;line-height:1.45;color:#23262b;letter-spacing:0.01em;">${heading}</div>
+                    ${eyebrow ? `<div style="font-family:${FONT_STACK};font-size:12px;font-weight:600;line-height:1.4;letter-spacing:0.06em;color:#a6a49d;">${escapeHtml(eyebrow)}</div>` : ''}
+                    <div style="${eyebrow ? 'margin-top:9px' : 'margin-top:0'};font-family:${FONT_STACK};font-size:21px;font-weight:700;line-height:1.45;color:#23262b;letter-spacing:0.01em;">${heading}</div>
                   </td>
                 </tr>
                 <tr>
@@ -253,7 +252,7 @@ function envelope(theme, { eyebrow, heading, body, action }) {
                       <tr>
                         <td width="62" height="62" align="center" valign="middle" style="width:62px;height:62px;border:1px dashed #d9cdb4;border-radius:50%;color:#c9bda3;font-family:${FONT_STACK};font-size:8px;font-weight:600;letter-spacing:0.2em;">STAMP</td>
                         <td width="14" style="width:14px;font-size:0;line-height:0;">&nbsp;</td>
-                        <td style="font-family:${FONT_STACK};font-size:11px;line-height:1.7;color:#bfb39a;">${escapeHtml(theme.brand)}<br>评论通知 · Comment Notifier</td>
+                        <td style="font-family:${FONT_STACK};font-size:11px;line-height:1.7;color:#bfb39a;">${escapeHtml(theme.brand)}<br>评论通知</td>
                       </tr>
                     </table>
                   </td>
@@ -275,7 +274,9 @@ function shell(env, { eyebrow, title, body, action, footerNote }) {
   // 页脚里的品牌名统一做成回主页的链接；footer 是自定义文案时也只替换品牌名那一段
   const brandLink =
     `<a href="${siteUrl}" target="_blank" style="color:#8f8d86;text-decoration:underline;">${escapeHtml(theme.brand)}</a>`;
-  const footerHtml = escapeHtml(theme.footer).split(escapeHtml(theme.brand)).join(brandLink);
+  const footerHtml = theme.footer
+    ? escapeHtml(theme.footer).split(escapeHtml(theme.brand)).join(brandLink)
+    : '';
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -292,7 +293,7 @@ function shell(env, { eyebrow, title, body, action, footerNote }) {
       <td align="center" style="padding:28px 12px;">
         ${envelope(theme, { eyebrow, heading: escapeHtml(title || ''), body, action })}
         <div style="margin-top:16px;font-family:${FONT_STACK};font-size:12px;line-height:1.9;color:#a3a29d;">此邮件由 ${brandLink} 自动发出，请勿直接回复。</div>
-        <div style="margin-top:4px;font-family:${FONT_STACK};font-size:11px;line-height:1.6;color:#b8b6af;">${footerHtml}</div>
+        ${footerHtml ? `<div style="margin-top:4px;font-family:${FONT_STACK};font-size:11px;line-height:1.6;color:#b8b6af;">${footerHtml}</div>` : ''}
       </td>
     </tr>
   </table>
@@ -363,7 +364,6 @@ export function renderReplyEmail(env, params) {
   return {
     subject: `${nick} 回复了您在《${threadTitle || '页面'}》的评论`,
     html: shell(env, {
-      eyebrow: '评论通知 · Comment Notifier',
       title: `您在 ${theme.brand} 上的评论有了新回复`,
       body,
       action,
@@ -405,7 +405,6 @@ export function renderNewCommentEmail(env, params) {
   return {
     subject: `新评论：${nick} 在《${threadTitle || '未命名页面'}》留言了`,
     html: shell(env, {
-      eyebrow: '评论通知 · Comment Notifier',
       title: `${theme.brand} 有新的评论了耶~`,
       body,
       action,
