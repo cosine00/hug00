@@ -21,3 +21,6 @@ node_modules
 
 # 邮件模板本地预览产物（node scripts/preview-mail.mjs 生成）
 .preview/
+
+# 重构期间的构建中间产物
+.tmp-audit/

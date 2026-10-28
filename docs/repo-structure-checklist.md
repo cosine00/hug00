@@ -208,12 +208,11 @@
 | `font-switcher.js` | 2K | header | 字体切换 |
 | `palette-switcher.js` | 2K | header | 配色切换 |
 
-**`static/admin/`（5 个 / 553K）**
+**`static/admin/`（4 个 / 531K）**
 
 | 文件 | 大小 | 用途 | 状态 |
 | --- | --- | --- | --- |
 | `index.html` | 516K / 8986 行 | 后台 SPA 全量内联（发布、订阅、评论管理；含一套已死的 garden 编辑器） | ⚠️ 单文件巨石，见 P1-4 |
-| `comments.html` | 18K | 独立的评论管理页 | ✅ |
 | `sw.js` | 1K | Service Worker | ✅ |
 | `manifest.webmanifest` | 1K | PWA 清单 | ✅ |
 | `icon.svg` | 328B | PWA 图标 | ✅ |

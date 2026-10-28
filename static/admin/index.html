@@ -213,110 +213,6 @@ input:checked+.slider:before{transform:translateX(18px)}
 .markdown-body{font-size:15px;line-height:1.78}
 .markdown-body img{border-radius:8px}
 
-/* Twikoo 互动管理：文章索引 + 评论流 + 官方内嵌管理面板 */
-.interactions-shell{position:relative;display:grid;grid-template-columns:330px minmax(0,1fr);height:calc(100vh - 108px);margin:-24px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
-.inter-left,.inter-right{min-width:0;min-height:0;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
-.inter-left{border-right:1px solid var(--border);}
-.inter-right{position:relative;isolation:isolate;}
-.inter-left-tools{padding:10px;border-bottom:1px solid var(--border);background:#fff;flex-shrink:0;}
-.inter-left-tools .form-select{width:100%;height:38px;border-color:#b8cdfb;color:#31579e;background:#fff;}
-.inter-posts-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable;}
-.inter-post-item{position:relative;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:.15s;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;border-left:3px solid transparent;background:#fff;}
-.inter-post-item:hover{background:#f8fbff;}
-.inter-post-item.active{background:#eef8f4;border-left-color:#16a085;}
-.inter-post-main{min-width:0;display:grid;gap:5px;}
-.inter-post-title{font-weight:750;font-size:13px;line-height:1.45;color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
-.inter-post-meta{display:flex;align-items:center;gap:7px;min-width:0;font-size:11px;color:#91a0b5;}
-.inter-post-date{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-post-path{display:none;}
-.inter-post-count{min-width:34px;text-align:center;padding:3px 7px;border-radius:6px;background:#f1f4f8;color:#7a899e;font-size:11px;font-weight:800;white-space:nowrap;}
-.inter-post-item.active .inter-post-count{background:#fff;color:#16856d;box-shadow:0 1px 3px rgba(22,133,109,.12);}
-.inter-post-empty{padding:36px 18px;text-align:center;color:var(--text3);line-height:1.7;}
-.inter-summary-bar{height:51px;padding:0 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#fff,#fbfcfe);flex-shrink:0;}
-.inter-current{flex:1;min-width:0;display:flex;align-items:center;gap:10px;}
-.inter-back-mark{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#8291a6;font-size:18px;}
-.inter-current-copy{min-width:0;display:grid;gap:2px;}
-.inter-current-title{font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-current-path{font-size:10.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-summary-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
-.inter-summary-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#f3f6fa;color:#7b899c;font-size:10.5px;font-weight:700;white-space:nowrap;}
-.inter-summary-chip.ok{background:#eaf9f1;color:#16865e;}
-.inter-filter-bar{padding:10px 14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:160px 130px minmax(210px,1fr);gap:10px;align-items:center;background:#fff;flex-shrink:0;}
-.inter-filter-bar .form-select,.inter-filter-bar .search-input{height:38px;}
-.inter-filter-bar .search-box{min-width:0;}
-.inter-status-strip{padding:7px 16px;border-bottom:1px solid var(--border);font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:8px;background:#fbfcfe;min-height:34px;flex-shrink:0;}
-.inter-memo-context{padding:12px 16px;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0;}
-.inter-memo-card{position:relative;padding:15px 16px;border:1px solid #dce5ef;border-radius:10px;background:#fff;box-shadow:0 3px 12px rgba(40,59,82,.06);}
-.inter-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}.inter-memo-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#52647b}.inter-memo-id{padding:2px 7px;border-radius:999px;background:#edf3fa;color:#557493;font:10px ui-monospace,SFMono-Regular,Menlo,monospace}.inter-memo-time{font-size:10.5px;color:var(--text3)}
-.inter-memo-content{max-height:220px;overflow:auto;color:var(--text);font-size:13px;line-height:1.75;word-break:break-word}.inter-memo-content>:first-child{margin-top:0}.inter-memo-content>:last-child{margin-bottom:0}.inter-memo-content p,.inter-memo-content ul,.inter-memo-content ol{margin:6px 0}.inter-memo-content a{color:var(--accent);text-decoration:underline}.inter-memo-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.inter-memo-tag{padding:2px 7px;border-radius:999px;background:#eef6f2;color:#397560;font-size:10px}.inter-memo-images{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.inter-memo-images img{width:72px;height:72px;border-radius:7px;object-fit:cover;border:1px solid var(--border)}
-.inter-status-strip .status-dot{width:7px;height:7px;}
-.inter-comments-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable;background:#fcfdff;}
-.inter-notice{margin:12px 16px 0;padding:10px 12px;border:1px solid #cfe0ff;border-radius:8px;background:#f4f8ff;color:#44658f;font-size:11.5px;line-height:1.55;}
-.inter-comment-list{display:grid;}
-.inter-comment-card{position:relative;padding:16px 18px;border-bottom:1px solid #edf0f4;display:flex;gap:12px;background:#fff;transition:.15s;}
-.inter-comment-card:hover{background:#f8fbff;}
-.inter-comment-card.is-reply{padding-left:50px;background:#fbfdff;}
-.comment-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg3);object-fit:cover;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,.04);}
-.inter-comment-body{flex:1;min-width:0;}
-.inter-comment-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.inter-comment-author{min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-.inter-comment-author strong{font-size:13.5px;color:#34445a;}
-.inter-comment-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;background:#edf2ff;color:#4c6bdc;font-size:9.5px;font-weight:800;}
-.inter-comment-text{font-size:13px;color:#536176;line-height:1.65;margin-top:6px;word-break:break-word;white-space:pre-wrap;}
-.inter-comment-meta{margin-top:7px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:10.5px;color:#a0adbd;}
-.inter-comment-meta .dot{width:3px;height:3px;border-radius:50%;background:#cbd3dd;}
-.inter-comment-route{max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-comment-actions{display:flex;align-items:center;gap:3px;flex-shrink:0;opacity:.62;transition:.15s;}
-.inter-comment-card:hover .inter-comment-actions{opacity:1;}
-.inter-action-btn{width:28px;height:28px;border:none;border-radius:6px;background:transparent;color:#8092aa;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;}
-.inter-action-btn:hover{background:#edf3fb;color:#365f91;}
-.inter-action-btn.danger:hover{background:var(--danger-light);color:var(--danger);}
-.inter-action-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.inter-load-more{padding:14px;text-align:center;background:#fff;}
-.inter-thread-drawer{position:absolute;inset:0;z-index:30;background:#fff;display:flex;flex-direction:column;box-shadow:-12px 0 34px rgba(38,56,82,.14);}
-.inter-thread-drawer[hidden]{display:none;}
-.inter-thread-head{height:52px;padding:0 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fff;flex-shrink:0;}
-.inter-thread-title{flex:1;min-width:0;display:grid;gap:2px;}
-.inter-thread-title strong{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-thread-title span{font-size:10.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.inter-thread-body{position:relative;flex:1;min-height:0;overflow-y:auto;background:#fafbfd;padding:16px;}
-.inter-twikoo-host{min-height:180px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;}
-.inter-twikoo-host .tk-comments-container{margin-top:0;}
-.inter-thread-drawer.admin-mode .inter-thread-body{padding:0;overflow:hidden;}
-.inter-thread-drawer.admin-mode .inter-twikoo-host{height:100%;border:0;border-radius:0;padding:0;overflow:auto;}
-.inter-thread-drawer .tk-admin-container.inter-admin-docked{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:50!important;background:#fff!important;overflow:auto!important;}
-.inter-thread-drawer .tk-admin-container.inter-admin-docked .el-dialog{width:100%!important;max-width:none!important;height:100%!important;max-height:none!important;margin:0!important;border-radius:0!important;display:flex!important;flex-direction:column!important;}
-.inter-thread-drawer .tk-admin-container.inter-admin-docked .el-dialog__body{flex:1!important;min-height:0!important;overflow:auto!important;}
-.inter-error{margin:18px;}
-.inter-diagnostic{margin-top:10px;padding-top:10px;border-top:1px dashed currentColor;font-size:12px;opacity:.9;}
-.inter-origin{display:inline-block;max-width:100%;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(255,255,255,.68);padding:2px 5px;border-radius:4px;}
-.inter-inline-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;}
-.inter-local-warning{margin:12px 16px 0;}
-
-@media (max-width:1180px){
-  .interactions-shell{grid-template-columns:285px minmax(0,1fr);}
-  .inter-filter-bar{grid-template-columns:145px 120px minmax(180px,1fr);}
-}
-@media (max-width:940px){
-  .inter-filter-bar{grid-template-columns:1fr 1fr;}
-  .inter-filter-bar .search-box{grid-column:1/-1;}
-}
-@media (max-width:860px){
-  .interactions-shell{grid-template-columns:1fr;height:auto;min-height:720px;margin:-16px;overflow:visible;}
-  .inter-left{max-height:330px;border-right:0;border-bottom:1px solid var(--border);}
-  .inter-right{min-height:620px;}
-  .inter-thread-drawer{position:fixed;inset:0;z-index:9999;}
-}
-@media (max-width:560px){
-  .inter-filter-bar{grid-template-columns:1fr;}
-  .inter-filter-bar .search-box{grid-column:auto;}
-  .inter-summary-chips{display:none;}
-  .inter-comment-card{padding:14px 12px;}
-  .inter-comment-card.is-reply{padding-left:28px;}
-  .inter-comment-actions{opacity:1;}
-  .inter-memo-context{padding:9px}.inter-memo-card{padding:12px}.inter-memo-head{align-items:flex-start}.inter-memo-content{max-height:260px}
-}
-
 /* R2 media library */
 .garden-archive-year-tabs{display:flex;width:fit-content;max-width:100%;margin:6px auto 20px;gap:8px;padding:5px;border:1px solid var(--border);border-radius:9999px;background:#fff;overflow-x:auto;scrollbar-width:none}.garden-archive-year-tabs::-webkit-scrollbar{display:none}
 .garden-archive-year-btn{flex:0 0 auto;padding:10px 24px;border:0;border-radius:9999px;background:transparent;color:var(--text3);font-size:14px;cursor:pointer;transition:.2s;white-space:nowrap}.garden-archive-year-btn:hover{color:var(--text)}.garden-archive-year-btn.active{background:#7d83b4;color:#fff;font-weight:500;box-shadow:none}
@@ -1756,6 +1652,203 @@ html[data-theme="sepia"] body,html[data-theme="sepia"] .app,html[data-theme="mis
   .media-lightbox-stage{padding:8px}.media-lightbox-nav{width:38px;height:38px}.media-lightbox-nav.prev{left:8px}.media-lightbox-nav.next{right:8px}
   .media-lightbox-footer{align-items:stretch;flex-direction:column;padding:10px 12px}.media-preview-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.media-preview-actions .btn{width:100%}
 }
+/* ============================== 评论管理 ============================== */
+/* 复用 .card / .overview-* / .seg-btn / .toolbar / table 等既有组件，这里只补增量 */
+
+.cm-live{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text3)}
+.cm-live .status-dot{width:7px;height:7px}
+
+/* ---- 线程表 ---- */
+.cm-table th.cm-tl,.cm-table td.cm-tl{text-align:left}
+.cm-thread-cell{display:flex;align-items:center;gap:11px;min-width:250px;text-align:left}
+.cm-kind{width:34px;height:34px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:850;background:var(--blue-light);color:#2b43b0}
+.cm-kind.page{background:var(--purple-light);color:#6d50d1}
+.cm-kind.memo{background:var(--warning-light);color:#b96809}
+.cm-thread-copy{min-width:0;display:grid;gap:2px}
+.cm-thread-name{font-weight:800;font-size:13.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px;cursor:pointer;text-align:left;border:0;background:none;padding:0;font-family:inherit}
+.cm-thread-name:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.cm-thread-path{font-size:11.5px;color:var(--text3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px}
+.cm-nums{display:inline-flex;align-items:baseline;gap:5px;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--text)}
+.cm-nums small{font-size:10.5px;font-weight:600;color:var(--text3);margin-right:6px}
+.cm-dot{color:var(--text4);font-weight:600;margin:0 1px}
+.cm-meter{width:72px;height:4px;border-radius:2px;background:var(--bg3);overflow:hidden;margin-top:5px}
+.cm-meter i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),#3fb27f)}
+.cm-thread-acts{display:inline-flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ---- 通用小按钮 ---- */
+.cm-act{border:1px solid var(--border2);background:var(--bg);border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;color:var(--text2);cursor:pointer;line-height:1.5;transition:.14s;white-space:nowrap}
+.cm-act:hover{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-light)}
+.cm-act.ok:hover{border-color:var(--success);color:#1b6e30;background:var(--success-light)}
+.cm-act.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-light)}
+.cm-act[disabled]{opacity:.5;cursor:not-allowed}
+
+/* ---- 评论条目 ---- */
+.cm-list{display:flex;flex-direction:column}
+.cm-item{display:grid;grid-template-columns:auto 36px minmax(0,1fr) 286px;gap:12px;padding:14px 2px;border-bottom:1px solid var(--border);align-items:start}
+.cm-item:last-child{border-bottom:0}
+.cm-item:hover{background:linear-gradient(90deg,rgba(31,122,77,.035),transparent 62%)}
+.cm-item.is-dim .cm-body{opacity:.66}
+.cm-check{margin-top:3px;width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex:none}
+.cm-avatar{width:36px;height:36px;border-radius:11px;object-fit:cover;background:var(--bg3);flex:none;border:1px solid var(--border)}
+.cm-body{min-width:0}
+.cm-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.cm-nick{font-size:13.5px;font-weight:800;color:var(--text)}
+.cm-badge{font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--danger-light);color:var(--danger);line-height:1.5}
+.cm-who{font-size:11.5px;color:var(--text3);display:inline-flex;align-items:center;gap:5px;max-width:290px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-who button{border:0;background:none;padding:0;font:inherit;color:var(--text3);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.cm-who button:hover{color:var(--accent)}
+.cm-time{font-size:11.5px;color:var(--text3);font-variant-numeric:tabular-nums}
+.cm-text{margin-top:6px;font-size:13.5px;line-height:1.72;color:var(--text2);word-break:break-word;white-space:pre-wrap}
+.cm-text.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cm-replyto{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--text3);background:var(--bg3);border-radius:6px;padding:2px 7px;margin-bottom:5px}
+.cm-threadtag{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);border:1px solid var(--border);border-radius:999px;padding:2px 8px;background:var(--bg);cursor:pointer;max-width:330px}
+.cm-threadtag:hover{border-color:var(--accent);color:var(--accent-dark)}
+.cm-threadtag b{font-weight:700;color:var(--text2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-side{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-left:6px}
+.cm-acts{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---- 批量条 ---- */
+.cm-bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;border:1px solid #cfe6d9;background:var(--accent-light);border-radius:12px;margin-bottom:12px;font-size:12.5px;font-weight:700;color:var(--accent-dark)}
+.cm-bulk .cm-act{background:#fff}
+.cm-bulk .spacer{margin-left:auto}
+
+/* ---- 状态标签补充 ---- */
+.tag.spam{background:var(--danger-light);color:var(--danger)}
+.tag.hidden{background:var(--bg3);color:var(--text2)}
+.tag.pending{background:var(--warning-light);color:#ad6800}
+
+/* ---- 编辑弹窗 ---- */
+.cm-edit-area{width:100%;min-height:190px;padding:12px 14px;border:1px solid var(--border2);border-radius:10px;font-size:13.5px;line-height:1.72;color:var(--text);background:var(--bg);resize:vertical;outline:none;transition:.15s}
+.cm-edit-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,122,77,.12)}
+.cm-edit-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--text3)}
+.cm-edit-foot b{font-variant-numeric:tabular-nums;color:var(--text2)}
+
+/* ---- 线程详情 ---- */
+.cm-tree{display:flex;flex-direction:column;gap:2px}
+.cm-tree-row{padding:11px 0 11px 0;border-bottom:1px dashed var(--border)}
+.cm-tree-row:last-child{border-bottom:0}
+.cm-tree-row.depth-1{margin-left:22px;padding-left:14px;border-left:2px solid #dcebe3}
+.cm-tree-row.depth-2{margin-left:44px;padding-left:14px;border-left:2px solid #dcebe3}
+.cm-tree-row.depth-3{margin-left:66px;padding-left:14px;border-left:2px solid #dcebe3}
+.cm-tree-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cm-tree-text{margin-top:5px;font-size:13px;line-height:1.7;color:var(--text2);white-space:pre-wrap;word-break:break-word}
+.cm-tree-acts{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.cm-memo{border:1px solid var(--border);border-radius:12px;background:var(--bg2);padding:13px 15px;margin-bottom:14px}
+.cm-memo-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--text3);font-weight:700;margin-bottom:7px}
+.cm-memo-text{font-size:13px;line-height:1.7;color:var(--text2);word-break:break-word}
+.cm-memo-imgs{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.cm-memo-imgs img{width:76px;height:76px;object-fit:cover;border-radius:9px;border:1px solid var(--border)}
+
+/* ---- 备份卡 ---- */
+.cm-data{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cm-data-box{border:1px solid var(--border);border-radius:13px;background:linear-gradient(180deg,#fff,#fafcfb);padding:15px}
+.cm-data-box h4{font-size:13px;font-weight:800;margin-bottom:5px}
+.cm-data-box p{font-size:11.5px;line-height:1.65;color:var(--text3);margin-bottom:11px}
+.cm-data-box .row{display:flex;gap:7px;flex-wrap:wrap}
+.cm-kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:11.5px;color:var(--text3);margin-top:2px}
+.cm-kv code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text2);word-break:break-all}
+
+@media (max-width:1200px) and (min-width:861px){
+  .cm-item{grid-template-columns:auto 36px minmax(0,1fr) 200px}
+}
+
+
+/* ---- 评论者排名 ---- */
+.cm-rank-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.cm-rank-tools .segmented{gap:5px}
+.cm-rank-tools .seg-btn{padding:6px 11px;font-size:12px}
+.cm-rank{display:grid;grid-template-columns:26px 34px minmax(0,1fr) auto 70px;align-items:center;gap:11px;width:100%;padding:10px 2px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;cursor:pointer;font-family:inherit;transition:background .14s}
+.cm-rank:last-of-type{border-bottom:0}
+.cm-rank:hover{background:linear-gradient(90deg,rgba(31,122,77,.045),transparent 64%)}
+.cm-rank.is-open{background:var(--accent-light)}
+.cm-rank-no{font-size:12.5px;font-weight:850;color:var(--text3);text-align:center;font-variant-numeric:tabular-nums}
+.cm-rank:nth-of-type(1) .cm-rank-no,
+.cm-rank:nth-of-type(2) .cm-rank-no,
+.cm-rank:nth-of-type(3) .cm-rank-no{color:var(--accent-dark)}
+.cm-rank .cm-avatar{width:34px;height:34px;border-radius:11px}
+.cm-rank-copy{min-width:0;display:grid;gap:2px}
+.cm-rank-nick{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:13.5px;font-weight:800;color:var(--text)}
+.cm-rank-mail{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-rank-nums{display:flex;align-items:center;gap:4px;justify-content:flex-end;font-variant-numeric:tabular-nums}
+.cm-rank-nums b{font-size:14px;font-weight:850}
+.cm-rank-nums small{font-size:10.5px;font-weight:600;color:var(--text3)}
+.cm-rank-nums .cm-meter{width:72px;margin-top:0;flex:none}
+.cm-rank-time{font-size:11.5px;color:var(--text3);text-align:right;white-space:nowrap}
+
+/* ---- 访客展开面板 ---- */
+.cm-visitor{margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:13px;background:var(--bg2)}
+.cm-visitor-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.cm-visitor-copy{min-width:0;display:grid;gap:2px;margin-right:auto}
+.cm-visitor-copy b{font-size:13.5px;color:var(--text)}
+.cm-visitor-copy span{font-size:11.5px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-visitor-list{display:flex;flex-direction:column}
+.cm-vrow{padding:10px 0;border-bottom:1px dashed var(--border)}
+.cm-vrow:last-child{border-bottom:0;padding-bottom:2px}
+.cm-vrow-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.cm-vrow-acts{margin-left:auto;display:inline-flex;gap:4px}
+.cm-vrow-text{margin-top:5px;font-size:12.5px;line-height:1.68;color:var(--text2);white-space:pre-wrap;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cm-visitor .pagination-wrap{margin:10px -14px -14px;padding:10px 14px;background:transparent;border-top:1px solid var(--border);border-radius:0 0 13px 13px}
+
+/* ---- 分页 ---- */
+.pager-active{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+.cm-pager-gap{color:var(--text3);padding:0 1px}
+
+/* ---- 夜间 ---- */
+html[data-theme="night"] .cm-bulk{background:rgba(31,122,77,.16);border-color:rgba(80,180,130,.34);color:#a8e3c2}
+html[data-theme="night"] .cm-bulk .cm-act{background:var(--bg)}
+html[data-theme="night"] .cm-data-box{background:var(--bg);border-color:var(--border)}
+html[data-theme="night"] .cm-item:hover{background:rgba(255,255,255,.025)}
+/* 夜间表格斑马纹：全局规则用了浅色 !important，这里压暗，否则行块发白 */
+html[data-theme="night"] tbody tr:nth-child(even) td{background:rgba(255,255,255,.028)!important}
+html[data-theme="night"] tbody tr:hover td{background:rgba(255,255,255,.055)!important}
+html[data-theme="night"] .cm-rank:hover{background:rgba(255,255,255,.045)}
+html[data-theme="night"] .cm-memo{background:var(--bg3)}
+
+/* ---- 窄屏 ---- */
+@media (max-width:860px){
+  .cm-item{grid-template-columns:auto 32px minmax(0,1fr);gap:9px}
+  .cm-avatar{width:32px;height:32px;border-radius:9px}
+  .cm-side{grid-column:1/-1;align-items:flex-start;padding-left:0;margin-top:7px}
+  .cm-acts{max-width:none;justify-content:flex-start}
+  .cm-thread-name,.cm-thread-path{max-width:150px}
+  .cm-tree-row.depth-1{margin-left:12px;padding-left:10px}
+  .cm-tree-row.depth-2{margin-left:24px;padding-left:10px}
+  .cm-tree-row.depth-3{margin-left:36px;padding-left:10px}
+
+  /* 卡头：标题一行，页签独立一行，避免溢出被裁 */
+  .cm-card-head{flex-wrap:wrap;gap:10px}
+  .cm-card-head .segmented{width:100%;flex-wrap:wrap;gap:6px}
+  .cm-card-head .cm-live{order:2}
+  .cm-rank-tools{width:100%;justify-content:space-between}
+  .cm-rank-tools .segmented{width:auto}
+
+  /* 指标卡两列，最后一张占满 */
+  #cm-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  #cm-stats .overview-stat{padding:11px;gap:9px}
+  #cm-stats .overview-stat-icon{width:30px;height:30px;border-radius:10px;font-size:12px}
+  #cm-stats .overview-stat strong{font-size:16.5px}
+  #cm-stats .overview-stat:last-child{grid-column:span 2}
+
+  /* 线程表：窄屏转成卡片（沿用后台全局 mobile-card-list），只舍弃阅读量 */
+  .cm-table{min-width:0}
+  .cm-table th:nth-child(3),.cm-table td:nth-child(3){display:none}
+  .cm-table .cm-thread-cell{min-width:0;gap:8px;align-items:flex-start}
+
+  /* 评论者排名：去掉时间列与比例条，保留名次/头像/昵称/条数 */
+  .cm-rank{grid-template-columns:22px 30px minmax(0,1fr) auto;gap:8px}
+  .cm-rank .cm-avatar{width:30px;height:30px;border-radius:9px}
+  .cm-rank-time{display:none}
+  .cm-rank-nums .cm-meter{display:none}
+  .cm-visitor{padding:12px}
+  .cm-visitor .pagination-wrap{margin:10px -12px -12px;padding:10px 12px}
+  .cm-vrow-acts{margin-left:0}
+  .cm-table .cm-meter{display:none}
+  .mobile-card-list .cm-thread-name,
+  .mobile-card-list .cm-thread-path{max-width:none;white-space:normal}
+  .mobile-card-list td[data-mobile-label="操作"]{padding:10px 12px}
+  .mobile-card-list td[data-mobile-label="操作"] .cm-thread-acts{width:100%;justify-content:flex-end;gap:7px}
+  .mobile-card-list td[data-mobile-label="操作"] .cm-act{min-height:34px;padding:7px 12px;font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -1782,9 +1875,9 @@ html[data-theme="sepia"] body,html[data-theme="sepia"] .app,html[data-theme="mis
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         文章管理
       </div>
-      <div class="nav-item" onclick="showPage('interactions')" id="nav-interactions">
+      <div class="nav-item" onclick="showPage('interactions')" id="nav-interactions" title="评论管理">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        互动管理
+        评论管理
       </div>
       <div class="nav-item" onclick="showPage('friends')" id="nav-friends">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -2006,7 +2099,7 @@ function initAdminBackToTop(){
 let CFG = {
   token: '', owner: '', repo: '', branch: 'main', postsPath: 'content/posts',
   blogUrl: 'https://hux.ink', vercelProjectId: '', vercelToken: '',
-  twikooEnvId: '', twikooMasterPassword: '',
+  commentsApi: 'https://comments.hux.ink/api/comments', commentsToken: '',
   r2AccountId: '', r2Bucket: '', r2AccessKeyId: '', r2SecretAccessKey: '',
   r2PublicUrl: '', r2Prefix: 'images/{yyyy}/{mm}',
   r2WebpEnabled: true, r2WebpQuality: 0.82, r2ImageMaxSide: 1920
@@ -2050,14 +2143,8 @@ let STATE = {
   tableSearchKeyword: '', selectedMapLocationName: null, allMapMarkers: [],
   photoViewerEl: null, viewerPhotos: [], viewerIndex: 0,
   friendsSortMode: false, footprintsSortMode: false,
-  // Twikoo 互动管理状态（文章索引、评论流与官方管理面板）
-  twikooComments: [], twikooSelectedPost: 'all', twikooSearch: '',
-  twikooPostEntries: [], twikooSdkPromise: null, twikooMountSeq: 0,
-  twikooDiagnostics: [], twikooCountsAreApproximate: false,
-  twikooArticleSort: 'comment_desc', twikooCommentSort: 'time_desc',
-  twikooCommentFilter: 'all', twikooVisibleLimit: 40,
-  twikooPendingAdminSearch: '', twikooAdminSearchTimer: null,
-  twikooMemos: null, twikooMemosPromise: null, twikooMemoRenderSeq: 0
+  // 评论管理：哔哔原文缓存（其余状态在 CMV 里）
+  cmMemos: null, cmMemosPromise: null
 };
 
 let GARDEN_STATE = {
@@ -4988,726 +5075,1414 @@ document.addEventListener('keydown',gardenHandleGlobalKeyboardShortcuts);
 
 
 // ============================================================
-// 2. Twikoo 互动管理（截图式双栏评论工作台）
+// 2. 评论管理（自建评论系统：线程台账 + 评论明细 + 备份迁移）
+//    数据源：GET/POST {commentsApi}/admin、/admin/export、/admin/import、/stats
 // ============================================================
-const TWIKOO_SDK_VERSION = '1.7.14';
 
-function normalizedTwikooEnvId(){
-  const value=String(CFG.twikooEnvId||'').trim();
-  return /^https?:\/\//i.test(value) ? value.replace(/\/+$/,'') : value;
+/* ------------------------------ 基础连接 ------------------------------ */
+
+function cmApiBase(){ return String(CFG.commentsApi||'').trim().replace(/\/+$/,''); }
+function cmToken(){ return String(CFG.commentsToken||'').trim(); }
+function cmReady(){ return Boolean(cmApiBase()&&cmToken()); }
+
+function cmErrorMessage(error){
+  if(!error) return '未知错误';
+  if(typeof error==='string') return error;
+  if(error.message) return String(error.message);
+  const nested=error.error&&(error.error.message||error.error.code);
+  return String(nested||error.msg||'未知错误');
 }
 
-function isUrlTwikooEnv(){ return /^https?:\/\//i.test(normalizedTwikooEnvId()); }
-
-function twikooSdkUrls(){
-  const file=isUrlTwikooEnv() ? 'twikoo.min.js' : 'twikoo.all.min.js';
-  return [
-    `https://cdn.jsdelivr.net/npm/twikoo@${TWIKOO_SDK_VERSION}/dist/${file}`,
-    `https://registry.npmmirror.com/twikoo/${TWIKOO_SDK_VERSION}/files/dist/${file}`,
-    `https://s4.zstatic.net/npm/twikoo@${TWIKOO_SDK_VERSION}/dist/${file}`
-  ];
+async function cmFetch(path,options){
+  const base=cmApiBase();
+  if(!base) throw new Error('未配置评论系统接口地址');
+  const init=Object.assign({},options||{});
+  init.headers=Object.assign({'x-admin-token':cmToken()},(options&&options.headers)||{});
+  let response=null;
+  try{
+    response=await fetch(base+path,init);
+  }catch(e){
+    const isLocal=/^(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)$/.test(location.hostname);
+    throw new Error(isLocal
+      ? `无法连接评论系统（${base}）。本地调试时 ${location.origin} 不在 Worker 的 COMMENTS_ALLOWED_ORIGIN 白名单内，浏览器只会报跨域失败。`
+      : '无法连接评论系统，请检查接口地址与网络');
+  }
+  let data=null;
+  try{ data=await response.json(); }catch(e){}
+  const code=data&&data.error&&data.error.code;
+  if(code==='origin_forbidden') throw new Error(`当前来源 ${location.origin} 不在 Worker 白名单内，请加入 COMMENTS_ALLOWED_ORIGIN 后重新部署`);
+  if(response.status===401||response.status===403) throw new Error('管理口令无效，请在系统设置中核对评论系统管理口令');
+  if(!response.ok||(data&&data.ok===false)){
+    const detail=data&&data.error;
+    throw new Error((data&&(data.message||(detail&&detail.message)))||(typeof detail==='string'?detail:'')||`接口返回 ${response.status}`);
+  }
+  return data||{};
 }
 
-function loadExternalScript(url){
-  return new Promise((resolve,reject)=>{
-    const existed=[...document.scripts].find(s=>s.src===url);
-    if(existed && window.twikoo) return resolve();
-    let settled=false;
-    const finish=(handler,value)=>{
-      if(settled) return;
-      settled=true; clearTimeout(timer); handler(value);
-    };
-    const timer=setTimeout(()=>finish(reject,new Error(`Twikoo SDK 加载超时：${url}`)),8000);
-    if(existed){
-      existed.addEventListener('load',()=>finish(resolve),{once:true});
-      existed.addEventListener('error',()=>finish(reject,new Error(`脚本加载失败：${url}`)),{once:true});
-      return;
-    }
-    const script=document.createElement('script');
-    script.src=url; script.async=true; script.crossOrigin='anonymous';
-    script.onload=()=>finish(resolve);
-    script.onerror=()=>{ script.remove(); finish(reject,new Error(`脚本加载失败：${url}`)); };
-    document.head.appendChild(script);
-  });
-}
+/* ------------------------------ 路径与时间 ------------------------------ */
 
-function withInteractionTimeout(promise,ms,label){
-  let timer=null;
-  const timeout=new Promise((_,reject)=>{
-    timer=setTimeout(()=>reject(new Error(`${label}超时（${Math.round(ms/1000)} 秒）`)),ms);
-  });
-  return Promise.race([Promise.resolve(promise),timeout]).finally(()=>clearTimeout(timer));
-}
-
-async function ensureTwikooSdk(){
-  if(window.twikoo && typeof window.twikoo.init==='function') return window.twikoo;
-  if(STATE.twikooSdkPromise) return STATE.twikooSdkPromise;
-  STATE.twikooSdkPromise=(async()=>{
-    let lastError=null;
-    for(const url of twikooSdkUrls()){
-      try{
-        await loadExternalScript(url);
-        if(window.twikoo && typeof window.twikoo.init==='function') return window.twikoo;
-        lastError=new Error('Twikoo SDK 已下载，但未正确初始化');
-      }catch(e){ lastError=e; }
-    }
-    throw lastError || new Error('Twikoo SDK 加载失败');
-  })().catch(e=>{ STATE.twikooSdkPromise=null; throw e; });
-  return STATE.twikooSdkPromise;
-}
-
-function normalizeTwikooPath(value){
+function normalizeCmPath(value){
   let raw=String(value||'/').trim();
   if(!raw) return '/';
   try{ if(/^https?:\/\//i.test(raw)) raw=new URL(raw).pathname; }catch(e){}
-  raw=raw.split('#')[0].split('?')[0] || '/';
+  raw=raw.split('#')[0].split('?')[0]||'/';
   if(!raw.startsWith('/')) raw='/'+raw;
   raw=raw.replace(/\/{2,}/g,'/');
-  return raw.length>1 ? raw.replace(/\/+$/,'/') : '/';
+  return raw.length>1?raw.replace(/\/+$/,'/'):'/';
 }
 
-function interactionPathForPost(post){
+function cmPathForPost(post){
   try{
     const url=buildPublicUrl({slug:post.slug},post.path);
-    return normalizeTwikooPath(new URL(url, CFG.blogUrl || location.href).pathname);
+    return normalizeCmPath(new URL(url,CFG.blogUrl||location.href).pathname);
   }catch(e){
-    const slug=post.slug || String(post.path||'').split('/').pop().replace(/\.md$/,'');
-    return normalizeTwikooPath(`/posts/${encodeURIComponent(slug).replace(/%2F/g,'/')}/`);
+    const slug=post.slug||String(post.path||'').split('/').pop().replace(/\.md$/,'');
+    return normalizeCmPath(`/posts/${encodeURIComponent(slug).replace(/%2F/g,'/')}/`);
   }
 }
 
-function twikooPublicOptions(extra={}){ return {envId:normalizedTwikooEnvId(), ...extra}; }
-
-function twikooErrorMessage(error){
-  if(!error) return '未知错误';
-  if(typeof error==='string') return error;
-  return String(error.message || error.msg || error.error || error);
-}
-
-function twikooErrorHint(error){
-  const message=twikooErrorMessage(error);
-  const low=message.toLowerCase();
-  if(low.includes('password') || message.includes('密码')) return '评论索引不使用管理员密码；请通过本页“管理模式”进入 Twikoo 官方登录界面。';
-  if(low.includes('blocked_by_client')) return '请求被浏览器扩展拦截，请暂时关闭广告拦截器，或将当前后台域名加入白名单。';
-  if(low.includes('cors') || low.includes('failed to fetch') || low.includes('network') || low.includes('xhr') || low.includes('status 0')){
-    return '请直接访问 Twikoo envId 确认后端正常，并在管理面板 → 配置管理 → 通用中核对 CORS_ALLOW_ORIGIN；不要通过 file:// 打开本文件。';
-  }
-  return '请核对 Twikoo envId、前后端版本以及浏览器控制台中的完整错误。';
-}
-
-function twikooOrigin(){ return location.protocol==='file:' ? 'file://（Origin 为 null）' : location.origin; }
-
-function twikooTimestamp(value){
-  if(value===null || value===undefined || value==='') return 0;
+function cmTimestamp(value){
+  if(value===null||value===undefined||value==='') return 0;
   let raw=value;
-  if(typeof raw==='string' && /^\d+$/.test(raw)) raw=Number(raw);
-  if(typeof raw==='number' && raw>0 && raw<1e12) raw*=1000;
+  if(typeof raw==='string'&&/^\d+$/.test(raw)) raw=Number(raw);
+  if(typeof raw==='number'&&raw>0&&raw<1e11) raw*=1000;
   const time=new Date(raw).getTime();
-  return Number.isFinite(time) ? time : 0;
+  return Number.isFinite(time)?time:0;
 }
 
-function formatTwikooTime(value){
-  const time=twikooTimestamp(value);
+function cmDayText(value){
+  const time=cmTimestamp(value);
+  if(!time) return '—';
+  const d=new Date(time); const pad=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function cmTimeText(value){
+  const time=cmTimestamp(value);
   if(!time) return '时间未知';
-  return new Date(time).toLocaleString('zh-CN',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const diff=Date.now()-time;
+  if(diff>=0&&diff<60000) return '刚刚';
+  if(diff>=0&&diff<3600000) return `${Math.floor(diff/60000)} 分钟前`;
+  if(diff>=0&&diff<86400000) return `${Math.floor(diff/3600000)} 小时前`;
+  if(diff>=0&&diff<604800000) return `${Math.floor(diff/86400000)} 天前`;
+  return cmDayText(time);
 }
 
-function formatTwikooPostDate(value){
-  const time=twikooTimestamp(value);
-  if(!time) return '暂无时间';
+function cmFullTimeText(value){
+  const time=cmTimestamp(value);
+  if(!time) return '时间未知';
   const d=new Date(time); const pad=n=>String(n).padStart(2,'0');
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-function safeAvatar(url){
-  const value=String(url||'').trim();
-  return /^https?:\/\//i.test(value) ? value : 'https://cravatar.cn/avatar/00000000000000000000000000000000?d=mp';
+function cmThreadKind(key){
+  const raw=String(key||'');
+  if(raw.startsWith('post:')) return 'post';
+  if(raw.startsWith('page:')) return 'page';
+  if(raw.startsWith('memo:')) return 'memo';
+  return 'other';
 }
 
-function twikooCommentText(comment){
-  const raw=comment?.commentText ?? comment?.comment ?? '';
-  const box=document.createElement('div'); box.innerHTML=String(raw);
-  return (box.textContent||box.innerText||'').replace(/\n{3,}/g,'\n\n').trim();
+function cmThreadPath(key){
+  const raw=String(key||'');
+  const idx=raw.indexOf(':');
+  return idx>=0?raw.slice(idx+1):raw;
 }
 
-function twikooCommentIsReply(comment){
-  return Boolean(comment?.rid || comment?.pid || comment?.parentId || comment?.replyTo || comment?.isReply);
+function cmThreadId(key){
+  const path=cmThreadPath(key);
+  return String(path||'').replace(/[^\d]/g,'');
 }
 
-function twikooCommentRegion(comment){
-  return String(comment?.ipRegion || comment?.region || comment?.location || '').trim();
-}
+const CM_PAGE_NAMES={'/':'首页','/about/':'关于','/friends/':'友链','/archives/':'归档','/memos/':'哔哔','/search/':'搜索'};
 
-function twikooCommentAgent(comment){
-  const parts=[comment?.os,comment?.browser].map(v=>String(v||'').trim()).filter(Boolean);
-  return [...new Set(parts)].join(' · ');
-}
-
-async function loadTwikooPostData(){
-  const sdk=await ensureTwikooSdk();
-  const diagnostics=[];
-  let recent=[];
-  const jobs=[
-    withInteractionTimeout(sdk.getRecentComments(twikooPublicOptions({pageSize:100,includeReply:true})),15000,'最新评论读取')
-      .then(value=>{ recent=Array.isArray(value)?value:[]; })
-      .catch(error=>{ diagnostics.push(`最新评论读取失败：${twikooErrorMessage(error)}`); })
-  ];
-
-  if(CFG.token && CFG.owner && CFG.repo && !STATE.postsLoaded){
-    jobs.push(withInteractionTimeout(loadPosts(),20000,'GitHub 文章目录读取').then(()=>{ STATE.postsLoaded=true; }).catch(error=>{
-      diagnostics.push(`GitHub 文章目录读取失败：${twikooErrorMessage(error)}`);
-    }));
-  }
-  await Promise.all(jobs);
-
-  STATE.twikooComments=recent;
-  const entryMap=new Map();
-  const publishedPosts=STATE.posts.filter(post=>!post.isTrash && !post.draft);
-  publishedPosts.forEach(post=>{
-    const path=interactionPathForPost(post);
-    entryMap.set(path,{
-      path,
-      title:post.title||path,
-      postDate:post.date || post.fm?.date || '',
-      lastCommentAt:0,
-      count:0,
-      countApprox:false,
-      source:'post'
-    });
-  });
-
-  const recentCounts=new Map();
-  recent.forEach(comment=>{
-    const path=normalizeTwikooPath(comment.url||'/');
-    recentCounts.set(path,(recentCounts.get(path)||0)+1);
-    if(!entryMap.has(path)) entryMap.set(path,{path,title:path,postDate:'',lastCommentAt:0,count:0,countApprox:true,source:'comment'});
-    const entry=entryMap.get(path);
-    entry.lastCommentAt=Math.max(entry.lastCommentAt||0,twikooTimestamp(comment.created));
-  });
-
-  const paths=[...entryMap.keys()];
-  let countApiWorked=false;
-  for(let i=0;i<paths.length;i+=80){
-    const chunk=paths.slice(i,i+80);
-    try{
-      const counts=await withInteractionTimeout(sdk.getCommentsCount(twikooPublicOptions({urls:chunk,includeReply:true})),15000,'评论计数读取');
-      (Array.isArray(counts)?counts:[]).forEach(item=>{
-        const path=normalizeTwikooPath(item.url||'/');
-        const entry=entryMap.get(path);
-        if(entry){ entry.count=Number(item.count)||0; entry.countApprox=false; }
+function cmThreadTitle(key){
+  const kind=cmThreadKind(key);
+  const path=cmThreadPath(key);
+  if(kind==='post'){
+    if(Array.isArray(STATE.posts)&&STATE.posts.length){
+      const target=normalizeCmPath(path);
+      const hit=STATE.posts.find(post=>{
+        if(post.isTrash) return false;
+        try{ return cmPathForPost(post)===target; }catch(e){ return false; }
       });
-      countApiWorked=true;
-    }catch(error){
-      diagnostics.push(`评论计数读取失败：${twikooErrorMessage(error)}`);
-      break;
+      if(hit) return hit.title||path;
     }
+    const slug=path.replace(/^\/posts\//,'').replace(/\/$/,'');
+    return slug||path;
   }
-
-  if(!countApiWorked){
-    entryMap.forEach((entry,path)=>{ entry.count=recentCounts.get(path)||0; entry.countApprox=true; });
-  }
-
-  STATE.twikooCountsAreApproximate=!countApiWorked;
-  STATE.twikooDiagnostics=diagnostics;
-  STATE.twikooPostEntries=[...entryMap.values()];
-  const validPaths=new Set(STATE.twikooPostEntries.map(item=>item.path));
-  if(STATE.twikooSelectedPost!=='all' && !validPaths.has(STATE.twikooSelectedPost)) STATE.twikooSelectedPost='all';
-  if(!STATE.twikooPostEntries.length && !STATE.twikooComments.length && diagnostics.length) throw new Error(diagnostics.join('；'));
+  if(kind==='page') return CM_PAGE_NAMES[normalizeCmPath(path)]||path;
+  if(kind==='memo') return `哔哔 #${cmThreadId(key)||path}`;
+  return path;
 }
 
-function twikooTotalCommentCount(){
-  return STATE.twikooPostEntries.reduce((sum,item)=>sum+(Number(item.count)||0),0);
+function cmThreadKindLabel(key){
+  const kind=cmThreadKind(key);
+  return kind==='post'?'文章':kind==='page'?'页面':kind==='memo'?'哔哔':'其它';
 }
 
-function sortedTwikooPostEntries(){
-  const list=STATE.twikooPostEntries.slice();
-  switch(STATE.twikooArticleSort){
-    case 'publish_desc': return list.sort((a,b)=>twikooTimestamp(b.postDate)-twikooTimestamp(a.postDate) || b.count-a.count);
-    case 'count_desc': return list.sort((a,b)=>b.count-a.count || (b.lastCommentAt||0)-(a.lastCommentAt||0));
-    case 'title_asc': return list.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
-    default: return list.sort((a,b)=>(b.lastCommentAt||0)-(a.lastCommentAt||0) || b.count-a.count || a.title.localeCompare(b.title,'zh-CN'));
+function cmThreadKindShort(key){
+  const kind=cmThreadKind(key);
+  return kind==='post'?'文':kind==='page'?'页':kind==='memo'?'哔':'它';
+}
+
+function cmStatusMeta(status){
+  const value=String(status||'').toLowerCase();
+  if(value==='approved') return {cls:'published',text:'已公开'};
+  if(value==='pending') return {cls:'pending',text:'待审'};
+  if(value==='spam') return {cls:'spam',text:'垃圾'};
+  if(value==='deleted') return {cls:'hidden',text:'已隐藏'};
+  return {cls:'soft',text:value||'未知'};
+}
+
+function cmAvatar(nick,email){
+  const seedText=String(nick||email||'?').trim();
+  const letter=(seedText.charAt(0)||'?').toUpperCase();
+  const palette=['#3f6b52','#7a5c3e','#4a5d7e','#6b4a5d','#54604a','#6b5a46'];
+  let hash=0;
+  for(let i=0;i<seedText.length;i++) hash=(hash*31+seedText.charCodeAt(i))%palette.length;
+  const color=palette[Math.abs(hash)%palette.length];
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="72" height="72" rx="18" fill="${color}"/><text x="36" y="47" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="30" font-weight="600" fill="#ffffff" text-anchor="middle">${letter.replace(/[<>&"]/g,'')}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+
+/* ------------------------------ 状态 ------------------------------ */
+
+const CMV={
+  rows:[], total:0, truncated:false, loading:false, error:null, loadedAt:0,
+  kind:'all', thread:'all', visitor:'', q:'', tq:'', status:'all',
+  sort:'time_desc', tsort:'recent_desc',
+  threadPage:1, threadSize:8,
+  page:1, pageSize:12,
+  rankPage:1, rankSize:8, rankSort:'count_desc', rankOpen:'', visitorPage:1, visitorSize:6,
+  selected:new Set(), stats:{}, filtered:[]
+};
+
+function cmCounts(){
+  const counts={all:CMV.rows.length,approved:0,pending:0,spam:0,deleted:0,threads:0,recent:0};
+  const weekAgo=Date.now()-7*86400000;
+  const seen=new Set();
+  CMV.rows.forEach(row=>{
+    const status=String(row.status||'').toLowerCase();
+    if(counts[status]!==undefined) counts[status]++;
+    seen.add(String(row.thread_key||'/'));
+    if(cmTimestamp(row.created_at)>=weekAgo) counts.recent++;
+  });
+  counts.threads=seen.size;
+  return counts;
+}
+
+function cmDeriveThreads(){
+  const map=new Map();
+  CMV.rows.forEach(row=>{
+    const key=String(row.thread_key||'/');
+    let item=map.get(key);
+    if(!item){
+      item={key,kind:cmThreadKind(key),path:cmThreadPath(key),title:cmThreadTitle(key),count:0,approved:0,spam:0,deleted:0,pending:0,lastAt:0,firstAt:0};
+      map.set(key,item);
+    }
+    item.count++;
+    const status=String(row.status||'').toLowerCase();
+    if(status==='approved') item.approved++;
+    else if(status==='spam') item.spam++;
+    else if(status==='deleted') item.deleted++;
+    else if(status==='pending') item.pending++;
+    const ts=cmTimestamp(row.created_at);
+    if(ts>item.lastAt) item.lastAt=ts;
+    if(!item.firstAt||ts<item.firstAt) item.firstAt=ts;
+  });
+  return [...map.values()];
+}
+
+function cmThreadMatch(thread,q){
+  const needle=String(q||'').trim().toLowerCase();
+  if(!needle) return true;
+  return `${thread.title} ${thread.path} ${thread.key}`.toLowerCase().includes(needle);
+}
+
+function cmSortedThreads(){
+  const list=cmDeriveThreads()
+    .filter(item=>CMV.kind==='all'||item.kind===CMV.kind)
+    .filter(item=>cmThreadMatch(item,CMV.tq));
+  const viewsOf=key=>Number((CMV.stats[key]||{}).views||0);
+  switch(CMV.tsort){
+    case 'count_desc': return list.sort((a,b)=>b.count-a.count||b.lastAt-a.lastAt);
+    case 'views_desc': return list.sort((a,b)=>viewsOf(b.key)-viewsOf(a.key)||b.count-a.count);
+    case 'title_asc': return list.sort((a,b)=>String(a.title).localeCompare(String(b.title),'zh-CN'));
+    default: return list.sort((a,b)=>b.lastAt-a.lastAt||b.count-a.count);
   }
 }
+
+function cmFiltered(useStatus){
+  const needle=String(CMV.q||'').trim().toLowerCase();
+  const list=CMV.rows.filter(row=>{
+    if(CMV.thread!=='all'&&String(row.thread_key)!==CMV.thread) return false;
+    if(CMV.visitor&&String(row.email||'').toLowerCase()!==CMV.visitor) return false;
+    if(useStatus&&CMV.status!=='all'&&String(row.status||'').toLowerCase()!==CMV.status) return false;
+    if(needle){
+      const hay=[row.nick,row.email,row.content,row.thread_key,row.region].join(' ').toLowerCase();
+      if(!hay.includes(needle)) return false;
+    }
+    return true;
+  });
+  const dir=CMV.sort==='time_asc'?1:-1;
+  return list.sort((a,b)=>dir*(cmTimestamp(a.created_at)-cmTimestamp(b.created_at)));
+}
+
+/* ------------------------------ 数据加载 ------------------------------ */
+
+async function cmLoadAll(){
+  const pageSize=200;
+  const cap=5000;
+  let offset=0;
+  let rows=[];
+  let total=0;
+  let guard=0;
+  while(guard++<40){
+    const data=await cmFetch(`/admin?status=all&limit=${pageSize}&offset=${offset}`);
+    const batch=Array.isArray(data.rows)?data.rows:[];
+    rows=rows.concat(batch);
+    total=Number(data.total)||rows.length;
+    if(!batch.length||rows.length>=total) break;
+    offset+=pageSize;
+    if(rows.length>=cap) break;
+  }
+  CMV.rows=rows.slice(0,cap);
+  CMV.total=total;
+  CMV.truncated=CMV.rows.length<total;
+  CMV.loadedAt=Date.now();
+  const alive=new Set(CMV.rows.map(row=>Number(row.id)));
+  CMV.selected.forEach(id=>{ if(!alive.has(Number(id))) CMV.selected.delete(id); });
+}
+
+async function cmLoadThreadStats(){
+  const keys=[...new Set(CMV.rows.map(row=>String(row.thread_key||'')))]
+    .filter(Boolean)
+    .sort((a,b)=>cmThreadLastAt(b)-cmThreadLastAt(a))
+    .slice(0,100);
+  if(!keys.length){ CMV.stats={}; return; }
+  try{
+    const data=await cmFetch(`/stats?threads=${encodeURIComponent(keys.join(','))}`);
+    CMV.stats=data&&typeof data==='object'?data:{};
+  }catch(e){
+    CMV.stats={};
+  }
+}
+
+function cmThreadLastAt(key){
+  let last=0;
+  CMV.rows.forEach(row=>{
+    if(String(row.thread_key)!==key) return;
+    const ts=cmTimestamp(row.created_at);
+    if(ts>last) last=ts;
+  });
+  return last;
+}
+
+async function cmReload(force){
+  if(CMV.loading) return;
+  CMV.loading=true;
+  const pill=document.getElementById('cm-sync-pill');
+  if(pill) pill.innerHTML='<span class="status-dot"></span><span>正在同步…</span>';
+  try{
+    await cmLoadAll();
+    await cmLoadThreadStats();
+    CMV.error=null;
+    if(pill){
+      pill.innerHTML=`<span class="status-dot ok"></span><span>${CMV.total} 条评论 · ${cmDeriveThreads().length} 个线程</span>`;
+    }
+  }catch(error){
+    CMV.error=error;
+    if(pill) pill.innerHTML='<span class="status-dot err"></span><span>读取失败</span>';
+  }
+  CMV.loading=false;
+  if(STATE.page!=='interactions') return;
+  cmRender();
+}
+
+/* ------------------------------ 页面 ------------------------------ */
 
 async function renderInteractionsPage(){
   STATE.page='interactions';
-  STATE.twikooMountSeq++;
-  document.getElementById('page-title').innerHTML='互动管理 <small id="inter-page-metrics">正在读取 Twikoo…</small>';
+  document.getElementById('page-title').innerHTML='评论管理 <small id="cm-page-metrics">正在读取评论…</small>';
   document.getElementById('topbar-actions').innerHTML=`
-    <button class="btn" onclick="openSelectedTwikooPage()">打开前台页面</button>
-    <button class="btn" onclick="refreshTwikooInteractions()">刷新返回</button>`;
-  const c=document.getElementById('main-content'); c.style.overflow='hidden';
+    <button class="btn" onclick="cmOpenSiteHome()">打开前台</button>
+    <button class="btn" onclick="cmReload(true)">刷新</button>`;
 
-  if(!CFG.twikooEnvId){
-    c.style.overflow='auto';
-    c.innerHTML=`<div class="alert warning">未配置 Twikoo 环境 ID。请先前往 <strong>系统设置</strong> 填写 envId；非腾讯云部署请填写完整的 <span class="mono">https://...</span> 后端地址。</div>`;
+  const c=document.getElementById('main-content');
+  c.style.overflow='auto';
+
+  if(!cmApiBase()){
+    c.innerHTML=`<div class="alert warning">未配置评论系统接口地址。请先前往 <strong>系统设置 → 评论系统</strong> 填写接口地址，例如 <span class="mono">https://comments.hux.ink/api/comments</span>。</div>`;
+    return;
+  }
+  if(!cmToken()){
+    c.innerHTML=`<div class="alert warning">未配置评论系统管理口令。请先前往 <strong>系统设置 → 评论系统</strong> 填写 <span class="mono">COMMENTS_ADMIN_TOKEN</span> 对应的口令。</div>`;
     return;
   }
 
   c.innerHTML=`
-    <div class="interactions-shell">
-      <aside class="inter-left">
-        <div class="inter-left-tools">
-          <select class="form-select" onchange="setTwikooArticleSort(this.value)" aria-label="文章排序">
-            <option value="comment_desc" ${STATE.twikooArticleSort==='comment_desc'?'selected':''}>按最近互动时间排序</option>
-            <option value="publish_desc" ${STATE.twikooArticleSort==='publish_desc'?'selected':''}>按文章发布时间排序</option>
-            <option value="count_desc" ${STATE.twikooArticleSort==='count_desc'?'selected':''}>按评论数量排序</option>
-            <option value="title_asc" ${STATE.twikooArticleSort==='title_asc'?'selected':''}>按文章标题排序</option>
+    <div class="management-shell">
+      <div class="card posts-workbench-card">
+        <section class="overview-hero">
+          <div class="overview-hero-copy">
+            <span class="eyebrow">COMMENT OVERVIEW</span>
+            <h2>评论对话台</h2>
+            <p>线程、访客、内容与备份集中在一处：改错别字、整线程清理、按访客追查，都不必再回前台。</p>
+          </div>
+          <div class="overview-sync-pill" id="cm-sync-pill"><span class="status-dot"></span><span>正在连接…</span></div>
+        </section>
+        <div class="overview-grid" id="cm-stats">
+          <div class="overview-stat"><span class="overview-stat-icon">评</span><div><strong>—</strong><span>全部评论</span></div></div>
+          <div class="overview-stat"><span class="overview-stat-icon success">✓</span><div><strong>—</strong><span>已公开</span></div></div>
+          <div class="overview-stat"><span class="overview-stat-icon warning">!</span><div><strong>—</strong><span>垃圾</span></div></div>
+          <div class="overview-stat"><span class="overview-stat-icon blue">—</span><div><strong>—</strong><span>已隐藏</span></div></div>
+          <div class="overview-stat"><span class="overview-stat-icon purple">线</span><div><strong>—</strong><span>涉及线程</span></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header cm-card-head">
+          <div>
+            <div class="card-title">评论者排名</div>
+            <div class="card-desc">按邮箱归并；可切换「评论最多」或「最近评论」，点开可看这位访客的全部留言，博主自己的邮箱不计入</div>
+          </div>
+          <div class="cm-rank-tools">
+            <span class="cm-live" id="cm-ranker-meta"></span>
+            <div class="segmented" id="cm-rank-tabs"></div>
+          </div>
+        </div>
+        <div id="cm-rank-list"><div class="loading"><div class="spinner"></div>正在统计…</div></div>
+        <div id="cm-rank-pager"></div>
+        <div id="cm-visitor-panel" hidden></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header cm-card-head">
+          <div>
+            <div class="card-title">对话线程</div>
+            <div class="card-desc">按文章 / 页面 / 哔哔聚合，点标题查看完整楼层；阅读与赞取自前台统计</div>
+          </div>
+          <div class="segmented" id="cm-kind-tabs"></div>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">${ICON_SEARCH}<input class="search-input" id="cm-thread-q" placeholder="搜索线程标题或路径…" value="${escapeAttr(CMV.tq)}"></div>
+          <select class="filter" id="cm-thread-sort">
+            <option value="recent_desc">最近互动</option>
+            <option value="count_desc">评论最多</option>
+            <option value="views_desc">阅读最多</option>
+            <option value="title_asc">标题 A-Z</option>
           </select>
         </div>
-        <div class="inter-posts-scroll" id="inter-posts-container"><div class="loading"><div class="spinner"></div>正在读取文章与评论数…</div></div>
-      </aside>
+        <div id="cm-threads"><div class="loading"><div class="spinner"></div>正在读取评论…</div></div>
+      </div>
 
-      <section class="inter-right" id="inter-right-panel">
-        <div class="inter-summary-bar">
-          <div class="inter-current">
-            <div class="inter-back-mark">←</div>
-            <div class="inter-current-copy">
-              <div class="inter-current-title" id="inter-current-title">全部互动</div>
-              <div class="inter-current-path" id="inter-current-path">全部文章</div>
-            </div>
+      <div class="card">
+        <div class="card-header cm-card-head">
+          <div>
+            <div class="card-title">评论明细</div>
+            <div class="cm-live" id="cm-scope"></div>
           </div>
-          <div class="inter-summary-chips">
-            <span class="inter-summary-chip" id="inter-comment-summary">0 条评论</span>
-            <span class="inter-summary-chip" id="inter-article-summary">0 篇文章</span>
-            <span class="inter-summary-chip ok">云端</span>
-          </div>
+          <div class="segmented" id="cm-status-tabs"></div>
         </div>
-
-        <div class="inter-filter-bar">
-          <select class="form-select" onchange="setTwikooCommentFilter(this.value)" aria-label="留言筛选">
-            <option value="all" ${STATE.twikooCommentFilter==='all'?'selected':''}>全部留言</option>
-            <option value="root" ${STATE.twikooCommentFilter==='root'?'selected':''}>只看主评论</option>
-            <option value="reply" ${STATE.twikooCommentFilter==='reply'?'selected':''}>只看回复</option>
+        <div class="toolbar">
+          <div class="search-box">${ICON_SEARCH}<input class="search-input" id="cm-q" placeholder="搜索留言、昵称、邮箱、地区或路径…" value="${escapeAttr(CMV.q)}"></div>
+          <select class="filter" id="cm-sort">
+            <option value="time_desc">最新在前</option>
+            <option value="time_asc">最早在前</option>
           </select>
-          <select class="form-select" onchange="setTwikooCommentSort(this.value)" aria-label="评论排序">
-            <option value="time_desc" ${STATE.twikooCommentSort==='time_desc'?'selected':''}>按时间倒序</option>
-            <option value="time_asc" ${STATE.twikooCommentSort==='time_asc'?'selected':''}>按时间正序</option>
-          </select>
-          <div class="search-box">${ICON_SEARCH}<input class="search-input" value="${escapeAttr(STATE.twikooSearch)}" placeholder="留言 / 用户昵称 / 页面路径" oninput="setTwikooCommentSearch(this.value)"></div>
+          <label class="btn" style="gap:6px"><input type="checkbox" id="cm-select-all" style="accent-color:var(--accent)"> 全选本页</label>
         </div>
+        <div id="cm-bulk"></div>
+        <div id="cm-list"><div class="loading"><div class="spinner"></div>正在调取评论…</div></div>
+        <div id="cm-more"></div>
+      </div>
 
-        <div class="inter-status-strip" id="inter-status"><span class="status-dot"></span><span>正在连接 Twikoo 后端…</span></div>
-        <div class="inter-memo-context" id="inter-memo-context" hidden></div>
-        <div class="inter-comments-scroll" id="inter-comments-container">
-          ${location.protocol==='file:'?`<div class="alert warning inter-local-warning"><strong>当前通过 file:// 打开。</strong> 请部署到 HTTPS 域名或通过 localhost 访问，否则后端通常会拒绝 Origin 为 null 的请求。</div>`:''}
-          <div class="loading"><div class="spinner"></div>正在调取互动数据…</div>
-        </div>
-
-        <div class="inter-thread-drawer" id="inter-thread-drawer" hidden>
-          <div class="inter-thread-head">
-            <button class="btn icon ghost" onclick="closeTwikooThread()" title="返回评论工作台">←</button>
-            <div class="inter-thread-title"><strong id="inter-thread-title">完整评论线程</strong><span id="inter-thread-path">/</span></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">备份与迁移</div>
+            <div class="card-desc">导出可随时搬回 Twikoo，也能把旧数据整批导入自建系统</div>
           </div>
-          <div class="inter-thread-body" id="inter-thread-body"><div class="inter-twikoo-host" id="twikoo-interaction-mount"></div></div>
         </div>
-      </section>
+        <div class="cm-data" id="cm-data"></div>
+      </div>
     </div>`;
 
-  try{
-    await loadTwikooPostData();
-    if(STATE.page!=='interactions') return;
-    renderTwikooDashboard();
-    const status=document.getElementById('inter-status');
-    if(status) status.innerHTML=`<span class="status-dot ok"></span><span>Twikoo 已连接 · 当前显示最近 ${STATE.twikooComments.length} 条公开互动索引</span>`;
-  }catch(error){
-    if(STATE.page!=='interactions') return;
-    renderTwikooPostsLeft();
-    renderTwikooFailure(error);
+  const bind=(id,event,handler)=>{ const el=document.getElementById(id); if(el) el.addEventListener(event,handler); };
+  bind('cm-thread-q','input',e=>{ CMV.tq=e.target.value; cmRenderTabs(); cmRenderThreads(); });
+  bind('cm-thread-sort','change',e=>{ CMV.tsort=e.target.value; cmRenderThreads(); });
+  bind('cm-q','input',e=>{ CMV.q=e.target.value; CMV.page=1; cmRenderStatusTabs(); cmRenderScope(); cmRenderList(); });
+  bind('cm-sort','change',e=>{ CMV.sort=e.target.value; cmRenderList(); });
+  bind('cm-select-all','change',e=>cmSelectAll(e.target.checked));
+  const tsort=document.getElementById('cm-thread-sort');
+  if(tsort) tsort.value=CMV.tsort;
+  const sort=document.getElementById('cm-sort');
+  if(sort) sort.value=CMV.sort;
+
+  if(!STATE.postsLoaded&&CFG.token&&CFG.owner&&CFG.repo){
+    try{ await loadPosts(); STATE.postsLoaded=true; }catch(e){}
+  }
+  if(STATE.page!=='interactions') return;
+  await cmReload(false);
+}
+
+function cmRender(){
+  if(STATE.page!=='interactions') return;
+  cmRenderStats();
+  cmRenderRank();
+  cmRenderVisitorPanel();
+  cmRenderTabs();
+  cmRenderThreads();
+  cmRenderStatusTabs();
+  cmRenderScope();
+  cmRenderList();
+  cmRenderBulk();
+  cmRenderData();
+  const metrics=document.getElementById('cm-page-metrics');
+  if(metrics){
+    const counts=cmCounts();
+    metrics.textContent=CMV.error?'读取失败':`${counts.all} 条评论 · ${counts.threads} 个线程 · 近 7 天 ${counts.recent} 条`;
   }
 }
 
-function renderTwikooDashboard(){
-  renderTwikooPostsLeft();
-  renderTwikooCurrentHeader();
-  renderTwikooMemoContext();
-  renderTwikooCommentsRight();
-  const metrics=document.getElementById('inter-page-metrics');
-  if(metrics) metrics.textContent=`共 ${STATE.twikooCountsAreApproximate?'至少 ':''}${twikooTotalCommentCount()} 条评论 · ${STATE.twikooPostEntries.length} 篇文章`;
-}
-
-function setTwikooArticleSort(value){ STATE.twikooArticleSort=value; renderTwikooPostsLeft(); }
-function setTwikooCommentSort(value){ STATE.twikooCommentSort=value; STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
-function setTwikooCommentFilter(value){ STATE.twikooCommentFilter=value; STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
-function setTwikooCommentSearch(value){ STATE.twikooSearch=String(value||''); STATE.twikooVisibleLimit=40; renderTwikooCommentsRight(); }
-
-function renderTwikooPostsLeft(){
-  const box=document.getElementById('inter-posts-container');
+function cmRenderStats(){
+  const box=document.getElementById('cm-stats');
   if(!box) return;
-  const entries=sortedTwikooPostEntries();
-  const total=twikooTotalCommentCount();
-  let html=`
-    <div class="inter-post-item ${STATE.twikooSelectedPost==='all'?'active':''}" onclick="selectTwikooPost('all')">
-      <div class="inter-post-main"><div class="inter-post-title">全部文章的互动</div><div class="inter-post-meta"><span class="inter-post-date">最近评论聚合</span></div></div>
-      <div class="inter-post-count">${STATE.twikooCountsAreApproximate?'≥':''}${total}条</div>
-    </div>`;
-  if(!entries.length){
-    html+=`<div class="inter-post-empty">尚未索引到文章页面。<br>可检查 GitHub 文章目录与 Twikoo 路径是否一致。</div>`;
-  }else{
-    html+=entries.map(item=>{
-      const encoded=encodeURIComponent(item.path).replace(/'/g,'%27');
-      const time=item.lastCommentAt || item.postDate;
-      return `<div class="inter-post-item ${STATE.twikooSelectedPost===item.path?'active':''}" onclick="selectTwikooPost('${encoded}')" title="${escapeAttr(item.path)}">
-        <div class="inter-post-main">
-          <div class="inter-post-title">${escapeHTML(item.title)}</div>
-          <div class="inter-post-meta"><span class="inter-post-date">${escapeHTML(formatTwikooPostDate(time))}</span><span class="inter-post-path">${escapeHTML(item.path)}</span></div>
-        </div>
-        <div class="inter-post-count">${item.countApprox?'≥':''}${Number(item.count)||0}条</div>
-      </div>`;
-    }).join('');
+  const c=cmCounts();
+  box.innerHTML=`
+    <div class="overview-stat"><span class="overview-stat-icon">评</span><div><strong>${c.all}</strong><span>全部评论</span></div></div>
+    <div class="overview-stat"><span class="overview-stat-icon success">✓</span><div><strong>${c.approved}</strong><span>已公开</span></div></div>
+    <div class="overview-stat"><span class="overview-stat-icon warning">!</span><div><strong>${c.spam}</strong><span>垃圾</span></div></div>
+    <div class="overview-stat"><span class="overview-stat-icon blue">—</span><div><strong>${c.deleted}</strong><span>已隐藏</span></div></div>
+    <div class="overview-stat"><span class="overview-stat-icon purple">线</span><div><strong>${c.threads}</strong><span>涉及线程</span></div></div>`;
+}
+
+function cmRenderTabs(){
+  const box=document.getElementById('cm-kind-tabs');
+  if(!box) return;
+  const threads=cmDeriveThreads().filter(item=>cmThreadMatch(item,CMV.tq));
+  const counts={all:threads.length,post:0,page:0,memo:0};
+  threads.forEach(item=>{ if(counts[item.kind]!==undefined) counts[item.kind]++; });
+  box.innerHTML=[['all','全部'],['post','文章'],['page','页面'],['memo','哔哔']].map(([key,label])=>`
+    <button class="seg-btn ${CMV.kind===key?'active':''}" onclick="cmSetKind('${key}')">${label}<span class="seg-count">${counts[key]||0}</span></button>`).join('');
+}
+
+function cmSetKind(kind){
+  CMV.kind=kind;
+  cmRenderTabs();
+  cmRenderThreads();
+}
+
+function cmRenderThreads(){
+  const box=document.getElementById('cm-threads');
+  if(!box) return;
+  if(CMV.error){
+    box.innerHTML=cmErrorBox(CMV.error);
+    return;
   }
-  box.innerHTML=html;
+  const list=cmSortedThreads();
+  if(!list.length){
+    box.innerHTML=`<div class="empty-state"><div class="empty-icon">💬</div><p>${CMV.rows.length?'当前筛选下没有线程':'还没有任何评论'}</p></div>`;
+    return;
+  }
+  const size=CMV.threadSize;
+  const pages=Math.max(1,Math.ceil(list.length/size));
+  if(CMV.threadPage>pages) CMV.threadPage=pages;
+  const start=(CMV.threadPage-1)*size;
+  const pageList=list.slice(start,start+size);
+  const maxCount=Math.max(...list.map(item=>item.count),1);
+  box.innerHTML=`<div class="table-wrap"><table class="cm-table">
+    <thead><tr>
+      <th class="cm-tl">线程</th>
+      <th>评论</th>
+      <th>阅读 / 赞</th>
+      <th>最近互动</th>
+      <th>操作</th>
+    </tr></thead>
+    <tbody>${pageList.map(item=>{
+      const stat=CMV.stats[item.key]||{};
+      const views=Number(stat.views||0);
+      const likes=Number(stat.likes||0);
+      const encoded=encodeURIComponent(item.key);
+      const pct=Math.max(6,Math.round(item.count/maxCount*100));
+      return `<tr>
+        <td class="cm-tl"><div class="cm-thread-cell">
+          <span class="cm-kind ${item.kind}">${cmThreadKindShort(item.key)}</span>
+          <span class="cm-thread-copy">
+            <button class="cm-thread-name" onclick="cmOpenThreadView('${encoded}')" title="${escapeAttr(item.key)}">${escapeHTML(item.title)}</button>
+            <span class="cm-thread-path">${escapeHTML(item.path)}</span>
+          </span>
+        </div></td>
+        <td><span class="cm-nums">${item.count}<small>条</small></span><div class="cm-meter"><i style="width:${pct}%"></i></div></td>
+        <td><span class="cm-nums">${views.toLocaleString('zh-CN')}<small>阅读</small><span class="cm-dot">·</span>${likes.toLocaleString('zh-CN')}<small>赞</small></span></td>
+        <td class="nowrap"><span class="cm-time">${cmTimeText(item.lastAt)}</span></td>
+        <td><span class="cm-thread-acts">
+          <button class="cm-act" onclick="cmFocusThread('${encoded}')">筛选</button>
+          <button class="cm-act" onclick="cmOpenThreadView('${encoded}')">楼层</button>
+          <button class="cm-act danger" onclick="cmDeleteThread('${encoded}')">清理</button>
+        </span></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>
+  ${cmPager(list.length,CMV.threadPage,size,'cmSetThreadPage','个线程')}`;
 }
 
-function selectTwikooPost(encodedPath){
-  STATE.twikooSelectedPost=encodedPath==='all' ? 'all' : normalizeTwikooPath(decodeURIComponent(encodedPath));
-  STATE.twikooVisibleLimit=40;
-  renderTwikooPostsLeft();
-  renderTwikooCurrentHeader();
-  renderTwikooMemoContext();
-  renderTwikooCommentsRight();
+function cmSetThreadPage(page){
+  CMV.threadPage=Math.max(1,page);
+  cmRenderThreads();
+  cmScrollTo('cm-threads');
 }
 
-function selectedTwikooEntry(){ return STATE.twikooPostEntries.find(item=>item.path===STATE.twikooSelectedPost) || null; }
-
-function renderTwikooCurrentHeader(){
-  const entry=selectedTwikooEntry();
-  const all=STATE.twikooSelectedPost==='all';
-  const title=document.getElementById('inter-current-title');
-  const path=document.getElementById('inter-current-path');
-  const commentSummary=document.getElementById('inter-comment-summary');
-  const articleSummary=document.getElementById('inter-article-summary');
-  if(title) title.textContent=all?'全部互动':(entry?.title||STATE.twikooSelectedPost);
-  if(path) path.textContent=all?'全部文章':STATE.twikooSelectedPost;
-  if(commentSummary) commentSummary.textContent=`${all?(STATE.twikooCountsAreApproximate?'≥':'')+twikooTotalCommentCount():(entry?.countApprox?'≥':'')+(entry?.count||0)} 条评论`;
-  if(articleSummary) articleSummary.textContent=`${STATE.twikooPostEntries.length} 篇文章`;
+function cmRenderStatusTabs(){
+  const box=document.getElementById('cm-status-tabs');
+  if(!box) return;
+  const scope=cmFiltered(false);
+  const counts={all:scope.length,approved:0,pending:0,spam:0,deleted:0};
+  scope.forEach(row=>{
+    const status=String(row.status||'').toLowerCase();
+    if(counts[status]!==undefined) counts[status]++;
+  });
+  const tabs=[['all','全部'],['approved','已公开'],['spam','垃圾'],['deleted','已隐藏']];
+  if(counts.pending) tabs.splice(2,0,['pending','待审']);
+  box.innerHTML=tabs.map(([key,label])=>`
+    <button class="seg-btn ${CMV.status===key?'active':''}" onclick="cmSetStatus('${key}')">${label}<span class="seg-count">${counts[key]||0}</span></button>`).join('');
 }
 
-function twikooMemoIdFromPath(path){
-  const match=normalizeTwikooPath(path).match(/^\/memos\/(\d+)\/?$/i);
-  return match ? Number(match[1]) : null;
+function cmSetStatus(status){
+  CMV.status=status;
+  CMV.page=1;
+  cmRenderStatusTabs();
+  cmRenderList();
 }
 
-async function loadTwikooMemos(){
-  if(Array.isArray(STATE.twikooMemos)) return STATE.twikooMemos;
-  if(STATE.twikooMemosPromise) return STATE.twikooMemosPromise;
-  STATE.twikooMemosPromise=fetch('/memos.json',{cache:'no-cache'})
-    .then(response=>{ if(!response.ok) throw new Error(`memos.json ${response.status}`); return response.json(); })
-    .then(data=>{
-      const list=Array.isArray(data) ? data : (Array.isArray(data?.memos) ? data.memos : []);
-      STATE.twikooMemos=list;
-      return list;
-    })
-    .finally(()=>{ STATE.twikooMemosPromise=null; });
-  return STATE.twikooMemosPromise;
+function cmRenderScope(){
+  const box=document.getElementById('cm-scope');
+  if(!box) return;
+  const parts=[];
+  if(CMV.thread!=='all') parts.push(`线程：${cmThreadTitle(CMV.thread)}`);
+  if(CMV.visitor) parts.push(`访客：${CMV.visitor}`);
+  box.innerHTML=parts.length
+    ? `<button class="cm-act" onclick="cmClearScope()" title="清除筛选">${escapeHTML(parts.join(' · '))} ✕</button>`
+    : '<span>全部线程 · 全部访客</span>';
 }
 
-function twikooMemoResourceUrl(resource){
-  const value=String(resource?.externalLink || resource?.externalUrl || resource?.url || '').trim();
-  return /^https?:\/\//i.test(value) ? value : '';
+function cmRenderList(){
+  const box=document.getElementById('cm-list');
+  if(!box) return;
+  if(CMV.error){
+    box.innerHTML=cmErrorBox(CMV.error);
+    return;
+  }
+  if(!CMV.rows.length){
+    box.innerHTML=`<div class="empty-state"><div class="empty-icon">💬</div><p>云端还没有评论。<br>前台发布第一条留言后，这里会自动出现。</p></div>`;
+    document.getElementById('cm-more').innerHTML='';
+    return;
+  }
+  const list=cmFiltered(true);
+  CMV.filtered=list;
+  const size=CMV.pageSize;
+  const pages=Math.max(1,Math.ceil(list.length/size));
+  if(CMV.page>pages) CMV.page=pages;
+  const start=(CMV.page-1)*size;
+  const shown=list.slice(start,start+size);
+  if(!shown.length){
+    box.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><p>这个筛选下没有评论<br>换个状态、清空搜索，或点上方线程标签回到全部</p></div>`;
+    document.getElementById('cm-more').innerHTML='';
+    return;
+  }
+  const parents=new Map(CMV.rows.map(row=>[Number(row.id),row]));
+  box.innerHTML=`<div class="cm-list">${shown.map(row=>cmItemHTML(row,parents)).join('')}</div>`;
+  const more=document.getElementById('cm-more');
+  if(more) more.innerHTML=cmPager(list.length,CMV.page,size,'cmSetPage','条');
 }
 
-function renderTwikooMemoCard(memo){
-  const created=Number(memo?.createdTs||0)*1000;
-  const content=String(memo?.content||'').trim();
-  const rendered=window.marked?.parse ? DOMPurify.sanitize(marked.parse(content)) : escapeHTML(content).replace(/\n/g,'<br>');
-  const tags=Array.isArray(memo?.tags) ? memo.tags.filter(Boolean) : [];
-  const images=(Array.isArray(memo?.resourceList)?memo.resourceList:[])
-    .map(resource=>({url:twikooMemoResourceUrl(resource),name:resource?.filename||'BB 图片'})).filter(item=>item.url);
-  return `<div class="inter-memo-card">
-    <div class="inter-memo-head"><div class="inter-memo-title"><span>BB 条目原文</span><span class="inter-memo-id">#${escapeHTML(memo.id)}</span></div><span class="inter-memo-time">${escapeHTML(formatTwikooPostDate(created))}</span></div>
-    <div class="inter-memo-content">${rendered||'（该条目没有文本内容）'}</div>
-    ${tags.length?`<div class="inter-memo-tags">${tags.map(tag=>`<span class="inter-memo-tag">#${escapeHTML(tag)}</span>`).join('')}</div>`:''}
-    ${images.length?`<div class="inter-memo-images">${images.map(item=>`<a href="${escapeAttr(item.url)}" target="_blank" rel="noopener"><img src="${escapeAttr(item.url)}" alt="${escapeAttr(item.name)}" loading="lazy" referrerpolicy="no-referrer"></a>`).join('')}</div>`:''}
+function cmSetPage(page){
+  CMV.page=Math.max(1,page);
+  cmRenderList();
+  cmScrollTo('cm-list');
+}
+
+function cmItemHTML(row,parents){
+  const status=cmStatusMeta(row.status);
+  const parent=row.parent_id?parents.get(Number(row.parent_id)):null;
+  const key=String(row.thread_key||'/');
+  const encoded=encodeURIComponent(key);
+  const isAdmin=Number(row.is_admin)===1;
+  const selected=CMV.selected.has(Number(row.id));
+  return `<div class="cm-item ${status.cls==='hidden'?'is-dim':''}" data-row-id="${row.id}">
+    <input class="cm-check" type="checkbox" ${selected?'checked':''} onchange="cmToggleSelect(${row.id},this.checked)" aria-label="选择这条评论">
+    <img class="cm-avatar" src="${cmAvatar(row.nick,row.email)}" alt="" loading="lazy">
+    <div class="cm-body">
+      <div class="cm-head">
+        <span class="cm-nick">${escapeHTML(row.nick||'匿名')}</span>
+        ${isAdmin?'<span class="cm-badge">博主</span>':''}
+        <span class="tag ${status.cls}">${status.text}</span>
+        ${parent?`<span class="cm-replyto">回复 ${escapeHTML(parent.nick||'匿名')}</span>`:''}
+        <span class="cm-time" title="${escapeAttr(cmFullTimeText(row.created_at))}">${cmTimeText(row.created_at)}</span>
+      </div>
+      <div class="cm-who">
+        ${row.email?`<button onclick="cmFilterVisitor(${row.id})" title="只看这个访客">${escapeHTML(row.email)}</button>`:'<span>未留邮箱</span>'}
+        ${row.region?`<span>· ${escapeHTML(row.region)}</span>`:''}
+        ${row.website?`<span>· <a href="${escapeAttr(row.website)}" target="_blank" rel="noopener">主页</a></span>`:''}
+      </div>
+      <div class="cm-text clamp" id="cm-text-${row.id}">${escapeHTML(row.content||'')}</div>
+      <div class="cm-head" style="margin-top:8px">
+        <button class="cm-threadtag" onclick="cmFocusThread('${encoded}')" title="${escapeAttr(key)}">
+          <b>${escapeHTML(cmThreadTitle(key))}</b><span>${cmThreadKindLabel(key)}</span>
+        </button>
+      </div>
+    </div>
+    <div class="cm-side">
+      <div class="cm-acts">${cmRowActions(row,encoded)}</div>
+    </div>
   </div>`;
 }
 
-async function renderTwikooMemoContext(){
-  const box=document.getElementById('inter-memo-context');
+function cmRowActions(row,encoded){
+  const status=String(row.status||'').toLowerCase();
+  const acts=[];
+  if(status!=='approved') acts.push(`<button class="cm-act ok" onclick="cmAct('approve',${row.id})">公开</button>`);
+  if(status!=='spam') acts.push(`<button class="cm-act" onclick="cmAct('spam',${row.id})">垃圾</button>`);
+  if(status!=='deleted') acts.push(`<button class="cm-act" onclick="cmAct('delete',${row.id})">隐藏</button>`);
+  if(status!=='deleted') acts.push(`<button class="cm-act" onclick="cmOpenEdit(${row.id})">编辑</button>`);
+  acts.push(`<button class="cm-act" onclick="cmOpenThreadView('${encoded}')">楼层</button>`);
+  if(status==='spam'||status==='deleted') acts.push(`<button class="cm-act danger" onclick="cmAct('hard-delete',${row.id})">彻底删除</button>`);
+  return acts.join('');
+}
+
+function cmErrorBox(error){
+  return `<div class="alert danger" style="margin:14px 0">
+    <strong>评论数据读取失败：</strong>${escapeHTML(cmErrorMessage(error))}
+    <div class="cm-kv" style="margin-top:8px">
+      <span>接口</span><code>${escapeHTML(cmApiBase()||'未配置')}</code>
+      <span>来源</span><code>${escapeHTML(location.origin)}</code>
+    </div>
+    <div style="margin-top:10px"><button class="btn sm" onclick="cmReload(true)">重新检测</button></div>
+  </div>`;
+}
+
+/* ------------------------------ 分页组件 ------------------------------ */
+
+function cmScrollTo(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const card=el.closest('.card')||el;
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cmPager(total,page,size,setter,unit){
+  const pages=Math.max(1,Math.ceil(total/size));
+  const from=total?Math.floor((page-1)*size)+1:0;
+  const to=Math.min(page*size,total);
+  if(pages<=1) return `<div class="pagination-wrap"><div>共 ${total} ${unit}</div></div>`;
+
+  const nums=[];
+  const push=n=>{ if(n>=1&&n<=pages&&!nums.includes(n)) nums.push(n); };
+  for(let i=page-1;i<=page+1;i++) push(i);
+  push(1); push(pages);
+  nums.sort((a,b)=>a-b);
+
+  const buttons=nums.map((n,index)=>{
+    const prev=nums[index-1];
+    const gap=prev&&n-prev>1?'<span class="cm-pager-gap">…</span>':'';
+    return `${gap}<button class="btn sm ${n===page?'pager-active':''}" onclick="${setter}(${n})">${n}</button>`;
+  }).join('');
+
+  return `<div class="pagination-wrap">
+    <div>共 ${total} ${unit}，显示第 ${from} - ${to} ${unit}</div>
+    <div class="pagination-controls">
+      <button class="btn sm" ${page<=1?'disabled':''} onclick="${setter}(${page-1})">上一页</button>
+      ${buttons}
+      <button class="btn sm" ${page>=pages?'disabled':''} onclick="${setter}(${page+1})">下一页</button>
+    </div>
+  </div>`;
+}
+
+/* ------------------------------ 评论者排名 ------------------------------ */
+
+function cmOwnerEmail(){
+  const configured=String(CFG.commentsAdminEmail||CFG.adminEmail||'').trim().toLowerCase();
+  return configured||'huxin1216@qq.com';
+}
+
+function cmVisitors(){
+  const owner=cmOwnerEmail();
+  const map=new Map();
+  CMV.rows.forEach(row=>{
+    const email=String(row.email||'').trim().toLowerCase();
+    if(!email||email===owner) return;
+    let item=map.get(email);
+    if(!item){
+      item={email,nick:'匿名',count:0,spam:0,deleted:0,lastAt:0};
+      map.set(email,item);
+    }
+    item.count++;
+    const status=String(row.status||'').toLowerCase();
+    if(status==='spam') item.spam++;
+    else if(status==='deleted') item.deleted++;
+    const ts=cmTimestamp(row.created_at);
+    if(ts>=item.lastAt){ item.lastAt=ts; item.nick=row.nick||'匿名'; }
+  });
+  return [...map.values()];
+}
+
+function cmSortedVisitors(){
+  const list=cmVisitors();
+  if(CMV.rankSort==='recent_desc') return list.sort((a,b)=>b.lastAt-a.lastAt||b.count-a.count);
+  return list.sort((a,b)=>b.count-a.count||b.lastAt-a.lastAt);
+}
+
+function cmSetRankSort(kind){
+  CMV.rankSort=kind;
+  CMV.rankPage=1;
+  CMV.rankOpen='';
+  CMV.visitorPage=1;
+  cmRenderRank();
+  cmRenderVisitorPanel();
+}
+
+function cmRenderRank(){
+  const box=document.getElementById('cm-rank-list');
   if(!box) return;
-  const memoId=STATE.twikooSelectedPost==='all' ? null : twikooMemoIdFromPath(STATE.twikooSelectedPost);
-  const seq=++STATE.twikooMemoRenderSeq;
-  if(memoId===null){ box.hidden=true; box.innerHTML=''; return; }
-  box.hidden=false;
-  box.innerHTML='<div class="loading" style="padding:6px"><div class="spinner"></div>正在读取 BB 条目原文…</div>';
-  try{
-    const memos=await loadTwikooMemos();
-    if(seq!==STATE.twikooMemoRenderSeq || !document.body.contains(box)) return;
-    const memo=memos.find(item=>Number(item?.id)===memoId);
-    box.innerHTML=memo ? renderTwikooMemoCard(memo) : `<div class="alert warning" style="margin:0">未在 memos.json 中找到 BB 条目 #${memoId}，可能尚未同步到博客仓库。</div>`;
-  }catch(error){
-    if(seq!==STATE.twikooMemoRenderSeq || !document.body.contains(box)) return;
-    box.innerHTML=`<div class="alert danger" style="margin:0">BB 条目读取失败：${escapeHTML(twikooErrorMessage(error))}</div>`;
+  const all=cmSortedVisitors();
+  const meta=document.getElementById('cm-ranker-meta');
+  const pager=document.getElementById('cm-rank-pager');
+  const tabs=document.getElementById('cm-rank-tabs');
+  if(meta) meta.textContent=all.length?`${all.length} 位评论者 · 不含博主`:'';
+  if(tabs){
+    tabs.innerHTML=`<button class="seg-btn ${CMV.rankSort==='count_desc'?'active':''}" onclick="cmSetRankSort('count_desc')">评论最多</button>
+      <button class="seg-btn ${CMV.rankSort==='recent_desc'?'active':''}" onclick="cmSetRankSort('recent_desc')">最近评论</button>`;
   }
-}
-
-function filteredTwikooComments(){
-  let list=STATE.twikooComments.slice();
-  if(STATE.twikooSelectedPost!=='all') list=list.filter(comment=>normalizeTwikooPath(comment.url||'/')===STATE.twikooSelectedPost);
-  if(STATE.twikooCommentFilter==='root') list=list.filter(comment=>!twikooCommentIsReply(comment));
-  if(STATE.twikooCommentFilter==='reply') list=list.filter(comment=>twikooCommentIsReply(comment));
-  const q=STATE.twikooSearch.trim().toLowerCase();
-  if(q){
-    list=list.filter(comment=>[
-      comment.nick,comment.mail,comment.url,twikooCommentText(comment),twikooCommentRegion(comment),twikooCommentAgent(comment)
-    ].some(value=>String(value||'').toLowerCase().includes(q)));
-  }
-  list.sort((a,b)=>STATE.twikooCommentSort==='time_asc' ? twikooTimestamp(a.created)-twikooTimestamp(b.created) : twikooTimestamp(b.created)-twikooTimestamp(a.created));
-  return list;
-}
-
-function twikooActionIcon(type){
-  const icons={
-    reply:'<svg viewBox="0 0 24 24"><path d="M9 17l-5-5 5-5"/><path d="M4 12h10a6 6 0 016 6v1"/></svg>',
-    hide:'<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.7a2 2 0 002.7 2.7"/><path d="M9.9 4.2A10.8 10.8 0 0112 4c5.5 0 9 5 9 8a10.7 10.7 0 01-2.1 3.6"/><path d="M6.6 6.6C4.4 8 3 10.1 3 12c0 3 3.5 8 9 8 1.2 0 2.3-.2 3.3-.6"/></svg>',
-    delete:'<svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>',
-    open:'<svg viewBox="0 0 24 24"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5"/></svg>'
-  };
-  return icons[type]||'';
-}
-
-function renderTwikooCommentsRight(){
-  const box=document.getElementById('inter-comments-container');
-  if(!box) return;
-  const list=filteredTwikooComments();
-  const visible=list.slice(0,STATE.twikooVisibleLimit);
-  const selectedCount=STATE.twikooSelectedPost==='all' ? twikooTotalCommentCount() : (selectedTwikooEntry()?.count||0);
-  const diagnostics=STATE.twikooDiagnostics.length ? `<div class="inter-notice">${STATE.twikooDiagnostics.map(escapeHTML).join('<br>')}</div>` : '';
-  const coverage=selectedCount>list.length || STATE.twikooSelectedPost==='all'
-    ? `<div class="inter-notice">工作台列表来自 Twikoo 官方“最新评论”接口，当前载入最近 ${STATE.twikooComments.length} 条。</div>` : '';
-
-  if(!visible.length){
-    box.innerHTML=`${diagnostics}${coverage}<div class="empty-state"><div class="empty-icon">💬</div><p>未找到符合当前文章、筛选或搜索条件的评论</p><button class="btn sm primary" style="margin-top:12px" onclick="openTwikooThreadForSelected()">查看完整评论线程</button></div>`;
+  if(!all.length){
+    box.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><p>还没有留下邮箱的访客<br>未留邮箱的留言不计入排名</p></div>`;
+    if(pager) pager.innerHTML='';
     return;
   }
+  const size=CMV.rankSize;
+  const pages=Math.max(1,Math.ceil(all.length/size));
+  if(CMV.rankPage>pages) CMV.rankPage=pages;
+  const start=(CMV.rankPage-1)*size;
+  const pageList=all.slice(start,start+size);
+  const max=Math.max(...all.map(visitor=>visitor.count),1);
 
-  box.innerHTML=`${diagnostics}${coverage}<div class="inter-comment-list">${visible.map(comment=>{
-    const path=normalizeTwikooPath(comment.url||'/');
-    const encodedPath=encodeURIComponent(path).replace(/'/g,'%27');
-    const text=twikooCommentText(comment) || '（无文本内容）';
-    const needle=encodeURIComponent(`${comment.nick||''} ${text.slice(0,32)}`).replace(/'/g,'%27');
-    const reply=twikooCommentIsReply(comment);
-    const region=twikooCommentRegion(comment);
-    const agent=twikooCommentAgent(comment);
-    return `<article class="inter-comment-card ${reply?'is-reply':''}">
-      <img class="comment-avatar" loading="lazy" referrerpolicy="no-referrer" src="${escapeAttr(safeAvatar(comment.avatar))}" alt="">
-      <div class="inter-comment-body">
-        <div class="inter-comment-head">
-          <div class="inter-comment-author"><strong>${escapeHTML(comment.nick||'匿名')}</strong>${reply?'<span class="inter-comment-badge">回复</span>':''}${comment.isSpam?'<span class="inter-comment-badge" style="background:#fff1f0;color:#d4380d">垃圾评论</span>':''}</div>
-          <div class="inter-comment-actions">
-            <button class="inter-action-btn" title="打开该文章评论区并回复" onclick="openTwikooReply('${encodedPath}')">${twikooActionIcon('reply')}</button>
-            <button class="inter-action-btn" title="打开前台页面" onclick="openTwikooPath('${encodedPath}')">${twikooActionIcon('open')}</button>
+  box.innerHTML=pageList.map((visitor,index)=>{
+    const rank=start+index+1;
+    const open=CMV.rankOpen===visitor.email;
+    const pct=Math.max(6,Math.round(visitor.count/max*100));
+    return `<button class="cm-rank ${open?'is-open':''}" onclick="cmToggleVisitor('${encodeURIComponent(visitor.email)}')" aria-expanded="${open?'true':'false'}">
+      <span class="cm-rank-no">${rank}</span>
+      <img class="cm-avatar" src="${cmAvatar(visitor.nick,visitor.email)}" alt="" loading="lazy">
+      <span class="cm-rank-copy">
+        <span class="cm-rank-nick">${escapeHTML(visitor.nick)}${visitor.spam?`<span class="tag spam">垃圾 ${visitor.spam}</span>`:''}</span>
+        <span class="cm-rank-mail">${escapeHTML(visitor.email)}</span>
+      </span>
+      <span class="cm-rank-nums">
+        <b>${visitor.count}</b><small>条</small>
+        <span class="cm-meter"><i style="width:${pct}%"></i></span>
+      </span>
+      <span class="cm-rank-time" title="${escapeAttr(cmFullTimeText(visitor.lastAt))}">${cmTimeText(visitor.lastAt)}</span>
+    </button>`;
+  }).join('');
+
+  if(pager) pager.innerHTML=cmPager(all.length,CMV.rankPage,size,'cmSetRankPage','人');
+}
+
+function cmSetRankPage(page){
+  CMV.rankPage=Math.max(1,page);
+  CMV.rankOpen='';
+  CMV.visitorPage=1;
+  cmRenderRank();
+  cmRenderVisitorPanel();
+  cmScrollTo('cm-rank-list');
+}
+
+function cmToggleVisitor(encoded){
+  const email=decodeURIComponent(String(encoded||''));
+  CMV.rankOpen=CMV.rankOpen===email?'':email;
+  CMV.visitorPage=1;
+  cmRenderRank();
+  cmRenderVisitorPanel();
+  if(CMV.rankOpen){
+    const panel=document.getElementById('cm-visitor-panel');
+    if(panel) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),60);
+  }
+}
+
+function cmRenderVisitorPanel(){
+  const box=document.getElementById('cm-visitor-panel');
+  if(!box) return;
+  if(!CMV.rankOpen){ box.hidden=true; box.innerHTML=''; return; }
+  const rows=CMV.rows
+    .filter(row=>String(row.email||'').toLowerCase()===CMV.rankOpen)
+    .sort((a,b)=>cmTimestamp(b.created_at)-cmTimestamp(a.created_at));
+  if(!rows.length){ box.hidden=true; box.innerHTML=''; CMV.rankOpen=''; return; }
+
+  const size=CMV.visitorSize;
+  const pages=Math.max(1,Math.ceil(rows.length/size));
+  if(CMV.visitorPage>pages) CMV.visitorPage=pages;
+  const start=(CMV.visitorPage-1)*size;
+  const pageList=rows.slice(start,start+size);
+  const nick=rows[0].nick||'匿名';
+  const email=CMV.rankOpen;
+
+  box.hidden=false;
+  box.innerHTML=`<div class="cm-visitor">
+    <div class="cm-visitor-head">
+      <img class="cm-avatar" src="${cmAvatar(nick,email)}" alt="">
+      <div class="cm-visitor-copy">
+        <b>${escapeHTML(nick)}</b>
+        <span>${escapeHTML(email)} · 共 ${rows.length} 条 · 最近 ${cmTimeText(cmTimestamp(rows[0].created_at))}</span>
+      </div>
+      <button class="cm-act" onclick="cmFilterVisitorByEmail('${encodeURIComponent(email)}')">在明细中筛选</button>
+      <button class="cm-act" onclick="cmToggleVisitor('${encodeURIComponent(email)}')">收起</button>
+    </div>
+    <div class="cm-visitor-list">${pageList.map(row=>{
+      const status=cmStatusMeta(row.status);
+      const key=String(row.thread_key||'/');
+      return `<div class="cm-vrow">
+        <div class="cm-vrow-top">
+          <span class="cm-time">${cmFullTimeText(row.created_at)}</span>
+          <span class="tag ${status.cls}">${status.text}</span>
+          <button class="cm-threadtag" onclick="cmOpenThreadView('${encodeURIComponent(key)}')"><b>${escapeHTML(cmThreadTitle(key))}</b></button>
+          <span class="cm-vrow-acts">
+            <button class="cm-act" onclick="cmOpenEdit(${row.id})">编辑</button>
+            <button class="cm-act" onclick="cmAct('delete',${row.id})">隐藏</button>
+          </span>
+        </div>
+        <div class="cm-vrow-text">${escapeHTML(row.content||'')}</div>
+      </div>`;
+    }).join('')}</div>
+    ${cmPager(rows.length,CMV.visitorPage,size,'cmSetVisitorPage','条')}
+  </div>`;
+}
+
+function cmSetVisitorPage(page){
+  CMV.visitorPage=Math.max(1,page);
+  cmRenderVisitorPanel();
+  const panel=document.getElementById('cm-visitor-panel');
+  if(panel) panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cmFilterVisitorByEmail(encoded){
+  const email=decodeURIComponent(String(encoded||''));
+  CMV.visitor=email;
+  CMV.thread='all';
+  CMV.page=1;
+  cmRenderScope();
+  cmRenderStatusTabs();
+  cmRenderList();
+  cmScrollTo('cm-list');
+}
+
+/* ------------------------------ 选择与批量 ------------------------------ */
+
+function cmToggleSelect(id,checked){
+  const value=Number(id);
+  if(checked) CMV.selected.add(value); else CMV.selected.delete(value);
+  cmRenderBulk();
+}
+
+function cmSelectAll(checked){
+  const list=CMV.filtered.length?CMV.filtered:cmFiltered(true);
+  if(checked){
+    const size=CMV.pageSize;
+    list.slice((CMV.page-1)*size,CMV.page*size).forEach(row=>CMV.selected.add(Number(row.id)));
+  }else{
+    CMV.selected.clear();
+  }
+  cmRenderList();
+  cmRenderBulk();
+}
+
+function cmClearSelection(){
+  CMV.selected.clear();
+  const all=document.getElementById('cm-select-all');
+  if(all) all.checked=false;
+  cmRenderList();
+  cmRenderBulk();
+}
+
+function cmRenderBulk(){
+  const box=document.getElementById('cm-bulk');
+  if(!box) return;
+  if(!CMV.selected.size){ box.innerHTML=''; return; }
+  box.innerHTML=`<div class="cm-bulk">
+    <span>已选 ${CMV.selected.size} 条</span>
+    <button class="cm-act ok" onclick="cmBulkAct('approve')">公开</button>
+    <button class="cm-act" onclick="cmBulkAct('spam')">标垃圾</button>
+    <button class="cm-act" onclick="cmBulkAct('delete')">隐藏</button>
+    <button class="cm-act danger" onclick="cmBulkAct('hard-delete')">彻底删除</button>
+    <span class="spacer"></span>
+    <button class="cm-act" onclick="cmClearSelection()">取消选择</button>
+  </div>`;
+}
+
+/* ------------------------------ 单条与批量动作 ------------------------------ */
+
+const CM_ACTION_TEXT={
+  approve:'已公开',
+  spam:'已标为垃圾',
+  delete:'已隐藏',
+  'hard-delete':'已彻底删除'
+};
+
+async function cmAct(action,id){
+  if(action==='hard-delete'&&!confirm('彻底删除后无法恢复，这条及其楼下的回复都会被移除。继续？')) return;
+  try{
+    await cmFetch('/admin',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action,id:Number(id)})
+    });
+    toast(CM_ACTION_TEXT[action]||'操作完成','success');
+    await cmReload(true);
+  }catch(error){
+    toast(cmErrorMessage(error),'error');
+  }
+}
+
+async function cmBulkAct(action){
+  const ids=[...CMV.selected];
+  if(!ids.length) return;
+  if(action==='hard-delete'&&!confirm(`将彻底删除 ${ids.length} 条评论及其楼下回复，无法恢复。继续？`)) return;
+  if(action!=='hard-delete'&&!confirm(`将对 ${ids.length} 条评论执行「${CM_ACTION_TEXT[action]||action}」。继续？`)) return;
+  let done=0;
+  let failed=0;
+  for(const id of ids){
+    try{
+      await cmFetch('/admin',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action,id:Number(id)})
+      });
+      done++;
+    }catch(error){
+      failed++;
+    }
+    toast(`处理中 ${done+failed}/${ids.length}`);
+  }
+  CMV.selected.clear();
+  toast(`完成 ${done} 条${failed?`，失败 ${failed} 条`:''}`,failed?'warning':'success');
+  await cmReload(true);
+}
+
+async function cmDeleteThread(encodedKey){
+  const key=decodeURIComponent(String(encodedKey||''));
+  const count=CMV.rows.filter(row=>String(row.thread_key)===key).length;
+  if(!confirm(`将删除「${cmThreadTitle(key)}」下的全部 ${count} 条评论，无法恢复。继续？`)) return;
+  try{
+    await cmFetch('/admin',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'thread-delete',threadKey:key})
+    });
+    if(CMV.thread===key) CMV.thread='all';
+    closeModal();
+    toast('线程已清空','success');
+    await cmReload(true);
+  }catch(error){
+    toast(cmErrorMessage(error),'error');
+  }
+}
+
+/* ------------------------------ 编辑内容 ------------------------------ */
+
+function cmOpenEdit(id){
+  const row=CMV.rows.find(item=>Number(item.id)===Number(id));
+  if(!row) return;
+  document.getElementById('modal-container').innerHTML=`
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal-card" style="max-width:640px">
+        <div class="modal-header">
+          <div style="min-width:0">
+            <div style="font-size:15px">编辑评论 #${row.id}</div>
+            <div class="cm-thread-path" style="max-width:none">${escapeHTML(cmThreadTitle(row.thread_key))} · ${escapeHTML(row.nick||'匿名')}</div>
+          </div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <textarea class="cm-edit-area" id="cm-edit-input" maxlength="500">${escapeHTML(row.content||'')}</textarea>
+          <div class="cm-edit-foot">
+            <span>最多 500 字，保存后前台立即生效</span>
+            <span><b id="cm-edit-count">${(row.content||'').length}</b> / 500</span>
           </div>
         </div>
-        <div class="inter-comment-text">${escapeHTML(text)}</div>
-        <div class="inter-comment-meta">
-          <span>${escapeHTML(formatTwikooTime(comment.created))}</span>
-          ${region?`<span class="dot"></span><span>${escapeHTML(region)}</span>`:''}
-          ${agent?`<span class="dot"></span><span>${escapeHTML(agent)}</span>`:''}
-          <span class="dot"></span><span class="inter-comment-route" title="${escapeAttr(path)}">${escapeHTML(path)}</span>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">取消</button>
+          <button class="btn primary" onclick="cmSaveEdit(${row.id})">保存修改</button>
         </div>
       </div>
-    </article>`;
-  }).join('')}</div>${list.length>visible.length?`<div class="inter-load-more"><button class="btn sm" onclick="loadMoreTwikooComments()">继续加载（剩余 ${list.length-visible.length} 条）</button></div>`:''}`;
+    </div>`;
+  const input=document.getElementById('cm-edit-input');
+  const count=document.getElementById('cm-edit-count');
+  if(input&&count){
+    input.addEventListener('input',()=>{ count.textContent=input.value.length; });
+    input.focus();
+    input.setSelectionRange(input.value.length,input.value.length);
+  }
 }
 
-function loadMoreTwikooComments(){ STATE.twikooVisibleLimit+=40; renderTwikooCommentsRight(); }
-
-function openTwikooThreadForSelected(){
-  const path=STATE.twikooSelectedPost==='all' ? '/' : STATE.twikooSelectedPost;
-  openTwikooThread(encodeURIComponent(path),'thread');
-}
-
-function openTwikooReply(encodedPath){
-  const path=normalizeTwikooPath(decodeURIComponent(encodedPath));
-  STATE.twikooSelectedPost=path;
-  renderTwikooPostsLeft(); renderTwikooCurrentHeader(); renderTwikooMemoContext(); renderTwikooCommentsRight();
-  openTwikooThread(encodeURIComponent(path),'reply');
-}
-
-function openTwikooAdminForComment(action,encodedNeedle){
-  STATE.twikooPendingAdminSearch=decodeURIComponent(encodedNeedle||'');
-  toast(`正在打开 Twikoo 官方管理面板，请登录后执行${action}操作`,'warning');
-  openTwikooThread(encodeURIComponent('/'),'admin');
-}
-
-function openTwikooThread(encodedPath,mode='thread'){
-  const drawer=document.getElementById('inter-thread-drawer');
-  const mount=document.getElementById('twikoo-interaction-mount');
-  if(!drawer||!mount) return;
-  const path=normalizeTwikooPath(decodeURIComponent(encodedPath||encodeURIComponent('/')));
-  drawer.dataset.path=path;
-  drawer.dataset.mode=mode;
-  drawer.classList.toggle('admin-mode',mode==='admin');
-  drawer.hidden=false;
-  const entry=STATE.twikooPostEntries.find(item=>item.path===path);
-  const title=document.getElementById('inter-thread-title');
-  const pathEl=document.getElementById('inter-thread-path');
-  if(title) title.textContent=mode==='admin'?'Twikoo 官方管理面板':(entry?.title||'完整评论线程');
-  if(pathEl) pathEl.textContent=mode==='admin'?'登录后可回复、隐藏、删除和配置':path;
-  mountTwikooThread(false);
-}
-
-async function mountTwikooThread(showToast=false){
-  const drawer=document.getElementById('inter-thread-drawer');
-  const mount=document.getElementById('twikoo-interaction-mount');
-  if(!drawer||!mount||drawer.hidden) return;
-  const path=normalizeTwikooPath(drawer.dataset.path||'/');
-  const mode=drawer.dataset.mode||'thread';
-  const seq=++STATE.twikooMountSeq;
-  mount.innerHTML=`<div class="loading"><div class="spinner"></div>正在连接 ${escapeHTML(normalizedTwikooEnvId())}…</div>`;
+async function cmSaveEdit(id){
+  const input=document.getElementById('cm-edit-input');
+  if(!input) return;
+  const content=input.value.trim();
+  if(!content){ toast('内容不能为空','error'); return; }
+  if(content.length>500){ toast('评论最多 500 字','error'); return; }
   try{
-    const sdk=await ensureTwikooSdk();
-    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
-    mount.innerHTML='';
-    await withInteractionTimeout(sdk.init(twikooPublicOptions({
-      el:'#twikoo-interaction-mount',
-      path,
-      lang:'zh-CN',
-      onCommentLoaded:()=>{
-        const status=document.getElementById('inter-status');
-        if(status) status.innerHTML='<span class="status-dot ok"></span><span>Twikoo 完整评论线程已加载</span>';
-      }
-    })),20000,'Twikoo 评论组件挂载');
-    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
-    if(mode==='reply') toast('完整评论线程已打开，请点击对应评论下方的“回复”','success');
-    if(mode==='admin') setTimeout(()=>openTwikooAdmin(true),180);
-    if(showToast) toast('Twikoo 已重新加载','success');
-  }catch(error){
-    if(seq!==STATE.twikooMountSeq || STATE.page!=='interactions') return;
-    mount.innerHTML=`<div class="alert danger" style="margin:0">挂载失败：${escapeHTML(twikooErrorMessage(error))}<div class="inter-diagnostic">${escapeHTML(twikooErrorHint(error))}<br>当前来源：<span class="inter-origin">${escapeHTML(twikooOrigin())}</span></div></div>`;
-    if(showToast) toast(`Twikoo 挂载失败：${twikooErrorMessage(error)}`,'error');
-  }
-}
-
-function closeTwikooThread(){
-  const drawer=document.getElementById('inter-thread-drawer');
-  if(!drawer) return;
-  const closeBtn=drawer.querySelector('.tk-admin-container .el-dialog__headerbtn, .tk-admin-container [aria-label="Close"], .tk-admin-container .el-icon-close');
-  if(closeBtn && typeof closeBtn.click==='function') closeBtn.click();
-  STATE.twikooMountSeq++;
-  clearTimeout(STATE.twikooAdminSearchTimer);
-  drawer.hidden=true;
-  drawer.classList.remove('admin-mode');
-  drawer.dataset.mode='thread';
-  const mount=document.getElementById('twikoo-interaction-mount');
-  if(mount) mount.innerHTML='';
-}
-
-function findVisibleTwikooPasswordInput(){
-  return [...document.querySelectorAll('#inter-thread-drawer input[type="password"], .tk-admin-container input[type="password"], input[type="password"]')]
-    .find(input=>input.offsetParent!==null && !input.disabled) || null;
-}
-
-function setNativeInputValue(input,value){
-  const descriptor=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
-  if(descriptor?.set) descriptor.set.call(input,value); else input.value=value;
-  input.dispatchEvent(new Event('input',{bubbles:true}));
-  input.dispatchEvent(new Event('change',{bubbles:true}));
-}
-
-function fillTwikooAdminPassword(attempt=0){
-  const input=findVisibleTwikooPasswordInput();
-  if(input){
-    if(CFG.twikooMasterPassword){
-      setNativeInputValue(input,CFG.twikooMasterPassword);
-      input.focus();
-      toast('已填入系统设置中保存的 Twikoo 密码，请点击登录','success');
-    }else{
-      input.focus();
-      toast('请输入 Twikoo 管理员密码','warning');
-    }
-    return true;
-  }
-  if(attempt<18) setTimeout(()=>fillTwikooAdminPassword(attempt+1),140);
-  return false;
-}
-
-function dockTwikooAdminPanel(attempt=0){
-  const drawer=document.getElementById('inter-thread-drawer');
-  const body=document.getElementById('inter-thread-body');
-  const panel=document.querySelector('.tk-admin-container');
-  if(drawer && body && panel){
-    panel.classList.add('inter-admin-docked');
-    if(!body.contains(panel)) body.appendChild(panel);
-    drawer.classList.add('admin-mode');
-    watchTwikooAdminSearch();
-    return true;
-  }
-  if(attempt<20) setTimeout(()=>dockTwikooAdminPanel(attempt+1),120);
-  return false;
-}
-
-function watchTwikooAdminSearch(attempt=0){
-  clearTimeout(STATE.twikooAdminSearchTimer);
-  const needle=STATE.twikooPendingAdminSearch.trim();
-  if(!needle) return;
-  const panel=document.querySelector('.tk-admin-container');
-  if(panel){
-    const input=[...panel.querySelectorAll('input:not([type="password"])')].find(el=>{
-      if(el.offsetParent===null || el.disabled) return false;
-      const hint=`${el.placeholder||''} ${el.getAttribute('aria-label')||''}`.toLowerCase();
-      return /搜索|search|评论|留言|昵称|用户/.test(hint);
+    await cmFetch('/edit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:Number(id),content})
     });
-    if(input){
-      setNativeInputValue(input,needle);
-      STATE.twikooPendingAdminSearch='';
-      toast('已将目标评论关键词填入管理面板搜索框','success');
-      return;
+    closeModal();
+    toast('评论已更新','success');
+    await cmReload(true);
+  }catch(error){
+    toast(cmErrorMessage(error),'error');
+  }
+}
+
+/* ------------------------------ 线程楼层 ------------------------------ */
+
+async function cmOpenThreadView(encodedKey){
+  const key=decodeURIComponent(String(encodedKey||''));
+  const rows=CMV.rows
+    .filter(row=>String(row.thread_key)===key)
+    .sort((a,b)=>cmTimestamp(a.created_at)-cmTimestamp(b.created_at));
+  if(!rows.length){ toast('该线程下没有评论','warning'); return; }
+
+  const byId=new Map(rows.map(row=>[Number(row.id),row]));
+  const children=new Map();
+  const roots=[];
+  rows.forEach(row=>{
+    const parentId=row.parent_id==null?null:Number(row.parent_id);
+    if(parentId&&byId.has(parentId)){
+      if(!children.has(parentId)) children.set(parentId,[]);
+      children.get(parentId).push(row);
+    }else{
+      roots.push(row);
     }
+  });
+  const out=[];
+  let walked=0;
+  const walk=(row,depth)=>{
+    out.push(cmTreeRow(row,depth));
+    walked++;
+    if(walked>300) return;
+    (children.get(Number(row.id))||[]).forEach(child=>walk(child,depth+1));
+  };
+  roots.forEach(row=>walk(row,0));
+
+  let memoHTML='';
+  if(cmThreadKind(key)==='memo'){
+    const memo=await cmLoadMemo(cmThreadId(key));
+    if(memo) memoHTML=cmMemoHTML(memo);
   }
-  if(attempt<80) STATE.twikooAdminSearchTimer=setTimeout(()=>watchTwikooAdminSearch(attempt+1),220);
+
+  document.getElementById('modal-container').innerHTML=`
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal-card" style="max-width:760px">
+        <div class="modal-header">
+          <div style="min-width:0">
+            <div style="font-size:15px">${escapeHTML(cmThreadTitle(key))}</div>
+            <div class="cm-thread-path" style="max-width:none">${escapeHTML(key)} · ${rows.length} 条评论</div>
+          </div>
+          <button class="btn sm ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          ${memoHTML}
+          <div class="cm-tree">${out.join('')}</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cmOpenThreadPage('${encodedKey}')">打开前台</button>
+          <button class="btn danger" onclick="cmDeleteThread('${encodedKey}')">清理整线程</button>
+        </div>
+      </div>
+    </div>`;
 }
 
-function openTwikooAdmin(fillPassword=false){
-  const existingInput=findVisibleTwikooPasswordInput();
-  if(existingInput){
-    if(fillPassword) fillTwikooAdminPassword(); else existingInput.focus();
-    dockTwikooAdminPanel();
-    return;
-  }
-  const marker=document.querySelector('#twikoo-interaction-mount .tk-admin');
-  if(!marker){
-    toast('未找到 Twikoo 管理入口。请等待评论组件加载；若配置了隐藏暗号，请先在评论区输入暗号显示小齿轮。','warning');
-    return;
-  }
-  const target=marker.closest('button,a') || marker;
-  target.click();
-  setTimeout(()=>{
-    dockTwikooAdminPanel();
-    if(fillPassword) fillTwikooAdminPassword();
-  },80);
+function cmTreeRow(row,depth){
+  const status=cmStatusMeta(row.status);
+  const isAdmin=Number(row.is_admin)===1;
+  const level=Math.min(depth,3);
+  const acts=[];
+  if(String(row.status||'').toLowerCase()!=='approved') acts.push(`<button class="cm-act ok" onclick="cmAct('approve',${row.id})">公开</button>`);
+  if(String(row.status||'').toLowerCase()!=='deleted') acts.push(`<button class="cm-act" onclick="cmOpenEdit(${row.id})">编辑</button>`);
+  acts.push(`<button class="cm-act danger" onclick="cmAct('delete',${row.id})">隐藏</button>`);
+  return `<div class="cm-tree-row depth-${level}">
+    <div class="cm-tree-top">
+      <img class="cm-avatar" style="width:26px;height:26px;border-radius:8px" src="${cmAvatar(row.nick,row.email)}" alt="">
+      <span class="cm-nick">${escapeHTML(row.nick||'匿名')}</span>
+      ${isAdmin?'<span class="cm-badge">博主</span>':''}
+      <span class="tag ${status.cls}">${status.text}</span>
+      <span class="cm-time" title="${escapeAttr(cmFullTimeText(row.created_at))}">${cmFullTimeText(row.created_at)}</span>
+      ${row.region?`<span class="cm-who">· ${escapeHTML(row.region)}</span>`:''}
+    </div>
+    <div class="cm-tree-text">${escapeHTML(row.content||'')}</div>
+    <div class="cm-tree-acts">${acts.join('')}</div>
+  </div>`;
 }
 
-function renderTwikooFailure(error){
-  const box=document.getElementById('inter-comments-container');
-  const status=document.getElementById('inter-status');
-  if(status) status.innerHTML='<span class="status-dot err"></span><span>Twikoo 数据读取失败</span>';
+/* ------------------------------ 哔哔原文 ------------------------------ */
+
+async function cmLoadMemo(id){
+  if(!id) return null;
+  try{
+    if(!Array.isArray(STATE.cmMemos)){
+      if(!STATE.cmMemosPromise){
+        STATE.cmMemosPromise=fetch('/memos.json',{cache:'no-cache'})
+          .then(response=>{ if(!response.ok) throw new Error(`memos.json ${response.status}`); return response.json(); })
+          .then(data=>{
+            STATE.cmMemos=Array.isArray(data)?data:(Array.isArray(data&&data.memos)?data.memos:[]);
+            return STATE.cmMemos;
+          })
+          .finally(()=>{ STATE.cmMemosPromise=null; });
+      }
+      await STATE.cmMemosPromise;
+    }
+    return (STATE.cmMemos||[]).find(item=>String(item&&item.id)===String(id))||null;
+  }catch(e){
+    return null;
+  }
+}
+
+function cmMemoHTML(memo){
+  const created=Number(memo.createdTs||0)*1000;
+  const text=String(memo.content||'').trim();
+  const images=(Array.isArray(memo.resourceList)?memo.resourceList:[])
+    .map(item=>String(item&&(item.externalLink||item.externalUrl||item.url)||''))
+    .filter(url=>/^https?:\/\//i.test(url))
+    .slice(0,6);
+  return `<div class="cm-memo">
+    <div class="cm-memo-head"><span>哔哔原文 #${escapeHTML(memo.id)}</span><span>${escapeHTML(created?cmFullTimeText(created):'')}</span></div>
+    <div class="cm-memo-text">${escapeHTML(text)||'（该条目没有文本内容）'}</div>
+    ${images.length?`<div class="cm-memo-imgs">${images.map(url=>`<a href="${escapeAttr(url)}" target="_blank" rel="noopener"><img src="${escapeAttr(url)}" alt="" loading="lazy" referrerpolicy="no-referrer"></a>`).join('')}</div>`:''}
+  </div>`;
+}
+
+/* ------------------------------ 筛选与跳转 ------------------------------ */
+
+function cmFocusThread(encodedKey){
+  CMV.thread=decodeURIComponent(String(encodedKey||''));
+  CMV.visitor='';
+  CMV.page=1;
+  cmRenderStatusTabs();
+  cmRenderScope();
+  cmRenderList();
+  const scope=document.getElementById('cm-scope');
+  if(scope&&scope.scrollIntoView) scope.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function cmFilterVisitor(id){
+  const row=CMV.rows.find(item=>Number(item.id)===Number(id));
+  if(!row||!row.email) return;
+  CMV.visitor=String(row.email).toLowerCase();
+  CMV.page=1;
+  cmRenderScope();
+  cmRenderStatusTabs();
+  cmRenderList();
+  toast(`只看 ${row.nick||'该访客'} 的评论`);
+}
+
+function cmClearScope(){
+  CMV.thread='all';
+  CMV.visitor='';
+  CMV.q='';
+  const input=document.getElementById('cm-q');
+  if(input) input.value='';
+  cmRenderStatusTabs();
+  cmRenderScope();
+  cmRenderList();
+}
+
+function cmOpenThreadPage(encodedKey){
+  const key=decodeURIComponent(String(encodedKey||''));
+  const base=String(CFG.blogUrl||'').replace(/\/$/,'');
+  const kind=cmThreadKind(key);
+  const path=kind==='memo'?`${base}/memos/`:`${base}${cmThreadPath(key)}`;
+  window.open(path,'_blank','noopener');
+}
+
+function cmOpenSiteHome(){
+  const base=String(CFG.blogUrl||location.origin).replace(/\/$/,'');
+  window.open(base||'/','_blank','noopener');
+}
+
+/* ------------------------------ 备份与导入 ------------------------------ */
+
+function cmRenderData(){
+  const box=document.getElementById('cm-data');
   if(!box) return;
-  box.innerHTML=`<div class="alert danger inter-error"><strong>Twikoo 获取失败：</strong>${escapeHTML(twikooErrorMessage(error))}<div class="inter-diagnostic">${escapeHTML(twikooErrorHint(error))}<br>envId：<span class="inter-origin">${escapeHTML(normalizedTwikooEnvId())}</span><br>当前来源：<span class="inter-origin">${escapeHTML(twikooOrigin())}</span></div><div class="inter-inline-actions">${isUrlTwikooEnv()?'<button class="btn sm" onclick="openTwikooBackend()">检查后端地址</button>':''}<button class="btn sm" onclick="refreshTwikooInteractions()">重新检测</button></div></div>`;
+  box.innerHTML=`
+    <div class="cm-data-box">
+      <h4>导出备份</h4>
+      <p>原生 JSON 含线程、评论与阅读量，可原样导回本系统；Twikoo 格式会拆成 comment.json 与 counter.json 两个文件，可直接喂给 Twikoo 后台的导入面板。都按分页拉全量，不受单次条数上限影响。</p>
+      <div class="row">
+        <button class="btn sm primary" onclick="cmExport('native')">原生备份</button>
+        <button class="btn sm" onclick="cmExport('twikoo')">Twikoo 格式</button>
+      </div>
+    </div>
+    <div class="cm-data-box">
+      <h4>导入数据</h4>
+      <p>可一次选多个文件，原生备份与 Twikoo 的 comment.json / counter.json 混选也能自动认。评论按 8 条一批、阅读量与原生记录按 100 条一批提交，重复内容会跳过。</p>
+      <div class="row">
+        <label class="btn sm" style="position:relative;overflow:hidden">选择 JSON 文件
+          <input type="file" accept="application/json,.json" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer" onchange="cmImportFile(this)">
+        </label>
+      </div>
+    </div>
+    <div class="cm-data-box">
+      <h4>连接信息</h4>
+      <div class="cm-kv">
+        <span>接口</span><code>${escapeHTML(cmApiBase())}</code>
+        <span>来源</span><code>${escapeHTML(location.origin)}</code>
+        <span>载入</span><code>${CMV.rows.length} / ${CMV.total} 条${CMV.truncated?'（超出上限已截断）':''}</code>
+        <span>时间</span><code>${CMV.loadedAt?cmFullTimeText(CMV.loadedAt):'未同步'}</code>
+      </div>
+    </div>`;
 }
 
-function openTwikooBackend(){ if(isUrlTwikooEnv()) window.open(normalizedTwikooEnvId(),'_blank','noopener'); }
-
-function openTwikooPath(encodedPath){
-  const base=String(CFG.blogUrl||'').trim();
-  if(!base){ toast('请先在系统设置中填写博客前台 URL','warning'); return; }
-  try{ window.open(new URL(normalizeTwikooPath(decodeURIComponent(encodedPath)),base).href,'_blank','noopener'); }
-  catch(e){ toast('博客 URL 格式不正确','error'); }
+function cmDownload(name,data){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
 }
 
-function openSelectedTwikooPage(){
-  const path=STATE.twikooSelectedPost==='all' ? '/' : STATE.twikooSelectedPost;
-  openTwikooPath(encodeURIComponent(path));
+// 分页把整库拉完：Worker 单次上限 5000，这里每批 1000，直到取够 total
+async function cmCollectExport(format){
+  const size=1000;
+  let offset=0, comments=[], meta=null, guard=0;
+  while(guard++<500){
+    const data=await cmFetch(`/admin/export?format=${format}&limit=${size}&offset=${offset}`);
+    if(!meta) meta=data;
+    const batch=format==='twikoo'?(data.comment||[]):(data.comments||[]);
+    comments=comments.concat(batch);
+    const total=Number((data.pagination&&data.pagination.total)||0);
+    if(!batch.length||comments.length>=total) break;
+    offset+=batch.length;
+    toast(`正在导出… ${comments.length} / ${total}`);
+  }
+  const counter=format==='twikoo'&&Array.isArray(meta&&meta.counter)?meta.counter:[];
+  return {meta,comments,counter};
 }
 
-async function refreshTwikooInteractions(){
-  closeTwikooThread();
-  STATE.twikooComments=[];
-  STATE.twikooPostEntries=[];
-  STATE.twikooDiagnostics=[];
-  STATE.twikooVisibleLimit=40;
-  await renderInteractionsPage();
+async function cmExport(format){
+  if(!cmReady()){ toast('请先在系统设置里填好评论系统接口与口令','error'); return; }
+  toast('正在生成备份…');
+  try{
+    const {meta,comments,counter}=await cmCollectExport(format);
+    const stamp=new Date().toISOString().slice(0,10);
+    if(format==='twikoo'){
+      cmDownload(`comment-${stamp}.json`,comments);
+      setTimeout(()=>cmDownload(`counter-${stamp}.json`,counter),320);
+      toast(`已导出 ${comments.length} 条评论、${counter.length} 条阅读量（两个文件）`,'success');
+    }else{
+      cmDownload(`comments-backup-${stamp}.json`,{
+        format:'comments-native-v2',
+        exportedAt:new Date().toISOString(),
+        threads:(meta&&meta.threads)||[],
+        comments,
+        threadStats:(meta&&meta.threadStats)||[]
+      });
+      toast(`已导出原始备份：${comments.length} 条评论`,'success');
+    }
+  }catch(error){
+    toast(cmErrorMessage(error),'error');
+  }
+}
+
+async function cmImportFile(input){
+  const files=Array.from(input.files||[]);
+  input.value='';
+  if(!files.length) return;
+
+  const bundle={threads:[],comments:[],threadStats:[],twikoo:[],counter:[]};
+  const bad=[];
+  for(const file of files){
+    let payload=null;
+    try{ payload=JSON.parse(await file.text()); }
+    catch(error){ bad.push(file.name); continue; }
+
+    // Twikoo 的 comment.json / counter.json 都是裸数组，靠首条字段区分
+    if(Array.isArray(payload)){
+      const sample=payload[0]||{};
+      const looksCounter=sample.comment==null&&sample.mail==null&&(sample.url!=null||sample.time!=null);
+      if(looksCounter) bundle.counter=bundle.counter.concat(payload);
+      else bundle.twikoo=bundle.twikoo.concat(payload);
+      continue;
+    }
+    if(!payload||typeof payload!=='object'){ bad.push(file.name); continue; }
+
+    // Twikoo 单文件内带 comment / counter 两个数组
+    if(Array.isArray(payload.comment)||Array.isArray(payload.counter)){
+      if(Array.isArray(payload.comment)) bundle.twikoo=bundle.twikoo.concat(payload.comment);
+      if(Array.isArray(payload.counter)) bundle.counter=bundle.counter.concat(payload.counter);
+      continue;
+    }
+    // 本系统原生备份
+    if(payload.format==='comments-native-v2'||Array.isArray(payload.threads)||Array.isArray(payload.comments)||Array.isArray(payload.threadStats)){
+      if(Array.isArray(payload.threads)) bundle.threads=bundle.threads.concat(payload.threads);
+      if(Array.isArray(payload.comments)) bundle.comments=bundle.comments.concat(payload.comments);
+      if(Array.isArray(payload.items)) bundle.comments=bundle.comments.concat(payload.items);
+      if(Array.isArray(payload.threadStats)) bundle.threadStats=bundle.threadStats.concat(payload.threadStats);
+      continue;
+    }
+    bad.push(file.name);
+  }
+
+  const parts=[];
+  if(bundle.threads.length) parts.push(`线程 ${bundle.threads.length}`);
+  if(bundle.comments.length) parts.push(`原生评论 ${bundle.comments.length}`);
+  if(bundle.threadStats.length) parts.push(`阅读统计 ${bundle.threadStats.length}`);
+  if(bundle.twikoo.length) parts.push(`Twikoo 评论 ${bundle.twikoo.length}`);
+  if(bundle.counter.length) parts.push(`阅读量 ${bundle.counter.length}`);
+  if(!parts.length){
+    toast(bad.length?`文件里没有可导入的数据：${bad.join('、')}`:'文件里没有可导入的数据','error');
+    return;
+  }
+
+  const line=bad.length
+    ? `${parts.join('、')}。\n另有 ${bad.length} 个文件认不出来，会跳过：${bad.join('、')}`
+    : `${parts.join('、')}。`;
+  if(!confirm(`${line}\n导入会跳过重复内容，但无法撤销，建议先导出一份当前备份。继续？`)) return;
+
+  let imported=0, skipped=0, failed=0;
+  const post=async(body)=>{
+    try{
+      const result=await cmFetch('/admin/import',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+      imported+=Number(result.imported||0);
+      skipped+=Number(result.skipped||0);
+      return true;
+    }catch(error){ return false; }
+  };
+  const chunk=async(items,size,build)=>{
+    for(let i=0;i<items.length;i+=size){
+      const ok=await post(build(items.slice(i,i+size)));
+      if(!ok) failed+=Math.min(size,items.length-i);
+      await new Promise(resolve=>setTimeout(resolve,80));
+    }
+  };
+
+  // 线程要先落库，评论才有地方挂
+  if(bundle.threads.length) await chunk(bundle.threads,100,rows=>({format:'comments-native-v2',threads:rows,comments:[],threadStats:[]}));
+  if(bundle.threadStats.length) await chunk(bundle.threadStats,100,rows=>({format:'comments-native-v2',threads:[],comments:[],threadStats:rows}));
+  if(bundle.comments.length) await chunk(bundle.comments,100,rows=>({format:'comments-native-v2',threads:[],comments:rows,threadStats:[]}));
+  if(bundle.twikoo.length) await chunk(bundle.twikoo,8,rows=>({comment:rows}));
+  if(bundle.counter.length) await chunk(bundle.counter,100,rows=>({comment:[],counter:rows}));
+
+  toast(`导入完成：新增 ${imported}，跳过 ${skipped}${failed?`，失败 ${failed}`:''}`,failed?'warning':'success');
+  await cmReload(true);
 }
 
 // ============================================================
@@ -8710,11 +9485,12 @@ function renderSettingsPage(){
       </div>
       <div class="section-title">订阅近况 JSON 数据源</div>
       <div class="alert info">订阅近况固定读取当前主仓库的 <code>assets/rss.json</code>，该文件由 GitHub Actions 根据 <code>static/friends.json</code> 自动生成，无需配置外部 Friend-Circle-Lite 仓库。</div>
-      <div class="section-title">Twikoo 评论系统配置</div>
+      <div class="section-title">自建评论系统配置</div>
       <div class="settings-grid">
-        <div class="setting-group"><label class="setting-label">Twikoo 环境 ID (envId)</label><input class="setting-input" id="s-twikoo-env" placeholder="例如: https://xxx.vercel.app" value="${escapeAttr(CFG.twikooEnvId||'')}"></div>
-        <div class="setting-group"><label class="setting-label">Twikoo 管理员密码 (masterPassword)</label><input class="setting-input" type="password" id="s-twikoo-pwd" value="${escapeAttr(CFG.twikooMasterPassword||'')}"></div>
+        <div class="setting-group"><label class="setting-label">评论接口地址 (COMMENTS_API)</label><input class="setting-input" id="s-cm-api" placeholder="https://comments.hux.ink/api/comments" value="${escapeAttr(CFG.commentsApi||'')}"></div>
+        <div class="setting-group"><label class="setting-label">管理口令 (COMMENTS_ADMIN_TOKEN)</label><input class="setting-input" type="password" id="s-cm-token" value="${escapeAttr(CFG.commentsToken||'')}"></div>
       </div>
+      <div class="alert info" style="margin-top:10px">互动管理页直接读取该接口的审核队列，可在页面里通过、标为垃圾、隐藏或彻底删除评论。口令与 Worker 环境变量 <code>COMMENTS_ADMIN_TOKEN</code> 保持一致，只保存在本机浏览器。</div>
       <div class="section-title">站点与部署扩展</div>
       <div class="settings-grid">
         <div class="setting-group"><label class="setting-label">博客前台网址</label><input class="setting-input" id="s-blog" value="${escapeAttr(CFG.blogUrl||'')}"></div>
@@ -8746,7 +9522,7 @@ function renderSettingsPage(){
 const SETTINGS_EXPORT_VERSION=1;
 const CFG_EXPORT_KEYS=[
   'token','owner','repo','branch','postsPath','blogUrl','vercelProjectId','vercelToken',
-  'twikooEnvId', 'twikooMasterPassword',
+  'commentsApi','commentsToken',
   'r2AccountId','r2Bucket','r2AccessKeyId','r2SecretAccessKey','r2PublicUrl','r2Prefix',
   'r2WebpEnabled','r2WebpQuality','r2ImageMaxSide'
 ];
@@ -8758,8 +9534,8 @@ function readSettingsFormIntoConfig(){
   CFG.token=byId('s-token').value.trim(); CFG.branch=byId('s-branch').value.trim()||'main';
   CFG.postsPath=cleanPath(byId('s-posts').value.trim()||'content/posts'); CFG.blogUrl=byId('s-blog').value.trim();
   CFG.vercelProjectId=byId('s-v-id').value.trim(); CFG.vercelToken=byId('s-v-token').value.trim();
-  CFG.twikooEnvId=byId('s-twikoo-env')?.value.trim()||'';
-  CFG.twikooMasterPassword=byId('s-twikoo-pwd')?.value.trim()||'';
+  CFG.commentsApi=byId('s-cm-api')?.value.trim()||'';
+  CFG.commentsToken=byId('s-cm-token')?.value.trim()||'';
   CFG.r2AccountId=byId('s-r2-account').value.trim(); CFG.r2Bucket=byId('s-r2-bucket').value.trim();
   CFG.r2AccessKeyId=byId('s-r2-ak').value.trim(); CFG.r2SecretAccessKey=byId('s-r2-sk').value.trim();
   CFG.r2PublicUrl=byId('s-r2-public').value.trim(); CFG.r2Prefix=cleanPath(byId('s-r2-prefix').value.trim()||'images/{yyyy}/{mm}');

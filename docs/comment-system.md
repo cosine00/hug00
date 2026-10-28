@@ -318,7 +318,7 @@ static/js/bb-home.js             首页/列表页的哔哔渲染（底排布局�
 static/js/emaction.js            表情组件（第三方；为「已有表情排在笑脸左边」动过一
                                  处模板顺序，从上游重新下载会被覆盖，记得再改一次）
 static/css/comments.css          评论组件样式
-static/admin/comments.html       管理后台（删除/标垃圾/看全部/数据迁移面板）
+static/admin/index.html          管理后台（评论管理页：线程台账/评论明细/评论者排名/备份迁移）
 layouts/partials/comments.html   评论容器（主题同名 partial 的项目级覆盖）
 layouts/partials/comments/api.html       API 地址解析
 layouts/partials/comments/enabled.html   开关判断
@@ -388,7 +388,7 @@ hugo server
 | http://localhost:1313/bb/ | 每条哔哔底部右侧有表情和气泡按钮，有评论的显示数字；点时间是单条页 |
 | http://localhost:1313/m/1233/ | 单条哔哔 + 评论区 |
 | http://localhost:1313/posts/hello-hugo/ | 文章底部评论区 |
-| http://localhost:1313/admin/comments.html | 管理后台（API 填 `http://localhost:8787/api/comments`，口令 `devtoken`） |
+| http://localhost:1313/admin/ | 管理后台 → 左侧「评论管理」（设置里接口填 `http://localhost:8787/api/comments`，口令 `devtoken`） |
 
 ### 6. 命令行自检
 
@@ -610,7 +610,7 @@ Vercel 会自动构建。构建完打开任意文章页，评论区应该就是�
 
 ### 1. 入口
 
-管理后台 → 「数据迁移」面板（`/admin/comments.html` 底部），三个按钮：
+管理后台 →「评论管理」页最下面的「备份迁移」区（两张卡片）：「导出备份」两个按钮，「导入数据」一个文件选择器：
 
 | 按钮 | 打到的接口 | 产出 |
 | --- | --- | --- |
@@ -618,7 +618,9 @@ Vercel 会自动构建。构建完打开任意文章页，评论区应该就是�
 | 导出原始备份 | `GET /admin/export` | 单文件，本系统的原始字段（排查问题用） |
 | 选择文件导入 | `POST /admin/import` | 自动识别是 Twikoo 格式还是原始格式 |
 
-导入是**前端分批**的：一次选 1150 条，页面按 50 条一批串行 POST，进度条实时打印在面板里。整批 150 条一次发会撞 Worker 的请求体/CPU 上限返回 500，所以别拆成大批。
+导出走**分页拉全量**：每批 1000 条循环请求直到取够 `pagination.total`，不再受 Worker 单次 5000 条上限影响；Twikoo 格式会拆成两个裸数组文件（`comment.json` / `counter.json`），可以直接喂给 Twikoo 后台的导入面板。
+
+导入是**前端分批**的，且一次可选多个文件混选：Twikoo 评论 8 条/批、阅读量与原生记录（线程/评论/阅读统计）100 条/批，串行 POST 并留 80ms 间隔。批次超过上限 Worker 会直接 400，所以别把分片调大。
 
 ### 2. 字段映射
 
@@ -686,13 +688,12 @@ https://hux.ink/posts/xxx/  → post:/posts/xxx/     （绝对地址先剥 path�
 **A. 评论区里就地处理**（日常最省事）
 昵称框输入暗号 → 点「管理」→ 输口令。之后当前页面每条评论底下都有「垃圾 / 删除」按钮（要二次确认），处理完即时刷新。登录态存在 sessionStorage，关掉标签页即失效。
 
-**B. 独立后台页面**（要批量看、按页面筛、彻底删除时用）
-地址：`https://hux.ink/admin/comments.html`
+**B. 后台「评论管理」页**（要批量看、按页面筛、彻底删除、做备份时用）
+地址：`https://hux.ink/admin/` → 左侧「评论管理」
 
-- API 地址填 `https://comments.hux.ink/api/comments`
-- 口令填 `COMMENTS_ADMIN_TOKEN`
-- 两者都存在浏览器 localStorage，下次不用重填
-- 支持：已通过 / 垃圾 / 已删除 / 全部，按 thread key 过滤，标记垃圾、软删除、彻底删除
+- 接口与口令在后台「设置」里填一次，存在浏览器 localStorage，下次不用重填
+- 页面由四部分组成：顶部指标（待审/已公开/垃圾/已隐藏/线程数）、**评论者排名**（按邮箱归并，可切「评论最多 / 最近评论」，点开看某位访客的全部留言，博主自己的邮箱不计入）、**对话线程**（文章/页面/哔哔三类 + 搜索 + 4 种排序 + 每页 8 个）、**评论明细**（状态页签 + 全字段搜索 + 每页 12 条 + 批量公开/标垃圾/隐藏/彻底删除 + 行内编辑 500 字上限）
+- 最下方「备份迁移」区负责导出与导入
 
 > 后台页面本身是静态 HTML，登录态靠口令校验，服务端不存 session。所以**别把口令写进任何公开文件**。
 
