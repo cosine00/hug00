@@ -730,10 +730,12 @@ https://hux.ink/posts/xxx/  → post:/posts/xxx/     （绝对地址先剥 path�
 
 ```bash
 npx wrangler secret put RESEND_API_KEY
-npx wrangler secret put COMMENTS_MAIL_FROM   # 例如：博客评论 <comment@hux.ink>
+npx wrangler secret put COMMENTS_MAIL_FROM   # 例如：Counting Stars💫 评论通知 <comment@hux.ink>
 ```
 
-`COMMENTS_ADMIN_EMAIL` 已经在 `wrangler.toml` 的 `[vars]` 里，改成你的邮箱即可。它现在只做两件事：接收新评论通知、迁移时识别哪几条是老博主——**不再用来判定博主身份**（身份只认 `COMMENTS_ADMIN_TOKEN`）。
+`COMMENTS_MAIL_FROM` 决定收件箱里看到的**发件人显示名**（尖括号前那一段），改完立刻对下一封信生效，不用重新 deploy。用中文名记得通过管道输入，避免终端把字符转成 `?`。
+
+`COMMENTS_ADMIN_EMAIL` 已经在 `wrangler.toml` 的 `[vars]` 里，改成你的邮箱即可。它现在做两件事：接收新评论通知、**判定博主身份——评论时填这个邮箱即显示博主徽章，不需要再输口令**。`COMMENTS_ADMIN_TOKEN` 只在后台管理接口（改 / 删 / 导出）里用。
 
 通知逻辑：新评论发给站长；回复发给被回复的人（**前提是对方当初勾了「有人回复时邮件通知我」**，且不是自己回自己）。
 
@@ -749,7 +751,7 @@ npx wrangler secret put COMMENTS_MAIL_FROM   # 例如：博客评论 <comment@hu
 
 > 宽度用的是「10px + 中列 + 10px」三列固定布局，而不是给单元格加 padding 再让内层表格 `width:100%`——后者在部分渲染引擎里会把内层表格算宽 20px，导致信纸与信封边缘错位。
 
-信纸里抬头是「评论通知 · Comment Notifier」小字，下面一行 21px 大标题（回复通知是「您在 Counting Stars💫 上的评论有了新回复」，新评论通知是「Counting Stars💫 有新的评论了耶~」，都是纯文字不带链接；发给读者的文案统一用敬语「您」）；正文一行灰字交代语境，新回复放在左侧主色竖条的浅色卡片里，再跟一块灰底的「您的原评论」引用（只截前 160 字）；按钮不放在正文里，而是单独交给信封渲染：`shell({ action })` → `envelope({ action })`，落在 V 折口下方、整只信封的中段（米色底上，所以次按钮用米色系描边而不是纯白底）。纯 inline style + table 布局，Outlook / QQ 邮箱 / Apple Mail 都不依赖外部 CSS（Outlook 不认渐变时，信封会退化成米色块 + 虚线方邮票，仍可读）。
+信纸里抬头是「评论通知」小字，下面一行 21px 大标题（回复通知是「您在 Counting Stars💫 上的评论有了新回复」，新评论通知是「Counting Stars💫 有新的评论了耶~」，都是纯文字不带链接；发给读者的文案统一用敬语「您」）；正文一行灰字交代语境，新回复放在左侧主色竖条的浅色卡片里，再跟一块灰底的「您的原评论」引用（只截前 160 字）；按钮不放在正文里，而是单独交给信封渲染：`shell({ action })` → `envelope({ action })`，落在 V 折口下方、整只信封的中段（米色底上，所以次按钮用米色系描边而不是纯白底）。纯 inline style + table 布局，Outlook / QQ 邮箱 / Apple Mail 都不依赖外部 CSS（Outlook 不认渐变时，信封会退化成米色块 + 虚线方邮票，仍可读）。
 
 > 注意：邮件里**不再带退订链接**（按需求去掉）。用户想关闭提醒，仍可在评论时取消勾选「有回复时邮件通知我」；`/api/comments/unsubscribe?token=...` 接口保留着，需要时随时能再造入口。
 

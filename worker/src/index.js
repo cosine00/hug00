@@ -224,7 +224,7 @@ async function handleComments(request, env, url, ctx) {
     const region = formatRegion(request);
     const turnstile = await verifyTurnstile(env, value.turnstileToken, clientIp(request));
     if (!turnstile.ok) return fail(403, 'captcha_failed', '人机验证没有通过，请重试');
-    // 博主身份只认口令：前端带着缓存的 x-admin-token 提交才算，填对邮箱没用
+    // 博主身份认邮箱：评论时填 COMMENTS_ADMIN_EMAIL 即视为本人（口令只管后台管理接口）
     const result = await createComment(env, value, {
       ip: clientIp(request),
       ua: String(request.headers.get('user-agent') || ''),
