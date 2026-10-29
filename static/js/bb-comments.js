@@ -41,11 +41,16 @@
 
   var COMMENT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>';
 
+  // reacttargetid 的形态是 memo-<id>。id 可能是数字（历史条目），也可能是 UUID
+  // （FlareMo 之后新发的），所以不能再用 \d+ 去截，否则 30abf140-… 会被截成 30，
+  // 评论会挂到 id=30 那条哔哔下面。
   function memoIdOf(item) {
     var node = item.querySelector('emoji-reaction[reacttargetid]');
     if (node) {
-      var match = String(node.getAttribute('reacttargetid')).match(/(\d+)/);
-      if (match) return match[1];
+      var raw = String(node.getAttribute('reacttargetid') || '').trim();
+      var prefixed = raw.match(/^memo-(.+)$/);
+      if (prefixed && prefixed[1]) return prefixed[1].trim();
+      if (/^\d+$/.test(raw)) return raw;
     }
     var btn = item.querySelector('.comment-pill-btn[data-id]');
     if (btn) return btn.getAttribute('data-id');
