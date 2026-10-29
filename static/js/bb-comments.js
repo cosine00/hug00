@@ -36,7 +36,7 @@
   }
 
   function memoPermalink(id) {
-    return siteUrl() + '/m/' + id + '/';
+    return siteUrl() + '/m/' + encodeURIComponent(String(id)) + '/';
   }
 
   var COMMENT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>';
@@ -282,10 +282,12 @@
     var source = root.dataset.memoSource || cfg.memosUrl;
     var index = root.dataset.memoIndex || cfg.listIndex;
 
+    // FlareMo 之后新发的哔哔是 UUID（30abf140-…），历史条目才是纯数字，
+    // 所以不能再只认 \d+，否则详情页会报「没有指定要查看的哔哔」。
     var id =
-      (window.location.pathname.match(/^\/m\/(\d+)\/?$/) || [])[1] ||
+      decodeURIComponent(((window.location.pathname.match(/^\/m\/([^/?#]+)\/?$/) || [])[1]) || '') ||
       new URLSearchParams(window.location.search).get('memo') ||
-      ((window.location.hash || '').match(/^#memo-(\d+)$/) || [])[1];
+      ((window.location.hash || '').match(/^#memo-([^\s&]+)$/) || [])[1];
 
     if (!id) {
       root.innerHTML = '<p class="cm-single-loading">没有指定要查看的哔哔。' +
