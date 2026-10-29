@@ -6247,13 +6247,33 @@ async function cmLoadMemo(id){
   }
 }
 
+// FlareMo 把图片写在正文里（![](url)），历史 Memos 附件在 resourceList。
+// 这里两边都收，并按 URL 去重，避免同图渲染两次。
+function cmMemoImages(memo){
+  const text=String(memo.content||'');
+  const inline=[];
+  text.replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^)\s]+))[^)]*\)/g,(m,angled,bare)=>{
+    const url=String(angled||bare||'').trim();
+    if(/^https?:\/\//i.test(url)) inline.push(url);
+    return m;
+  });
+  const resources=(Array.isArray(memo.resourceList)?memo.resourceList:[])
+    .map(item=>String(item&&(item.externalLink||item.externalUrl||item.url)||''))
+    .filter(url=>/^https?:\/\//i.test(url));
+  const seen=new Set();
+  return [...inline, ...resources].filter(url=>{
+    if(seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  }).slice(0,9);
+}
 function cmMemoHTML(memo){
   const created=Number(memo.createdTs||0)*1000;
-  const text=String(memo.content||'').trim();
-  const images=(Array.isArray(memo.resourceList)?memo.resourceList:[])
-    .map(item=>String(item&&(item.externalLink||item.externalUrl||item.url)||''))
-    .filter(url=>/^https?:\/\//i.test(url))
-    .slice(0,6);
+  const text=String(memo.content||'')
+    .replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^)\s]+))[^)]*\)/g,'')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+  const images=cmMemoImages(memo);
   return `<div class="cm-memo">
     <div class="cm-memo-head"><span>哔哔原文 #${escapeHTML(memo.id)}</span><span>${escapeHTML(created?cmFullTimeText(created):'')}</span></div>
     <div class="cm-memo-text">${escapeHTML(text)||'（该条目没有文本内容）'}</div>

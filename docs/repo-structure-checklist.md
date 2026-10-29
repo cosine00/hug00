@@ -29,7 +29,7 @@
 | `assets/` | 7 | 2.0M | 其中 `activities.json` 1.2M、`rss.json` 483K |
 | `worker/` | 6 | 132K | 评论后端源码 |
 | `.github/` | 12 | 124K | 6 个 workflow + 5 个脚本 |
-| `docs/` | 3 | 76K | 说明文档 |
+| `docs/` | 4 | 96K | 说明文档 |
 | `api/` `scripts/` `tests/` | 2 / 3 / 3 | 52K | 辅助 |
 
 仓库总体积 **13M**（不含 `.git` / `node_modules` / `public`）。
@@ -284,11 +284,12 @@
 
 > 6 条流水线写 6 个不同产物，**改动这些数据文件前先确认是不是 CI 生成的**，否则下次跑就被覆盖。
 
-### 2.9 `docs/`（3 个）
+### 2.9 `docs/`（4 个）
 
 | 文件 | 行数 | 内容 |
 | --- | --- | --- |
 | `comment-system.md` | 866 | 评论系统完整文档（架构、部署、secret、接口） |
+| `memo-sync.md` | 111 | 哔哔同步链路（FlareMo → memos.json，附件转存图床、secrets、故障排查） |
 | `repo-structure-checklist.md` | — | 本文件 |
 | `licenses/ivy-LICENSE.md` | 24 | 原 ivy 主题许可（Unlicense/公有领域），内嵌后保留 |
 

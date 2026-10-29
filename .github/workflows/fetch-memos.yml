@@ -6,6 +6,11 @@ on:
     - cron: "0 0,2,4,6,8,10,12,14,16 * * *"
   workflow_dispatch:
 
+# 同一时间只跑一个，避免两个任务同时写 memos.json / 附件缓存
+concurrency:
+  group: fetch-memos
+  cancel-in-progress: false
+
 jobs:
   fetch-memos:
     runs-on: ubuntu-latest
@@ -17,14 +22,22 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install node-fetch@2
-
-      - name: Fetch memos and save as JSON
+      # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch
+      - name: Fetch memos from FlareMo and mirror attachments to R2
+        env:
+          FLAREMO_BASE: ${{ secrets.FLAREMO_BASE || 'https://drafts.hux.ink' }}
+          FLAREMO_PAT: ${{ secrets.FLAREMO_PAT }}
+          # 图床沿用 Notion 同步那套已经配好的 secret
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
+          R2_PREFIX: ${{ vars.R2_PREFIX || 'images/{yyyy}/{mm}' }}
         run: node .github/scripts/fetch-memos.js
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: update memos.json'
-          file_pattern: 'static/memos.json'
+          file_pattern: 'static/memos.json .github/scripts/memo-attachment-cache.json'
