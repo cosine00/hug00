@@ -19,7 +19,7 @@
   },
   {
     "id": "2f280cca-021f-47a8-82e4-f06f9ec7e7c0",
-    "content": "鉴于昨晚群晖遭遇勒索攻击，所有文件被加密上锁。把memos迁移到无须服务器托管的  \\[FlareMo\\]([https://github.com/realchendahuang/FlareMo) 上。脱钩群晖的又一步。](https://github.com/realchendahuang/FlareMo)",
+    "content": "鉴于昨晚群晖遭遇勒索攻击，所有文件被加密上锁。把memos迁移到无须服务器托管的 \\[FlareMo\\]([https://github.com/realchendahuang/FlareMo)](https://github.com/realchendahuang/FlareMo) 上，脱钩群晖的又一步。",
     "createdTs": 1793270090,
     "resourceList": [],
     "tags": []
