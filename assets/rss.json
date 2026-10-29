@@ -141,7 +141,7 @@
       "updated": "2026-10-29 01:14:00",
       "excerpt": "前言 由于AI大火,QQ机器人也越发简单好用了,所以摒弃了之前的nonebot框架的QQ机器人改为官方QQ机器人通知 微信则是接入openclaw的机器人 如果已经有绑定openclaw或者其他 则不能同时绑定 插件作用 通过 QQ 官方机器人和微信 iLink 向站长发送新评论通知。支持分别开启 QQ、微信，选择通知待审核或已发布的新评论，并查看每个渠道最近的发送结果。 评论提交后直接发送；审核操作不会再次通知。发送失败不会影响评论…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 12
     },
     {
@@ -196,12 +196,12 @@
       "title": "污染源异常数据推送系统是怎么运转的",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/how-does-the-pollution-source-abnormal-data-push-system-operate.html",
+      "link": "https://9sb.net/archives/how-does-the-pollution-source-abnormal-data-push-system-operate.html",
       "created": "2026-10-28 06:28:00",
       "updated": "2026-10-28 06:28:00",
       "excerpt": "这套系统不只是给夜班准备的。白天忙起来，手头的事一件接一件，数据页面就算开着，也未必顾得上多看一眼。企业多、排口多、因子更多，靠人一个个翻，时间长了总会走神。夜班当然也要用，但不是全部原因。公司...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 17
     },
     {
@@ -340,12 +340,12 @@
       "title": "公益图床不是色情图床",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/public-welfare-beds-are-not-pornographic-beds.html",
+      "link": "https://9sb.net/archives/public-welfare-beds-are-not-pornographic-beds.html",
       "created": "2026-10-27 01:33:00",
       "updated": "2026-10-27 01:33:00",
       "excerpt": "服务器平时有一些富余资源，闲着也是闲着，我就拿一部分出来做了个公益图床。没打算靠它赚钱，也没挂广告，公告里写得很清楚，上传会记录 IP，违规图片会被审核删除。想法很简单，给大家行个方便，自己也能...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 29
     },
     {
@@ -364,12 +364,12 @@
       "title": "昨晚把几台服务器的 PHP 漏洞补了一遍",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/last-night-i-patched-php-vulnerabilities-on-several-servers.html",
+      "link": "https://9sb.net/archives/last-night-i-patched-php-vulnerabilities-on-several-servers.html",
       "created": "2026-10-26 16:25:00",
       "updated": "2026-10-26 16:25:00",
       "excerpt": "昨晚不太忙，原本想把服务器的事留到周末，后来想想还是别拖，索性把手上几台机器挨个检查了一遍，把最近讨论比较多的 PHP 漏洞补上了。不是什么值得炫耀的事，但拖久了心里总不踏实，干脆一次处理完。P...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 31
     },
     {
@@ -616,12 +616,12 @@
       "title": "Ihk.Me 这个网页朋友圈被恶意者刷了不到300GB流量",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/ihk-mes-social-media-account-has-been-hacked-by-malicious-individuals-resulting-in-less-than-300gb-of-data-usage.html",
+      "link": "https://9sb.net/archives/ihk-mes-social-media-account-has-been-hacked-by-malicious-individuals-resulting-in-less-than-300gb-of-data-usage.html",
       "created": "2026-10-25 04:02:00",
       "updated": "2026-10-25 04:02:00",
       "excerpt": "昨天下午收到流量提醒，说站点跑出了很大的流量。我一开始以为是 9sb.net 出了问题，登上去看才发现不是，被刷的是 ihk.me。这个站算是我做的一个网页版朋友圈，平时放点照片、音乐和碎碎念，...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 52
     },
     {
@@ -1108,12 +1108,12 @@
       "title": "污染源异常数据推送平台，为了值夜班搭了个推送平台",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/a-platform-for-pushing-abnormal-data-on-pollution-sources-was-set-up-for-night-shifts.html",
+      "link": "https://9sb.net/archives/a-platform-for-pushing-abnormal-data-on-pollution-sources-was-set-up-for-night-shifts.html",
       "created": "2026-10-20 00:00:00",
       "updated": "2026-10-20 00:00:00",
       "excerpt": "值夜班总怕漏数据，半夜频繁的起床，太痛苦了，尤其年龄越来越大，的确有点吃不消，索性搭了个采集+推送平台。{mx_photo}{mx_photo}上夜班的时候，最怕电脑上的数据在跳，人却困得睁不开...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 93
     },
     {
@@ -1281,7 +1281,7 @@
       "updated": "2026-10-18 08:31:11",
       "excerpt": "昨天vipcloud停机维护,导致了 博客无法访问,Sub2api也无法访问,AI也使用不了. 所以连夜把博客和其它项目迁移回腾讯云的日本轻量服务器. 目前线路看上去还可以,就是不知道晚高峰的情况如何了. 大厂还是可靠很多的,小厂的机子真就是玩具 这是MJJ的\"不可能三角\",稳定,价格,线路只能三选其二",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 107
     },
     {
@@ -1432,12 +1432,12 @@
       "title": "Typecho 曝出 SSRF 漏洞，我自己的博客也中了，顺手把补丁打上",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
+      "link": "https://9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
       "created": "2026-10-16 15:24:00",
       "updated": "2026-10-16 15:24:00",
       "excerpt": "今天刷到一个安全博客的更新，标题带着 CVE 编号，讲的是 Typecho 的一个 SSRF 漏洞。我博客用的就是 Typecho，看到这种跟自己有关的东西肯定要点进去看，看完之后心情有点复杂。...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 120
     },
     {
@@ -1617,19 +1617,19 @@
       "updated": "2026-10-13 07:26:00",
       "excerpt": "插件说明 在同一篇文章中创建多个限时抽奖活动，支持一轮结束后继续新增活动，也支持多个活动同时进行。每个活动截止后独立从本文符合其时间范围的顶层评论者中随机抽取 1 人 ，公示中奖昵称；无合格参与者则流局。支持实体和虚拟奖品：实体奖品邮件邀请中奖者填写收货地址，虚拟奖品将预设的兑换码、下载地址或说明直接发送到中奖邮箱。 安装与使用 下载仓库，将文件夹命名为 CommentLottery ，放到 Typecho 的 usr/plugins…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 135
     },
     {
       "title": "从哪吒换到极简探针，移植主题加毛玻璃，准备慢慢全部转过来",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
+      "link": "https://9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
       "created": "2026-10-12 13:36:07",
       "updated": "2026-10-12 13:36:07",
       "excerpt": "最近逛论坛，看到一个探针项目，极简风格，一眼就喜欢上了。这两天刚好不忙，闲着也是闲着，又开始折腾啦。之前一直用的是哪吒探针，说实话功能是真的全，但对我来说有点过剩。我主要就想看看服务器在线不在线...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 136
     },
     {
@@ -1684,12 +1684,12 @@
       "title": "临时约的一场骑行，终点是邢台本地最大的朱庄水库",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
+      "link": "https://9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
       "created": "2026-10-11 12:35:46",
       "updated": "2026-10-11 12:35:46",
       "excerpt": "昨天跟朋友临时约着骑车，说想去朱庄水库转转。上午实在抽不开身，送完孩子又去把车胎补了下，一来二去就晚了，干脆改成下午出发。{mx_photo}{mx_photo}目标是邢台本地最大的水库，朱庄水...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 141
     },
     {
@@ -1744,12 +1744,12 @@
       "title": "送娃上学冻了一路，让我领教了早晚温差",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
+      "link": "https://9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
       "created": "2026-10-10 00:11:49",
       "updated": "2026-10-10 00:11:49",
       "excerpt": "这两天孩子学校开秋季运动会，天气看着挺好，就想着骑电车载他去。出门前媳妇说了句早上凉，给孩子套了件薄羽绒服，我自己也觉得挺有先见之明，顺手套了件外套。结果骑到半路，风一兜，我就知道想岔了，这一路...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 146
     },
     {
@@ -1833,7 +1833,7 @@
       "updated": "2026-10-08 11:35:00",
       "excerpt": "由于这个月开了4个GPT的team和2个plus感觉额度用不完 想跟朋友们一起分享 于是让codex写了一个评论抽奖的插件 顺便测试一下GPT 6.1 sol到底是不是弱智 在评论中先抽取一名幸运的朋友分享我自建的sub2API的账号邀请码 初始额度500刀 看使用情况再决定是否增加额度 [comment-lottery]",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 153
     },
     {
@@ -1888,12 +1888,12 @@
       "title": "核心影视，优化后的播放页面长这样，按钮、选集、线路全安排明白",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/core-movies-and-tv-shows-the-optimized-playback-page-length-is-like-this-with-clear-arrangement-of-buttons-selections-and-routes.html",
+      "link": "https://9sb.net/archives/core-movies-and-tv-shows-the-optimized-playback-page-length-is-like-this-with-clear-arrangement-of-buttons-selections-and-routes.html",
       "created": "2026-10-07 16:49:11",
       "updated": "2026-10-07 16:49:11",
       "excerpt": "今晚把核心影视的播放页面和播放器重新优化了一轮，图上是改完的样子，记录一下。先说选集这块。之前其实也可以，但总就是感觉差那么点意思，所以今天就下手它了。按钮也重新排过，选集、全屏、下一集，三个一...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 158
     },
     {
@@ -2493,7 +2493,7 @@
       "updated": "2026-09-19 19:15:00",
       "excerpt": "细读张岱《陶庵梦忆·报恩塔》，从佛塔形制、琉璃工艺到补砖与点灯的细节，看南京大报恩寺琉璃塔背后的匠人手艺、帝王物力，以及张岱始终放不下的赏玩兴致。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 208
     },
     {
@@ -2721,7 +2721,7 @@
       "updated": "2026-09-11 01:08:00",
       "excerpt": "该护的护住了吗？该管的管住了吗？ 先看两件事，越看越拧巴 4岁男童被指“性骚扰” 就长沙那个事。 一个4岁小男孩在餐厅里跑，手碰到了一个女的屁股。监控里看，孩子就是在跑，手甩来甩去，根本不像故意摸。 法律上也讲得很清楚：4岁孩子连“性”是啥都不懂，哪来的性骚扰故意？ 结果呢？视频一发，标签一贴，“性骚扰”帽子直接扣上。真正该被保护的幼童，反而被网暴、被围观、被当成流量素材。 你说这算保护谁？ 14岁女生被围殴，施暴者处理却分年龄 再看…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 227
     },
     {
@@ -3021,7 +3021,7 @@
       "updated": "2026-08-31 12:06:00",
       "excerpt": "2026 年 8 月 30 日夜，漫步里斯本万国公园水岸，见月色，有感而作。 梧桐疏影凤高飞，远浦轻澜荡翠微。 碎月凌波还自静，清光不改照山扉。 |",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 252
     },
     {
@@ -3549,7 +3549,7 @@
       "updated": "2026-08-12 12:40:00",
       "excerpt": "以平水韵一东作七律悼念朱镕基总理，回望其半世风霜、危局担当与雷霆手段留下的痛楚和毁誉，将未定功过交还众议与史笔。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 296
     },
     {
@@ -3777,7 +3777,7 @@
       "updated": "2026-08-06 23:00:00",
       "excerpt": "从药山惟俨「我有一句子，未曾向人说」与陶渊明「欲辨已忘言」写起，思考参禅中对答案、境界与所得的追逐，以及「亡」与「忘」之间的细微差别。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 315
     },
     {
@@ -3849,7 +3849,7 @@
       "updated": "2026-08-04 10:49:00",
       "excerpt": "Nebula Nebula 是一款面向 Typecho 的响应式博客主题，采用深空、星云与极光风格，适用于个人博客、技术博客和长期内容归档。 功能特性 响应式文章卡片，适配桌面、平板和移动端 深色与浅色模式切换，并记忆访客偏好 Canvas 动态星空背景与轻量滚动动画 文章自定义封面、正文首图回退和渐变占位封面 文章、独立页面、搜索、分类、标签和作者归档 时间线归档、分类目录、标签云和友情链接页面 嵌套评论、评论回复和移动端评论布局…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 321
     },
     {
@@ -4197,7 +4197,7 @@
       "updated": "2026-07-20 10:29:17",
       "excerpt": "俗话说 听风就是雨 ,用来比喻一听到一点风声或消息，就不加核实地信以为真，并轻率地做出反应或盲目附和。这个词在日常生活中常用于形容一个人缺乏独立判断能力，容易被谣言或未经证实的言论所左右。 今天就遇到了这类人. 有人在ns论坛发帖声称pdd有监听人手机屏幕的功能,用来精准投放广告,起因是x上的一篇贴文 https://x.com/giantcutie666/status/2079039026779378133 然后很多人就表示真的都刷…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 350
     },
     {
@@ -4401,7 +4401,7 @@
       "updated": "2026-07-12 12:32:00",
       "excerpt": "面包云 的 vps 突然更换了新的IP 也没有通知 某天早上起床发现梯子不能用了才去查看 探针. 于是这才发现 IP 更改了。 vipcloud 的vps在线率果然不是很理想，但是无所谓了，就部署了 hermes 和一个博客。 能用就行吧 薅谷歌空间的羊毛注册了一个 7 元的 com 域名 薅 chatgpt plus 花了十块钱弄了个 1 刀卡 结果没用两天就封号了 于是自己正价开通了 plus 一个月 120 元。 加上搭车的英区…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 367
     },
     {
@@ -4581,7 +4581,7 @@
       "updated": "2026-07-03 22:40:00",
       "excerpt": "从葡萄牙 2-1 克罗地亚写起，回看 C 罗、Modrić 与 Diogo Jota 在两个相似比分之间留下的时间、告别与缺席。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 382
     },
     {
@@ -4905,7 +4905,7 @@
       "updated": "2026-06-12 23:00:00",
       "excerpt": "公交车上读董桥，因「曼殊和尚」想起周宁《人间草木》。有些读书的影响并未消失，只是沉到心里，等因缘到了才浮上来。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 409
     },
     {
@@ -4917,7 +4917,7 @@
       "updated": "2026-06-12 08:41:00",
       "excerpt": "七牛云的新加坡机房 线路差到了极点 于是换到了 vipcloud 三网各自优化2c3g10M带宽,国内访问感觉好多了 推荐链接 https://www.vipserver.cloud/recommend/AUJdEkVSDgdvMC6URQHU 💻基本信息 🎬IP质量 🌐网络质量 📍回程路由 NodeQuality链接",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 410
     },
     {
@@ -5025,7 +5025,7 @@
       "updated": "2026-06-02 20:02:00",
       "excerpt": "在里斯本街头听见中餐馆传来的歌声，想起十几年前海外华人聚会中的老歌与乡音，写语言、记忆与漂泊者临时共同体之间的牵连。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 419
     },
     {
@@ -5073,7 +5073,7 @@
       "updated": "2026-05-31 10:53:00",
       "excerpt": "记录我如何重做 Bear Blog 的 Stream 页面：去掉 Telegram 中转，让 Tana Outliner 中的特定笔记通过 Cloudflare Workers、D1 与 R2 直达博客展示，也重新划清个人发布系统的边界。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 423
     },
     {
@@ -5133,7 +5133,7 @@
       "updated": "2026-05-26 01:01:17",
       "excerpt": "前言 依旧是从 bigfa 大佬的同名wordpress主题移植而来 保留大部分原汁原味的设置 预览 暂无 演示站点 https://blog.sgcd.net 下载地址 [github=jkjoy/Typecho-Theme-Jaguar] [info]喜欢就随手点个star 谢谢[/info]",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 428
     },
     {
@@ -5265,7 +5265,7 @@
       "updated": "2026-05-10 19:44:00",
       "excerpt": "从 John Gribbin \"Deep Simplicity\" 谈混沌、复杂性与禅宗「风吹幡动」公案，思考秩序、变化与心识分别如何相互生成。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 439
     },
     {
@@ -5361,7 +5361,7 @@
       "updated": "2026-05-02 16:05:00",
       "excerpt": "《航札（一）》收录古籍掌故、文字训诂、文学悼亡、民俗信仰与世事观察，是一组以札记形式保存的阅读与思考片段。",
       "site_url": "https://justgoidea.com/",
-      "feed_url": "https://justgoidea.com/feed/?type=rss",
+      "feed_url": "https://justgoidea.com/feed/",
       "floor": 447
     },
     {
@@ -5421,7 +5421,7 @@
       "updated": "2026-04-27 10:13:00",
       "excerpt": "简介 老孙从刚开始研究主题到现在也移植了不少主题 这次真的是自己慢慢手搓出来的主题 纯原创 主打的就是一个简洁无太多功能专注于写作本身(我本身不爱写作) 预览 开源地址 https://github.com/jkjoy/typecho-theme-timellow 希望多多点点star,谢谢~ 演示地址 https://www.imsun.org/",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 452
     },
     {
@@ -6069,7 +6069,7 @@
       "updated": "2026-03-03 01:55:00",
       "excerpt": "简介 从 halo 开源主题 Clarity 移植.. 保留大多数设置 使用 建议配合插件 Enhancement 一起使用过 效果更佳 [article id=\"1779\"] 预览 本站 下载地址 https://github.com/jkjoy/theme-clarity 配置文档 https://www.imsun.org/Clarity-theme-docs/",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 506
     },
     {
@@ -6093,7 +6093,7 @@
       "updated": "2026-02-26 03:59:10",
       "excerpt": "简介 本插件进行了常用插件缝合,并针对主题进行了优化 功能 融合怪插件 —— 友链增强 + 瞬间 + 标签助手 + 站点地图 + 评论增强 + 外链跳转 + 视频链接解析 + QQ通知 + 邮件提醒 + 主题插件在线上传/删除等多功能于一体的 Typecho 插件。 使用 typecho_links 数据表存储友链信息 输出方式：模板函数调用 + 文章内标签解析 三种输出模式：SHOW_TEXT / SHOW_IMG / SHOW_M…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 508
     },
     {
@@ -6309,7 +6309,7 @@
       "updated": "2026-01-24 09:03:00",
       "excerpt": "近日 Typecho 突然诈尸更新了版本号 1.3.0 其实与之前的 beta 版本相差不大.. [info]但是更新需谨慎![/info] 部分插件或者主题 在1.3.0无法继续使用.. 在 1panel 使用 Typecho 的过程中还是会有一些问题 使用自带的伪静态规则大概率会出现 404 需要修改伪静态为 location / { try_files $uri $uri/ /index.php?$args; } 因为高中时候最…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 526
     },
     {
@@ -6609,7 +6609,7 @@
       "updated": "2025-12-20 11:57:00",
       "excerpt": "起因 最近由于内存涨价了, 我把x99平台的4条16G内存卖了, 回了一波血, 暂时不打算玩这个老旧的平台了 恰好手里头有张微星的Z590M 爆破弹, 准备换平台玩玩. 于是在拼夕夕斥巨资买了一颗i5 10600KF 花费 458.. 内存就使用 几年前玩机 扔在抽屉里的 金百达 DDR4 2666MHZ 8G X2 开启XMP 可运行在3000MHZ. 硬盘还有两块铠侠 的 1T m.2 也是当年玩机买的 当时的价格貌似是599一块…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 551
     },
     {
@@ -6813,7 +6813,7 @@
       "updated": "2025-12-03 03:50:00",
       "excerpt": "功能 基于AI实现 slug/摘要/标签提取/文章内容生成 等功能 插件设置可以自定义提示词,根据你的需要生成相关内容 下载 [download file='AIHelper_NnneT.tar.gz' size='16.5kb'] https://file.imsun.org/upload/2025-12/AIHelper_NnneT.tar.gz [/download] [download file='demo.zip' size…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 568
     },
     {
@@ -6897,7 +6897,7 @@
       "updated": "2025-11-24 09:20:00",
       "excerpt": "Typecho 1.2中正常使用的UploadPlugin插件在 1.3 beta中无法正常的上传主题和插件了 非常的不方便 于是修复了上传的问题 下载地址放在下面 自取 [download file='UploadPlugin.zip' size='7.5KB'] https://file.imsun.org/upload/2025-11/UploadPlugin%20 (1).zip [/download]",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 575
     },
     {
@@ -6969,7 +6969,7 @@
       "updated": "2025-11-14 07:14:00",
       "excerpt": "这制订规则的人当真是有着高高在上的傲慢. 遵守规则的我反而陷入了困境之中. 不知道为何我这个域名现在被腾讯拉入了黑名单,连带着使用了腾讯安全数据的小米手机也会提示危险 我不理解,我曾经申诉过几次,有时候好一段时间,然后就又红了. 在不明真相的人眼中 这无异于败坏了我的人品. 实在不行就换个域名重来过..",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 581
     },
     {
@@ -7005,7 +7005,7 @@
       "updated": "2025-11-09 06:58:58",
       "excerpt": "因为想用Cloudflare的Workers 和 D1 部署一个完全仿照Wordpress Rest API 的博客后端 所以 用AI糊了一个项目 https://github.com/jkjoy/cfblog 为了能使用这个后端 所以就又糊了一个基于vue3的前端 仿 Akina 风格 https://github.com/jkjoy/cfblog-theme-akina 同时又仿hugo主题paper 糊了一个Astro 的前端…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 584
     },
     {
@@ -7161,7 +7161,7 @@
       "updated": "2025-10-20 01:18:00",
       "excerpt": "一个功能强大的 Typecho RSS 插件，支持全文输出和多种美化显示风格。 功能特点 全文输出 : 支持输出文章全文或摘要 多种主题 : 提供 4 种精美样式主题供选择 美化显示 : 在浏览器中直接打开 RSS 链接时显示美观的界面 灵活配置 : 可自定义文章数量、输出内容、版权信息等 响应式设计 : 完美适配桌面和移动设备 接管原生路由 : 完全接管 Typecho 的 /feed 路由 安装方法 下载插件到 Typecho 插…",
       "site_url": "https://www.imsun.org",
-      "feed_url": "https://www.imsun.org/feed",
+      "feed_url": "https://www.imsun.org/feed/",
       "floor": 597
     },
     {
@@ -7203,9 +7203,9 @@
   ],
   "statistical_data": {
     "friends_num": 63,
-    "active_num": 54,
-    "error_num": 9,
+    "active_num": 56,
+    "error_num": 7,
     "article_num": 600,
-    "last_updated_time": "2026-10-29 15:15:41 UTC"
+    "last_updated_time": "2026-10-29 21:09:22 UTC"
   }
 }
