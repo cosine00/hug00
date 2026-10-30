@@ -36,8 +36,11 @@ jobs:
           R2_PREFIX: ${{ vars.R2_PREFIX || 'images/{yyyy}/{mm}' }}
         run: node .github/scripts/fetch-memos.js
 
+      - name: Generate BB RSS feed
+        run: node .github/scripts/generate-bb-rss.js
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'chore: update memos.json'
-          file_pattern: 'static/memos.json .github/scripts/memo-attachment-cache.json'
+          commit_message: 'chore: update memos.json and BB RSS'
+          file_pattern: 'static/memos.json static/bb/index.xml .github/scripts/memo-attachment-cache.json'

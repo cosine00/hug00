@@ -74,6 +74,9 @@
     {{ with .OutputFormats.Get "RSS" }}
     <link href="{{ .RelPermalink }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" />
     {{ end }}
+    {{ if eq .Layout "bbfocus" }}
+    <link href="{{ "bb/index.xml" | absURL }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }} · 哔哔" />
+    {{ end }}
     {{ partial "head_highlightjs" . }}
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}?v=20261022-1" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
