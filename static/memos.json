@@ -1,5 +1,12 @@
 [
   {
+    "id": "2090fd99-4a3c-4d3f-ab09-c39f256a8ebc",
+    "content": "冲动充值了 159967",
+    "createdTs": 1793324655,
+    "resourceList": [],
+    "tags": []
+  },
+  {
     "id": "db235865-59b5-43ac-80f6-d22122496d26",
     "content": "到家后用一台没啥重要文件的电脑，让 Codex 局域网连接群晖，读取一遍全盘文件路径及目录，导出来一份层级文件名清单，方便后面推倒重来的时候对照重建。",
     "createdTs": 1793285348,
@@ -26,7 +33,7 @@
   },
   {
     "id": "2f280cca-021f-47a8-82e4-f06f9ec7e7c0",
-    "content": "鉴于昨晚群晖遭遇勒索攻击，所有文件被加密上锁。把memos迁移到无须服务器托管的 \\[FlareMo\\]([https://github.com/realchendahuang/FlareMo/)](https://github.com/realchendahuang/FlareMo) 上，脱钩群晖的又一步。",
+    "content": "鉴于昨晚群晖遭遇勒索攻击，所有文件被加密上锁。把memos迁移到无须服务器托管的 \\[FlareMo\\]([https://github.com/realchendahuang/FlareMo)](https://github.com/realchendahuang/FlareMo) 上，脱钩群晖的又一步。",
     "createdTs": 1793270090,
     "resourceList": [],
     "tags": []
