@@ -5,6 +5,12 @@
   <button id="bibi-tab-random" class="bibi-switch-button" type="button" role="tab" aria-selected="false" aria-controls="bber" data-bibi-mode="random">好运</button>
 </div>
 
+<div class="bb-feed-link">
+  <a href="{{ "bb/index.xml" | relURL }}" title="订阅哔哔 RSS">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/><path d="M4 10a10 10 0 0 1 10 10M4 4a16 16 0 0 1 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    RSS 订阅
+  </a>
+</div>
 <div id="bber"></div>
 
 <script>
@@ -67,6 +73,10 @@
   .bibi-switch-button:hover { background: var(--accent-soft, rgba(66, 185, 131, .1)); color: var(--accent-hover, #42b983); }
   .bibi-switch-button.selected { background: var(--accent, #42b983); color: var(--accent-contrast, #fff); }
   .bibi-switch-button:focus-visible { outline: 2px solid var(--accent, #42b983); outline-offset: 2px; }
+  .bb-feed-link { display:flex; justify-content:flex-end; max-width:780px; margin:.65rem auto 0; padding:0 .25rem; }
+  .bb-feed-link a { display:inline-flex; align-items:center; gap:5px; color:var(--muted,#777); font-size:13px; text-decoration:none; transition:color .18s ease; }
+  .bb-feed-link a:hover { color:var(--accent,#42b983); }
+  .bb-feed-link svg { width:15px; height:15px; }
   #bber { margin-right: auto; margin-left: auto; }
   #bber .bb-cont { overflow: visible !important; }
   #bber .bb-cont blockquote {
