@@ -1,45 +1,34 @@
 [
   {
-    "id": "2090fd99-4a3c-4d3f-ab09-c39f256a8ebc",
+    "id": "1241",
     "content": "冲动充值了 159967",
     "createdTs": 1793324655,
     "resourceList": [],
     "tags": []
   },
   {
-    "id": "db235865-59b5-43ac-80f6-d22122496d26",
+    "id": "1240",
     "content": "到家后用一台没啥重要文件的电脑，让 Codex 局域网连接群晖，读取一遍全盘文件路径及目录，导出来一份层级文件名清单，方便后面推倒重来的时候对照重建。",
     "createdTs": 1793285348,
     "resourceList": [],
     "tags": []
   },
   {
-    "id": "30abf140-b5e6-4804-b89b-9907ddc8312b",
-    "content": "不支持 Markdown 吗？也试试图片。",
+    "id": "1238",
+    "content": "不支持 Markdown 吗？也试试图片。\n\n![Snipaste_2026-10-29_18-34-08.png](https://img.hux.ink/image/2026/10/Snipaste_2026-10-29_18-34-08-6b1651.webp)",
     "createdTs": 1793270497,
-    "resourceList": [
-      {
-        "id": "b683080a-2331-4a26-81e9-595dd5764c64",
-        "creatorId": 1,
-        "createdTs": 1793270499,
-        "updatedTs": 1793270499,
-        "filename": "Snipaste_2026-10-29_18-34-08.webp",
-        "externalLink": "https://img.hux.ink/images/2026/10/20261029110550-d9792-snipaste-2026-10-29-18-34-08.webp",
-        "type": "image/webp",
-        "size": 65948
-      }
-    ],
+    "resourceList": [],
     "tags": []
   },
   {
-    "id": "2f280cca-021f-47a8-82e4-f06f9ec7e7c0",
+    "id": "1237",
     "content": "鉴于昨晚群晖遭遇勒索攻击，所有文件被加密上锁。把memos迁移到无须服务器托管的 [FlareMo](https://github.com/realchendahuang/FlareMo) 上，脱钩群晖的又一步。",
     "createdTs": 1793270090,
     "resourceList": [],
     "tags": []
   },
   {
-    "id": "4783d4e8-740e-4318-bec2-fd09358b50a3",
+    "id": "1236",
     "content": "Hello,FlareMo.",
     "createdTs": 1793268892,
     "resourceList": [],
