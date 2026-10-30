@@ -36,6 +36,9 @@ jobs:
           R2_PREFIX: ${{ vars.R2_PREFIX || 'images/{yyyy}/{mm}' }}
         run: node .github/scripts/fetch-memos.js
 
+      - name: Test BB RSS generator
+        run: node --test .github/scripts/generate-bb-rss.test.js
+
       - name: Generate BB RSS feed
         run: node .github/scripts/generate-bb-rss.js
 
