@@ -22,6 +22,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Test public Memo visibility filter
+        run: node --test .github/scripts/memo-visibility.test.js
+
       # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch
       - name: Fetch memos from FlareMo and mirror attachments to R2
         env:
