@@ -30,6 +30,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { filterPublicMemos } from './memo-visibility.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -363,9 +364,15 @@ function memoStateOf(memo) {
   const raw = await pullAllMemos();
   if (!raw.length) fail('接口没有返回任何哔哔，请检查 PAT 权限或 FLAREMO_BASE');
 
-  const kept = raw.filter(memo => CFG.states.includes(memoStateOf(memo)));
-  const dropped = raw.length - kept.length;
-  if (dropped) console.log(`跳过状态非 ${CFG.states.join('/')} 的 ${dropped} 条`);
+  // The blog is a public surface: fail closed and include PUBLIC only.
+  // Filter before attachment enumeration/download so private/protected media
+  // is never mirrored to the public R2 image bed.
+  const publicMemos = filterPublicMemos(raw);
+  const kept = publicMemos.filter(memo => CFG.states.includes(memoStateOf(memo)));
+  const privateDropped = raw.length - publicMemos.length;
+  const stateDropped = publicMemos.length - kept.length;
+  if (privateDropped) console.log(`跳过非 PUBLIC 的 ${privateDropped} 条 Memo`);
+  if (stateDropped) console.log(`跳过状态非 ${CFG.states.join('/')} 的 ${stateDropped} 条`);
 
   const cache = fs.existsSync(CACHE_FILE)
     ? JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'))

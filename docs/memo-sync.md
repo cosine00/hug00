@@ -78,7 +78,7 @@ DRY_RUN=1 node .github/scripts/fetch-memos.js   # 输出 static/memos.dryrun.jso
 
 ### GitHub Actions
 
-`.github/workflows/fetch-memos.yml`，每两小时一次 + 手动触发。需要在仓库 Secrets 里配：
+`.github/workflows/fetch-memos.yml`：公开 Memo 新建、编辑、删除或附件变更时由 FlareMo 触发；每天北京时间 03:17 执行一次兜底；保留手动触发入口。需要在仓库 Secrets 里配：
 
 `FLAREMO_PAT`（新增）
 
@@ -114,3 +114,8 @@ DRY_RUN=1 node .github/scripts/fetch-memos.js   # 输出 static/memos.dryrun.jso
 | id | 数字 | 历史条目保留数字，新发的是 UUID |
 | 附件 | `resourceList[].externalLink` 直接可用 | 独立 `attachments[]`，需下载后转存 |
 | 标签 | 正文 `#标签` 正则提取 | 同上（保持产物格式稳定） |
+
+
+## 公开可见性保护
+
+博客同步只允许 `visibility === "PUBLIC"` 的 Memo 写入 `static/memos.json`。PRIVATE 和 PROTECTED 在附件转存前即被过滤，因此其正文和附件不会进入公开博客或 R2 图床。公开 Memo 改为私密、受保护或删除后，下一次同步会从 JSON、BB 页面和 RSS 中移除。

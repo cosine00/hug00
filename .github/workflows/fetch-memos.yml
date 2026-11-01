@@ -2,8 +2,8 @@ name: Fetch Memos
 
 on:
   schedule:
-    # 北京时间 8、10、12、14、16、18、20、22、24/0 点
-    - cron: "0 0,2,4,6,8,10,12,14,16 * * *"
+    # 每日兜底同步（北京时间次日 03:17）；正常发布由 FlareMo 即时触发
+    - cron: "17 19 * * *"
   workflow_dispatch:
 
 # 同一时间只跑一个，避免两个任务同时写 memos.json / 附件缓存
@@ -21,6 +21,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Test public Memo visibility filter
+        run: node --test .github/scripts/memo-visibility.test.js
 
       # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch
       - name: Fetch memos from FlareMo and mirror attachments to R2
