@@ -42,7 +42,9 @@ export function sanitizeMemoHtml(html) {
 
 function plainText(markdown) {
   return String(markdown || '')
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    // 图片的 alt 通常是原始文件名；正文仍保留图片，但标题和摘要不应显示它。
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/!\[[^\]]*\]\s*\[[^\]]*\]/g, ' ')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]*>/g, ' ')
     .replace(/[*_>#~]/g, '')

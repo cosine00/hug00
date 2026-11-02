@@ -34,8 +34,23 @@ test('builds BB feed with Markdown, inline and attachment images, tags and stabl
   assert.match(xml, /<strong>bold<\/strong>/);
   assert.match(xml, /https:\/\/img\.hux\.ink\/inline\.webp/);
   assert.match(xml, /https:\/\/img\.hux\.ink\/extra\.jpg/);
+  assert.match(xml, /<title>Hello A bold memo with link\.<\/title>/);
+  assert.match(xml, /<description><!\[CDATA\[Hello A bold memo with link\.\]\]><\/description>/);
   assert.match(xml, /生活/);
   assert.equal((xml.match(/<item>/g) || []).length, 1);
+});
+
+test('omits image filenames from BB titles and descriptions', () => {
+  const xml = buildBbRss([{
+    id: 'image-title',
+    content: '不支持 Markdown 吗？也试试图片。\n\n![Snipaste2026-10-2918-34-08.png](https://img.hux.ink/test.png)',
+    createdTs: 1700000000,
+    tags: [],
+  }], { parse: () => '<p>不支持 Markdown 吗？也试试图片。</p><p><img src="https://img.hux.ink/test.png" alt="Snipaste2026-10-2918-34-08.png"></p>' });
+
+  assert.match(xml, /<title>不支持 Markdown 吗？也试试图片。<\/title>/);
+  assert.match(xml, /<description><!\[CDATA\[不支持 Markdown 吗？也试试图片。\]\]><\/description>/);
+  assert.match(xml, /<content:encoded><!\[CDATA\[[\s\S]*Snipaste2026-10-2918-34-08\.png/);
 });
 
 test('limits the feed to the latest 100 memos', () => {
