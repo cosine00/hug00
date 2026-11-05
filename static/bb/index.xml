@@ -6,8 +6,12 @@
 <description>正经话不多，废话倒是不少</description>
 <language>zh-cn</language>
 <generator>Hugo BB RSS generator</generator>
-<lastBuildDate>Wed, 04 Nov 2026 05:58:24 GMT</lastBuildDate>
+<lastBuildDate>Thu, 05 Nov 2026 08:51:33 GMT</lastBuildDate>
 <atom:link href="https://hux.ink/bb/index.xml" rel="self" type="application/rss+xml" />
+<item><title>出错代价低的事情，可以交出去；如果后果需要别人承担，你就应该保留自己的推理和判断。 你要充分理解自己交付的东西，理解到能够为它辩护。因为迟早可能有人会问。 当你</title><link>https://hux.ink/m/1254/</link><guid isPermaLink="false">urn:hux-bb:memo:1254</guid><pubDate>Thu, 05 Nov 2026 08:51:33 GMT</pubDate><description><![CDATA[出错代价低的事情，可以交出去；如果后果需要别人承担，你就应该保留自己的推理和判断。 你要充分理解自己交付的东西，理解到能够为它辩护。因为迟早可能有人会问。 当你产出的东西已经多到无法为其负责时，你做的就不再是审查，而是在寄希望于它没问题。 对于某个具体任务，应该信任智能体到什么程度，本身就是一个需要判断的问题。要让判断保持准确，就需要审查它的工作，因为模型会犯什么错，一直在变化。 如果没有 AI，你会有多不知所措？ 停止练习的能力会逐渐消失，而且速度可能比你想象的更快。 那些]]></description><content:encoded><![CDATA[<p>出错代价低的事情，可以交出去；如果后果需要别人承担，你就应该保留自己的推理和判断。<br>你要充分理解自己交付的东西，理解到能够为它辩护。因为迟早可能有人会问。<br>当你产出的东西已经多到无法为其负责时，你做的就不再是审查，而是在寄希望于它没问题。<br>对于某个具体任务，应该信任智能体到什么程度，本身就是一个需要判断的问题。要让判断保持准确，就需要审查它的工作，因为模型会犯什么错，一直在变化。<br>如果没有 AI，你会有多不知所措？<br>停止练习的能力会逐渐消失，而且速度可能比你想象的更快。 那些你不愿失去的能力，就继续使用。</p>
+<p>亲手运用那些重要的能力，让自己始终参与其中。独立思考，提出更好的问题，对结果负责。 #clip </p>
+<p><a href="https://spark.hux.ink/picks/critical-thinking-when-agents-do-the-work">当智能体替你工作时，如何保持批判性思维</a></p>
+]]></content:encoded><category><![CDATA[clip]]></category></item>
 <item><title>在 NAS 重建之后，尝试通过 Tailscale 连接。但公司网络 Hard NAT，中转和直连跳来跳去，延迟很高，速度只有十多 KB/s，相当感人，与不可用</title><link>https://hux.ink/m/1253/</link><guid isPermaLink="false">urn:hux-bb:memo:1253</guid><pubDate>Wed, 04 Nov 2026 05:58:24 GMT</pubDate><description><![CDATA[在 NAS 重建之后，尝试通过 Tailscale 连接。但公司网络 Hard NAT，中转和直连跳来跳去，延迟很高，速度只有十多 KB/s，相当感人，与不可用没什么区别。放弃。]]></description><content:encoded><![CDATA[<p>在 NAS 重建之后，尝试通过 Tailscale 连接。但公司网络 Hard NAT，中转和直连跳来跳去，延迟很高，速度只有十多 KB/s，相当感人，与不可用没什么区别。放弃。</p>
 ]]></content:encoded></item>
 <item><title>这才过去几个月，AI 产业就全是鬼故事了。继续筹钱补了点 159967。投机</title><link>https://hux.ink/m/1252/</link><guid isPermaLink="false">urn:hux-bb:memo:1252</guid><pubDate>Tue, 03 Nov 2026 05:52:37 GMT</pubDate><description><![CDATA[这才过去几个月，AI 产业就全是鬼故事了。继续筹钱补了点 159967。投机]]></description><content:encoded><![CDATA[<p>这才过去几个月，AI 产业就全是鬼故事了。继续筹钱补了点 159967。#投机</p>
@@ -260,7 +264,5 @@
 ]]></content:encoded></item>
 <item><title>昨晚跟安安一起跳绳 20 分钟，很开心。</title><link>https://hux.ink/m/1128/</link><guid isPermaLink="false">urn:hux-bb:memo:1128</guid><pubDate>Tue, 21 Jul 2026 04:52:05 GMT</pubDate><description><![CDATA[昨晚跟安安一起跳绳 20 分钟，很开心。]]></description><content:encoded><![CDATA[<p>昨晚跟安安一起跳绳 20 分钟，很开心。</p>
 ]]></content:encoded></item>
-<item><title>随着知识、资历和权力增长，我们越来越倾向于寻找赞同、排斥异议，把“不认同的观点”误判为“低劣的观点”，最终只听得到自己的回声。要避免这一点，需要主动接触陌生领域</title><link>https://hux.ink/m/1127/</link><guid isPermaLink="false">urn:hux-bb:memo:1127</guid><pubDate>Tue, 21 Jul 2026 01:29:01 GMT</pubDate><description><![CDATA[随着知识、资历和权力增长，我们越来越倾向于寻找赞同、排斥异议，把“不认同的观点”误判为“低劣的观点”，最终只听得到自己的回声。要避免这一点，需要主动接触陌生领域、反对意见和不同世代的人。Clip 如何避免成为自己世界的昏君？]]></description><content:encoded><![CDATA[<p>随着知识、资历和权力增长，我们越来越倾向于寻找赞同、排斥异议，把“不认同的观点”误判为“低劣的观点”，最终只听得到自己的回声。要避免这一点，需要主动接触陌生领域、反对意见和不同世代的人。#Clip<br><a href="https://pathos.page/blog/avoid-becoming-a-faint-king">如何避免成为自己世界的昏君？</a></p>
-]]></content:encoded><category><![CDATA[Clip]]></category></item>
 </channel>
 </rss>
