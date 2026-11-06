@@ -460,12 +460,12 @@
       "title": "麦块云会员改版，免费 DeepSeek 注册就能用，签到还送鱼币",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/minekuai-membership-revamp-free-models.html",
+      "link": "https://9sb.net/archives/minekuai-membership-revamp-free-models.html",
       "created": "2026-11-02 14:23:00",
       "updated": "2026-11-02 14:23:00",
       "excerpt": "前阵子一直在用麦块云的免费模型，写各种代码、优化代码、排查 BUG，够用。我最近主要拿它跑 DeepSeek，平台上目前也以 DeepSeek 为主，后面听说还会上别的模型。用下来速度挺快，改一...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 39
     },
     {
@@ -693,7 +693,7 @@
       "updated": "2026-10-30 17:10:00",
       "excerpt": "因为儿子要我换个跟他一样颜色的桌子，所以买了一样颜色的升降桌。没想到一发不可收拾，重构了桌面环境。先上成果：再记录一些设备及更新的原因：一、电脑因为 Mac mini 涨价，之前 9000 块卖掉了 M4 的 Mac mini。现在 M6 Mac mini 降价，又没忍住 7100 买回了 M6 + 24G + 512G 的 Mac mini。二、升降桌之前",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 58
     },
     {
@@ -928,12 +928,12 @@
       "title": "污染源异常数据推送系统是怎么运转的",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/how-does-the-pollution-source-abnormal-data-push-system-operate.html",
+      "link": "https://9sb.net/archives/how-does-the-pollution-source-abnormal-data-push-system-operate.html",
       "created": "2026-10-28 06:28:00",
       "updated": "2026-10-28 06:28:00",
       "excerpt": "这套系统不只是给夜班准备的。白天忙起来，手头的事一件接一件，数据页面就算开着，也未必顾得上多看一眼。企业多、排口多、因子更多，靠人一个个翻，时间长了总会走神。夜班当然也要用，但不是全部原因。公司...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 78
     },
     {
@@ -1024,12 +1024,12 @@
       "title": "公益图床不是色情图床",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/public-welfare-beds-are-not-pornographic-beds.html",
+      "link": "https://9sb.net/archives/public-welfare-beds-are-not-pornographic-beds.html",
       "created": "2026-10-27 01:33:00",
       "updated": "2026-10-27 01:33:00",
       "excerpt": "服务器平时有一些富余资源，闲着也是闲着，我就拿一部分出来做了个公益图床。没打算靠它赚钱，也没挂广告，公告里写得很清楚，上传会记录 IP，违规图片会被审核删除。想法很简单，给大家行个方便，自己也能...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 86
     },
     {
@@ -1048,12 +1048,12 @@
       "title": "昨晚把几台服务器的 PHP 漏洞补了一遍",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/last-night-i-patched-php-vulnerabilities-on-several-servers.html",
+      "link": "https://9sb.net/archives/last-night-i-patched-php-vulnerabilities-on-several-servers.html",
       "created": "2026-10-26 16:25:00",
       "updated": "2026-10-26 16:25:00",
       "excerpt": "昨晚不太忙，原本想把服务器的事留到周末，后来想想还是别拖，索性把手上几台机器挨个检查了一遍，把最近讨论比较多的 PHP 漏洞补上了。不是什么值得炫耀的事，但拖久了心里总不踏实，干脆一次处理完。P...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 88
     },
     {
@@ -1065,7 +1065,7 @@
       "updated": "2026-10-26 14:29:01",
       "excerpt": "下午语文老师在群里发消息，说听写声母，有 24 个同学全对，8个同学不合格。晚上回家天塌了，原来我儿子就是这 8 个人之中的一个。听写 21 个声母，他只写了 5 个。问题就是写的太慢，总想写成标准印刷体，说过很多次，优先完成，再考虑是否美观，毫无用处。其他作业也是类似，比如读拼音，错一个他就从头重新开始，一晚上都读不完。说可以只读读错的那个，没用，不听。一",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 89
     },
     {
@@ -1204,12 +1204,12 @@
       "title": "Ihk.Me 这个网页朋友圈被恶意者刷了不到300GB流量",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/ihk-mes-social-media-account-has-been-hacked-by-malicious-individuals-resulting-in-less-than-300gb-of-data-usage.html",
+      "link": "https://9sb.net/archives/ihk-mes-social-media-account-has-been-hacked-by-malicious-individuals-resulting-in-less-than-300gb-of-data-usage.html",
       "created": "2026-10-25 04:02:00",
       "updated": "2026-10-25 04:02:00",
       "excerpt": "昨天下午收到流量提醒，说站点跑出了很大的流量。我一开始以为是 9sb.net 出了问题，登上去看才发现不是，被刷的是 ihk.me。这个站算是我做的一个网页版朋友圈，平时放点照片、音乐和碎碎念，...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 101
     },
     {
@@ -1516,12 +1516,12 @@
       "title": "污染源异常数据推送平台，为了值夜班搭了个推送平台",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/a-platform-for-pushing-abnormal-data-on-pollution-sources-was-set-up-for-night-shifts.html",
+      "link": "https://9sb.net/archives/a-platform-for-pushing-abnormal-data-on-pollution-sources-was-set-up-for-night-shifts.html",
       "created": "2026-10-20 00:00:00",
       "updated": "2026-10-20 00:00:00",
       "excerpt": "值夜班总怕漏数据，半夜频繁的起床，太痛苦了，尤其年龄越来越大，的确有点吃不消，索性搭了个采集+推送平台。{mx_photo}{mx_photo}上夜班的时候，最怕电脑上的数据在跳，人却困得睁不开...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 127
     },
     {
@@ -1756,12 +1756,12 @@
       "title": "Typecho 曝出 SSRF 漏洞，我自己的博客也中了，顺手把补丁打上",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
+      "link": "https://9sb.net/archives/typecho-exposed-ssrf-vulnerability-and-my-own-blog-was-also-hit-i-casually-applied-the-patch.html",
       "created": "2026-10-16 15:24:00",
       "updated": "2026-10-16 15:24:00",
       "excerpt": "今天刷到一个安全博客的更新，标题带着 CVE 编号，讲的是 Typecho 的一个 SSRF 漏洞。我博客用的就是 Typecho，看到这种跟自己有关的东西肯定要点进去看，看完之后心情有点复杂。...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 147
     },
     {
@@ -1912,12 +1912,12 @@
       "title": "从哪吒换到极简探针，移植主题加毛玻璃，准备慢慢全部转过来",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
+      "link": "https://9sb.net/archives/switching-from-nezha-to-minimalist-probes-transplanting-themes-with-frosted-glass-preparing-to-gradually-switch-all-over.html",
       "created": "2026-10-12 13:36:07",
       "updated": "2026-10-12 13:36:07",
       "excerpt": "最近逛论坛，看到一个探针项目，极简风格，一眼就喜欢上了。这两天刚好不忙，闲着也是闲着，又开始折腾啦。之前一直用的是哪吒探针，说实话功能是真的全，但对我来说有点过剩。我主要就想看看服务器在线不在线...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 160
     },
     {
@@ -1960,12 +1960,12 @@
       "title": "临时约的一场骑行，终点是邢台本地最大的朱庄水库",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
+      "link": "https://9sb.net/archives/a-temporary-bike-ride-with-the-destination-being-the-largest-local-zhuzhuang-reservoir-in-xingtai.html",
       "created": "2026-10-11 12:35:46",
       "updated": "2026-10-11 12:35:46",
       "excerpt": "昨天跟朋友临时约着骑车，说想去朱庄水库转转。上午实在抽不开身，送完孩子又去把车胎补了下，一来二去就晚了，干脆改成下午出发。{mx_photo}{mx_photo}目标是邢台本地最大的水库，朱庄水...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 164
     },
     {
@@ -2008,12 +2008,12 @@
       "title": "送娃上学冻了一路，让我领教了早晚温差",
       "author": "Huo",
       "avatar": "https://icon.horse/icon/9sb.net",
-      "link": "https://www.9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
+      "link": "https://9sb.net/archives/sending-my-child-to-school-was-frozen-all-the-way-which-taught-me-about-the-temperature-difference-between-morning-and-evening.html",
       "created": "2026-10-10 00:11:49",
       "updated": "2026-10-10 00:11:49",
       "excerpt": "这两天孩子学校开秋季运动会，天气看着挺好，就想着骑电车载他去。出门前媳妇说了句早上凉，给孩子套了件薄羽绒服，我自己也觉得挺有先见之明，顺手套了件外套。结果骑到半路，风一兜，我就知道想岔了，这一路...",
       "site_url": "https://9sb.net/",
-      "feed_url": "https://www.9sb.net/feed/",
+      "feed_url": "https://9sb.net/feed/",
       "floor": 168
     },
     {
@@ -2037,7 +2037,7 @@
       "updated": "2026-10-09 14:35:22",
       "excerpt": "今年十一没出门，因为没什么旅游的兴趣，怕了人山人海。境外热门地方也挤满了中国人。还有个原因是娃上小一了，有点紧张怕他请假影响学习，尽管我内心深处认为应该没啥影响。因为要给娃腾空间放学习桌，十一前一周我就开始收拾书房了，此项工作持续到假期最后一天。扔了十几大袋闲置或无用的物品，才发现有很多没拆封的玩具、书籍。有些是我买的，有些是别人送的，虽然可惜，但既然这么多",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 170
     },
     {
@@ -3645,7 +3645,7 @@
       "updated": "2026-08-17 03:26:00",
       "excerpt": "周末去看了《奥德赛》，感觉还行吧。就是时间有点太长了，九点开始，十一点半都过了才结束。看完回去再查下资料，了解下奥德赛原本的故事脉络，就凌晨一点了。同期上映的还有《牛来》。有人很反感这部《牛来》，在没人去看的时候，认为是粗制滥造，怎么审核通过的？票房起来之后，又认为是资本的操控。我倒是觉得挺正常的，没有什么值得奇怪的。寄希望审查制度的，是巨婴。一方面，审查制",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 304
     },
     {
@@ -3849,7 +3849,7 @@
       "updated": "2026-08-09 19:13:47",
       "excerpt": "今晚又失眠。失眠是因为脑袋总是停不下来。想到很多事情，也很乱。第一件，是儿子上小学的事儿。我比他先焦虑了，总是很担心无法适应。比如担心上课不守纪律，学习成绩太差。上课不认真是从小的问题，没有纪律性。虽然我们对他没有什么要求，不属于鸡娃的，但也担心干扰别人学习。幼儿园比较宽松，他经常躺地上，上课神游，也没什么影响。但小学跟幼儿园肯定是不一样的，老师管的比较严，",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 321
     },
     {
@@ -3969,7 +3969,7 @@
       "updated": "2026-08-06 15:38:51",
       "excerpt": "很疑惑最近总是很困。比如昨天太困早睡了，睡眠时间达到了 9 个小时，但今天还是困。今天正好看到一篇文章说困可能是“输出”太少。想想挺有道理。最近每次骑完车虽然很累，但比出门骑车前精神要好。我猜这就是体力输出导致的结果。最近实在太闲，本来事儿就少，还都用 AI 完成了，大脑自己的输出量极少。估计这就是最近精神状态不行的原因。所以得输出一些东西。但就像有句话说：",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 331
     },
     {
@@ -4161,7 +4161,7 @@
       "updated": "2026-07-29 08:14:00",
       "excerpt": "今天在某个群里看到这样的言论：不由得感慨苹果真冤啊。因为很多 HEIC 照片来自 iPhone，所以有些蠢人会把这笔钱理解成苹果的格式授权费。然而实际上，这个费用并不是苹果收的。HEIC 通常是使用 HEVC 压缩的 HEIF 图片。Windows 上的 HEIF 图像扩展负责识别文件结构，HEVC 视频扩展负责解码里面的图像数据。即使只是看照片，也可能同时",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 347
     },
     {
@@ -4221,7 +4221,7 @@
       "updated": "2026-07-27 09:58:00",
       "excerpt": "本文整理自 2026 年国际数学家大会开幕式及获奖者新闻发布会的英文自动字幕，只收录邓煜和王虹的获奖理由、人物短片内容与现场问答。记者问答按新闻发布会中的出现顺序排列。本文仅保留中文译文，属于依据校订后英文字幕制作的非官方翻译，并非主办方审定的正式逐字稿。邓煜获奖理由菲尔兹奖授予邓煜，以表彰他在偏微分方程领域的工作，其中包括：从稀薄气体的硬球动力学严格推导玻",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 352
     },
     {
@@ -4293,7 +4293,7 @@
       "updated": "2026-07-22 07:25:00",
       "excerpt": "网上关于狗的讨论很有意思。有人发帖反对虐狗，下面马上有人问：狗到处撒尿怎么办？狗咬人怎么办？人都照顾不过来，还照顾狗？我不明白这些问题跟虐狗有什么关系。狗乱撒尿，让主人清理；狗咬了人，让主人赔偿，该怎么处置就怎么处置；流浪狗太多，也可以捕捉、绝育和收容。反对把狗绑起来折磨，跟这些事情有任何冲突吗？好像反对虐狗，就等于认为狗比人金贵，恨不得给狗分房子、交五险一",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 358
     },
     {
@@ -4353,7 +4353,7 @@
       "updated": "2026-07-20 03:34:00",
       "excerpt": "今天在 V 站看到个帖子吐槽地铁安检的，没想到帖子里面还有一些人支持地铁安检。说说我的想法吧。其实这事儿很简单，因为地铁站安检完全不能起到应有的效果。这个无效，都不用考虑安检机、开包目视是否能检查出危险品，而是地铁站与机场不一样，是非封闭空间。机场之所以安检有效，因为机场只有“一个”入口，从入口进去后，就无法再跟外界有交换物资的能力。而地铁站一般四个口，互相",
       "site_url": "https://yipai.me/",
-      "feed_url": "https://yipai.me/feed.xml",
+      "feed_url": "https://yipai.me/feed",
       "floor": 363
     },
     {
@@ -7206,6 +7206,6 @@
     "active_num": 56,
     "error_num": 7,
     "article_num": 600,
-    "last_updated_time": "2026-11-06 15:57:54 UTC"
+    "last_updated_time": "2026-11-06 21:31:33 UTC"
   }
 }
