@@ -10974,5 +10974,21 @@
 "elevation_gain": 61.38946397472159,
 "source": "Keep",
 "streak": 1
+},
+{
+"run_id": 9223370242734639807,
+"name": "\u8ffd\u98ce\u9010\u91ce",
+"distance": 5175.669921875,
+"moving_time": "3:08:41",
+"type": "Hiking",
+"start_date": "2026-11-08 03:33:35",
+"start_date_local": "2026-11-08 11:33:35",
+"location_country": "{'latitude': 22.54687, 'longitude': 114.109973, 'country': '\u4e2d\u56fd', 'nationCode': '156', 'province': '\u5e7f\u4e1c\u7701', 'city': '\u6df1\u5733\u5e02', 'cityCode': '0755', 'district': None, 'districtCode': None, 'startLatitude': 0.0, 'startLongitude': 0.0}",
+"summary_polyline": "gqqrFsrkeU??",
+"average_heartrate": null,
+"average_speed": 0.45717427098975355,
+"elevation_gain": 0.0,
+"source": "Keep",
+"streak": 1
 }
 ]
