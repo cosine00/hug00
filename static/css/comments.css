@@ -1518,13 +1518,37 @@ html[data-theme="sepia"] .cm-memo-card {
   padding-left: 1.6em;
 }
 
+/* 引用块：左上折线 · 紧凑版，与 /bb/ 哔哔页同一套（那边写在 layouts 的 #bber
+   规则里）。单条页和哔哔页看到的是同一种引用，读者不必分辨自己在哪一页。 */
 .cm-memo-content blockquote {
-  margin: 0.6em 0;
-  padding: 4px 14px;
+  position: relative;
+  margin: 6px 0;
+  padding: 2px 0 2px 14px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    linear-gradient(var(--accent, #6870a8), var(--accent, #6870a8)) left top / 24px 1px no-repeat,
+    linear-gradient(var(--accent, #6870a8), var(--accent, #6870a8)) left top / 1px 24px no-repeat;
   color: var(--quote, #59645f);
-  background: color-mix(in srgb, var(--accent, #6870a8) 7%, var(--surface, #ffffff));
-  border-left: 3px solid color-mix(in srgb, var(--accent, #6870a8) 55%, var(--border, #dedfdb));
-  border-radius: 6px;
+  font-size: .95em;
+  line-height: 1.65;
+}
+
+/* 旧版引用装饰（大引号伪元素）在大折线样式下会露在外面 */
+.cm-memo-content blockquote::before,
+.cm-memo-content blockquote::after {
+  content: none;
+  display: none;
+}
+
+.cm-memo-content blockquote p {
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.cm-memo-content blockquote p + p {
+  margin-top: 4px;
 }
 
 /* 图片跟文章正文一致：不设高度上限、7px 圆角、连续图片交给同一套等高画廊排版 */
