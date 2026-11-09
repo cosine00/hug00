@@ -174,7 +174,9 @@
     const date = new Date(Number(item.createdTs) * 1000);
     const dateText = date.toLocaleString();
     const plain = stripMarkdownImages(item.content).replace(/#[^\s#]+/g, '').trim();
-    let content = window.marked ? window.marked.parse(plain.replace(/\n/g, '  \n')) : escapeAttr(plain).replace(/\n/g, '<br>');
+    // 引用标记 `[ID.x](/m/x/)` 展开成文末的引用卡片；手写引用的条目保持原样。
+    const expanded = window.bbQuote ? window.bbQuote.expand(plain, state.all) : plain;
+    let content = window.marked ? window.marked.parse(expanded.replace(/\n/g, '  \n')) : escapeAttr(expanded).replace(/\n/g, '<br>');
     content = appendImageButton(content, imageButton(item));
     const tags = (item.tags || []).map(tag => `<span class="tag-span tag-filter">#${escapeAttr(tag)}</span>`).join(' ');
     const footRight = `<span class="bb-foot-right"><div style="display:inline-flex"><emoji-reaction theme="system" endpoint="https://emaction-api.hux.ink" reacttargetid="memo-${escapeAttr(item.id)}" style="line-height:normal;display:inline-flex"></emoji-reaction></div></span>`;

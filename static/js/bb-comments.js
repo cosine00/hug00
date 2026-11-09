@@ -251,8 +251,10 @@
     return String(text || '').replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, '');
   }
 
-  function renderMemoCard(memo) {
+  function renderMemoCard(memo, list) {
     var plain = stripImages(memo.content).replace(/#[^\s#]+/g, '').trim();
+    // 引用标记 `[ID.x](/m/x/)` 展开成文末的引用卡片；手写引用的条目保持原样。
+    if (window.bbQuote && Array.isArray(list)) plain = window.bbQuote.expand(plain, list);
     var body = window.marked
       ? window.marked.parse(plain.replace(/\n/g, '  \n'))
       : esc(plain).replace(/\n/g, '<br>');
@@ -330,7 +332,7 @@
           });
         }
 
-        root.querySelector('#cm-single-thread').insertAdjacentHTML('beforebegin', renderMemoCard(memo));
+        root.querySelector('#cm-single-thread').insertAdjacentHTML('beforebegin', renderMemoCard(memo, list));
 
         // 多图按文章的等高画廊排版（与主题 post-justified-gallery 同一套规则）
         if (window.PostGallery) {

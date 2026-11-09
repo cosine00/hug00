@@ -263,6 +263,8 @@ function renderMemosPaged(memos, page) {
     let attachBtn = renderMemoImageTrigger(item);
 
     let contentText = stripMarkdownImages(item.content).replace(/#[^\s#]+/g, '').trim();
+    // 引用标记 `[ID.x](/m/x/)` 展开成文末的引用卡片；手写引用的条目保持原样。
+    if (window.bbQuote) contentText = window.bbQuote.expand(contentText, allMemos);
     // 1. 直接解析去除了标签的纯文本
     let content = window.marked ? marked.parse(contentText.replace(/\n/g, '  \n')) : contentText.replace(/\n/g, '  \n');
     content = appendMemoImageTrigger(content, attachBtn);
