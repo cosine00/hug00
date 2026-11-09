@@ -77,7 +77,7 @@ test('shrinks the inline reference to a mark and appends the quote card', () => 
   ];
   const out = expandQuoteMarkdown(memos[1].content, memos);
   // 句子里不再出现 `ID.12`，只留一个角标，句子仍然读得通。
-  assert.match(out, /详情见 \[¹\]\(\/m\/12\/\)。/);
+  assert.match(out, /详情见 \[¹\]\(https:\/\/hux\.ink\/m\/12\/\)。/);
   assert.doesNotMatch(out.split('\n\n')[0], /ID\.12/);
   // 文末卡片用绝对地址，阅读器里也能点开，卡片上保留编号。
   assert.match(out, /^> \[ID\.12\]\(https:\/\/hux\.ink\/m\/12\/\)/m);
@@ -91,8 +91,23 @@ test('numbers several references in reading order', () => {
     { id: '23', content: '[ID.21](/m/21/) 与 [ID.22](/m/22/)，再看一遍 [ID.21](/m/21/)。' },
   ];
   const out = expandQuoteMarkdown(memos[2].content, memos);
-  assert.match(out, /\[¹\]\(\/m\/21\/\) 与 \[²\]\(\/m\/22\/\)，再看一遍 \[¹\]\(\/m\/21\/\)。/);
+  assert.match(
+    out,
+    /\[¹\]\(https:\/\/hux\.ink\/m\/21\/\) 与 \[²\]\(https:\/\/hux\.ink\/m\/22\/\)，再看一遍 \[¹\]\(https:\/\/hux\.ink\/m\/21\/\)。/,
+  );
   // 同一个编号只展开一张卡片。
   assert.equal((out.match(/\n> \[ID\.21\]/g) || []).length, 1);
   assert.equal((out.match(/\n> \[ID\.22\]/g) || []).length, 1);
+});
+
+test('feed title and summary drop the raw reference id', () => {
+  const memos = [
+    { id: '12', content: '被引用的内容。' },
+    { id: '13', content: '卖出一半 09880 [ID.12](/m/12/)。', createdTs: 1700000000 },
+  ];
+  const xml = buildBbRss(memos, { parse: text => '<p>' + text + '</p>' });
+  // 标题与摘要来自纯文本，角标在那里没有意义，编号更不该再出现一次。
+  assert.doesNotMatch(xml, /<title>[^<]*ID\.12/);
+  assert.doesNotMatch(xml, /<description><!\[CDATA\[[^\]]*ID\.12/);
+  assert.match(xml, /<title>卖出一半 09880。<\/title>/);
 });

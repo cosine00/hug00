@@ -45,6 +45,9 @@ function plainText(markdown) {
     // 图片的 alt 通常是原始文件名；正文仍保留图片，但标题和摘要不应显示它。
     .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
     .replace(/!\[[^\]]*\]\s*\[[^\]]*\]/g, ' ')
+    // 引用标记在摘要里直接去掉，连它前面的空格一起：正文用角标，标题里
+    // 再说一遍 `ID.1234` 只是噪音，留下空格还会变成「09880 。」。
+    .replace(new RegExp(`\\s*(?:${QUOTE_LINK_RE.source})`, 'gi'), '')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]*>/g, ' ')
     .replace(/[*_>#~]/g, '')
@@ -123,7 +126,8 @@ export function expandQuoteMarkdown(content, memos) {
       picked.push(id);
       index = picked.length - 1;
     }
-    return '[' + MARKS[index] + '](/m/' + encodeURIComponent(id) + '/)';
+    // 绝对地址：阅读器里没有本站域名，相对链接点不开。
+    return '[' + MARKS[index] + '](' + memoPermalink({ id }) + ')';
   });
   if (!picked.length) return text;
 
