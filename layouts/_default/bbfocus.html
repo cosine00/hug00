@@ -88,17 +88,52 @@
   .bb-feed-link svg { width:15px; height:15px; }
   #bber { margin-right: auto; margin-left: auto; }
   #bber .bb-cont { overflow: visible !important; }
-  #bber .bb-cont blockquote {
-    margin: 10px 0;
-    padding: 8px 16px;
-    overflow: visible !important;
-    border-left: 4px solid color-mix(in srgb, var(--accent) 62%, var(--border)) !important;
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--accent) 7%, var(--surface)) !important;
-    color: var(--quote);
-    font-size: .95em;
-  }
-  #bber .bb-cont blockquote::before { display: none !important; content: none !important; }
+  
+/* 哔哔页引用：左上折线 · 紧凑版 */
+#bber .bb-cont blockquote {
+  margin: 6px 0 !important;
+  padding: 11px 0 2px 14px !important;
+  position: relative !important;
+  overflow: visible !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  /* 不依赖伪元素，直接绘制左上角折线 */
+  background:
+    linear-gradient(
+      var(--accent), var(--accent)
+    ) left top / 24px 1px no-repeat,
+    linear-gradient(
+      var(--accent), var(--accent)
+    ) left top / 1px 24px no-repeat
+    !important;
+
+  color: var(--quote);
+  font-size: .95em;
+  line-height: 1.65 !important;
+}
+
+/* 禁用旧引用装饰 */
+#bber .bb-cont blockquote::before,
+#bber .bb-cont blockquote::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* 清除引用内部段落的默认间距 */
+#bber .bb-cont blockquote p {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.65 !important;
+}
+
+/* 多段引用之间留一点间距 */
+#bber .bb-cont blockquote p + p {
+  margin-top: 4px !important;
+}
+
 </style>
 
 {{ partial "footer-empty.html" . }}
