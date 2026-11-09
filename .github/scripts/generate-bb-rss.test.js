@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildBbRss, generateBbRss, escapeXml } from './generate-bb-rss.js';
+import { buildBbRss, expandQuoteMarkdown, generateBbRss, escapeXml } from './generate-bb-rss.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const markedSource = fs.readFileSync(path.join(ROOT, 'static/js/marked.min.js'), 'utf8');
@@ -68,4 +68,17 @@ test('sanitizes executable HTML in memo content', () => {
     { id: '9', content: 'safe text', createdTs: 1700000000, tags: [] },
   ], { parse: () => '<script>alert(1)</script><p onclick="x()">safe text</p><a href="javascript:alert(1)">bad</a>' });
   assert.doesNotMatch(xml, /<script|onclick=|javascript:/i);
+});
+
+test('keeps the inline reference in the prose and appends the quote card', () => {
+  const memos = [
+    { id: '12', content: '被引用的内容。' },
+    { id: '13', content: '详情见 [ID.12](/m/12/)。' },
+  ];
+  const out = expandQuoteMarkdown(memos[1].content, memos);
+  // 句子中间删掉标记会剩下「详情见 。」，所以正文保留短链接。
+  assert.match(out, /详情见 \[ID\.12\]\(\/m\/12\/\)。/);
+  // 文末卡片用绝对地址，阅读器里也能点开。
+  assert.match(out, /^> \[ID\.12\]\(https:\/\/hux\.ink\/m\/12\/\)/m);
+  assert.match(out, /被引用的内容。/);
 });

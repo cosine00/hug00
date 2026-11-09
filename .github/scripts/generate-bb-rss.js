@@ -75,6 +75,63 @@ function memoPermalink(memo) {
   return SITE_URL + '/m/' + encodeURIComponent(String(memo.id)) + '/';
 }
 
+// 引用标记：`[ID.1234](/m/1234/)`、`[1234](https://hux.ink/m/1234/)` 等写法。
+// 与 static/js/bb-quote.js 同一套规则；RSS 在构建期展开成快照，链接用绝对地址。
+const QUOTE_LINK_RE = /\[((?:ID\.?\s*)?[\w-]+)\]\(\s*<?[^)\s]*\/m\/([\w-]+)\/?>?(?:\s+["'][^"']*["'])?\s*\)/gi;
+const MAX_QUOTES = 3;
+const SNIPPET_LIMIT = 200;
+
+function quoteSnippet(content) {
+  let text = String(content || '')
+    .replace(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["'][^"']*["'])?\s*\)/g, '')
+    .replace(/^>[^\n]*$/gm, '')
+    .replace(/#[^\s#]+/g, '')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+  if (text.length > SNIPPET_LIMIT) {
+    text = text.slice(0, SNIPPET_LIMIT).replace(/\s+\S*$/, '') + ' ……';
+  }
+  return text;
+}
+
+/**
+ * 把正文里的引用标记展开成引用卡片（blockquote 形式）。
+ * 正文已有手写引用（`>` 开头的行）时整体跳过，避免和旧快照重复；
+ * 被引用条目不在公开列表里时保留原链接不动。
+ */
+export function expandQuoteMarkdown(content, memos) {
+  let text = String(content || '');
+  if (!text || !Array.isArray(memos) || !memos.length) return text;
+  if (/^\s*>/m.test(text)) return text;
+
+  const byId = new Map(
+    memos.filter(memo => memo && memo.id != null).map(memo => [String(memo.id), memo]),
+  );
+
+  const picked = [];
+  let found;
+  QUOTE_LINK_RE.lastIndex = 0;
+  while ((found = QUOTE_LINK_RE.exec(text)) !== null) {
+    if (picked.length >= MAX_QUOTES) break;
+    const id = String(found[2] || '').trim() || String(found[1] || '').replace(/^ID\.?\s*/i, '').trim();
+    if (!id || picked.some(item => item.id === id)) continue;
+    const source = byId.get(id);
+    if (!source || !source.content) continue;
+    picked.push({ id, source });
+  }
+  if (!picked.length) return text;
+
+  const cards = picked.map(item => {
+    const snippet = quoteSnippet(item.source.content);
+    const lines = ['> [ID.' + item.id + '](' + memoPermalink({ id: item.id }) + ')'];
+    if (snippet) {
+      lines.push('>' + snippet.split('\n').map(line => ' ' + line).join('\n>'));
+    }
+    return lines.join('\n');
+  });
+  return text + '\n\n' + cards.join('\n\n') + '\n';
+}
+
 export function buildBbRss(memos, markedApi, now = new Date()) {
   const items = [...memos]
     .filter(memo => memo && memo.id != null && Number(memo.createdTs) > 0 && String(memo.content || '').trim())
@@ -86,7 +143,7 @@ export function buildBbRss(memos, markedApi, now = new Date()) {
     const link = memoPermalink(memo);
     const published = new Date(Number(memo.createdTs) * 1000);
     const title = plainText(memo.content).slice(0, 80) || '随手记';
-    let html = markedApi.parse(String(memo.content || ''), { breaks: true });
+    let html = markedApi.parse(expandQuoteMarkdown(String(memo.content || ''), memos), { breaks: true });
     html = sanitizeMemoHtml(html);
     const images = attachmentImages(memo);
     if (images.length) {
