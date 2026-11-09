@@ -80,6 +80,8 @@ function memoPermalink(memo) {
 const QUOTE_LINK_RE = /\[((?:ID\.?\s*)?[\w-]+)\]\(\s*<?[^)\s]*\/m\/([\w-]+)\/?>?(?:\s+["'][^"']*["'])?\s*\)/gi;
 const MAX_QUOTES = 3;
 const SNIPPET_LIMIT = 200;
+// 正文里的引用缩成角标序号，与文末卡片顺序对应。
+const MARKS = ['¹', '²', '³'];
 
 function quoteSnippet(content) {
   let text = String(content || '')
@@ -108,28 +110,32 @@ export function expandQuoteMarkdown(content, memos) {
     memos.filter(memo => memo && memo.id != null).map(memo => [String(memo.id), memo]),
   );
 
+  // 正文里的引用缩成角标序号，和文末第几张卡片对应；`ID.1234` 在句子里是噪音。
   const picked = [];
-  let found;
-  QUOTE_LINK_RE.lastIndex = 0;
-  while ((found = QUOTE_LINK_RE.exec(text)) !== null) {
-    if (picked.length >= MAX_QUOTES) break;
-    const id = String(found[2] || '').trim() || String(found[1] || '').replace(/^ID\.?\s*/i, '').trim();
-    if (!id || picked.some(item => item.id === id)) continue;
-    const source = byId.get(id);
-    if (!source || !source.content) continue;
-    picked.push({ id, source });
-  }
+  const body = text.replace(QUOTE_LINK_RE, (match, label, idFromUrl) => {
+    const id = String(idFromUrl || '').trim() || String(label || '').replace(/^ID\.?\s*/i, '').trim();
+    if (!id) return match;
+    let index = picked.indexOf(id);
+    if (index === -1) {
+      const source = byId.get(id);
+      if (!source || !source.content) return match;
+      if (picked.length >= MAX_QUOTES) return match;
+      picked.push(id);
+      index = picked.length - 1;
+    }
+    return '[' + MARKS[index] + '](/m/' + encodeURIComponent(id) + '/)';
+  });
   if (!picked.length) return text;
 
-  const cards = picked.map(item => {
-    const snippet = quoteSnippet(item.source.content);
-    const lines = ['> [ID.' + item.id + '](' + memoPermalink({ id: item.id }) + ')'];
+  const cards = picked.map(id => {
+    const snippet = quoteSnippet(byId.get(id).content);
+    const lines = ['> [ID.' + id + '](' + memoPermalink({ id }) + ')'];
     if (snippet) {
       lines.push('>' + snippet.split('\n').map(line => ' ' + line).join('\n>'));
     }
     return lines.join('\n');
   });
-  return text + '\n\n' + cards.join('\n\n') + '\n';
+  return body + '\n\n' + cards.join('\n\n') + '\n';
 }
 
 export function buildBbRss(memos, markedApi, now = new Date()) {

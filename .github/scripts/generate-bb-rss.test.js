@@ -70,15 +70,29 @@ test('sanitizes executable HTML in memo content', () => {
   assert.doesNotMatch(xml, /<script|onclick=|javascript:/i);
 });
 
-test('keeps the inline reference in the prose and appends the quote card', () => {
+test('shrinks the inline reference to a mark and appends the quote card', () => {
   const memos = [
     { id: '12', content: '被引用的内容。' },
     { id: '13', content: '详情见 [ID.12](/m/12/)。' },
   ];
   const out = expandQuoteMarkdown(memos[1].content, memos);
-  // 句子中间删掉标记会剩下「详情见 。」，所以正文保留短链接。
-  assert.match(out, /详情见 \[ID\.12\]\(\/m\/12\/\)。/);
-  // 文末卡片用绝对地址，阅读器里也能点开。
+  // 句子里不再出现 `ID.12`，只留一个角标，句子仍然读得通。
+  assert.match(out, /详情见 \[¹\]\(\/m\/12\/\)。/);
+  assert.doesNotMatch(out.split('\n\n')[0], /ID\.12/);
+  // 文末卡片用绝对地址，阅读器里也能点开，卡片上保留编号。
   assert.match(out, /^> \[ID\.12\]\(https:\/\/hux\.ink\/m\/12\/\)/m);
   assert.match(out, /被引用的内容。/);
+});
+
+test('numbers several references in reading order', () => {
+  const memos = [
+    { id: '21', content: '第一处。' },
+    { id: '22', content: '第二处。' },
+    { id: '23', content: '[ID.21](/m/21/) 与 [ID.22](/m/22/)，再看一遍 [ID.21](/m/21/)。' },
+  ];
+  const out = expandQuoteMarkdown(memos[2].content, memos);
+  assert.match(out, /\[¹\]\(\/m\/21\/\) 与 \[²\]\(\/m\/22\/\)，再看一遍 \[¹\]\(\/m\/21\/\)。/);
+  // 同一个编号只展开一张卡片。
+  assert.equal((out.match(/\n> \[ID\.21\]/g) || []).length, 1);
+  assert.equal((out.match(/\n> \[ID\.22\]/g) || []).length, 1);
 });
