@@ -9,8 +9,10 @@ html {
 
 
 body {
-  /* Screen version */
-  font-family: "LXGW WenKai Screen", "KaiTi", serif;
+  /* Screen version. Matches the default `html[data-font="zhuque"]` rule in
+     palettes.css, so the first paint does not switch faces once the header
+     script runs — and a visitor without JS still gets the default font. */
+  font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif;
 }
 
 *, *:before, *:after {

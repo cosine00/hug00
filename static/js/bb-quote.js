@@ -5,9 +5,49 @@
   var MAX_QUOTES = 3;
   // 引用片段截断长度。卡片是「摘一段回头看」，不是全文转载。
   var SNIPPET_LIMIT = 200;
-  // 正文里的引用缩成角标序号，和下方第几张卡片一一对应。上标数字用
-  // Unicode 字符而不是 <sup>：正文要过 marked，纯文本写法在 RSS 里也认。
-  var MARKS = ['¹', '²', '³'];
+
+  // 角标是一排 `^` 形尖角，画成 SVG 而不是用字符：字符的字形和基线由字体
+  // 决定，换字号就容易飘。峰的个数跟着引用序号走——第一条单峰、第二条双峰、
+  // 第三条三峰——一条哔哔引了好几段时，不必再去数字也能认出角标对哪张卡片。
+  // 颜色取主题主色 --accent，随 paper / night / sepia / mist 自动变。
+  // 全局 `a { border-bottom: 1px dashed }` 会给角标链接也挂一条虚线下划，
+  // 所以带角标的链接要单独去掉（项目里 `sup a` 也是这么处理的）。
+  var MARK_CSS = [
+    '.bb-qmark{display:inline-block;line-height:0;color:var(--accent,#42b983);opacity:.9;transition:opacity .16s ease,transform .16s ease}',
+    'a:has(> .bb-qmark){border-bottom:none;padding-bottom:0}',
+    '.bb-qmark-caret{height:.36em;width:auto;margin-left:.1em;vertical-align:.42em}',
+    'a:hover>.bb-qmark{opacity:1;transform:translateY(-1px)}'
+  ].join('');
+
+  (function () {
+    var style = document.createElement('style');
+    style.textContent = MARK_CSS;
+    document.head.appendChild(style);
+  })();
+
+  // 一个峰水平跨 9.2 个单位，峰与峰首尾相接成一条连续折线。viewBox 随峰数
+  // 加宽，样式里只定高度、宽度交给 viewBox 的比例，所以峰越多角标越长，
+  // 峰高和笔画粗细始终不变。
+  var PEAK_W = 9.2;
+  var VIEW_BOX_BASE = 12;
+
+  function round1(value) {
+    return String(Math.round(value * 10) / 10);
+  }
+
+  // 角标本身没有文字，读屏会读成空链接；用 role + aria-label 补一个名字。
+  function markOf(index) {
+    var peaks = Math.min(index + 1, MAX_QUOTES);
+    var path = ['M1.4 6.6'];
+    for (var i = 0; i < peaks; i++) {
+      var x = 1.4 + PEAK_W * i;
+      path.push('L' + round1(x + 4.6) + ' 2.1');
+      path.push('L' + round1(x + 9.2) + ' 6.6');
+    }
+    var width = VIEW_BOX_BASE + PEAK_W * (peaks - 1);
+    return '<svg class="bb-qmark bb-qmark-caret" viewBox="0 0 ' + round1(width) + ' 8" role="img" aria-label="引用第 ' + (index + 1) + ' 条">' +
+      '<path d="' + path.join('') + '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
 
   // 匹配引用标记：`[ID.1234](/m/1234/)`、`[1234](https://hux.ink/m/1234/)`
   // 等写法。链接目标里的编号优先，缺失时退回链接文字里的编号。
@@ -70,7 +110,7 @@
         picked.push(id);
         index = picked.length - 1;
       }
-      return '[' + MARKS[index] + '](/m/' + encodeURIComponent(id) + '/)';
+      return '[' + markOf(index) + '](/m/' + encodeURIComponent(id) + '/)';
     });
 
     if (!picked.length) return text;

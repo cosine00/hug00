@@ -15,16 +15,16 @@
     <meta name="referrer" content="never" />
 
     <link rel="stylesheet" href="/css/custom.css?v=20261023-4"></link>
-    <link id="blog-font-stylesheet" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+    <link id="blog-font-stylesheet" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css">
     <script>
       (function () {
         var fonts = {
-          wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
           zhuque: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',
-          zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css',
-          xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css'
+          xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css',
+          wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
+          zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css'
         };
-        var selected = 'wenkai';
+        var selected = 'zhuque';
         try {
           var saved = localStorage.getItem('blog-font');
           if (fonts[saved]) selected = saved;
@@ -78,7 +78,7 @@
     <link href="{{ "bb/index.xml" | absURL }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }} · 哔哔" />
     {{ end }}
     {{ partial "head_highlightjs" . }}
-    <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}?v=20261022-1" />
+    <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}?v=20261110-01" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/palettes.css?v=20260924-2" | relURL }}" />
     <script>
@@ -120,7 +120,7 @@
       });
     </script>
     <script defer src="{{ "/js/palette-switcher.js" | relURL }}"></script>
-    <script defer src="{{ "/js/font-switcher.js?v=20260924-2" | relURL }}"></script>
+    <script defer src="{{ "/js/font-switcher.js?v=20261110-01" | relURL }}"></script>
   </head>
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}
