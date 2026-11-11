@@ -1,5 +1,9 @@
 {{ if not .IsHome }}
 <h1>{{ .Title }}</h1>
 {{ with .Params.subtitle }}<h1><span class="subtitle">{{ . }}</span></h1>{{ end }}
+{{ if and .IsPage .Params.date }}
+<div class="post-rule-date"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time></div>
+{{ else }}
 <hr>
+{{ end }}
 {{ end }}

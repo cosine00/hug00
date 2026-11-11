@@ -260,6 +260,31 @@ body {
   margin: 1.6em auto;
 }
 
+/* 文章头部的日期分隔线：日期嵌在一条横线中间，替代单纯的 <hr> */
+.post-rule-date {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 300px;
+  margin: 1.6em auto;
+}
+
+.post-rule-date::before,
+.post-rule-date::after {
+  content: "";
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.post-rule-date time {
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .title h3 {
   font-weight: normal;
   text-align: center;
