@@ -236,17 +236,33 @@ async function handleComments(request, env, url, ctx) {
 
     // 通知是副作用：await 后落定，失败不影响提交结果（Worker 里不能用浮动 Promise）
     if (result.comment && !result.spam) {
+      // 哔哔的邮件标题统一成「哔哔 · ID」：前端不同版本分别传过日期、正文摘要、纯 id，
+      // 这里按 thread_key 重算一遍，邮件不再跟前端走
+      const memoKeyMatch = /^memo:(.+)$/.exec(String((result.thread && result.thread.key) || ''));
+      const mailThreadTitle = memoKeyMatch ? `哔哔 · ${memoKeyMatch[1]}` : (value.threadTitle || '');
+
       // 博主自己发的评论不给自己发通知（用博主邮箱提交即视为本人，不管有没有带口令）
       const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
       const authorEmail = String(value.email || '').trim().toLowerCase();
       const isSelf = Boolean(authorEmail) && authorEmail === adminEmail;
 
+      // 被回复的人如果就是博主本人，只发「有人回复了你」那一封（带原评论上下文），
+      // 不再重复发全站新评论通知——同一个事件别寄两封信
+      const parentEmail = (result.notify && result.notify.parentEmail) || '';
+      const parentWantsNotify = Boolean(result.notify && result.notify.parentWantsNotify);
+      const replyToAdmin = Boolean(
+        parentEmail &&
+          parentWantsNotify &&
+          parentEmail.toLowerCase() === adminEmail &&
+          parentEmail !== value.email
+      );
+
       const tasks = [];
       const createdAt = (result.comment && result.comment.createdAt) || 0;
-      if (!isSelf) {
+      if (!isSelf && !replyToAdmin) {
         tasks.push(
           notifyNewComment(env, {
-            threadTitle: value.threadTitle,
+            threadTitle: mailThreadTitle,
             threadUrl: result.thread && result.thread.url,
             nick: value.nick,
             content: value.content,
@@ -257,13 +273,11 @@ async function handleComments(request, env, url, ctx) {
         );
       }
 
-      const parentEmail = result.notify && result.notify.parentEmail;
-      const parentWantsNotify = result.notify && result.notify.parentWantsNotify;
       if (parentEmail && parentWantsNotify && parentEmail !== value.email) {
         tasks.push(
           notifyReply(env, {
             toEmail: parentEmail,
-            threadTitle: value.threadTitle,
+            threadTitle: mailThreadTitle,
             threadUrl: result.thread && result.thread.url,
             nick: value.nick,
             content: value.content,

@@ -138,7 +138,7 @@
       window.Comments.mount(mountNode, {
         threadKey: 'memo:' + id,
         threadUrl: memoPermalink(id),
-        threadTitle: '哔哔 · ' + (memoDateText(item) || id),
+        threadTitle: '哔哔 · ' + id,
         api: cfg.api,
         avatar: cfg.avatar,
         adminHash: cfg.adminHash,
@@ -346,7 +346,7 @@
         window.Comments.mount('#cm-single-thread', {
           threadKey: 'memo:' + id,
           threadUrl: memoPermalink(id),
-          threadTitle: summary || ('哔哔 ' + id),
+          threadTitle: '哔哔 · ' + id,
           api: api,
           avatar: root.dataset.memoAvatar || cfg.avatar,
           adminHash: root.dataset.memoAdminHash || cfg.adminHash
