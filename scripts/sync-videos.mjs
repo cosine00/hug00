@@ -12,13 +12,18 @@
  *   4. 写出 data/videos.json 给 Hugo 用
  *
  * 用法：
- *   node scripts/sync-videos.mjs            # 能连图床就上传，否则退化为 B 站直链
- *   node scripts/sync-videos.mjs --force    # 忽略缓存，全部重传
- *   node scripts/sync-videos.mjs --dry      # 只打印，不写文件
+ *   node scripts/sync-videos.mjs              # 能连图床就上传，否则退化为 B 站直链
+ *   node scripts/sync-videos.mjs --force      # 忽略封面缓存，全部重传
+ *   node scripts/sync-videos.mjs --dry        # 只打印，不写文件
+ *   node scripts/sync-videos.mjs --allow-partial  # 有条目拿不到元数据时仍然写入
  *
  * 图床凭据（和 .github/scripts/fetch-memos.js 共用同一套，二选一即可）：
  *   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_ENDPOINT / R2_PUBLIC_DOMAIN
  *   或者 Lsky 接口令牌：HUX_IMG_TOKEN（也可写在 .env.local 的 IMG_TOKEN）
+ *
+ * 防呆：B 站对机房 IP（GitHub Actions、Cloudflare Workers）经常直接返回 412。
+ * 这时脚本会沿用 data/videos.json 里上一次成功的结果，绝不把文件写空；
+ * 真有拿不到又没有历史数据的新视频时，直接以非 0 退出、不落盘，等有人本地补跑。
  */
 
 import fs from "node:fs"
@@ -33,6 +38,7 @@ const IMG_BASE = "https://img.hux.ink"
 const TAG = "影彩"
 const FORCE = process.argv.includes("--force")
 const DRY = process.argv.includes("--dry")
+const ALLOW_PARTIAL = process.argv.includes("--allow-partial")
 
 /* ── 小工具 ─────────────────────────────────────────────── */
 
@@ -96,27 +102,108 @@ function parseMemo(memo) {
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36"
 
-async function fetchMeta(bvid) {
-  const res = await fetch(`https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`, {
-    headers: { "User-Agent": UA, Referer: "https://www.bilibili.com/" },
-  })
-  if (!res.ok) throw new Error(`B 站接口 ${res.status}`)
-  const json = await res.json()
-  if (json.code !== 0 || !json.data) throw new Error(`B 站接口返回 ${json.code} ${json.message || ""}`)
-  const d = json.data
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+/**
+ * 先要一个 buvid3/buvid4。B 站的风控在机房 IP 上尤其凶，
+ * 手里没有这俩 cookie 时 api 更容易直接 412；有了它命中率明显高一些。
+ * 拿不到也不致命，后面的请求就不带 cookie 再试。
+ */
+let buvidCookie = null
+async function getBuvidCookie() {
+  if (buvidCookie !== null) return buvidCookie
+  buvidCookie = ""
+  try {
+    const res = await fetch("https://api.bilibili.com/x/frontend/finger/spi", {
+      headers: { "User-Agent": UA, Referer: "https://www.bilibili.com/" },
+    })
+    if (res.ok) {
+      const json = await res.json()
+      const b3 = json?.data?.b_3 || ""
+      const b4 = json?.data?.b_4 || ""
+      if (b3) buvidCookie = `buvid3=${b3}` + (b4 ? `; buvid4=${b4}` : "")
+    }
+  } catch {
+    /* 拿不到就算了 */
+  }
+  return buvidCookie
+}
+
+function biliHeaders(cookie) {
+  const headers = {
+    "User-Agent": UA,
+    Referer: "https://www.bilibili.com/",
+    Origin: "https://www.bilibili.com",
+    Accept: "application/json, text/plain, */*",
+    "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+  }
+  if (cookie) headers.Cookie = cookie
+  return headers
+}
+
+function metaFromView(d) {
   const w = d.dimension?.width || 0
   const h = d.dimension?.height || 0
-  const iso = (ts) => new Date(ts * 1000).toISOString().slice(0, 10)
-
+  const iso = (ts) => (ts ? new Date(ts * 1000).toISOString().slice(0, 10) : "")
   return {
-    title: d.title,
+    title: d.title || "",
     cid: d.cid || (d.pages && d.pages[0] ? d.pages[0].cid : 0),
-    cover: normalizeCover(d.pic),
+    cover: normalizeCover(d.pic || ""),
     date: iso(d.pubdate),
     seconds: d.duration || 0,
     aspect: h > w ? "portrait" : "landscape",
     intro: String(d.desc || "").trim(),
     owner: d.owner?.name || "",
+  }
+}
+
+/** 主路：view 接口，先带 buvid 再裸奔，各重试一次。 */
+async function fetchMeta(bvid) {
+  const cookie = await getBuvidCookie()
+  const variants = cookie ? [cookie, "", cookie] : ["", ""]
+  let lastErr = null
+  for (const c of variants) {
+    try {
+      const res = await fetch(`https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`, {
+        headers: biliHeaders(c),
+      })
+      if (!res.ok) throw new Error(`B 站接口 ${res.status}`)
+      const json = await res.json()
+      if (json.code !== 0 || !json.data) throw new Error(`B 站接口返回 ${json.code} ${json.message || ""}`)
+      return metaFromView(json.data)
+    } catch (err) {
+      lastErr = err
+      await sleep(600)
+    }
+  }
+  throw lastErr || new Error("B 站接口不可用")
+}
+
+/**
+ * 兜底：直接抓视频页 HTML 里的 og:image / og:title。
+ * 只能拿到标题和封面，cid、时长之类的留给调用方用上次的结果补。
+ */
+async function fetchMetaFromPage(bvid) {
+  const cookie = await getBuvidCookie()
+  const res = await fetch(`https://www.bilibili.com/video/${bvid}/`, { headers: biliHeaders(cookie) })
+  if (!res.ok) throw new Error(`视频页 ${res.status}`)
+  const html = await res.text()
+  const pick = (prop) => {
+    const m = html.match(new RegExp(`<meta[^>]+(?:property|name)="${prop}"[^>]+content="([^"]+)"`, "i"))
+    return m ? m[1] : ""
+  }
+  const title = pick("og:title")
+  const image = pick("og:image")
+  if (!title && !image) throw new Error("视频页里没有元信息")
+  return {
+    title: title.replace(/\s*[-_].*哔哩哔哩.*$/, "").trim(),
+    cid: 0,
+    cover: image ? normalizeCover(image) : "",
+    date: "",
+    seconds: 0,
+    aspect: "landscape",
+    intro: "",
+    owner: "",
   }
 }
 
@@ -191,11 +278,12 @@ async function uploadCover(file, bvid) {
 
 if (!uploader && !DRY) console.log("⚠ 未配置 R2 或图床令牌，封面暂用 B 站直链（不下载不落盘）。")
 
+/** 上一次成功写出的结果，既当封面缓存，也当 B 站翻脸时的整条兜底。 */
 const cache = new Map()
 if (fs.existsSync(OUT)) {
   try {
     for (const v of JSON.parse(fs.readFileSync(OUT, "utf8"))) {
-      if (v.bvid && v.cover) cache.set(v.bvid, v.cover)
+      if (v.bvid) cache.set(v.bvid, v)
     }
   } catch {
     /* 旧文件损坏就当作没有缓存 */
@@ -203,6 +291,7 @@ if (fs.existsSync(OUT)) {
 }
 
 const videos = []
+const failures = []
 
 for (const memo of picked) {
   const parsed = parseMemo(memo)
@@ -211,15 +300,48 @@ for (const memo of picked) {
     continue
   }
 
-  let meta
+  const cached = cache.get(parsed.bvid)
+  let meta = null
+  let metaErr = null
+
   try {
     meta = await fetchMeta(parsed.bvid)
   } catch (err) {
-    console.warn(`  ✕ ${parsed.bvid} 取不到元数据：${err.message}`)
+    metaErr = err
+  }
+
+  if (!meta) {
+    // 接口被风控时退一步抓页面，至少把标题和封面拿回来。
+    try {
+      const page = await fetchMetaFromPage(parsed.bvid)
+      meta = page
+      console.warn(`  ~ ${parsed.bvid} 接口不可用（${metaErr && metaErr.message}），改从视频页取到标题与封面`)
+    } catch (err2) {
+      metaErr = err2
+    }
+  }
+
+  if (!meta) {
+    // 拿不到就沿用上次的结果，绝不把已有条目弄丢。
+    if (cached) {
+      videos.push(cached)
+      console.warn(`  ↺ ${parsed.bvid} 沿用上次结果（${metaErr && metaErr.message}）`)
+      continue
+    }
+    failures.push(`${parsed.bvid}：${metaErr ? metaErr.message : "未知原因"}`)
+    console.warn(`  ✕ ${parsed.bvid} 拿不到元数据，本地也没有历史记录：${metaErr && metaErr.message}`)
     continue
   }
 
-  let cover = cache.get(parsed.bvid) || ""
+  // 页面兜底拿不到 cid / 时长 / 发布日，用缓存补齐，避免「只有标题没有片长」。
+  if (cached) {
+    for (const key of ["cid", "date", "seconds", "aspect", "intro"]) {
+      if (!meta[key] && cached[key]) meta[key] = cached[key]
+    }
+    if (!meta.cover && cached.cover) meta.cover = cached.cover
+  }
+
+  let cover = (cached && cached.cover) || ""
   // 图床上的地址原样复用；B 站直链统一补上 1280 宽压缩参数。
   const onImgHost = cover.startsWith(IMG_BASE) || (r2 ? cover.startsWith(r2.publicUrl) : false)
   let coverHost = onImgHost ? "img.hux.ink" : cover ? "bilibili" : ""
@@ -244,7 +366,7 @@ for (const memo of picked) {
 
   // 简介与标题重复（B 站简介常常就是标题本身）时就不展示了，省得页面重复一句话。
   const bare = (s) => String(s || "").replace(/[\s·・:：,，.。|\-—_()（）\[\]【】]/g, "").toLowerCase()
-  const intro = meta.intro.split("\n")[0].trim()
+  const intro = String(meta.intro || "").split("\n")[0].trim()
   const summary = intro && !bare(meta.title).includes(bare(intro).slice(0, 12)) ? intro.slice(0, 90) : ""
 
   videos.push({
@@ -262,10 +384,26 @@ for (const memo of picked) {
     memoId: parsed.memoId,
     url: `https://www.bilibili.com/video/${parsed.bvid}/`,
   })
-  console.log(`  ✓ ${meta.date} ${parsed.label || "-"} ${meta.title} · ${mmss(meta.seconds)} · ${meta.aspect} · ${coverHost}`)
+  console.log(`  ✓ ${meta.date || "----"} ${parsed.label || "-"} ${meta.title} · ${mmss(meta.seconds)} · ${meta.aspect} · ${coverHost}`)
 }
 
 videos.sort((a, b) => (a.date === b.date ? String(b.label).localeCompare(String(a.label)) : a.date < b.date ? 1 : -1))
+
+// 有新增视频拿不到元数据时宁可不写：写下去会让这一条从页面上消失，
+// 而「什么都没变」的错误比「少一条视频」容易发现得多。
+if (failures.length && !ALLOW_PARTIAL) {
+  console.error(`\n✕ ${failures.length} 条视频拿不到元数据，且没有历史记录可沿用：`)
+  for (const f of failures) console.error(`   - ${f}`)
+  console.error("已放弃写入，data/videos.json 保持原样。本机（家用 IP）跑一次即可补上：")
+  console.error("   node scripts/sync-videos.mjs")
+  console.error("确要写入不完整数据，加 --allow-partial。")
+  process.exit(1)
+}
+
+if (!videos.length && cache.size) {
+  console.error(`\n✕ 解析结果为空，但上次还有 ${cache.size} 条记录，已放弃写入以免清空页面。`)
+  process.exit(1)
+}
 
 if (DRY) {
   console.log(JSON.stringify(videos, null, 2))

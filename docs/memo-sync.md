@@ -73,6 +73,25 @@ R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… R2_ENDPOINT=… R2_BUCKET=… R2_P
   node scripts/sync-videos.mjs
 ```
 
+### 机房 IP 被 412 时的行为（重要）
+
+B 站对机房 IP 的风控很凶：`api.bilibili.com` 的 view 接口从 GitHub Actions 跑，三条视频全部 `B 站接口 412`，而同一个请求在本地家宽是 200。
+
+所以脚本里做了三层兜底，顺序是：
+
+1. 先取 `x/frontend/finger/spi` 拿 `buvid3`/`buvid4` 当 Cookie，带着再请求 view（命中率高一些），失败重试一次
+2. 接口还不行就去抓视频页 HTML 的 `og:title` / `og:image`，至少把标题和封面拿回来，`cid`、时长、发布日从上次的结果补
+3. 连页面都 412，就**整条沿用 `data/videos.json` 里的旧记录**
+
+最后还有两条硬约束，防止自动化把页面写坏：
+
+- 有新增视频拿不到元数据、本地又没有历史记录时，脚本**直接非 0 退出、不落盘**（`data/videos.json` 保持原样），要强行写入得加 `--allow-partial`
+- 解析结果为空但旧文件里还有记录时，同样拒绝写入
+
+`fetch-memos.yml` 里这一步挂了 `continue-on-error: true`，所以 B 站抽风不会连累 `memos.json` 的正常提交。
+
+> 加新 vlog 时如果 Actions 那边一直拿不到元数据，本地跑一次 `node scripts/sync-videos.mjs` 再提交就行；封面地址已在 `img.hux.ink` 上会被认出来，不会重复上传。
+
 没配图床凭据时会退化成 B 站直链（页面加了 `referrerpolicy="no-referrer"` 绕过防盗链），本地预览照样能看，只是封面没落到自己的图床。
 
 > 手头没有 R2 的 S3 凭据、只登录了 wrangler 时，也可以用 `wrangler r2 object put` 单张补传（key 要和脚本一致）：

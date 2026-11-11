@@ -43,7 +43,10 @@ jobs:
         run: node --test .github/scripts/generate-bb-rss.test.js
 
       # 影彩：把 #影彩 哔哔里的 B 站链接解析成视频数据，封面转存到 R2
+      # B 站对 Actions 的机房 IP 常年 412，这一步失败时脚本会沿用上次的结果、
+      # 不写空文件；用 continue-on-error 保证 memos.json 这些照常提交。
       - name: Sync 影彩 videos from memos
+        continue-on-error: true
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
