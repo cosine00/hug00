@@ -475,22 +475,6 @@
   letter-spacing: .04em;
 }
 
-/* 清晰度角标：直接压在画面右上角，不占额外的操作行 */
-.video-quality {
-  position: absolute;
-  top: .5rem;
-  right: .5rem;
-  z-index: 2;
-  padding: 1px 7px 2px;
-  border-radius: 999px;
-  background: rgba(12, 16, 14, .55);
-  color: rgba(255, 255, 255, .92);
-  font-size: .68rem;
-  letter-spacing: .04em;
-  font-variant-numeric: tabular-nums;
-  pointer-events: none;
-}
-
 /* 评论面板：与哔哔列表同一条内联线程（比 .cm-inline-thread 优先，去掉它的上边框） */
 .video-comments.cm-inline-thread {
   margin-top: 0;

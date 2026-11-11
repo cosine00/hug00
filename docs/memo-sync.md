@@ -75,21 +75,27 @@ R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… R2_ENDPOINT=… R2_BUCKET=… R2_P
 
 没配图床凭据时会退化成 B 站直链（页面加了 `referrerpolicy="no-referrer"` 绕过防盗链），本地预览照样能看，只是封面没落到自己的图床。
 
-### 播放为什么不用官方 iframe
+> 手头没有 R2 的 S3 凭据、只登录了 wrangler 时，也可以用 `wrangler r2 object put` 单张补传（key 要和脚本一致）：
+>
+> ```bash
+> npx wrangler r2 object put "image/image/2026/11/video-cover-BV1G4WU6pEwQ.webp" \
+>   --file=cover.webp --content-type=image/webp --remote
+> ```
+>
+> 传完把 `data/videos.json` 里的 `cover` / `coverHost` 改成 `https://img.hux.ink/…` 与 `img.hux.ink`，下次同步脚本认得这个前缀，不会重复上传。
+
+### 播放：用 B 站官方的 HTML5 移动播放器页
 
 站外播放器（`player.bilibili.com`）对未登录访客只给 **640×360**：把播放器放到 1280、1920 宽，或者调 `high_quality=1`，实测 `video.videoWidth` 始终是 640，改不动。360P 在视网膜屏上被放大 4 倍，就是一眼可见的糊。
 
-所以播放走另一条路：
+改用 B 站给分享场景准备的另一个页面 `www.bilibili.com/blackboard/html5mobileplayer.html`：它认 `qn=64`，同一个视频在 iframe 里 `videoWidth` 实测 **1280**，是真 720P，界面也干净（没有「下载 App」浮层）。`album.html` 的 `embedURL()` 直接拼这个地址：
 
-1. 点击某一条 → 页面请求 comments Worker 的 `GET /api/bili?bvid=&cid=`
-2. Worker 用 `platform=html5&high_quality=1&try_look=1` 调 playurl，拿到 **720P 的 mp4 直链**（这类地址不校验 Referer，可以直接喂 `<video>`），并在边缘缓存 45 分钟
-3. 页面用原生 `<video>` 播放，控件、全屏、画中画都是浏览器原生的
-
-接口没部署、超时或 B 站拒绝时，脚本会自动退回官方 iframe（360P），页面不会开天窗。要在线上生效，部署一次 Worker 即可：
-
-```bash
-npm run comments:deploy     # wrangler deploy，路由 /api/bili 随之生效
 ```
+https://www.bilibili.com/blackboard/html5mobileplayer.html
+  ?bvid=<BV 号>&cid=<cid>&qn=64&as_wide=1&high_quality=1&danmaku=0&autoplay=1
+```
+
+> **为什么不用直链**：曾经做过 `GET /api/bili?bvid=&cid=`，由 Worker 调 `playurl` 拿 720P 的 mp4 直链喂给原生 `<video>`。本地 `wrangler dev` 能成，但**部署到 Cloudflare 后必然 412**——B 站对机房 IP 段做了风控，`playurl` 和 `m.bilibili.com` 页面都返回 412，补 `buvid3` Cookie 也没用。Worker 里那段代码（两条降级路线：playurl → 页面 `__playinfo__`）留着没删，将来出口不被拦可以直接换回来；前端目前不再调用它。
 
 > 720P 是游客天花板（1080P/4K 需要登录态）。页面本身不放「原片」入口，想更高清就去 B 站对应视频页（`data/videos.json` 里的 `url`）。
 

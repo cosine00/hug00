@@ -1,5 +1,5 @@
 {{ partial "header.html" . }}
-<link rel="stylesheet" href="{{ "css/videos.css" | relURL }}?v=20261112-14">
+<link rel="stylesheet" href="{{ "css/videos.css" | relURL }}?v=20261112-15">
 
 {{- /* 影彩的评论挂到对应哔哔的 memo:<id> 线程上，需要同一套评论前端。 */ -}}
 {{- $useComments := partial "comments/enabled.html" . -}}
@@ -40,10 +40,6 @@
 {{- $videos := sort (.Site.Data.videos | default slice) "date" "desc" -}}
 <script>
   window.videoItems = {{ $videos | jsonify | safeJS }};
-  window.videoApi = {
-    api: {{ (.Site.Params.videos.api | default "https://comments.hux.ink/api/bili") | jsonify | safeJS }},
-    localApi: {{ (.Site.Params.videos.localApi | default "") | jsonify | safeJS }}
-  };
 </script>
 
 <script>
@@ -481,24 +477,18 @@
     /* ── 影彩：点开某一行，就在该行下方展开播放器 ───────────────────────── */
 
     var videoItems = Array.isArray(window.videoItems) ? window.videoItems : []
-    var videoApiCfg = window.videoApi || {}
-    // 本地预览（hugo server）时指向 `wrangler dev`，线上走 comments.hux.ink。
-    var videoApi = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) && videoApiCfg.localApi
-      ? videoApiCfg.localApi
-      : (videoApiCfg.api || "")
     var playingItem = null
 
+    /**
+     * 播放地址用 B 站官方的 HTML5 移动播放器页（blackboard），而不是站外 iframe
+     * （player.bilibili.com 对未登录访客恒定 640×360）。这个页面认 qn=64，
+     * 实测 iframe 里 videoWidth 是 1280，也就是真 720P，且没有下载 App 的浮层。
+     */
     function embedURL(item) {
-      return "https://player.bilibili.com/player.html?isOutside=true&bvid=" +
-        encodeURIComponent(item.bvid) + "&p=1&autoplay=1&high_quality=1&danmaku=1&t=0"
-    }
-
-    function qualityLabel(qn) {
-      if (qn >= 120) return "4K"
-      if (qn >= 80) return "1080P"
-      if (qn >= 64) return "720P"
-      if (qn >= 32) return "480P"
-      return "360P"
+      return "https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=" +
+        encodeURIComponent(item.bvid) +
+        "&cid=" + encodeURIComponent(item.cid || "") +
+        "&qn=64&as_wide=1&high_quality=1&danmaku=0&autoplay=1&t=0"
     }
 
     function stopVideo() {
@@ -528,47 +518,6 @@
       playingItem = null
     }
 
-    /** 720P 角标直接压在画面右上角，不放操作行。 */
-    function showQuality(slot, qn) {
-      var chip = document.createElement("span")
-      chip.className = "video-quality"
-      chip.textContent = qualityLabel(qn)
-      slot.appendChild(chip)
-    }
-
-    /** 用 Worker 取 720P 直链，喂给原生 <video>；拿不到就返回 false 走 iframe。 */
-    function playNative(item, slot) {
-      if (!videoApi || !item.cid) return Promise.resolve(false)
-      var controller = new AbortController()
-      var timer = setTimeout(function () { controller.abort() }, 6000)
-      var endpoint = videoApi + "?bvid=" + encodeURIComponent(item.bvid) + "&cid=" + encodeURIComponent(item.cid)
-
-      return fetch(endpoint, { signal: controller.signal, headers: { Accept: "application/json" } })
-        .then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status)
-          return res.json()
-        })
-        .then(function (data) {
-          if (!data || !data.ok || !data.url) throw new Error("没有拿到直链")
-          var video = document.createElement("video")
-          video.src = data.url
-          video.poster = item.cover || ""
-          video.controls = true
-          video.autoplay = true
-          video.playsInline = true
-          video.preload = "auto"
-          video.setAttribute("aria-label", item.title + " · B 站视频")
-          slot.innerHTML = ""
-          slot.appendChild(video)
-          return data.quality || 0
-        })
-        .catch(function () { return false })
-        .then(function (result) {
-          clearTimeout(timer)
-          return result
-        })
-    }
-
     function playIframe(item, slot) {
       var frame = document.createElement("iframe")
       frame.setAttribute("src", embedURL(item))
@@ -596,16 +545,7 @@
       article.classList.add("is-playing")
       playingItem = article
       slot.innerHTML = '<p class="video-loading">正在连接 B 站…</p>'
-
-      playNative(item, slot).then(function (qn) {
-        if (article !== playingItem) return
-        if (qn === false) {
-          // 直链不可用（接口没部署 / B 站拒绝）就退回官方播放器，画面 360P。
-          playIframe(item, slot)
-          return
-        }
-        showQuality(slot, qn)
-      })
+      playIframe(item, slot)
 
       // 展开后播放器可能落在视口外，轻轻带一下。
       requestAnimationFrame(function () {

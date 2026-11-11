@@ -206,8 +206,87 @@ async function route(request, env, url, ctx) {
 
 const BILI_UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+const BILI_MUA =
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 // 直链有效期约 2 小时，缓存 45 分钟留足余量。
 const BILI_CACHE_SECONDS = 2700;
+
+/**
+ * B 站对机房 IP 的风控比家用 IP 严，裸请求经常直接 412。
+ * 随手带一个随机 buvid3（格式 UUID + infoc），命中率会高不少。
+ */
+function biliCookie() {
+  const hex = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte, i) => {
+    const v = i === 6 ? (byte & 0x0f) | 0x40 : i === 8 ? (byte & 0x3f) | 0x80 : byte;
+    return v.toString(16).padStart(2, '0');
+  }).join('');
+  const uuid = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  return `buvid3=${uuid.toUpperCase()}infoc; b_nut=${Math.floor(Date.now() / 1000)}`;
+}
+
+function biliHeaders(bvid, mobile = false) {
+  return {
+    'User-Agent': mobile ? BILI_MUA : BILI_UA,
+    Referer: `https://www.bilibili.com/video/${bvid}/`,
+    Origin: 'https://www.bilibili.com',
+    Accept: 'application/json, text/plain, */*',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    'Cache-Control': 'no-cache',
+    Cookie: biliCookie(),
+  };
+}
+
+/** 路线一：playurl 接口 + platform=html5，直接给 mp4（首选，最省事）。 */
+async function biliPlayurl(bvid, cid) {
+  const api =
+    'https://api.bilibili.com/x/player/playurl' +
+    `?bvid=${encodeURIComponent(bvid)}&cid=${encodeURIComponent(cid)}` +
+    '&qn=80&fnval=1&fourk=1&platform=html5&high_quality=1&try_look=1';
+
+  const res = await fetch(api, { headers: biliHeaders(bvid) });
+  if (!res.ok) throw new Error(`playurl HTTP ${res.status}`);
+
+  const payload = await res.json().catch(() => null);
+  if (!payload || payload.code !== 0) throw new Error(`playurl code ${payload && payload.code}`);
+
+  return pickDurl(payload.data, 'playurl');
+}
+
+/**
+ * 路线二：抓移动端播放页 HTML 里的 window.__playinfo__。
+ * Workers 的出口 IP 被 api 子域风控时，普通网页往往还放行。
+ */
+async function biliPlayinfoPage(bvid) {
+  const res = await fetch(`https://m.bilibili.com/video/${bvid}/`, { headers: biliHeaders(bvid, true) });
+  if (!res.ok) throw new Error(`page HTTP ${res.status}`);
+
+  const html = await res.text();
+  const matched = html.match(/window\.__playinfo__\s*=\s*(\{[\s\S]*?\})\s*<\/script>/);
+  if (!matched) throw new Error('page 里没有 __playinfo__');
+
+  let payload;
+  try {
+    payload = JSON.parse(matched[1]);
+  } catch (err) {
+    throw new Error('__playinfo__ 解析失败');
+  }
+  return pickDurl(payload.data, 'page');
+}
+
+/** 从 playurl / __playinfo__ 的 data 里挑一条 durl（音视频合一的 mp4）。 */
+function pickDurl(data, via) {
+  const stream = ((data && data.durl) || [])[0] || {};
+  if (!stream.url) throw new Error(`${via} 没有 durl`);
+  return {
+    url: stream.url,
+    backup: Array.isArray(stream.backup_url) ? stream.backup_url.slice(0, 2) : [],
+    // quality：64=720P，80=1080P，16=360P
+    quality: (data && data.quality) || 0,
+    duration: Math.round(((data && data.timelength) || 0) / 1000) || 0,
+    bytes: stream.size || 0,
+    via,
+  };
+}
 
 /**
  * 取 B 站视频流直链。
@@ -231,34 +310,32 @@ async function handleBiliPlay(url, ctx) {
     if (hit) return hit;
   }
 
-  const api =
-    'https://api.bilibili.com/x/player/playurl' +
-    `?bvid=${encodeURIComponent(bvid)}&cid=${encodeURIComponent(cid)}` +
-    '&qn=80&fnval=1&fourk=1&platform=html5&high_quality=1&try_look=1';
-
-  const upstream = await fetch(api, {
-    headers: { 'User-Agent': BILI_UA, Referer: `https://www.bilibili.com/video/${bvid}/` },
-  });
-  if (!upstream.ok) return fail(502, 'bili_upstream', `B 站接口返回 ${upstream.status}`);
-
-  const payload = await upstream.json().catch(() => null);
-  if (!payload || payload.code !== 0) {
-    return fail(502, 'bili_error', (payload && payload.message) || 'B 站拒绝了这次请求');
+  // 两条路线依次试，都失败就把原因拼起来，方便一眼看出卡在哪。
+  const reasons = [];
+  let stream = null;
+  for (const attempt of [
+    () => biliPlayurl(bvid, cid),
+    () => biliPlayinfoPage(bvid),
+  ]) {
+    try {
+      stream = await attempt();
+      break;
+    } catch (err) {
+      reasons.push(err.message);
+    }
   }
 
-  const data = payload.data || {};
-  const stream = (data.durl && data.durl[0]) || {};
-  if (!stream.url) return fail(502, 'no_stream', '没有拿到可播放的视频流');
+  if (!stream) return fail(502, 'bili_upstream', reasons.join(' | '));
 
   const response = json(
     {
       ok: true,
       url: stream.url,
-      backup: Array.isArray(stream.backup_url) ? stream.backup_url.slice(0, 2) : [],
-      // quality：64=720P，80=1080P，16=360P
-      quality: data.quality || 0,
-      duration: Math.round((data.timelength || 0) / 1000) || 0,
-      bytes: stream.size || 0,
+      backup: stream.backup,
+      quality: stream.quality,
+      duration: stream.duration,
+      bytes: stream.bytes,
+      via: stream.via,
     },
     200,
     { 'Cache-Control': `public, max-age=${BILI_CACHE_SECONDS}` }
