@@ -7,6 +7,11 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Probe endpoints
         run: |
           BV=BV1G4WU6pEwQ
@@ -47,3 +52,14 @@ jobs:
             "https://api.bilibili.com/x/player/playurl?bvid=$BV&cid=0&qn=80&fnval=1&platform=html5&high_quality=1" \
             -H "User-Agent: $UA" -H "Referer: https://www.bilibili.com/" -H "Cookie: buvid3=$B3"
           head -c 160 /tmp/f.json; echo
+
+      - name: Probe R2 write (force upload, dry run)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
+          R2_PREFIX: ${{ vars.R2_PREFIX || 'image/{yyyy}/{mm}' }}
+        run: |
+          node scripts/sync-videos.mjs --force --dry 2>&1 | grep -E "封面上传|失败|cover" | head -20
