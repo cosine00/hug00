@@ -24,3 +24,6 @@ node_modules
 
 # 重构期间的构建中间产物
 .tmp-audit/
+
+# Hugo 图片处理的缓存（assets 里的封面会被裁切成 webp/jpg）
+resources/_gen

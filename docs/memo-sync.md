@@ -19,6 +19,10 @@ FlareMo (Cloudflare Workers + D1 + R2)
         ▼                ▼                  ▼                      ▼
     首页最近哔哔      哔哔页 /bb/         相册 /album/          剪藏 /clip/
    (bb-home.js)    (bb-focus.js)      (album.html)          (clip.html)
+                                            │
+                                            ▼
+                                  影彩 /album/#video
+                                  (scripts/sync-videos.mjs → data/videos.json)
 ```
 
 `static/memos.json` 是唯一产物，格式与旧版保持同构：
@@ -44,6 +48,60 @@ FlareMo 新上传的图走**第一种**：文件存在 FlareMo 自己的 R2，�
 历史那 579 张图走**第二种**：当年从 Memos 导入时附件被改写成正文里的 markdown 图片，URL 已经指向 `img.hux.ink`，所以不用转存。
 
 > 不要在 `resourceList` 里重复塞正文已经内联过的图，前端会渲染两次。
+
+## 影彩（视频）
+
+光影页的第二个页签「影彩」不是图片，而是 B 站视频。数据跟图片同源——只看 `#影彩` 标签，不看手工配置文件。
+
+在 Memos 里发一条：
+
+```
+vlog03 [青海湖喂个鸟](https://www.bilibili.com/video/BV1G4WU6pEwQ) #影彩
+```
+
+`scripts/sync-videos.mjs` 会：
+
+1. 从 `static/memos.json` 筛出 `#影彩` 条目，正则取出链接、标题和 `vlogNN` 编号
+2. 用 bvid 调 B 站 view 接口，补全时长、发布日、简介、横竖屏
+3. 封面取 B 站图床的 `@1280w.webp` 压缩版（1.4MB → 约 190KB），传进 R2：`image/{yyyy}/{mm}/video-cover-{bvid}.webp`，仓库里不存图
+4. 写出 `data/videos.json`（按发布日倒序）
+
+`fetch-memos.yml` 已接上这一步，贴完链接等一次同步就行，不用手动跑。本地想自己跑：
+
+```bash
+R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… R2_ENDPOINT=… R2_BUCKET=… R2_PUBLIC_DOMAIN=img.hux.ink \
+  node scripts/sync-videos.mjs
+```
+
+没配图床凭据时会退化成 B 站直链（页面加了 `referrerpolicy="no-referrer"` 绕过防盗链），本地预览照样能看，只是封面没落到自己的图床。
+
+### 播放为什么不用官方 iframe
+
+站外播放器（`player.bilibili.com`）对未登录访客只给 **640×360**：把播放器放到 1280、1920 宽，或者调 `high_quality=1`，实测 `video.videoWidth` 始终是 640，改不动。360P 在视网膜屏上被放大 4 倍，就是一眼可见的糊。
+
+所以播放走另一条路：
+
+1. 点击某一条 → 页面请求 comments Worker 的 `GET /api/bili?bvid=&cid=`
+2. Worker 用 `platform=html5&high_quality=1&try_look=1` 调 playurl，拿到 **720P 的 mp4 直链**（这类地址不校验 Referer，可以直接喂 `<video>`），并在边缘缓存 45 分钟
+3. 页面用原生 `<video>` 播放，控件、全屏、画中画都是浏览器原生的
+
+接口没部署、超时或 B 站拒绝时，脚本会自动退回官方 iframe（360P），页面不会开天窗。要在线上生效，部署一次 Worker 即可：
+
+```bash
+npm run comments:deploy     # wrangler deploy，路由 /api/bili 随之生效
+```
+
+> 720P 是游客天花板（1080P/4K 需要登录态）。页面本身不放「原片」入口，想更高清就去 B 站对应视频页（`data/videos.json` 里的 `url`）。
+
+### 评论与哔哔共用一条线程
+
+每条影彩的评论挂在它对应的那条哔哔下面，用的是同一个 thread key：`memo:<memoId>`（`memoId` 由同步脚本从 memos.json 带进 `data/videos.json`）。
+
+- 在影彩里发的评论，去哔哔页同一条目下能看到，反之也一样
+- 影彩条目上的小药丸显示的就是这条哔哔的评论数，`.cm-pill` 与哔哔页同一套样式
+- 评论前端（`comments.js` + `comments.css`）在 `album.html` 里按 `params.comments.enable` 加载；本地 `hugo server` 会自动指向 `wrangler dev`
+- 没有 `memoId` 的视频条目不显示评论入口（比如手工塞进 JSON 的条目）
+
 
 ## 运行
 

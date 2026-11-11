@@ -234,7 +234,7 @@ function appendMemoImageTrigger(content, trigger) {
 
 // 不展示包含以下标签的哔哔。
 // 标签比较时会自动忽略首尾空格、开头的 # 号以及英文字母大小写。
-const hiddenMemoTags = new Set(['相册', 'clip']);
+const hiddenMemoTags = new Set(['相册', '影彩', 'clip']);
 
 function shouldHideMemo(item) {
   if (!item || !Array.isArray(item.tags)) return false;

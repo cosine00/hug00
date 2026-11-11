@@ -1,7 +1,50 @@
 {{ partial "header.html" . }}
-<div id="album" style="width: 100%;">
-  <div class="album-loading" role="status">正在加载相册…</div>
+<link rel="stylesheet" href="{{ "css/videos.css" | relURL }}?v=20261112-14">
+
+{{- /* 影彩的评论挂到对应哔哔的 memo:<id> 线程上，需要同一套评论前端。 */ -}}
+{{- $useComments := partial "comments/enabled.html" . -}}
+{{- if $useComments -}}
+{{- $cmApi := partial "comments/api.html" . -}}
+{{- $cmAdmin := partial "comments/admin-hash.html" . -}}
+{{- $cmAvatar := partial "comments/avatar.html" . -}}
+{{- $cmTurnstile := partial "comments/turnstile.html" -}}
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261109-03">
+<script>
+  window.videoComments = {
+    api: {{ $cmApi | jsonify | safeJS }},
+    adminHash: {{ $cmAdmin | jsonify | safeJS }},
+    avatar: {{ $cmAvatar | jsonify | safeJS }},
+    turnstileSiteKey: {{ $cmTurnstile | jsonify | safeJS }}
+  };
+</script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261028-04" defer></script>
+{{- end -}}
+
+<div class="media-tabs" role="tablist" aria-label="光影内容">
+  <button id="tab-album" class="media-tab is-active" type="button" role="tab"
+          aria-selected="true" aria-controls="panel-album" data-target="album">时光</button>
+  <button id="tab-video" class="media-tab" type="button" role="tab"
+          aria-selected="false" aria-controls="panel-video" data-target="video" tabindex="-1">影彩</button>
 </div>
+
+<section id="panel-album" class="media-panel" role="tabpanel" aria-labelledby="tab-album">
+  <div id="album" style="width: 100%;">
+    <div class="album-loading" role="status">正在加载相册…</div>
+  </div>
+</section>
+
+<section id="panel-video" class="media-panel" role="tabpanel" aria-labelledby="tab-video" hidden>
+  {{ partial "video-list.html" . }}
+</section>
+
+{{- $videos := sort (.Site.Data.videos | default slice) "date" "desc" -}}
+<script>
+  window.videoItems = {{ $videos | jsonify | safeJS }};
+  window.videoApi = {
+    api: {{ (.Site.Params.videos.api | default "https://comments.hux.ink/api/bili") | jsonify | safeJS }},
+    localApi: {{ (.Site.Params.videos.localApi | default "") | jsonify | safeJS }}
+  };
+</script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -22,6 +65,8 @@
     var statusDom = null
     var observer = null
     var isRendering = false
+    var albumInited = false
+    var albumRefresh = null
 
     // 宽高比采用“宽 / 高”。每次进入页面会重新随机，当前页面内保持不变。
     var ratioPool = [0.72, 0.82, 0.95, 1, 1.16, 1.35, 1.55]
@@ -96,8 +141,18 @@
           .replace(/^#相册\s*/, "")
           .replace(/!\[.*?\]\(.*?\)/g, "")
           .trim(),
-        25
+        20
       )
+    }
+
+    /** 判断一段 alt 文本是不是相机/手机导出的文件名，而不是真的标题。 */
+    function looksLikeFilename(text) {
+      var value = String(text || "").trim()
+      if (!value) return true
+      if (/\.(jpe?g|png|gif|webp|heic|avif|bmp|mov|mp4)$/i.test(value)) return true
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}/i.test(value)) return true
+      if (/^(img|dsc|dscf|dji|pxl|mvimg|gopr|screenshot)[_-]?\d/i.test(value)) return true
+      return false
     }
 
     function formatPhotoDate(timestamp) {
@@ -148,12 +203,14 @@
         while ((match = imagePattern.exec(content)) !== null) {
           var altText = String(match[1] || "").trim()
           var imageUrl = String(match[2] || "").trim()
-          var title = altText
+          var altTitle = altText
 
+          // Memos 写出的 alt 常是「IMG_2026….jpg」这类文件名：有空格时取后半段，
+          // 整段就是文件名时直接丢掉，改用条目正文（和以前一样显示条目文字）。
           if (/\s/.test(altText)) {
-            var firstSpace = altText.search(/\s/)
-            title = altText.slice(firstSpace).trim()
+            altTitle = altText.slice(altText.search(/\s/)).trim()
           }
+          var title = looksLikeFilename(altTitle) ? galleryTitle : altTitle || galleryTitle
 
           if (imageUrl) {
             photos.push({
@@ -227,7 +284,7 @@
         var title = document.createElement("span")
         title.className = "photo-title"
         // 只保留前 20 个字符；CSS 允许换行完整显示，不添加省略号。
-        title.textContent = truncateTitle(photo.title, 25)
+        title.textContent = truncateTitle(photo.title, 20)
         title.setAttribute("aria-label", photo.title)
         card.appendChild(title)
       }
@@ -317,29 +374,383 @@
       }
     }
 
-    fetch(galleryJsonUrl)
-      .then(function (response) {
-        if (!response.ok) throw new Error("相册 JSON 请求失败：" + response.status)
-        return response.json()
-      })
-      .then(function (responseData) {
-        allPhotos = collectPhotos(responseData)
-        setupAlbumShell()
+    // 相册只在「相册」页签第一次被打开时初始化，避免视频页签下白跑一次请求。
+    function initAlbum() {
+      if (albumInited) return
+      albumInited = true
 
-        if (!allPhotos.length) {
-          statusDom.textContent = "暂时没有可展示的图片"
-          sentinel.classList.add("is-finished")
+      fetch(galleryJsonUrl)
+        .then(function (response) {
+          if (!response.ok) throw new Error("相册 JSON 请求失败：" + response.status)
+          return response.json()
+        })
+        .then(function (responseData) {
+          allPhotos = collectPhotos(responseData)
+          setupAlbumShell()
+
+          if (!allPhotos.length) {
+            statusDom.textContent = "暂时没有可展示的图片"
+            sentinel.classList.add("is-finished")
+            return
+          }
+
+          renderNextBatch(INITIAL_BATCH_SIZE)
+          setupProgressiveLoading()
+          window.addEventListener("resize", handleResize, { passive: true })
+
+          // 页签来回切换后重新观察哨兵，防止批次加载停在半途。
+          albumRefresh = function () {
+            handleResize()
+            if (observer && renderedCount < allPhotos.length) {
+              observer.disconnect()
+              observer.observe(sentinel)
+            }
+          }
+        })
+        .catch(function (error) {
+          console.error(error)
+          galleryDom.innerHTML = '<div class="album-error" role="alert">相册数据加载失败，请确认 static/memos.json 已随站点发布。</div>'
+        })
+    }
+
+    /* ── 页签：相册 / 视频 ───────────────────────────────────────────── */
+
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".media-tab"))
+    var panels = {}
+
+    for (var t = 0; t < tabs.length; t++) {
+      var panelEl = document.getElementById(tabs[t].getAttribute("aria-controls"))
+      if (panelEl) panels[tabs[t].dataset.target] = panelEl
+    }
+
+    function setActiveTab(name, updateHash) {
+      for (var i = 0; i < tabs.length; i++) {
+        var tab = tabs[i]
+        var on = tab.dataset.target === name
+        tab.classList.toggle("is-active", on)
+        tab.setAttribute("aria-selected", on ? "true" : "false")
+        tab.tabIndex = on ? 0 : -1
+      }
+
+      Object.keys(panels).forEach(function (key) {
+        var el = panels[key]
+        var isOn = key === name
+        el.hidden = !isOn
+        el.classList.remove("is-entering")
+        if (isOn) {
+          void el.offsetWidth
+          el.classList.add("is-entering")
+        }
+      })
+
+      if (name === "album") {
+        initAlbum()
+        if (albumRefresh) requestAnimationFrame(albumRefresh)
+      }
+
+      // 切走影彩就把播放器收起来，别让声音在后台继续响。
+      if (name !== "video" && playingItem) stopVideo()
+
+      // 只替换当前历史记录，不额外塞条目，返回键不会在页签之间打转。
+      if (updateHash) {
+        try {
+          history.replaceState(null, "", "#" + name)
+        } catch (error) {}
+      }
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener("click", function () {
+        setActiveTab(tab.dataset.target, true)
+      })
+      tab.addEventListener("keydown", function (event) {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return
+        event.preventDefault()
+        var step = event.key === "ArrowRight" ? 1 : -1
+        var next = (index + step + tabs.length) % tabs.length
+        setActiveTab(tabs[next].dataset.target, true)
+        tabs[next].focus()
+      })
+    })
+
+    window.addEventListener("hashchange", function () {
+      var name = String(location.hash || "").replace("#", "")
+      if (name === "album" || name === "video") setActiveTab(name, false)
+    })
+
+    /* ── 影彩：点开某一行，就在该行下方展开播放器 ───────────────────────── */
+
+    var videoItems = Array.isArray(window.videoItems) ? window.videoItems : []
+    var videoApiCfg = window.videoApi || {}
+    // 本地预览（hugo server）时指向 `wrangler dev`，线上走 comments.hux.ink。
+    var videoApi = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) && videoApiCfg.localApi
+      ? videoApiCfg.localApi
+      : (videoApiCfg.api || "")
+    var playingItem = null
+
+    function embedURL(item) {
+      return "https://player.bilibili.com/player.html?isOutside=true&bvid=" +
+        encodeURIComponent(item.bvid) + "&p=1&autoplay=1&high_quality=1&danmaku=1&t=0"
+    }
+
+    function qualityLabel(qn) {
+      if (qn >= 120) return "4K"
+      if (qn >= 80) return "1080P"
+      if (qn >= 64) return "720P"
+      if (qn >= 32) return "480P"
+      return "360P"
+    }
+
+    function stopVideo() {
+      if (!playingItem) return
+      var slot = playingItem.querySelector(".video-player")
+      var native = slot ? slot.querySelector("video") : null
+      if (native) {
+        // 停掉原生播放并断开来源，别让它在后台继续拉流。
+        native.pause()
+        native.removeAttribute("src")
+        native.load()
+      }
+      if (slot) slot.innerHTML = ""
+      var stage = playingItem.querySelector(".video-stage")
+      if (stage) stage.hidden = true
+      var poster = playingItem.querySelector(".video-poster")
+      if (poster) poster.setAttribute("aria-expanded", "false")
+      // 评论入口和评论面板都只在播放时露头，收片时一并收掉。
+      var panel = playingItem.querySelector(".video-comments")
+      if (panel && !panel.hidden) {
+        panel.hidden = true
+        playingItem.classList.remove("is-commenting")
+        var pill = playingItem.querySelector(".video-comment-toggle")
+        if (pill) pill.setAttribute("aria-expanded", "false")
+      }
+      playingItem.classList.remove("is-playing")
+      playingItem = null
+    }
+
+    /** 720P 角标直接压在画面右上角，不放操作行。 */
+    function showQuality(slot, qn) {
+      var chip = document.createElement("span")
+      chip.className = "video-quality"
+      chip.textContent = qualityLabel(qn)
+      slot.appendChild(chip)
+    }
+
+    /** 用 Worker 取 720P 直链，喂给原生 <video>；拿不到就返回 false 走 iframe。 */
+    function playNative(item, slot) {
+      if (!videoApi || !item.cid) return Promise.resolve(false)
+      var controller = new AbortController()
+      var timer = setTimeout(function () { controller.abort() }, 6000)
+      var endpoint = videoApi + "?bvid=" + encodeURIComponent(item.bvid) + "&cid=" + encodeURIComponent(item.cid)
+
+      return fetch(endpoint, { signal: controller.signal, headers: { Accept: "application/json" } })
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status)
+          return res.json()
+        })
+        .then(function (data) {
+          if (!data || !data.ok || !data.url) throw new Error("没有拿到直链")
+          var video = document.createElement("video")
+          video.src = data.url
+          video.poster = item.cover || ""
+          video.controls = true
+          video.autoplay = true
+          video.playsInline = true
+          video.preload = "auto"
+          video.setAttribute("aria-label", item.title + " · B 站视频")
+          slot.innerHTML = ""
+          slot.appendChild(video)
+          return data.quality || 0
+        })
+        .catch(function () { return false })
+        .then(function (result) {
+          clearTimeout(timer)
+          return result
+        })
+    }
+
+    function playIframe(item, slot) {
+      var frame = document.createElement("iframe")
+      frame.setAttribute("src", embedURL(item))
+      frame.setAttribute("allow", "autoplay; fullscreen; picture-in-picture; encrypted-media")
+      frame.setAttribute("allowfullscreen", "true")
+      frame.setAttribute("frameborder", "0")
+      frame.setAttribute("scrolling", "no")
+      frame.setAttribute("title", (item.title || "视频") + " · B 站播放器")
+      slot.innerHTML = ""
+      slot.appendChild(frame)
+    }
+
+    function openVideo(article) {
+      if (!article || article === playingItem) return
+      var item = videoItems[Number(article.getAttribute("data-index"))]
+      var slot = article.querySelector(".video-player")
+      if (!item || !slot) return
+
+      stopVideo()
+
+      var stage = article.querySelector(".video-stage")
+      var poster = article.querySelector(".video-poster")
+      if (stage) stage.hidden = false
+      if (poster) poster.setAttribute("aria-expanded", "true")
+      article.classList.add("is-playing")
+      playingItem = article
+      slot.innerHTML = '<p class="video-loading">正在连接 B 站…</p>'
+
+      playNative(item, slot).then(function (qn) {
+        if (article !== playingItem) return
+        if (qn === false) {
+          // 直链不可用（接口没部署 / B 站拒绝）就退回官方播放器，画面 360P。
+          playIframe(item, slot)
           return
         }
+        showQuality(slot, qn)
+      })
 
-        renderNextBatch(INITIAL_BATCH_SIZE)
-        setupProgressiveLoading()
-        window.addEventListener("resize", handleResize, { passive: true })
+      // 展开后播放器可能落在视口外，轻轻带一下。
+      requestAnimationFrame(function () {
+        var box = article.querySelector(".video-player")
+        if (!box) return
+        var rect = box.getBoundingClientRect()
+        var overflow = rect.bottom - window.innerHeight + 16
+        if (overflow > 0) {
+          window.scrollBy({ top: Math.min(overflow, Math.max(0, rect.top - 24)), behavior: "smooth" })
+        }
       })
-      .catch(function (error) {
-        console.error(error)
-        galleryDom.innerHTML = '<div class="album-error" role="alert">相册数据加载失败，请确认 static/memos.json 已随站点发布。</div>'
+    }
+
+    /* ── 影彩：评论入口（与对应那条哔哔共用 memo:<id> 线程） ─────────────── */
+
+    var commentCfg = window.videoComments || {}
+    var commentCounts = {}
+
+    function memoPermalink(id) {
+      return location.origin + "/m/" + encodeURIComponent(id) + "/"
+    }
+
+    function paintCount(id) {
+      var count = commentCounts[id] || 0
+      var pills = document.querySelectorAll('.video-comment-toggle[data-memo="' + id + '"]')
+      Array.prototype.forEach.call(pills, function (pill) {
+        var label = pill.querySelector(".cm-pill-count")
+        if (label) label.textContent = count > 0 ? count : ""
+        pill.classList.toggle("has-comments", count > 0)
+        pill.setAttribute("data-tip", count > 0 ? count + " 条评论" : "评论")
       })
+    }
+
+    function loadCommentCounts() {
+      if (!commentCfg.api) return
+      var ids = []
+      Array.prototype.forEach.call(document.querySelectorAll(".video-comment-toggle[data-memo]"), function (pill) {
+        var id = pill.getAttribute("data-memo")
+        if (id && ids.indexOf(id) < 0) ids.push(id)
+      })
+      if (!ids.length) return
+
+      var threads = ids.map(function (id) { return "memo:" + id }).join(",")
+      fetch(commentCfg.api + "/count?threads=" + encodeURIComponent(threads))
+        .then(function (res) { return res.json() })
+        .then(function (data) {
+          if (!data || !data.ok) return
+          Object.keys(data.counts || {}).forEach(function (key) {
+            var id = key.replace(/^memo:/, "")
+            commentCounts[id] = data.counts[key]
+            paintCount(id)
+          })
+        })
+        .catch(function () { /* 计数失败不影响看片 */ })
+    }
+
+    function toggleComments(article, pill) {
+      var panel = article.querySelector(".video-comments")
+      if (!panel) return
+      var id = pill.getAttribute("data-memo")
+
+      if (!panel.hidden) {
+        panel.hidden = true
+        article.classList.remove("is-commenting")
+        pill.setAttribute("aria-expanded", "false")
+        return
+      }
+
+      panel.hidden = false
+      // 鼠标移开也要留着入口，否则按钮一消失面板就悬在半空。
+      article.classList.add("is-commenting")
+      pill.setAttribute("aria-expanded", "true")
+
+      if (!panel.dataset.mounted) {
+        if (!window.Comments) {
+          panel.innerHTML = '<p class="video-comment-note">评论暂时加载不了，稍后再试。</p>'
+          return
+        }
+        panel.dataset.mounted = "1"
+        var mountNode = document.createElement("div")
+        panel.appendChild(mountNode)
+        window.Comments.mount(mountNode, {
+          threadKey: "memo:" + id,
+          threadUrl: memoPermalink(id),
+          threadTitle: "哔哔 · " + id,
+          api: commentCfg.api,
+          avatar: commentCfg.avatar,
+          adminHash: commentCfg.adminHash,
+          turnstileSiteKey: commentCfg.turnstileSiteKey,
+          showHeader: false,
+          placeholder: "说点什么…"
+        })
+      }
+    }
+
+    // 在影彩里发的评论，回到哔哔页也能看到——计数先本地加一。
+    document.addEventListener("comments:created", function (event) {
+      var key = event.detail && event.detail.threadKey
+      if (!key || key.indexOf("memo:") !== 0) return
+      var id = key.slice(5)
+      commentCounts[id] = (commentCounts[id] || 0) + 1
+      paintCount(id)
+    })
+
+    /* ── 影彩：播放 / 收起 ───────────────────────────────────────────────── */
+
+    Array.prototype.forEach.call(document.querySelectorAll(".video-item"), function (article) {
+      var row = article.querySelector(".video-row")
+      if (row) {
+        row.addEventListener("click", function (event) {
+          // 评论入口不触发播放
+          if (event.target.closest(".video-comment-toggle")) return
+          if (article === playingItem) stopVideo()
+          else openVideo(article)
+        })
+      }
+
+      var pill = article.querySelector(".video-comment-toggle")
+      if (pill) {
+        pill.addEventListener("click", function (event) {
+          event.preventDefault()
+          event.stopPropagation()
+          toggleComments(article, pill)
+        })
+      }
+    })
+
+    loadCommentCounts()
+
+    // 点页面任何空白处都收起播放器；播放器内部、条目热区、评论面板例外。
+    document.addEventListener("click", function (event) {
+      if (!playingItem) return
+      if (event.target.closest(".video-stage")) return
+      if (event.target.closest(".video-row")) return
+      if (event.target.closest(".video-comments")) return
+      stopVideo()
+    })
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && playingItem) stopVideo()
+    })
+
+    // 首屏：带 #video 直接落在视频页签，否则展示相册。
+    var initialTab = String(location.hash || "").replace("#", "")
+    setActiveTab(initialTab === "video" ? "video" : "album", false)
   })
 </script>
 <script src="/js/marked.min.js"></script>

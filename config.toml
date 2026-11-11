@@ -62,6 +62,18 @@ footnotereturnlinkcontents = "↩"
   "🕊️ 落霞与孤鹜齐飞，秋水共长天一色。"
   ]
   footer = "&copy; [Counting Stars💫](https://hux.ink/admin) | [Since 2023](https://hux.ink/index.xml)"
+
+  # 光影「影彩」页签：B 站账号（拼主页链接）+ 取 720P 直链的接口
+  [params.bilibili]
+    mid = "30778937"
+    name = "luckyvici"
+
+  # 影彩播放：站外 iframe 只给 360P，改由 comments Worker 代取 720P 直链（/api/bili）
+  # 没部署时脚本会自动退回官方播放器，不影响页面
+  [params.videos]
+    api = "https://comments.hux.ink/api/bili"
+    localApi = "http://localhost:8787/api/bili"
+
   highlightjsCDN = "//cdn.bootcss.com"
   highlightjsLang = ["r", "yaml", "tex"]
   highlightjsTheme = "github"

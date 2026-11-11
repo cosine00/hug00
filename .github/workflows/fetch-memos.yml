@@ -42,6 +42,17 @@ jobs:
       - name: Test BB RSS generator
         run: node --test .github/scripts/generate-bb-rss.test.js
 
+      # 影彩：把 #影彩 哔哔里的 B 站链接解析成视频数据，封面转存到 R2
+      - name: Sync 影彩 videos from memos
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
+          R2_PREFIX: ${{ vars.R2_PREFIX || 'image/{yyyy}/{mm}' }}
+        run: node scripts/sync-videos.mjs
+
       - name: Generate BB RSS feed
         run: node .github/scripts/generate-bb-rss.js
 
@@ -49,4 +60,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: update memos.json and BB RSS'
-          file_pattern: 'static/memos.json static/bb/index.xml .github/scripts/memo-attachment-cache.json'
+          file_pattern: 'static/memos.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json'

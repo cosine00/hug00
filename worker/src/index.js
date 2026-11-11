@@ -13,6 +13,7 @@
  *   POST /api/comments/admin            { action, id, threadKey }
  *   POST /api/comments/admin/import     { items: [...] }
  *   GET  /api/comments/admin/export
+ *   GET  /api/bili?bvid=&cid=             影彩页取 B 站 720P 直链（代取，绕 CORS）
  */
 
 import {
@@ -157,6 +158,11 @@ async function route(request, env, url, ctx) {
     return handleComments(request, env, url, ctx);
   }
 
+  // 影彩页：代理取 B 站 720P 直链（站外 iframe 播放器只给 360P）
+  if (path === '/api/bili' || path === '/bili') {
+    return handleBiliPlay(url, ctx);
+  }
+
   if (path === '/api/comments/count' || path === '/comments/count') {
     return handleCount(request, env, url);
   }
@@ -194,6 +200,74 @@ async function route(request, env, url, ctx) {
   }
 
   return fail(404, 'not_found', '接口不存在');
+}
+
+/* ------------------------------ B 站播放直链 ------------------------------ */
+
+const BILI_UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+// 直链有效期约 2 小时，缓存 45 分钟留足余量。
+const BILI_CACHE_SECONDS = 2700;
+
+/**
+ * 取 B 站视频流直链。
+ *
+ * 为什么要有这个接口：站外 iframe 播放器（player.bilibili.com）对未登录访客
+ * 只给 640×360，改任何参数都无效（实测 videoWidth 恒为 640）。而 playurl 接口
+ * 在 platform=html5 下能给到 720P 的 mp4，且不校验 Referer，可以直接喂给 <video>。
+ * 浏览器直连 api.bilibili.com 会被 CORS 挡住，所以由 Worker 代取。
+ */
+async function handleBiliPlay(url, ctx) {
+  const bvid = String(url.searchParams.get('bvid') || '').trim();
+  const cid = String(url.searchParams.get('cid') || '').trim();
+  if (!/^BV[0-9A-Za-z]{10}$/.test(bvid) || !/^\d{1,20}$/.test(cid)) {
+    return fail(400, 'bad_request', 'bvid / cid 不合法');
+  }
+
+  const cache = globalThis.caches && globalThis.caches.default;
+  const cacheKey = new Request(`https://bili-cache.hux.ink/${bvid}/${cid}`, { method: 'GET' });
+  if (cache) {
+    const hit = await cache.match(cacheKey);
+    if (hit) return hit;
+  }
+
+  const api =
+    'https://api.bilibili.com/x/player/playurl' +
+    `?bvid=${encodeURIComponent(bvid)}&cid=${encodeURIComponent(cid)}` +
+    '&qn=80&fnval=1&fourk=1&platform=html5&high_quality=1&try_look=1';
+
+  const upstream = await fetch(api, {
+    headers: { 'User-Agent': BILI_UA, Referer: `https://www.bilibili.com/video/${bvid}/` },
+  });
+  if (!upstream.ok) return fail(502, 'bili_upstream', `B 站接口返回 ${upstream.status}`);
+
+  const payload = await upstream.json().catch(() => null);
+  if (!payload || payload.code !== 0) {
+    return fail(502, 'bili_error', (payload && payload.message) || 'B 站拒绝了这次请求');
+  }
+
+  const data = payload.data || {};
+  const stream = (data.durl && data.durl[0]) || {};
+  if (!stream.url) return fail(502, 'no_stream', '没有拿到可播放的视频流');
+
+  const response = json(
+    {
+      ok: true,
+      url: stream.url,
+      backup: Array.isArray(stream.backup_url) ? stream.backup_url.slice(0, 2) : [],
+      // quality：64=720P，80=1080P，16=360P
+      quality: data.quality || 0,
+      duration: Math.round((data.timelength || 0) / 1000) || 0,
+      bytes: stream.size || 0,
+    },
+    200,
+    { 'Cache-Control': `public, max-age=${BILI_CACHE_SECONDS}` }
+  );
+
+  if (cache && ctx && ctx.waitUntil) {
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+  }
+  return response;
 }
 
 /* ------------------------------ /comments -------------------------------- */

@@ -1,0 +1,588 @@
+/* ==========================================================================
+   光影 · 时光（相册） / 影彩（视频）
+   只被 layouts/_default/album.html 引用，其余页面不受影响。
+   颜色全部取自 palettes.css 的语义变量，四套配色（paper/night/sepia/mist）自动适配。
+   ========================================================================== */
+
+/* ── 页签：与哔哔页「最近 / 好运」完全同一套尺寸 ───────────────────────── */
+
+.media-tabs {
+  display: flex;
+  width: fit-content;
+  margin: .4em auto 1.7em;
+  padding: 5px;
+  gap: 8px;
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 9999px;
+  background: var(--surface, #fff);
+  box-shadow: 0 1px 4px var(--shadow, rgba(0, 0, 0, .08));
+}
+
+.media-tab {
+  padding: 8px 28px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--muted, #666);
+  font: inherit;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.media-tab:hover {
+  background: var(--accent-soft, rgba(66, 185, 131, .1));
+  color: var(--accent-hover, #42b983);
+}
+
+.media-tab.is-active {
+  background: var(--accent, #42b983);
+  color: var(--accent-contrast, #fff);
+}
+
+.media-tab:focus-visible {
+  outline: 2px solid var(--accent, #42b983);
+  outline-offset: 2px;
+}
+
+.media-panel[hidden] {
+  display: none;
+}
+
+.media-panel.is-entering {
+  animation: mediaPanelIn .4s cubic-bezier(.2, .7, .3, 1) both;
+}
+
+@keyframes mediaPanelIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── 影彩：一条一行，点开就地展开播放器 ───────────────────────────────── */
+
+.video-shell {
+  width: 100%;
+}
+
+.video-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 .2rem;
+  padding-bottom: .85rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border, #dedfdb) 75%, transparent);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  color: var(--muted, #707673);
+  opacity: .9;
+}
+
+/* 右侧入口：B 站小电视（官方线条 TV，品牌蓝），悬停稍亮并轻抬 */
+.video-head-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex: 0 0 auto;
+  padding: 0;
+  color: #1296db;
+  line-height: 0;
+  text-decoration: none;
+  opacity: .95;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.video-head-link:hover {
+  /* 站点全局 a:hover 会把链接染成主题色，这里要把品牌蓝守住 */
+  color: #1296db;
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.video-head-link:focus-visible {
+  outline: 2px solid #1296db;
+  outline-offset: 3px;
+  border-radius: .35rem;
+}
+
+.video-head-icon {
+  display: block;
+  width: auto;
+  height: 26px;
+  fill: currentColor;
+}
+
+.video-empty {
+  padding: 2rem 0;
+  color: var(--muted, #707673);
+  font-size: .88rem;
+  text-align: center;
+}
+
+.video-list {
+  display: block;
+}
+
+.video-item {
+  border-bottom: 1px solid color-mix(in srgb, var(--border, #dedfdb) 55%, transparent);
+  animation: videoItemIn .45s cubic-bezier(.2, .7, .3, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes videoItemIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 一行 = 缩略图（约半幅宽）+ 文字，整行都是热区 */
+.video-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+  padding: 1.6rem 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.video-poster {
+  display: block;
+  flex: 0 0 50%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.video-poster:focus-visible {
+  outline: 2px solid var(--accent, #6870a8);
+  outline-offset: 4px;
+  border-radius: .6rem;
+}
+
+/* 缩略图：宽度跟着 poster 走，高度由视频比例自己决定 */
+.video-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: .55rem;
+  background: var(--surface-soft, #f3f4f2);
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--shadow, rgba(30, 39, 35, .12)) 60%, transparent);
+  isolation: isolate;
+}
+
+/* 竖屏片子不按半幅宽算，改按高度收，免得一行竖成一根长条 */
+.video-item[data-aspect="portrait"] .video-poster {
+  flex: 0 0 auto;
+  width: auto;
+  height: 20rem;
+}
+
+.video-item[data-aspect="portrait"] .video-thumb {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+}
+
+.video-thumb img,
+.video-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .6s cubic-bezier(.2, .7, .3, 1);
+}
+
+.video-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--faint, #9ba09d);
+  font-size: 1.6rem;
+  background: linear-gradient(135deg, var(--surface-soft, #f3f4f2), var(--code-bg, #f0f2ef));
+}
+
+.video-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 14, 12, .38), rgba(10, 14, 12, 0) 55%);
+  opacity: .85;
+  transition: opacity .3s ease;
+}
+
+.video-badge {
+  position: absolute;
+  right: .38rem;
+  bottom: .34rem;
+  padding: 1px 6px;
+  border-radius: .25rem;
+  background: rgba(12, 16, 14, .62);
+  color: #fff;
+  font-size: .68rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .02em;
+}
+
+/* 悬停时浮现的播放键 */
+.video-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  background: rgba(10, 14, 12, .26);
+  transition: opacity .25s ease;
+}
+
+.video-hint svg {
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .45));
+}
+
+.video-row:hover .video-hint,
+.video-row:focus-visible .video-hint,
+.video-item.is-playing .video-hint {
+  opacity: 1;
+}
+
+.video-item.is-playing .video-hint {
+  opacity: 0;
+}
+
+/* 正在播放的那条：缩略图加一圈细边，和下面的播放器对上 */
+.video-item.is-playing .video-thumb {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent, #6870a8) 55%, transparent),
+    0 1px 6px color-mix(in srgb, var(--shadow, rgba(30, 39, 35, .12)) 60%, transparent);
+}
+
+.video-row:hover .video-thumb img {
+  transform: scale(1.04);
+}
+
+.video-row:hover .video-scrim {
+  opacity: 1;
+}
+
+/* 文字区 */
+.video-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .34rem;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+/* 右上角的大号编号：复刻「发生」页卡片的 ghost number
+   （Georgia 斜体 + 极浅的边框色 + 1 的行高），只作装饰，不参与朗读和点击。
+   定位相对整行，所以文字块垂直居中时它仍钉在条目的右上角。 */
+.video-seq {
+  position: absolute;
+  top: .15rem;
+  right: 0;
+  z-index: 0;
+  color: color-mix(in srgb, var(--border-strong, #b9bdb9) 40%, transparent);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 4rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.02em;
+  user-select: none;
+  pointer-events: none;
+  transition: color .25s ease;
+}
+
+.video-item.is-playing .video-seq {
+  color: color-mix(in srgb, var(--accent, #6870a8) 30%, transparent);
+}
+
+.video-title {
+  position: relative;
+  z-index: 1;
+  padding-right: 5rem;
+  color: var(--text-strong, #171a19);
+  font-size: 1.06rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: .01em;
+  transition: color .25s ease;
+}
+
+.video-row:hover .video-title,
+.video-item.is-playing .video-title {
+  color: var(--accent, #6870a8);
+}
+
+.video-summary {
+  color: var(--muted, #707673);
+  font-size: .84rem;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 日期 + 评论入口：平时收起来，播放这条、或鼠标停在这一条上时才露出。
+   露出时脱开文档流钉在缩略图底线上，正文仍保持垂直居中不动。 */
+.video-foot {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem .8rem;
+}
+
+.video-item.is-playing .video-body {
+  /* 撑到与缩略图等高，作为 foot 的定位基准 */
+  align-self: stretch;
+  position: relative;
+}
+
+.video-item.is-playing .video-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  animation: videoFootIn .28s ease both;
+}
+
+/* 悬停预览：与播放态同一套位置，移开即收起。
+   只在支持 hover 的设备上生效，免得手机上点过一次就一直粘着。 */
+@media (hover: hover) {
+  .video-item:hover .video-body {
+    align-self: stretch;
+    position: relative;
+  }
+
+  .video-item:hover .video-foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    animation: videoFootIn .28s ease both;
+  }
+}
+
+/* 评论面板开着的时候（哪怕鼠标已经移开、视频也收了）入口得留着 */
+.video-item.is-commenting .video-body {
+  align-self: stretch;
+  position: relative;
+}
+
+.video-item.is-commenting .video-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+@keyframes videoFootIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.video-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .28rem .5rem;
+  color: var(--faint, #9ba09d);
+  font-size: .76rem;
+  line-height: 1.6;
+  letter-spacing: .03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 评论入口：与哔哔列表里的小药丸同一套样式，尺寸略收，补一个文字标签 */
+.video-comment-toggle {
+  flex: 0 0 auto;
+  height: 26px;
+  margin-left: auto;
+  padding: 0 10px;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+.video-comment-label {
+  margin-left: -1px;
+}
+
+.video-meta > * + *::before {
+  content: "·";
+  margin-right: .5rem;
+  opacity: .55;
+}
+
+/* 展开的播放区 */
+.video-stage {
+  padding: 0 0 1.4rem;
+}
+
+.video-stage[hidden] {
+  display: none;
+}
+
+.video-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: .6rem;
+  background: #000;
+  box-shadow: 0 3px 16px color-mix(in srgb, var(--shadow, rgba(30, 39, 35, .14)) 70%, transparent);
+}
+
+.video-item[data-aspect="portrait"] .video-player {
+  /* 竖屏片子不让播放器撑满整行：居中一条 9:16，两侧留白 */
+  width: min(100%, 360px);
+  margin: 0 auto;
+  aspect-ratio: 9 / 16;
+}
+
+.video-player iframe,
+.video-player video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: contain;
+  background: #000;
+}
+
+.video-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: rgba(255, 255, 255, .72);
+  font-size: .82rem;
+  letter-spacing: .04em;
+}
+
+/* 清晰度角标：直接压在画面右上角，不占额外的操作行 */
+.video-quality {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  z-index: 2;
+  padding: 1px 7px 2px;
+  border-radius: 999px;
+  background: rgba(12, 16, 14, .55);
+  color: rgba(255, 255, 255, .92);
+  font-size: .68rem;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* 评论面板：与哔哔列表同一条内联线程（比 .cm-inline-thread 优先，去掉它的上边框） */
+.video-comments.cm-inline-thread {
+  margin-top: 0;
+  padding: 0 0 1.2rem;
+  border-top: 0;
+}
+
+.video-comments.cm-inline-thread[hidden] {
+  display: none;
+}
+
+.video-comments .cm-app {
+  margin: 0;
+}
+
+.video-comment-note {
+  margin: 0;
+  padding: .4rem 0;
+  color: var(--muted, #707673);
+  font-size: .82rem;
+}
+
+/* ── 窄屏 ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .video-row {
+    align-items: center;
+    gap: .9rem;
+    padding: 1.1rem 0;
+  }
+
+  /* 窄屏文字缩到 12px 左右，图标跟着收一档才不显突兀 */
+  .video-head-icon {
+    height: 22px;
+  }
+
+  .video-item[data-aspect="portrait"] .video-poster {
+    height: 12rem;
+  }
+
+  .video-title {
+    font-size: .95rem;
+    line-height: 1.5;
+    padding-right: 2.4rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .video-seq {
+    top: .1rem;
+    font-size: 1.9rem;
+  }
+
+  .video-summary {
+    display: none;
+  }
+
+  .video-foot {
+    gap: .4rem;
+  }
+
+  /* 窄屏只剩一半宽度：评论按钮收成图标，元信息不许折行（否则会以「·」开头） */
+  .video-comment-toggle {
+    padding: 0 8px;
+  }
+
+  .video-comment-label {
+    display: none;
+  }
+
+  .video-meta {
+    flex-wrap: nowrap;
+    gap: .3rem;
+    font-size: .72rem;
+  }
+
+  .video-meta > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-item,
+  .video-foot,
+  .video-thumb img,
+  .video-hint,
+  .video-scrim {
+    animation: none;
+    transition: none;
+  }
+}
