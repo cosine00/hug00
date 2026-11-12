@@ -76,7 +76,7 @@ jobs:
       # 而不是去合并两份 JSON —— 脚本本身幂等，重放最安全。
       - name: Commit and push changes
         run: |
-          set -uo pipefail
+          set -euo pipefail
           branch="${GITHUB_REF_NAME}"
           for attempt in 1 2 3; do
             git add static/memos.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
