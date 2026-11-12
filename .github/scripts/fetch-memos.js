@@ -14,6 +14,9 @@
  *   FLAREMO_PAT        必填  memos_pat_xxx
  *   FLAREMO_PAGE_SIZE  选填  默认 50（实测 >80 服务端会 500，遇错自动降半重试）
  *   MEMO_STATES        选填  默认 NORMAL，逗号分隔
+ *   MEMO_ID            选填  单条模式：只同步这一条 Memo，与现有 memos.json 合并；
+ *                            留空走全量（每日兜底、手动执行都用这条路径）
+ *   MEMO_ACTION        选填  upsert / remove，仅用于日志；真实动作以接口返回为准
  *   R2_ACCESS_KEY_ID   转存必填
  *   R2_SECRET_ACCESS_KEY 转存必填
  *   R2_ENDPOINT        转存必填  例 https://<account>.r2.cloudflarestorage.com
@@ -21,6 +24,13 @@
  *   R2_PUBLIC_DOMAIN   转存必填  例 img.hux.ink（可不带协议）
  *   R2_PREFIX          选填  默认 images/{yyyy}/{mm}
  *   DRY_RUN            选填  1=只拉数据不上传不写盘，输出到 memos.dryrun.json
+ *
+ * 单条模式的判定规则（隐私边界）：
+ *   - 200 且 visibility=PUBLIC 且 state 在 MEMO_STATES 内 → 写入/覆盖该条
+ *   - 200 但不可公开（PRIVATE/PROTECTED/ARCHIVED/TRASHED）  → 从 JSON 移除该条
+ *   - 404（确认不存在，例如已彻底删除）                     → 从 JSON 移除该条
+ *   - 401/403/5xx/超时/响应无法解析                          → 直接失败，不改写文件
+ * 只有「确认不可公开或已不存在」才删；查询失败一律保留旧记录，交给全量兜底。
  *
  * R2 变量名与 .github/scripts/upload_r2.py（Notion 同步）保持一致，沿用仓库已配的 secrets；
  * 同时兼容 R2_ACCOUNT_ID / R2_PUBLIC_URL 两种旧写法。
@@ -30,7 +40,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { filterPublicMemos } from './memo-visibility.js';
+import { filterPublicMemos, isPublicMemo } from './memo-visibility.js';
+import {
+  hasVideoTag,
+  normalizeMemoId,
+  removeMemo,
+  sortMemos,
+  upsertMemo,
+} from './memo-merge.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -45,6 +62,10 @@ const CFG = {
     .split(',')
     .map(s => s.trim().toUpperCase())
     .filter(Boolean),
+  // 单条模式：FlareMo 触发时带上变化的 memo id，只拉这一条并与现有 JSON 合并。
+  // 没有 id（或拿不到基线文件）时退回全量，绝不能把「没有 id」当成「没有变化」。
+  memoId: normalizeMemoId(process.env.MEMO_ID),
+  memoAction: String(process.env.MEMO_ACTION || '').trim().toLowerCase(),
   r2: {
     accountId: String(process.env.R2_ACCOUNT_ID || '').trim(),
     endpoint: String(process.env.R2_ENDPOINT || '').trim().replace(/\/+$/, ''),
@@ -178,6 +199,28 @@ async function pullAllMemos() {
 
   if (all.length >= MAX_PAGES * CFG.pageSize) fail(`达到安全上限 ${all.length} 条，可能未取全`);
   return all;
+}
+
+/**
+ * 只读一条 Memo。返回三态，调用方据此决定「写」「删」「不动」：
+ *   ok      → 拿到当前状态，按其 visibility/state 决定保留还是移除
+ *   gone    → 404，确认不存在（彻底删除），可以从 JSON 移除
+ *   unknown → 鉴权失败、5xx、超时、响应异常，一律不改写文件
+ * 不打印响应正文：日志会进 GitHub Actions，私密内容不能落在这里。
+ */
+async function fetchSingleMemo(id) {
+  try {
+    const json = await request(`${CFG.base}/api/v1/memos/${encodeURIComponent(id)}`);
+    if (!json || typeof json !== 'object' || Array.isArray(json)) {
+      return { status: 'unknown', detail: '响应不是 Memo 对象' };
+    }
+    return { status: 'ok', memo: json };
+  } catch (error) {
+    const status = Number(error.status) || 0;
+    if (status === 404) return { status: 'gone', detail: 'HTTP 404' };
+    const detail = status ? `HTTP ${status}` : String(error.message || error).split('\n')[0];
+    return { status: 'unknown', detail };
+  }
 }
 
 /* ------------------------------ 图床 ------------------------------ */
@@ -356,11 +399,96 @@ function memoStateOf(memo) {
   return String(memo.state || 'NORMAL').toUpperCase();
 }
 
-/* ------------------------------ 主流程 ------------------------------ */
+/* ------------------------------ 公共步骤 ------------------------------ */
 
-(async () => {
-  assertConfig();
+function readCache() {
+  return fs.existsSync(CACHE_FILE) ? JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8')) : {};
+}
 
+/** 逐条落盘：中途失败重跑不会重复上传已成功的附件。 */
+function persistCache(cache) {
+  fs.writeFileSync(CACHE_FILE, `${JSON.stringify(cache, null, 2)}\n`, 'utf-8');
+}
+
+/** 现有 JSON 是单条合并的基线；缺失或损坏时退回全量。 */
+function readExistingMemos() {
+  if (!fs.existsSync(OUT_FILE)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(OUT_FILE, 'utf-8'));
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (error) {
+    console.warn(`现有 memos.json 无法解析（${String(error.message).split('\n')[0]}），退回全量同步`);
+    return null;
+  }
+}
+
+function setOutput(key, value) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) return;
+  fs.appendFileSync(file, `${key}=${value}\n`);
+}
+
+function buildEntry(memo, cache, failed) {
+  const content = String(memo.content || '').trim();
+  const resourceList = [];
+  (Array.isArray(memo.attachments) ? memo.attachments : []).forEach(attachment => {
+    const item = mirrorAttachment(attachment, cache);
+    if (item) {
+      delete item.cached;
+      resourceList.push(item);
+    } else {
+      failed.push(`${memoIdOf(memo)} / ${attachment.filename || attachment.name}`);
+    }
+  });
+  return {
+    id: normalizeMemoId(memoIdOf(memo)),
+    content,
+    createdTs: memoCreatedTs(memo),
+    resourceList,
+    tags: extractTags(content),
+  };
+}
+
+function pendingAttachmentsOf(memos, cache) {
+  const pending = [];
+  memos.forEach(memo => {
+    (Array.isArray(memo.attachments) ? memo.attachments : []).forEach(attachment => {
+      const name = String(attachment.name || '');
+      if (!name) return;
+      if (!cache[name]) pending.push(attachment);
+    });
+  });
+  return pending;
+}
+
+async function transferPending(pending, cache) {
+  if (!pending.length || CFG.dryRun) return;
+  for (let i = 0; i < pending.length; i += 1) {
+    await transferAttachment(pending[i], cache);
+    persistCache(cache);
+    await sleep(120);
+  }
+}
+
+/** 附件转存不完整时保留旧文件：宁可不更新，也不要写出缺图的 JSON。 */
+function assertNoFailedAttachments(failed) {
+  if (!failed.length) return;
+  const label = `有 ${failed.length} 个附件没有拿到图床地址`;
+  if (CFG.dryRun) {
+    console.warn(`${label}（DRY_RUN 不转存，属正常）：`);
+    failed.slice(0, 10).forEach(line => console.warn(`  - ${line}`));
+    return;
+  }
+  console.error(`${label}，memos.json 未写入：`);
+  failed.slice(0, 10).forEach(line => console.error(`  - ${line}`));
+  fail('附件转存不完整，保留原有 memos.json');
+}
+
+/**
+ * 全量同步：每日兜底、手动执行，以及拿不到 memo id 的事件都走这里。
+ * 产物仍是完整的 memos.json，行为与改造前一致。
+ */
+async function runFullSync(cache) {
   const raw = await pullAllMemos();
   if (!raw.length) fail('接口没有返回任何哔哔，请检查 PAT 权限或 FLAREMO_BASE');
 
@@ -374,77 +502,116 @@ function memoStateOf(memo) {
   if (privateDropped) console.log(`跳过非 PUBLIC 的 ${privateDropped} 条 Memo`);
   if (stateDropped) console.log(`跳过状态非 ${CFG.states.join('/')} 的 ${stateDropped} 条`);
 
-  const cache = fs.existsSync(CACHE_FILE)
-    ? JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'))
-    : {};
-
-  const pending = [];
-  kept.forEach(memo => {
-    (Array.isArray(memo.attachments) ? memo.attachments : []).forEach(attachment => {
-      const name = String(attachment.name || '');
-      if (!name) return;
-      if (!cache[name]) pending.push(attachment);
-    });
-  });
-
+  const pending = pendingAttachmentsOf(kept, cache);
   console.log(`共 ${kept.length} 条哔哔；待转存附件 ${pending.length} 个（已有缓存 ${Object.keys(cache).length} 个）`);
+  await transferPending(pending, cache);
 
-  if (pending.length && !CFG.dryRun) {
-    for (let i = 0; i < pending.length; i += 1) {
-      await transferAttachment(pending[i], cache);
-      // 逐个落盘，中途失败重跑不会重复上传
-      fs.writeFileSync(CACHE_FILE, `${JSON.stringify(cache, null, 2)}\n`, 'utf-8');
-      await sleep(120);
-    }
+  const failed = [];
+  const built = kept
+    .map(memo => buildEntry(memo, cache, failed))
+    .filter(memo => memo.createdTs > 0);
+  assertNoFailedAttachments(failed);
+
+  return { memos: sortMemos(built), kept: kept.length, videoSync: true };
+}
+
+/**
+ * 单条同步：只读这一条，按它的「当前」状态决定写入还是移除。
+ *
+ * 前端的 action 只是提示，真实状态以接口为准——同一条 memo 可能被连续编辑，
+ * 较旧的 upsert 事件也可能在 PUBLIC→PRIVATE 之后才执行，此时按接口结果移除
+ * 才是正确的。
+ */
+async function runSingleSync(id, existing, cache) {
+  const result = await fetchSingleMemo(id);
+  if (result.status === 'unknown') {
+    fail(
+      `单条同步未完成（memo ${id}）：${result.detail}。` +
+      '未改写 memos.json，等待下一次事件或全量兜底'
+    );
+  }
+
+  const before = existing.find(memo => normalizeMemoId(memo.id) === id) || null;
+
+  if (result.status === 'gone' || !isPublicMemo(result.memo) || !CFG.states.includes(memoStateOf(result.memo))) {
+    const reason = result.status === 'gone'
+      ? 'HTTP 404 已不存在'
+      : `visibility=${String(result.memo.visibility || '').toUpperCase()} state=${memoStateOf(result.memo)}`;
+    console.log(`memo ${id} 移除（${reason}）`);
+    return {
+      memos: sortMemos(removeMemo(existing, id)),
+      removed: before,
+      entry: null,
+      detail: result.status === 'gone' ? 'gone' : 'not-public',
+      videoSync: hasVideoTag(before),
+    };
   }
 
   const failed = [];
-  const memos = kept
-    .map(memo => {
-      const content = String(memo.content || '').trim();
-      const resourceList = [];
-      (Array.isArray(memo.attachments) ? memo.attachments : []).forEach(attachment => {
-        const item = mirrorAttachment(attachment, cache);
-        if (item) {
-          delete item.cached;
-          resourceList.push(item);
-        } else {
-          failed.push(`${memoIdOf(memo)} / ${attachment.filename || attachment.name}`);
-        }
-      });
-      return {
-        id: memoIdOf(memo),
-        content,
-        createdTs: memoCreatedTs(memo),
-        resourceList,
-        tags: extractTags(content),
-      };
-    })
-    .filter(memo => memo.createdTs > 0)
-    .sort((a, b) => b.createdTs - a.createdTs);
+  const pending = pendingAttachmentsOf([result.memo], cache);
+  if (pending.length) {
+    console.log(`memo ${id} 待转存附件 ${pending.length} 个`);
+    await transferPending(pending, cache);
+  }
+  const entry = buildEntry(result.memo, cache, failed);
+  assertNoFailedAttachments(failed);
+  if (!entry.id) fail(`memo ${id} 的接口返回缺少合法 id，未改写 memos.json`);
 
-  if (failed.length) {
-    const label = `有 ${failed.length} 个附件没有拿到图床地址`;
-    if (CFG.dryRun) {
-      console.warn(`${label}（DRY_RUN 不转存，属正常）：`);
-      failed.slice(0, 10).forEach(line => console.warn(`  - ${line}`));
-    } else {
-      console.error(`${label}，memos.json 未写入：`);
-      failed.slice(0, 10).forEach(line => console.error(`  - ${line}`));
-      fail('附件转存不完整，保留原有 memos.json');
-    }
+  console.log(`memo ${entry.id} 写入（visibility=PUBLIC state=${memoStateOf(result.memo)}）`);
+  return {
+    memos: sortMemos(upsertMemo(existing, entry)),
+    entry,
+    removed: before,
+    detail: 'upsert',
+    videoSync: hasVideoTag(entry) || hasVideoTag(before),
+  };
+}
+
+/* ------------------------------ 主流程 ------------------------------ */
+
+(async () => {
+  assertConfig();
+
+  const cache = readCache();
+  const existing = readExistingMemos();
+  const canSyncSingle = Boolean(CFG.memoId) && Array.isArray(existing) && existing.length > 0;
+  if (CFG.memoId && !canSyncSingle) {
+    console.log(`没有可用的 memos.json 基线，memo ${CFG.memoId} 退回全量同步`);
   }
 
+  const result = canSyncSingle
+    ? { mode: 'single', ...(await runSingleSync(CFG.memoId, existing, cache)) }
+    : { mode: 'full', ...(await runFullSync(cache)) };
+
+  const memos = result.memos;
+  // 单条路径只允许减一条，多减说明合并逻辑出问题了，直接放弃写入。
+  if (result.mode === 'single' && memos.length < existing.length - 1) {
+    fail(`单条合并结果异常（${existing.length} → ${memos.length}），保留原有 memos.json`);
+  }
+
+  const serialized = `${JSON.stringify(memos, null, 2)}\n`;
+  const previous = Array.isArray(existing) ? `${JSON.stringify(existing, null, 2)}\n` : '';
+  const changed = serialized !== previous;
+
   const target = CFG.dryRun ? OUT_FILE.replace(/\.json$/, '.dryrun.json') : OUT_FILE;
-  fs.writeFileSync(target, `${JSON.stringify(memos, null, 2)}\n`, 'utf-8');
+  if (changed) {
+    fs.writeFileSync(target, serialized, 'utf-8');
+  } else {
+    console.log('内容无变化，不写盘');
+  }
 
   const withImages = memos.filter(m => m.resourceList.length).length;
   const imageCount = memos.reduce((sum, m) => sum + m.resourceList.length, 0);
   const inlineImages = memos.reduce((sum, m) => sum + (m.content.match(/!\[/g) || []).length, 0);
   console.log(
+    `[${result.mode}${result.detail ? `/${result.detail}` : ''}] ` +
     `写入 ${memos.length} 条 → ${path.relative(ROOT, target)}` +
     `（带附件 ${withImages} 条 / 图床外链 ${imageCount} 张 / 正文内联图 ${inlineImages} 张）`
   );
+
+  setOutput('mode', result.mode);
+  setOutput('changed', changed ? '1' : '0');
+  setOutput('video_sync', result.videoSync ? '1' : '0');
   if (CFG.dryRun) console.log('DRY_RUN 模式：未上传、未覆盖正式文件');
 })().catch(error => {
   console.error(error.message || error);

@@ -2,18 +2,42 @@ name: Fetch Memos
 
 on:
   schedule:
-    # 每日兜底同步（北京时间次日 03:17）；正常发布由 FlareMo 即时触发
+    # 每日兜底同步（北京时间次日 03:17）。无 memo_id → 全量，负责修复遗漏事件、
+    # 核对删除与可见性变化。正常发布由 FlareMo 带 memo_id 即时触发。
     - cron: "17 19 * * *"
   workflow_dispatch:
+    inputs:
+      memo_id:
+        description: "只同步这一条 Memo（留空 = 全量同步）"
+        required: false
+        type: string
+      action:
+        description: "upsert / remove（仅用于日志，真实动作以接口状态为准）"
+        required: false
+        type: string
 
-# 同一时间只跑一个，避免两个任务同时写 memos.json / 附件缓存
+# 按 Memo 分组串行：不同 Memo 的事件并行落地，同一条 Memo 的连续编辑则只保留
+# 最新一次待运行的任务（每次都会重新读接口，最后写入的一定是最新状态）。
+# 全量同步单独一组，若与单条同步撞车，推送失败后会在最新基线上重放。
 concurrency:
-  group: fetch-memos
+  group: fetch-memos-${{ github.event.inputs.memo_id || 'full' }}
   cancel-in-progress: false
 
 jobs:
   fetch-memos:
     runs-on: ubuntu-latest
+    env:
+      FLAREMO_BASE: ${{ secrets.FLAREMO_BASE || 'https://drafts.hux.ink' }}
+      FLAREMO_PAT: ${{ secrets.FLAREMO_PAT }}
+      MEMO_ID: ${{ github.event.inputs.memo_id }}
+      MEMO_ACTION: ${{ github.event.inputs.action }}
+      # 图床沿用 Notion 同步那套已经配好的 secret
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
+      R2_PREFIX: ${{ vars.R2_PREFIX || 'images/{yyyy}/{mm}' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,45 +46,56 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Test public Memo visibility filter
-        run: node --test .github/scripts/memo-visibility.test.js
+      - name: Test public Memo visibility filter and single-memo merge
+        run: node --test .github/scripts/memo-visibility.test.js .github/scripts/memo-merge.test.js
 
-      # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch
+      # 有 MEMO_ID 时只拉这一条并与现有 memos.json 合并；没有则全量。
+      # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch。
       - name: Fetch memos from FlareMo and mirror attachments to R2
-        env:
-          FLAREMO_BASE: ${{ secrets.FLAREMO_BASE || 'https://drafts.hux.ink' }}
-          FLAREMO_PAT: ${{ secrets.FLAREMO_PAT }}
-          # 图床沿用 Notion 同步那套已经配好的 secret
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
-          R2_PREFIX: ${{ vars.R2_PREFIX || 'images/{yyyy}/{mm}' }}
+        id: sync
         run: node .github/scripts/fetch-memos.js
 
       - name: Test BB RSS generator
         run: node --test .github/scripts/generate-bb-rss.test.js
 
-      # 影彩：把 #影彩 哔哔里的 B 站链接解析成视频数据，封面转存到 R2
+      # 影彩：把 #影彩 哔哔里的 B 站链接解析成视频数据，封面转存到 R2。
+      # 单条同步只在涉及 #影彩 时运行，避免每次改哔哔都去打 B 站接口。
       # B 站对 Actions 的机房 IP 常年 412，这一步失败时脚本会沿用上次的结果、
       # 不写空文件；用 continue-on-error 保证 memos.json 这些照常提交。
       - name: Sync 影彩 videos from memos
+        if: steps.sync.outputs.video_sync == '1'
         continue-on-error: true
         env:
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          R2_PUBLIC_DOMAIN: ${{ secrets.R2_PUBLIC_DOMAIN }}
           R2_PREFIX: ${{ vars.R2_PREFIX || 'image/{yyyy}/{mm}' }}
         run: node scripts/sync-videos.mjs
 
       - name: Generate BB RSS feed
         run: node .github/scripts/generate-bb-rss.js
 
+      # 推送被拒说明有并发的同步刚写过，回到最新基线后重放本事件，
+      # 而不是去合并两份 JSON —— 脚本本身幂等，重放最安全。
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'chore: update memos.json and BB RSS'
-          file_pattern: 'static/memos.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json'
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          for attempt in 1 2 3; do
+            git add static/memos.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
+            if git diff --cached --quiet; then
+              echo "没有需要提交的改动"
+              exit 0
+            fi
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore: update memos.json and BB RSS"
+            if git push origin "HEAD:${branch}"; then
+              echo "已推送（第 ${attempt} 次尝试）"
+              exit 0
+            fi
+            echo "推送被拒，重新拉取基线并重放本次同步（第 ${attempt} 次）"
+            git fetch --depth=1 origin "${branch}"
+            git reset --hard FETCH_HEAD
+            node .github/scripts/fetch-memos.js || exit 1
+            node .github/scripts/generate-bb-rss.js || exit 1
+          done
+          echo "三次推送仍失败，本次同步未落地，等待下一次事件或每日全量" >&2
+          exit 1
