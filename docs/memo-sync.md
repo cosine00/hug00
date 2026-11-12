@@ -36,6 +36,61 @@ FlareMo (Cloudflare Workers + D1 + R2)
 
 按 `createdTs` 降序。
 
+## 单条事件同步（2026-11-12 起）
+
+发布、编辑、删除、改可见性、改附件时，FlareMo 不再让博客重拉全库，而是用
+`workflow_dispatch` 的 `memo_id` / `action` 传入「哪一条、什么动作」，博客只查这一条，
+再合并进现有 `static/memos.json`。
+
+```
+FlareMo 写操作 ──► workflow_dispatch(memo_id=1276, action=upsert)
+                        │
+                        ▼
+        GET /api/v1/memos/1276        ← 只读一条
+                        │
+        ┌───────────────┼────────────────────┐
+        ▼               ▼                    ▼
+   PUBLIC+NORMAL    其他 visibility/state   404
+   upsert 进 JSON   remove 出 JSON         remove 出 JSON
+        │
+        └─ 401/403/5xx/超时/响应异常 → 直接失败，不改写文件
+```
+
+判定只看接口返回的**当前**状态，`action` 仅用于日志——同一条 Memo 连续编辑时，
+较旧的 `upsert` 事件可能晚于 `PUBLIC→PRIVATE` 执行，此时应以接口结果为准移除。
+
+| 场景 | 接口结果 | 处理 |
+| --- | --- | --- |
+| 新建公开 | 200 + PUBLIC + NORMAL | 追加，按 `createdTs` 降序 |
+| 编辑公开 | 200 + PUBLIC + NORMAL | 按 id 原位替换 |
+| 公开→私密/受保护 | 200 + PRIVATE/PROTECTED | 移除 |
+| 移入回收站 | 200 + state=TRASHED | 移除 |
+| 恢复 | 200 + 恢复后的状态 | 公开则写回，否则移除 |
+| 彻底删除 | 404 | 移除 |
+| 改/加/删附件 | 200 + attachments[] | 重新生成该条 `resourceList`，仍走 R2 转存 |
+| 鉴权失败/5xx/超时 | 401/403/5xx/网络错误 | 失败退出，保留旧文件，等每日全量兜底 |
+
+拿不到 `memo_id` 的事件（Connect 二进制响应、附件删除这类响应里没有父 Memo 的写入）
+会退回全量同步，不会静默跳过。
+
+### 并发
+
+`concurrency.group` 按 `memo_id` 分组：不同 Memo 的事件并行执行，同一条 Memo 的连续
+编辑只保留最新一次待运行任务（每次都重新读接口，最后落盘的一定是最新状态）。
+
+提交步骤在推送被拒时会 `git fetch` + `git reset --hard` 回到最新基线后**重放**本次同步，
+而不是合并两份 JSON —— 脚本本身幂等，重放三次仍失败则整次运行失败，留给下一次事件或
+每日全量。每日 03:17 的定时全量不带 `memo_id`，仍然是完整重建，用于核对删除与可见性漏报。
+
+### 手动执行
+
+- 全量：Actions → Fetch Memos → Run workflow，`memo_id` 留空。
+- 单条补同步：同上，填 `memo_id=1276`（`action` 可留空）。
+
+### 性能
+
+一次普通事件 = 1 次单条查询（D1 实测 rows_read ≈ 5 行），不再是 24 页、约 3.4 万行。
+
 ## 两种图片来源
 
 | 来源 | 存在哪里 | 谁渲染 |
