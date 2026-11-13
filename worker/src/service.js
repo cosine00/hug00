@@ -21,6 +21,12 @@ const DUPLICATE_WINDOW_SECONDS = 600;
 // 垃圾分到这条线就直接丢掉，不进库也不进审核队列
 const SPAM_DROP_SCORE = 5;
 
+// 匿名提交不接受脚本类 UA。扫描器和爬虫往往直接 POST 接口，连浏览器指纹都懒得伪造
+// （2026-11-13 那条 XSSProbe 就是 curl/8.18.0）。带管理口令、或用博主邮箱发的放行，
+// 自己的调试脚本因此还能用。
+const SCRIPT_UA_RE =
+  /^(?:curl|wget|python-requests|python-urllib|python-httpx|go-http-client|java|okhttp|node-fetch|undici|axios|libwww-perl|httpie|postmanruntime)\b/i;
+
 // 随机凭据：只回给提交人，不进公开列表
 function randomToken() {
   const bytes = new Uint8Array(18);
@@ -220,6 +226,16 @@ export async function createComment(env, input, context = {}) {
   const now = nowSeconds();
   const limited = await consumeRateLimit(env, { actorHash: ipHash });
   if (!limited.ok) return limited;
+
+  // 脚本类 UA 静默丢弃：和垃圾分一样不给任何反馈，扫描器探不出边界在哪
+  const uaText = String(context.ua || '').trim();
+  const submitterEmail = String(input.email || '').trim().toLowerCase();
+  const isAdminSubmitter =
+    Boolean(context.admin) ||
+    Boolean(submitterEmail && submitterEmail === String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase());
+  if (!isAdminSubmitter && SCRIPT_UA_RE.test(uaText)) {
+    return { ok: true, spam: true, comment: null, message: '已提交' };
+  }
 
   // 蜜罐被填写：机器人，假装成功但不落库（请求仍然计入频率限制）
   if (input.honeypot) {

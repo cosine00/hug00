@@ -410,7 +410,9 @@ async function handleComments(request, env, url, ctx) {
 
       const tasks = [];
       const createdAt = (result.comment && result.comment.createdAt) || 0;
-      if (!isSelf && !replyToAdmin) {
+      // 页面提交必然带线程标题，标题为空说明是绕过前端直接打接口（扫描器就爱这么干），
+      // 这种不往博主邮箱里塞通知，免得被人拿来刷信箱
+      if (!isSelf && !replyToAdmin && mailThreadTitle) {
         tasks.push(
           notifyNewComment(env, {
             threadTitle: mailThreadTitle,

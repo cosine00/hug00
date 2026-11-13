@@ -393,11 +393,20 @@ const SPAM_PATTERNS = [
   /(?:加|联系)\s*(?:微信|QQ|telegram|TG)\s*[:：]?\s*\w{5,}/i,
 ];
 
+// 脚本注入探测：只认「标签 + 可执行负载」同时出现。
+// 光有 <script 不扣分——技术博客里有人正经贴一段代码讨论；但 <script>alert(1)</script>
+// 这种能直接执行的组合，正常留言里不会出现（2026-11-13 被 XSSProbe 探过一回）。
+const INJECT_TAG_RE = /<\s*(?:script|iframe|svg|img|object|embed|body|video|audio)\b/i;
+const INJECT_PAYLOAD_RE =
+  /\b(?:alert|prompt|confirm)\s*\(|on(?:error|load|click|mouseover|focus)\s*=|javascript:|document\.cookie|eval\s*\(/i;
+
 export function spamScore({ content, nick, website }) {
   let score = 0;
   const text = `${nick}\n${content}`;
 
   if (SPAM_PATTERNS.some((re) => re.test(text))) score += 6;
+
+  if (INJECT_TAG_RE.test(text) && INJECT_PAYLOAD_RE.test(text)) score += 6;
 
   const links = content.match(/https?:\/\/[^\s]+/gi) || [];
   if (links.length >= 3) score += 4;
