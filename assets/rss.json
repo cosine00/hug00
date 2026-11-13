@@ -127,7 +127,7 @@
       "link": "https://anotherdayu.com/1384/",
       "created": "2026-11-11 22:00:00",
       "updated": "2026-11-11 22:00:00",
-      "excerpt": "了解自己 前段时间参加一次读书会，聊得是《禅与摩托车维修艺术》。已忘记是因何聊起，有位朋友分享，她最近在认真了解自己的喜好。比如喜欢吃什么、穿什么，会把这些琐碎的事情记下来。 另一个朋友不太理解，觉得生活中很多小事并不重要，喜欢就是喜欢，没必要非得弄清楚原因。 我其实很能理解前一个朋友，因为我也经历过类似的阶段。 过去有一段时间，我的感受很少得到重视，也没有太多机会自己做决定。渐渐地，我习惯了顺从身边人的选择，在别人眼中显得随和，甚至…",
+      "excerpt": "认识自己并不是找到一个确定的答案。我们既是自己生活的经历者，也是这些经历的讲述者。同一件事情，在不同的人生阶段，可能会有完全不同的理解。我们所相信的自己，也未必就是自己的全部。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 11
@@ -295,7 +295,7 @@
       "link": "https://anotherdayu.com/7200/",
       "created": "2026-11-10 18:27:00",
       "updated": "2026-11-10 18:27:00",
-      "excerpt": "新研究所的杯子上，印的不是研究所的 Logo，而是建筑团队的合影和建造现场。 一开始有点不理解，毕竟以前学校和研究所的杯子上，印的通常都是自己的 Logo。 但转念一想，又觉得这个设计挺细心、温暖。 我们每天在这栋楼里工作，却很少有机会见到当初建造它的人。这栋建筑可能是他们很长时间的劳动成果。 这些杯子，让原本不会有交集，却又实实在在存在着联系的两群人，以这样的方式见到了彼此。",
+      "excerpt": "这些杯子，让原本不会有交集，却又实实在在存在着联系的两群人，以这样的方式见到了彼此。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 25
@@ -607,7 +607,7 @@
       "link": "https://anotherdayu.com/how-i-use-dots/",
       "created": "2026-11-07 12:27:00",
       "updated": "2026-11-07 12:27:00",
-      "excerpt": "引 最近一段时间，Dots 已经成了我使用黏度很高的个人助理工具。 整理了一下目前的使用方式，大致可以分三种：随手交代、定期任务和主动协助。 大部分思路也可以在 Grok bot 和 muse 里使用。 让Dots认识你 Dots 是一个长期协作的个人助理。要想真正用好它，首先得放下对个人隐私的部分执念。Agent 掌握的个人信息越丰富，对你的了解就越深入，使用体验通常也会越好。 我首先绑定了常用的邮箱、网盘和日历，又把个人博客、简历…",
+      "excerpt": "这些任务单独看都不复杂，但省去了在不同 App 之间切换、复制信息和手动整理的过程。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 51
@@ -1639,7 +1639,7 @@
       "link": "https://anotherdayu.com/quietsearch-kagi-deepseek-api/",
       "created": "2026-10-22 15:30:00",
       "updated": "2026-10-22 15:30:00",
-      "excerpt": "引 最近做了一个满足个人需求的小工具 QuietSearch ，是一个可以部署在 Cloudflare 上的轻量搜索界面，支持接入 Kagi 和 DeepSeek 的搜索 API。 在设置中选择引擎、填入自己的 API Key，就可以搜索。配置 DeepSeek Key 后，在问题末尾加上 ？ ，还可以生成带来源引用的回答。 可以先试试 我部署的版本 ，调用费用由你自己的 API 账户承担。Key 请自行妥善保存，网页只在当前页面内存…",
+      "excerpt": "后来接入 Kagi，是因为有朋友平时搜索频率很低，但又想日常试试 Kagi。通过 QuietSearch，就可以按次付费体验。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 137
@@ -2431,7 +2431,7 @@
       "link": "https://anotherdayu.com/9891/",
       "created": "2026-10-05 15:01:00",
       "updated": "2026-10-05 15:01:00",
-      "excerpt": "在国外住久了，试了许多中餐。炒菜、炖菜，常常总觉得差着一点意思。说不出究竟差在哪里，也许是菜不对，也许是火候不对，也许只是人在异乡，嘴也跟着挑剔起来。 面馆却常有意外之喜。 兰州牛肉面、陕西面、日式拉面、越南 Pho，都挺地道。欧美的朋友也吃得很开心，英国老板说她隔段时间就会带侄子去吃一家兰州拉面（三千拉面）。 这大约先要归功于原料。面粉、牛羊肉、辣椒、醋、葱蒜，在英国都不算难找，核心原料很全球通用。面食不像有些炒菜，非要某一种青菜、…",
+      "excerpt": "一种外国食物，如果看起来像自己熟悉的东西，尝起来就容易一些。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 203
@@ -2695,7 +2695,7 @@
       "link": "https://anotherdayu.com/tenkara-folkestone/",
       "created": "2026-09-24 13:02:00",
       "updated": "2026-09-24 13:02:00",
-      "excerpt": "天展钓 Tenkara 在英国试了试天展钓。 它原本是日本山地溪流里的一种钓法。没有线轮，也不需要复杂的饵和线组。 主体就是一根竿，一根线，一只毛钩。 Less is more，钓鱼这件事变得更依赖人本身。要观察鱼在哪里，看水从石头哪一边流过，哪里形成回水，哪里有树荫，哪里水深突然变化。固定长度的线也意味着，你不能站在岸边把毛钩一直抛向远处，很多时候必须自己走过去。 它甚至不需要真正的饵料。毛钩本身只是羽毛、丝线等材料扎成的人工拟饵。…",
+      "excerpt": "现在越来越喜欢这种需要一点专注、但又不需要占据全部生活的爱好。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 225
@@ -2767,7 +2767,7 @@
       "link": "https://anotherdayu.com/pivot-vol21/",
       "created": "2026-09-22 21:54:00",
       "updated": "2026-09-22 21:54:00",
-      "excerpt": "不定期更新的 Newsletter。 Mak5er/AirCard 可以在不越狱的情况下修改 Apple Wallet 卡面和锁屏界面，最近还增加了 iOS 版： Mak5er/AirCard-iOS 。 tamaNOTchi 网页版电子宠物，能贴到自己的博客上当挂件。支持静态博客等多种网站格式！ Anthropeum 大都会博物馆版的 GeoGuessr：给你一件文物，猜年代和产地，每天一题，能像 Wordle 那样分享成绩。适合地…",
+      "excerpt": "当一项技术帮你省掉\"和另一个人打交道\"的摩擦时，你会觉得纯赚——因为摩擦的成本是可见的，而它的收益是不可见的。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 231
@@ -3031,7 +3031,7 @@
       "link": "https://anotherdayu.com/fitbit-air/",
       "created": "2026-09-14 12:08:00",
       "updated": "2026-09-14 12:08:00",
-      "excerpt": "引 过去一直是 Apple Watch 的忠实用户，听说过 Whoop，但我总觉得它只是无屏幕版的 Apple Watch，很酷，也很贵，没必要再买一款功能相近的产品。小米手环比它划算多了，设计的跟老款无屏小米手环差不多呀。 但用了一个多月，Fitbit Air 真的远超我的预期，跟 Apple Watch 和小米手环不是一个类型的产品。 使用感受 Fitbit Air 和 WHOOP 这类产品最强的地方，是软硬件都围绕一个目标设计：…",
+      "excerpt": "Apple Watch 更像需要你主动使用的智能终端，Fitbit Air 则是一个你可以忘掉它存在的传感器，受众其实非常不同。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 253
@@ -3163,7 +3163,7 @@
       "link": "https://anotherdayu.com/4250/",
       "created": "2026-09-09 10:32:00",
       "updated": "2026-09-09 10:32:00",
-      "excerpt": "去年做完 WeGene 的全基因组测序之后，就一直想自己分析试试，于是有了这个项目。 整个项目是和 Claude 一起完成的，把分析流程整理成了 Skills 的形式，并开源到了 GitHub： https://github.com/DayuGuo/genome-atlas-skill WeGene 测序数据分两种，过滤过的基因型数据表（15 MB左右）和 FASTQ/BAM/CRAM 等格式的原始测序文件（30-90 GB）。所以我…",
+      "excerpt": "基础版的结果和 WeGene 官方报告差异不大，自己把数据从头到尾跑一遍，还是挺有趣的，并且能改用自己喜欢的可视化方案。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 264
@@ -4531,7 +4531,7 @@
       "link": "https://anotherdayu.com/crossover-macos-chinese/",
       "created": "2026-07-15 08:48:00",
       "updated": "2026-07-15 08:48:00",
-      "excerpt": "背景 在 macOS 上用 CrossOver 玩一些 Steam 游戏，比如激战2（Guild Wars 2 ），界面能够正常显示中文，但输入聊天框里输入中文，只能显示问号。 网上相关教程都是装中文字体文件或改注册表，但这些解决的是字形问题，容器缺少中文字体。 中文显示为问号的真正原因是：容器（Bottle）的系统区域设置不是中文，而默认是西欧编码（1252），中文字符编不进去，转换失败的字符就统一被替换成了问号。 解决方法 Cro…",
+      "excerpt": "中文显示为问号的真正原因是：容器（Bottle）的系统区域设置不是中文，而默认是西欧编码（1252），中文字符编不进去，转换失败的字符就统一被替换成了问号。",
       "site_url": "https://anotherdayu.com/",
       "feed_url": "https://anotherdayu.com/feed/",
       "floor": 378
@@ -7206,6 +7206,6 @@
     "active_num": 56,
     "error_num": 7,
     "article_num": 600,
-    "last_updated_time": "2026-11-12 16:50:16 UTC"
+    "last_updated_time": "2026-11-13 01:06:54 UTC"
   }
 }
