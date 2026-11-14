@@ -375,7 +375,8 @@ async function handleComments(request, env, url, ctx) {
     const region = formatRegion(request);
     const turnstile = await verifyTurnstile(env, value.turnstileToken, clientIp(request));
     if (!turnstile.ok) return fail(403, 'captcha_failed', '人机验证没有通过，请重试');
-    // 博主身份认邮箱：评论时填 COMMENTS_ADMIN_EMAIL 即视为本人（口令只管后台管理接口）
+    // 博主身份由 service 层统一判定：口令在服务端比对通过 + 邮箱等于博主邮箱，
+    // 缺一不可。邮箱本身不构成任何凭据（它是公开的）。
     const result = await createComment(env, value, {
       ip: clientIp(request),
       ua: String(request.headers.get('user-agent') || ''),
@@ -392,10 +393,11 @@ async function handleComments(request, env, url, ctx) {
       const memoKeyMatch = /^memo:(.+)$/.exec(String((result.thread && result.thread.key) || ''));
       const mailThreadTitle = memoKeyMatch ? `哔哔 · ${memoKeyMatch[1]}` : (value.threadTitle || '');
 
-      // 博主自己发的评论不给自己发通知（用博主邮箱提交即视为本人，不管有没有带口令）
+      // 博主自己发的评论不给自己发通知。判定只认服务端落库的 is_admin，
+      // 不再拿提交上来的邮箱去比：否则随便填个博主邮箱，就能让自己的评论
+      // 不进通知栏 —— 冒充着博主说话，博主还收不到信。
       const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
-      const authorEmail = String(value.email || '').trim().toLowerCase();
-      const isSelf = Boolean(authorEmail) && authorEmail === adminEmail;
+      const isSelf = Boolean(result.comment && result.comment.isAdmin);
 
       // 被回复的人如果就是博主本人，只发「有人回复了你」那一封（带原评论上下文），
       // 不再重复发全站新评论通知——同一个事件别寄两封信
@@ -457,6 +459,8 @@ async function handleComments(request, env, url, ctx) {
       firstTime: false,
       // 只回给提交人：1 分钟内可以自己改错别字
       editToken: result.editToken || null,
+      // 口令是否校验通过：前端据此区分「邮箱填错」和「口令过期」
+      adminVerified: Boolean(result.adminVerified),
       comment: result.comment,
       message: result.comment ? '评论成功' : '已提交',
     });

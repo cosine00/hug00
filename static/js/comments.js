@@ -1801,9 +1801,11 @@
       }
 
       var postHeaders = { 'Content-Type': 'application/json' };
-      // 管理模式解锁后带上，用于管理模式操作（删除/标垃圾、改历史评论）；
-      // 博主身份现在只认邮箱，带不带它都不影响挂「博主」标
-      if (state.adminToken) postHeaders['x-admin-token'] = state.adminToken;
+      // 博主标识改由服务端判定（口令比对通过 + 邮箱等于博主邮箱，缺一不可）。
+      // 所以只要本标签页里记着口令就带上——不用先进管理模式，
+      // 否则博主随手留一句反而没有「博主」标。没口令的人带上也没用，服务端不认。
+      var adminCredential = state.adminToken || state.adminSaved;
+      if (adminCredential) postHeaders['x-admin-token'] = adminCredential;
 
       fetch(opts.api, {
         method: 'POST',
@@ -1831,9 +1833,11 @@
             checkTrigger();
           }
 
-          if (state.adminToken && body.comment && !body.comment.isAdmin) {
-            // 在管理模式里但邮箱不是博主的：按普通访客存，不会有「博主」标
-            say('发表成功。不过邮箱不是博主邮箱，这条按普通访客存的', 'warn');
+          if (adminCredential && body.comment && !body.comment.isAdmin) {
+            // 口令没通过校验（换过/没保存住）和邮箱填错是两回事，别给同一句提示
+            say(body.adminVerified
+              ? '发表成功。不过邮箱不是博主邮箱，这条按普通访客存的'
+              : '发表成功。管理口令已失效，这条按普通访客存的，重新点「管理」登录可恢复博主标识', 'warn');
           } else {
             say('发表成功，谢谢你的留言', 'ok');
           }

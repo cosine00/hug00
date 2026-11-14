@@ -213,6 +213,26 @@ export async function countComments(env, threadKeys = []) {
 
 /* ------------------------------- 写入：新评论 ------------------------------- */
 
+/**
+ * 提交人身份判定 —— 整个「博主标识」的唯一入口。
+ *
+ * 历史坑（2026-10-28 ～ 2026-11-14）：只看邮箱，填了 COMMENTS_ADMIN_EMAIL 就算博主。
+ * 而那个邮箱就明文写在公开仓库的 config.toml 里（还要算成 sha256 渲染进页面），
+ * 也就是说任何人读一眼源码就能顶着博主的名号回评论。
+ *
+ * 现在两条都要：
+ *   1) context.admin —— 管理口令在服务端比对通过（唯一的凭据）；
+ *   2) 邮箱 == COMMENTS_ADMIN_EMAIL —— 只作身份声明，用来挡住「拿着口令冒充别人」。
+ * 邮箱单独出现，永远只是访客填的一行字。
+ */
+export function resolveSubmitterIdentity(env, input = {}, context = {}) {
+  const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
+  const email = String(input.email || '').trim().toLowerCase();
+  const verified = Boolean(context.admin);
+  const isAdmin = Boolean(verified && adminEmail && email && email === adminEmail);
+  return { verified, email, adminEmail, isAdmin };
+}
+
 export async function createComment(env, input, context = {}) {
   await ensureSchema(env);
 
@@ -229,11 +249,10 @@ export async function createComment(env, input, context = {}) {
 
   // 脚本类 UA 静默丢弃：和垃圾分一样不给任何反馈，扫描器探不出边界在哪
   const uaText = String(context.ua || '').trim();
-  const submitterEmail = String(input.email || '').trim().toLowerCase();
-  const isAdminSubmitter =
-    Boolean(context.admin) ||
-    Boolean(submitterEmail && submitterEmail === String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase());
-  if (!isAdminSubmitter && SCRIPT_UA_RE.test(uaText)) {
+  const identity = resolveSubmitterIdentity(env, input, context);
+  // 放行只看服务端校验过的口令。以前这里还认「邮箱 == 博主邮箱」，
+  // 而博主邮箱是写在公开仓库里的，等于给脚本留了一道后门。
+  if (!identity.verified && SCRIPT_UA_RE.test(uaText)) {
     return { ok: true, spam: true, comment: null, message: '已提交' };
   }
 
@@ -292,14 +311,8 @@ export async function createComment(env, input, context = {}) {
   }
 
   const emailHash = input.email ? md5(input.email.trim().toLowerCase()) : '';
-  const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
-  const inputEmail = String(input.email || '').trim().toLowerCase();
-  // 邮箱是谁都能填的，不能当凭据；口令是凭据，但不能"进了管理模式就自动是博主"。
-  // 两个都得对上：口令 + 邮箱 == COMMENTS_ADMIN_EMAIL，才算博主。
-  const emailMatchesAdmin = Boolean(adminEmail && inputEmail && inputEmail === adminEmail);
-  // 身份只认邮箱（2026-10-28 起）：填了博主邮箱就是博主，不再要求口令。
-  // 口令只管管理模式本身 —— 批量删/标垃圾，以及编辑自己的历史评论。
-  const isAdmin = emailMatchesAdmin;
+  // 身份判定统一走 resolveSubmitterIdentity：口令 + 邮箱两条都成立才算博主
+  const { isAdmin } = identity;
 
   // 改稿凭据：每条都发一把，只回给提交人。客人在 1 分钟内可以改自己的错别字，
   // 过期后只能由博主改（服务端按时间判断，前端只管藏不藏按钮）。
@@ -358,6 +371,9 @@ export async function createComment(env, input, context = {}) {
   return {
     ok: true,
     editToken,
+    // 口令是否校验通过（与是否挂博主标无关）：前端据此区分
+    // 「邮箱填错了」和「口令过期了」，不然两种情况都是同一个提示，误导人
+    adminVerified: identity.verified,
     comment: row ? serialize(row, {}) : null,
     thread: { key: threadKey, url: threadUrl || null, title: input.threadTitle || null },
     notify: {
