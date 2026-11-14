@@ -43,7 +43,7 @@
 {{- $adminHash := partial "comments/admin-hash.html" . -}}
 {{- $avatar := partial "comments/avatar.html" . -}}
 {{- $turnstile := partial "comments/turnstile.html" . -}}
-<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261109-03">
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261114-03">
 <script>
   window.bbComments = {
     api: '{{ $newApi }}',
@@ -54,7 +54,7 @@
     turnstileSiteKey: '{{ $turnstile }}'
   };
 </script>
-<script src="{{ "js/comments.js" | relURL }}?v=20261114-02"></script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261114-03"></script>
 <script src="{{ "js/bb-comments.js" | relURL }}?v=20261111-01"></script>
 {{- end -}}
 

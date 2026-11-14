@@ -190,6 +190,23 @@ html[data-theme="night"] .cm-like.is-on {
   font-variant-numeric: tabular-nums;
 }
 
+/* 小屏上工具条本来就窄，管理模式下又多出「收起 / 退出 / 全部退出」三个词，
+   挤在一起会顶出边界。允许换行，比压成一行看不清强。 */
+@media (max-width: 480px) {
+  .cm-head-tools {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .cm-admin-flag {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+}
+
+.cm-mode-off,
 .cm-logout {
   padding: 0;
   font-family: inherit;
@@ -200,6 +217,16 @@ html[data-theme="night"] .cm-like.is-on {
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
+}
+
+/* 「收起」把管理按钮收起来，是日常动作，用主色而不是危险色 */
+.cm-mode-off,
+.cm-logout {
+  margin-left: 6px;
+}
+
+.cm-mode-off:hover {
+  color: var(--cm-accent-hover);
 }
 
 .cm-logout:hover {

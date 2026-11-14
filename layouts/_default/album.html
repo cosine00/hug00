@@ -8,7 +8,7 @@
 {{- $cmAdmin := partial "comments/admin-hash.html" . -}}
 {{- $cmAvatar := partial "comments/avatar.html" . -}}
 {{- $cmTurnstile := partial "comments/turnstile.html" -}}
-<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261109-03">
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261114-03">
 <script>
   window.videoComments = {
     api: {{ $cmApi | jsonify | safeJS }},
@@ -17,7 +17,7 @@
     turnstileSiteKey: {{ $cmTurnstile | jsonify | safeJS }}
   };
 </script>
-<script src="{{ "js/comments.js" | relURL }}?v=20261114-02" defer></script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261114-03" defer></script>
 {{- end -}}
 
 <div class="media-tabs" role="tablist" aria-label="光影内容">

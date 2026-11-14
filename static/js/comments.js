@@ -20,6 +20,10 @@
   // 页面上任何脚本（包括这段）都读不到它。
   var LEGACY_ADMIN_KEY = 'comments-admin-token';
   var LEGACY_ADMIN_ACTIVE_KEY = 'comments-admin-active';
+  // 「此刻要不要显示管理界面」——和上面的旧键完全不同：它不涉及任何凭据，
+  // 只是个界面开关。会话身份走 Cookie（30 天），这个开关只活在当前标签页，
+  // 新开标签页默认是干净的读者视角。
+  var ADMIN_MODE_KEY = 'comments-admin-mode';
   var EDIT_KEY = 'comments-edit-tokens';
   var VISITOR_KEY = 'comments-visitor';
   var SESSION_KEY = 'comments-session';
@@ -365,6 +369,10 @@
       // 博主身份完全由服务端说了算：admin 是「服务端认不认我」，csrf 是写操作要带的令牌。
       // 这里没有任何口令副本 —— 它也从来没进过 JS 的内存（登录那次除外）。
       admin: false,
+      // admin 是「服务端认不认我」（决定博主标、能不能发管理请求）；
+      // adminMode 只是「这套管理按钮要不要摆在眼前」。两者分开：
+      // 大多数人打开页面只是看评论，没必要一进来就满屏「垃圾 / 删除」。
+      adminMode: false,
       csrf: '',
       sessionKnown: false,
       adminBusy: false,
@@ -409,6 +417,25 @@
     }
     purgeLegacyAdminStorage();
 
+    // 管理界面的开关只记在 sessionStorage：同一个标签页刷一下还在管理模式，
+    // 新开标签页则从读者视角开始。故意不记到 localStorage —— 那会变成「永远停在管理页面」。
+    function readAdminMode() {
+      try {
+        return sessionStorage.getItem(ADMIN_MODE_KEY) === '1';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function writeAdminMode(on) {
+      try {
+        if (on) sessionStorage.setItem(ADMIN_MODE_KEY, '1');
+        else sessionStorage.removeItem(ADMIN_MODE_KEY);
+      } catch (error) {
+        /* 隐私模式下忽略，本次会话仍然有效 */
+      }
+    }
+
     /* -------------------- 博主会话（HttpOnly Cookie，服务端签发） -------------------- */
 
     // 会话接口就挂在评论接口旁边：…/api/comments → …/api/comments/session
@@ -437,8 +464,13 @@
     // 服务端认定或撤销身份后，前端跟着换挡
     function applySession(data) {
       var on = Boolean(data && data.admin);
+      var wasAdmin = Boolean(state.admin);
       state.admin = on;
       state.csrf = on ? String(data.csrf || '') : '';
+      // 身份没了，管理界面必须一起收；身份刚恢复时，沿用本标签页之前的选择
+      // （刷新页面不该把正在做的事弄丢），新标签页则默认收起。
+      state.adminMode = on ? (wasAdmin ? state.adminMode : readAdminMode()) : false;
+      if (!on) writeAdminMode(false);
       state.sessionKnown = true;
       renderAdminState();
     }
@@ -522,7 +554,9 @@
           HEART_ICON + '<b>0</b></button>' +
       '</span>' +
       '<button type="button" class="cm-entry" hidden>管理</button>' +
-      '<span class="cm-admin-flag" hidden>管理中 <button type="button" class="cm-logout">退出</button>' +
+      '<span class="cm-admin-flag" hidden>管理中' +
+        '<button type="button" class="cm-mode-off" data-tip="收起管理按钮，回到读者视角">收起</button>' +
+        '<button type="button" class="cm-logout" data-tip="退出这份 30 天登录">退出</button>' +
         '<button type="button" class="cm-forget" data-tip="所有设备一起退出">全部退出</button></span>';
     if (head) head.appendChild(tools);
 
@@ -717,10 +751,24 @@
     }
 
     function renderAdminState() {
-      var on = Boolean(state.admin);
-      if (adminFlag) adminFlag.hidden = !on;
-      if (entryBtn) entryBtn.hidden = on || !entryBtn.dataset.show;
-      if (on) login.hidden = true;
+      var authed = Boolean(state.admin);
+      var managing = authed && Boolean(state.adminMode);
+      if (adminFlag) adminFlag.hidden = !managing;
+      // 已登录：收起时留一个小「管理」口子，展开时藏起来（那会儿显示的是「管理中」）
+      // 未登录：还是原来的邮箱识别，认出来了才露
+      if (entryBtn) entryBtn.hidden = authed ? managing : !entryBtn.dataset.show;
+      if (managing) login.hidden = true;
+    }
+
+    /**
+     * 开 / 关管理界面。只动 UI，不动身份：
+     * 收起之后依然是博主，留言照样挂博主标，只是不再满屏「垃圾 / 删除」。
+     */
+    function setAdminMode(on) {
+      state.adminMode = Boolean(on) && Boolean(state.admin);
+      writeAdminMode(state.adminMode);
+      renderAdminState();
+      renderList();
     }
 
     /* ------------------------------ 渲染列表 ------------------------------ */
@@ -773,7 +821,7 @@
 
     // 管理模式下每条后面挂「垃圾 / 删除」，事后清理用；没有「通过」了，因为没有待审
     function modHtml(comment) {
-      if (!state.admin) return '';
+      if (!state.admin || !state.adminMode) return '';
       return '<span class="cm-mod">' +
         '<button type="button" data-mod="spam" data-id="' + comment.id + '">垃圾</button>' +
         '<button type="button" data-mod="delete" data-id="' + comment.id + '">删除</button>' +
@@ -790,10 +838,10 @@
       return Math.ceil(EDIT_WINDOW - (Date.now() / 1000 - Number(comment.createdAt || 0)));
     }
 
-    // 谁能改这条：管理模式下一律能改；否则只有客人自己那条，且 1 分钟内。
-    // 博主署名的评论不凭 edit_token 放行 —— 想改自己漏的字，必须先进管理模式。
+    // 谁能改这条：展开管理界面时一律能改；否则只有客人自己那条，且 1 分钟内。
+    // 博主署名的评论不凭 edit_token 放行 —— 想改自己漏的字，点一下「管理」。
     function canEdit(comment) {
-      if (state.admin) return true;
+      if (state.admin && state.adminMode) return true;
       if (comment.isAdmin) return false;
       if (!editTokenOf(comment.id)) return false;
       return withinEditWindow(comment);
@@ -1089,7 +1137,7 @@
       var timer = holder.querySelector('.cm-edit-timer');
 
       // 客人这边时间窗只有 1 分钟，把剩余秒数摆在明处；到点自动收起，别让人对着一个点不动的保存按钮发愣
-      if (!state.admin) {
+      if (!(state.admin && state.adminMode)) {
         var tickTimer = function () {
           if (!document.body.contains(area)) {
             clearInterval(timerId);
@@ -1191,7 +1239,7 @@
 
     // 页面停着不动，1 分钟一过按钮也该消失，不然看着能点、点了一报错更迷惑
     function sweepEditButtons() {
-      if (state.admin) return;
+      if (state.admin && state.adminMode) return;
       var buttons = list.querySelectorAll('.cm-edit-btn');
       for (var i = buttons.length - 1; i >= 0; i -= 1) {
         var id = Number(buttons[i].getAttribute('data-edit'));
@@ -1589,10 +1637,12 @@
 
     /* ------------------------------ 管理入口 ------------------------------ */
 
+    // 只负责记录「邮箱识别是否通过」，具体显不显示交给 renderAdminState 统一裁决，
+    // 否则两处各写一遍 entryBtn.hidden，早晚打起来。
     function revealEntry(show) {
       if (!entryBtn) return;
       entryBtn.dataset.show = show ? '1' : '';
-      entryBtn.hidden = !show || Boolean(state.admin);
+      renderAdminState();
     }
 
     var triggerTimer = null;
@@ -1629,8 +1679,13 @@
 
     if (entryBtn) {
       entryBtn.addEventListener('click', function () {
-        // 会话没过期就不用再输口令了（进页面时 syncSession 已经问过服务端），
-        // 这里弹出输入框只可能是真的没登录。
+        // 已登录（Cookie 会话还在）：这个按钮就是「展开管理界面」，不再要口令。
+        if (state.admin) {
+          setAdminMode(true);
+          setMessage('管理界面已展开，用完点「收起」就回读者视角', 'ok');
+          return;
+        }
+        // 没登录：才弹口令框。进页面时 syncSession 已经问过服务端，所以这里是真的没身份。
         login.hidden = false;
         loginInput.value = '';
         loginInput.focus();
@@ -1663,8 +1718,8 @@
           applySession(body);
           login.hidden = true;
           loginInput.value = '';
-          revealEntry(false);
-          renderAdminState();
+          // 刚登录就是奔着管理来的，直接展开，省一次点击
+          setAdminMode(true);
           renderList();
           setMessage('已登录，这个浏览器 30 天内不用再输口令', 'ok');
           return load();
@@ -1698,6 +1753,15 @@
       loginWithToken(token);
     }
 
+    // 「收起」：只关界面，不动会话。30 天内随时点「管理」再展开。
+    var modeOffBtn = tools.querySelector('.cm-mode-off');
+    if (modeOffBtn) {
+      modeOffBtn.addEventListener('click', function () {
+        setAdminMode(false);
+        setMessage('已收起管理按钮，身份还在，随时点「管理」再展开', 'ok');
+      });
+    }
+
     tools.querySelector('.cm-logout').addEventListener('click', function () {
       // 退出 = 让服务端把这条会话删掉，再清掉浏览器 Cookie。
       // 别处留着的同一份 Cookie 也就一起失效了。
@@ -1726,7 +1790,7 @@
           applySession({ admin: false });
           revealEntry(Boolean(entryBtn && entryBtn.dataset.show));
           renderList();
-          setMessage(all ? '已退出，所有设备都需要重新登录' : '已退出管理', 'ok');
+          setMessage(all ? '已退出，所有设备都需要重新登录' : '已退出，下次留言是访客身份', 'ok');
           load();
         });
     }
@@ -1860,9 +1924,14 @@
 
           if (state.admin && body.comment && !body.comment.isAdmin) {
             // 「会话过期」和「邮箱填错」是两回事，提示别混在一起
-            say(body.adminVerified
-              ? '发表成功。不过邮箱不是博主邮箱，这条按普通访客存的'
-              : '发表成功。但博主登录已过期，这条按普通访客存的，重新点「管理」登录即可', 'warn');
+            if (body.adminVerified) {
+              say('发表成功。不过邮箱不是博主邮箱，这条按普通访客存的', 'warn');
+            } else {
+              // 服务端没认这份凭据：说明 Cookie 已经过期或被撤销了，
+              // 前端得赶紧跟着降级，否则工具条还挂着「管理中」，点哪儿都 401。
+              say('发表成功。但博主登录已过期，这条按普通访客存的，重新点「管理」登录即可', 'warn');
+              syncSession();
+            }
           } else {
             say('发表成功，谢谢你的留言', 'ok');
           }
