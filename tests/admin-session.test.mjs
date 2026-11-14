@@ -151,6 +151,7 @@ test('换浏览器（没有 Cookie）等于没登录', async () => {
     cookie: `cm_admin=${'0'.repeat(64)}`,
   });
   assert.equal(other.payload.admin, false, '伪造/失效的 id 一律不认');
+  assert.match(other.setCookie, /Max-Age=0/, '不认的 Cookie 顺手让浏览器扔掉，别每次白跑一趟');
 });
 
 /* -------------------------------- 3. 口令错 -------------------------------- */

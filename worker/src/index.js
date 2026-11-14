@@ -44,9 +44,11 @@ import {
   csrfOk,
   csrfTokenFor,
   isSecureRequest,
+  readCookie,
   readSession,
   revokeAllSessions,
   revokeSession,
+  SESSION_COOKIE,
 } from './session.js';
 import {
   clientIp,
@@ -536,7 +538,13 @@ async function handleSession(request, env, url) {
 
   if (request.method === 'GET') {
     const auth = await authorize(request, env);
-    if (!auth.ok) return json({ ok: true, admin: false });
+    if (!auth.ok) {
+      // 手里那个 Cookie 已经不认了（过期/被撤/换了口令）：顺手让浏览器扔掉，
+      // 免得每个请求都白跑一次 D1。
+      const stale = readCookie(request, SESSION_COOKIE);
+      const headers = stale ? { 'Set-Cookie': buildSessionCookie('', 0, secure) } : {};
+      return json({ ok: true, admin: false }, 200, headers);
+    }
     // 用请求头口令调进来的（脚本），CSRF 无从谈起，也不给它发
     if (auth.via === 'token') return json({ ok: true, admin: true, via: 'token', csrf: '' });
     return json({
