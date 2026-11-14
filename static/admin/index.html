@@ -2182,8 +2182,18 @@ const PROVINCE_MAP = {
   "65": "新疆维吾尔自治区", "71": "台湾省", "81": "香港特别行政区", "82": "澳门特别行政区"
 };
 
-function saveCfg(){ localStorage.setItem('hugo_admin_cfg', JSON.stringify(CFG)); }
-function loadCfg(){ try{ const s=localStorage.getItem('hugo_admin_cfg'); if(s) Object.assign(CFG, JSON.parse(s)); }catch(e){} }
+function saveCfg(){
+  // 评论系统管理口令不进 localStorage：它只用来换一次 HttpOnly 会话 Cookie，
+  // 换完就没必要留在能被脚本读到的地方。其它字段（GitHub Token、R2 密钥）不动。
+  const snapshot=Object.assign({},CFG);
+  delete snapshot.commentsToken;
+  localStorage.setItem('hugo_admin_cfg', JSON.stringify(snapshot));
+}
+function loadCfg(){
+  try{ const s=localStorage.getItem('hugo_admin_cfg'); if(s) Object.assign(CFG, JSON.parse(s)); }catch(e){}
+  // 老版本把评论管理口令存在这里：读到就地抹掉，改为走会话 Cookie
+  if(CFG.commentsToken){ CFG.commentsToken=''; saveCfg(); }
+}
 function cleanPath(p){ return String(p||'').replace(/^\/+|\/+$/g,''); }
 function normalizePostsPath(){ return cleanPath(CFG.postsPath || 'content/posts'); }
 function escapeHTML(v){ return String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
@@ -5083,7 +5093,48 @@ document.addEventListener('keydown',gardenHandleGlobalKeyboardShortcuts);
 
 function cmApiBase(){ return String(CFG.commentsApi||'').trim().replace(/\/+$/,''); }
 function cmToken(){ return String(CFG.commentsToken||'').trim(); }
-function cmReady(){ return Boolean(cmApiBase()&&cmToken()); }
+
+// 会话状态只放内存：Cookie 是 HttpOnly 的，页面读不到，只能问服务端。
+// 这也是「关掉浏览器再打开还是登录状态」的原因 —— 状态在 Cookie 里，不在这份脚本里。
+const CM_SESSION={checked:false,admin:false,csrf:''};
+
+function cmReady(){ return Boolean(cmApiBase()&&(CM_SESSION.admin||cmToken())); }
+
+async function cmSyncSession(){
+  if(CM_SESSION.checked) return CM_SESSION;
+  CM_SESSION.checked=true;
+  const base=cmApiBase();
+  if(!base) return CM_SESSION;
+  try{
+    const res=await fetch(base+'/session',{credentials:'include',headers:{Accept:'application/json'}});
+    const data=await res.json();
+    CM_SESSION.admin=Boolean(data&&data.admin);
+    CM_SESSION.csrf=CM_SESSION.admin?String(data.csrf||''):'';
+  }catch(e){ /* 连不上就当没登录，别把页面卡住 */ }
+  return CM_SESSION;
+}
+
+/**
+ * 用管理口令换会话：服务端校验后下发 HttpOnly Cookie（30 天）。
+ * 口令本身只用这一次，不写入任何本地存储。
+ */
+async function cmLogin(token){
+  const base=cmApiBase();
+  if(!base) throw new Error('未配置评论系统接口地址');
+  const res=await fetch(base+'/session',{
+    method:'POST',
+    credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token:String(token||'')})
+  });
+  const data=await res.json().catch(()=>null);
+  if(!res.ok||!data||!data.ok){
+    const detail=data&&data.error;
+    throw new Error((detail&&detail.message)||'管理口令无效');
+  }
+  CM_SESSION.checked=true; CM_SESSION.admin=true; CM_SESSION.csrf=String(data.csrf||'');
+  return CM_SESSION;
+}
 
 function cmErrorMessage(error){
   if(!error) return '未知错误';
@@ -5097,7 +5148,15 @@ async function cmFetch(path,options){
   const base=cmApiBase();
   if(!base) throw new Error('未配置评论系统接口地址');
   const init=Object.assign({},options||{});
-  init.headers=Object.assign({'x-admin-token':cmToken()},(options&&options.headers)||{});
+  const method=String(init.method||'GET').toUpperCase();
+  const headers=Object.assign({},(options&&options.headers)||{});
+  // 有会话就靠 Cookie（浏览器自动带）；只有没会话时才退回口令头。
+  // 两个都带的话，过期的口令会盖掉有效会话，反而 401。
+  if(!CM_SESSION.admin&&cmToken()) headers['x-admin-token']=cmToken();
+  // 写操作要 CSRF 令牌，否则 Worker 会按「跨站请求」拒掉
+  if(method!=='GET'&&method!=='HEAD'&&CM_SESSION.csrf) headers['x-csrf-token']=CM_SESSION.csrf;
+  init.headers=headers;
+  init.credentials='include';
   let response=null;
   try{
     response=await fetch(base+path,init);
@@ -5111,7 +5170,12 @@ async function cmFetch(path,options){
   try{ data=await response.json(); }catch(e){}
   const code=data&&data.error&&data.error.code;
   if(code==='origin_forbidden') throw new Error(`当前来源 ${location.origin} 不在 Worker 白名单内，请加入 COMMENTS_ALLOWED_ORIGIN 后重新部署`);
-  if(response.status===401||response.status===403) throw new Error('管理口令无效，请在系统设置中核对评论系统管理口令');
+  if(response.status===401||response.status===403){
+    CM_SESSION.admin=false; CM_SESSION.csrf='';
+    throw new Error(code==='csrf_failed'
+      ? '会话校验失败，刷新页面再试一次'
+      : '管理登录已失效：在系统设置里填一次口令即可（这机子上会记住 30 天）');
+  }
   if(!response.ok||(data&&data.ok===false)){
     const detail=data&&data.error;
     throw new Error((data&&(data.message||(detail&&detail.message)))||(typeof detail==='string'?detail:'')||`接口返回 ${response.status}`);
@@ -5416,8 +5480,9 @@ async function renderInteractionsPage(){
     c.innerHTML=`<div class="alert warning">未配置评论系统接口地址。请先前往 <strong>系统设置 → 评论系统</strong> 填写接口地址，例如 <span class="mono">https://comments.hux.ink/api/comments</span>。</div>`;
     return;
   }
-  if(!cmToken()){
-    c.innerHTML=`<div class="alert warning">未配置评论系统管理口令。请先前往 <strong>系统设置 → 评论系统</strong> 填写 <span class="mono">COMMENTS_ADMIN_TOKEN</span> 对应的口令。</div>`;
+  await cmSyncSession();
+  if(!cmToken()&&!CM_SESSION.admin){
+    c.innerHTML=`<div class="alert warning">还没有评论管理的登录状态。请先前往 <strong>系统设置 → 评论系统</strong> 填写一次 <span class="mono">COMMENTS_ADMIN_TOKEN</span> 口令：它会换成本机 30 天的登录状态，口令本身不会留在浏览器里。</div>`;
     return;
   }
 
@@ -6394,7 +6459,8 @@ async function cmCollectExport(format){
 }
 
 async function cmExport(format){
-  if(!cmReady()){ toast('请先在系统设置里填好评论系统接口与口令','error'); return; }
+  await cmSyncSession();
+  if(!cmReady()){ toast('评论管理还没登录：请先在系统设置里填一次口令','error'); return; }
   toast('正在生成备份…');
   try{
     const {meta,comments,counter}=await cmCollectExport(format);
@@ -9510,7 +9576,7 @@ function renderSettingsPage(){
         <div class="setting-group"><label class="setting-label">评论接口地址 (COMMENTS_API)</label><input class="setting-input" id="s-cm-api" placeholder="https://comments.hux.ink/api/comments" value="${escapeAttr(CFG.commentsApi||'')}"></div>
         <div class="setting-group"><label class="setting-label">管理口令 (COMMENTS_ADMIN_TOKEN)</label><input class="setting-input" type="password" id="s-cm-token" value="${escapeAttr(CFG.commentsToken||'')}"></div>
       </div>
-      <div class="alert info" style="margin-top:10px">互动管理页直接读取该接口的审核队列，可在页面里通过、标为垃圾、隐藏或彻底删除评论。口令与 Worker 环境变量 <code>COMMENTS_ADMIN_TOKEN</code> 保持一致，只保存在本机浏览器。</div>
+      <div class="alert info" style="margin-top:10px">互动管理页直接读取该接口的审核队列，可在页面里通过、标为垃圾、隐藏或彻底删除评论。口令与 Worker 环境变量 <code>COMMENTS_ADMIN_TOKEN</code> 保持一致，只在点保存时用一次：校验通过后换成本机 30 天的登录状态（HttpOnly Cookie），<strong>口令不会被写进浏览器存储</strong>。</div>
       <div class="section-title">站点与部署扩展</div>
       <div class="settings-grid">
         <div class="setting-group"><label class="setting-label">博客前台网址</label><input class="setting-input" id="s-blog" value="${escapeAttr(CFG.blogUrl||'')}"></div>
@@ -9568,7 +9634,17 @@ function readSettingsFormIntoConfig(){
 function saveAllSettings(){
   readSettingsFormIntoConfig();
   invalidateFriendsFeedCache();
-  saveCfg(); toast('设置已保存到当前浏览器','success'); checkStatus();
+  saveCfg();
+  checkStatus();
+  // 填了口令就顺手换成会话：这样它不用留在任何本地存储里，
+  // 之后 30 天内打开这个后台都自动是登录状态。
+  if(cmToken()&&cmApiBase()){
+    cmLogin(cmToken())
+      .then(()=>{ CFG.commentsToken=''; saveCfg(); toast('设置已保存；管理口令已换成本机 30 天登录状态，不再写入浏览器存储','success'); })
+      .catch(()=>{ toast('设置已保存，但评论管理口令没通过校验，请核对 COMMENTS_ADMIN_TOKEN','error'); });
+    return;
+  }
+  toast('设置已保存到当前浏览器','success');
 }
 
 function exportSettings(){

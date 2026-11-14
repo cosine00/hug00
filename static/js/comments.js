@@ -15,10 +15,11 @@
   'use strict';
 
   var IDENTITY_KEY = 'comments-identity';
-  var ADMIN_KEY = 'comments-admin-token';
-  // 「此刻是否处于管理模式」和「口令本身」分开存：
-  // 管理口令只放 sessionStorage，关掉标签页即消失，降低同源页面脚本长期窃取风险。
-  var ADMIN_ACTIVE_KEY = 'comments-admin-active';
+  // 旧的「管理口令」本地存储键：只用于清理历史遗留，不再写入。
+  // 口令现在只在登录那一刻发给 Worker，之后由 HttpOnly Cookie 维持身份，
+  // 页面上任何脚本（包括这段）都读不到它。
+  var LEGACY_ADMIN_KEY = 'comments-admin-token';
+  var LEGACY_ADMIN_ACTIVE_KEY = 'comments-admin-active';
   var EDIT_KEY = 'comments-edit-tokens';
   var VISITOR_KEY = 'comments-visitor';
   var SESSION_KEY = 'comments-session';
@@ -361,8 +362,11 @@
       mountedAt: Date.now(),
       total: 0,
       topTotal: 0,
-      adminToken: '',
-      adminSaved: '',
+      // 博主身份完全由服务端说了算：admin 是「服务端认不认我」，csrf 是写操作要带的令牌。
+      // 这里没有任何口令副本 —— 它也从来没进过 JS 的内存（登录那次除外）。
+      admin: false,
+      csrf: '',
+      sessionKnown: false,
       adminBusy: false,
       likeBusy: false,
       replyBox: null,
@@ -392,54 +396,71 @@
       }
     }
 
-    // 管理口令只在当前标签页保留
-    function readAdminToken() {
+    // 旧版本把管理口令存在 sessionStorage / localStorage：会话方案上线后第一件事
+    // 就是把它抹掉 —— 留着一份没人用、却仍可能被同源脚本读走的长期凭据毫无意义。
+    function purgeLegacyAdminStorage() {
       try {
-        return sessionStorage.getItem(ADMIN_KEY) || '';
+        sessionStorage.removeItem(LEGACY_ADMIN_KEY);
+        sessionStorage.removeItem(LEGACY_ADMIN_ACTIVE_KEY);
+        localStorage.removeItem(LEGACY_ADMIN_KEY);
       } catch (error) {
-        return '';
+        /* 隐私模式下忽略 */
       }
     }
+    purgeLegacyAdminStorage();
 
-    function saveAdminToken(token) {
-      try {
-        sessionStorage.setItem(ADMIN_KEY, token);
-      } catch (error) {
-        /* 存不下就算了，本次会话内 state 里还有 */
-      }
+    /* -------------------- 博主会话（HttpOnly Cookie，服务端签发） -------------------- */
+
+    // 会话接口就挂在评论接口旁边：…/api/comments → …/api/comments/session
+    function sessionUrl() {
+      return String(opts.api || '').replace(/\/+$/, '') + '/session';
     }
 
-    function clearAdminToken() {
-      try {
-        sessionStorage.removeItem(ADMIN_KEY);
-        // 清掉旧版本曾写入的 30 天口令。
-        localStorage.removeItem(ADMIN_KEY);
-      } catch (error) {
-        /* ignore */
+    /**
+     * 所有请求的统一出口。
+     *   credentials: 'include' —— Cookie 是 HttpOnly 的，跨源请求浏览器不会自动带，
+     *   必须显式声明（Worker 那边也回了 Access-Control-Allow-Credentials）；
+     *   写操作再补 x-csrf-token —— 别的站点凑不出这个头，也就借不走这份身份。
+     */
+    function apiFetch(url, init) {
+      var options = Object.assign({}, init || {});
+      var method = String(options.method || 'GET').toUpperCase();
+      var headers = Object.assign({}, options.headers || {});
+      if (method !== 'GET' && method !== 'HEAD' && state.csrf) {
+        headers['x-csrf-token'] = state.csrf;
       }
+      options.headers = headers;
+      options.credentials = 'include';
+      return fetch(url, options);
     }
 
-    // 管理模式开关（不动口令本身）
-    function readAdminActive() {
-      try {
-        return sessionStorage.getItem(ADMIN_ACTIVE_KEY) === '1';
-      } catch (error) {
-        return false;
-      }
+    // 服务端认定或撤销身份后，前端跟着换挡
+    function applySession(data) {
+      var on = Boolean(data && data.admin);
+      state.admin = on;
+      state.csrf = on ? String(data.csrf || '') : '';
+      state.sessionKnown = true;
+      renderAdminState();
     }
 
-    function writeAdminActive(on) {
-      try {
-        if (on) sessionStorage.setItem(ADMIN_ACTIVE_KEY, '1');
-        else sessionStorage.removeItem(ADMIN_ACTIVE_KEY);
-      } catch (error) {
-        /* ignore */
-      }
+    /**
+     * 进页面先问一次「我现在是不是博主」。
+     * Cookie 是 HttpOnly 的，脚本读不到，只能由服务端回答 ——
+     * 新标签页、重开浏览器都能自动恢复身份，靠的就是这一步。
+     */
+    function syncSession() {
+      return apiFetch(sessionUrl(), { headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          applySession(data);
+          return data;
+        })
+        .catch(function () {
+          // 接口不通就按访客走，别把评论区卡在「不知道身份」上
+          applySession({ admin: false });
+          return null;
+        });
     }
-
-    state.adminSaved = readAdminToken();
-    // 口令记着，但只有当前标签页里主动进过管理模式才算"在管理中"
-    state.adminToken = readAdminActive() ? state.adminSaved : '';
 
     /* --------------------------- 改稿凭据（本地留一把） -------------------------- */
 
@@ -502,7 +523,7 @@
       '</span>' +
       '<button type="button" class="cm-entry" hidden>管理</button>' +
       '<span class="cm-admin-flag" hidden>管理中 <button type="button" class="cm-logout">退出</button>' +
-        '<button type="button" class="cm-forget" data-tip="连记着的口令一起忘掉">忘掉</button></span>';
+        '<button type="button" class="cm-forget" data-tip="所有设备一起退出">全部退出</button></span>';
     if (head) head.appendChild(tools);
 
     var saved = identity();
@@ -696,7 +717,7 @@
     }
 
     function renderAdminState() {
-      var on = Boolean(state.adminToken);
+      var on = Boolean(state.admin);
       if (adminFlag) adminFlag.hidden = !on;
       if (entryBtn) entryBtn.hidden = on || !entryBtn.dataset.show;
       if (on) login.hidden = true;
@@ -752,7 +773,7 @@
 
     // 管理模式下每条后面挂「垃圾 / 删除」，事后清理用；没有「通过」了，因为没有待审
     function modHtml(comment) {
-      if (!state.adminToken) return '';
+      if (!state.admin) return '';
       return '<span class="cm-mod">' +
         '<button type="button" data-mod="spam" data-id="' + comment.id + '">垃圾</button>' +
         '<button type="button" data-mod="delete" data-id="' + comment.id + '">删除</button>' +
@@ -772,7 +793,7 @@
     // 谁能改这条：管理模式下一律能改；否则只有客人自己那条，且 1 分钟内。
     // 博主署名的评论不凭 edit_token 放行 —— 想改自己漏的字，必须先进管理模式。
     function canEdit(comment) {
-      if (state.adminToken) return true;
+      if (state.admin) return true;
       if (comment.isAdmin) return false;
       if (!editTokenOf(comment.id)) return false;
       return withinEditWindow(comment);
@@ -1068,7 +1089,7 @@
       var timer = holder.querySelector('.cm-edit-timer');
 
       // 客人这边时间窗只有 1 分钟，把剩余秒数摆在明处；到点自动收起，别让人对着一个点不动的保存按钮发愣
-      if (!state.adminToken) {
+      if (!state.admin) {
         var tickTimer = function () {
           if (!document.body.contains(area)) {
             clearInterval(timerId);
@@ -1128,14 +1149,13 @@
       if (token) payload.token = token;
 
       var headers = { 'Content-Type': 'application/json' };
-      if (state.adminToken) headers['x-admin-token'] = state.adminToken;
 
       if (button) {
         button.disabled = true;
         button.textContent = '保存中…';
       }
 
-      fetch(opts.api + '/edit', {
+      apiFetch(opts.api + '/edit', {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(payload)
@@ -1171,7 +1191,7 @@
 
     // 页面停着不动，1 分钟一过按钮也该消失，不然看着能点、点了一报错更迷惑
     function sweepEditButtons() {
-      if (state.adminToken) return;
+      if (state.admin) return;
       var buttons = list.querySelectorAll('.cm-edit-btn');
       for (var i = buttons.length - 1; i >= 0; i -= 1) {
         var id = Number(buttons[i].getAttribute('data-edit'));
@@ -1297,14 +1317,15 @@
       state.loading = true;
       list.innerHTML = '<li class="cm-loading">正在加载评论…</li>';
 
+      // 评论区对所有人一视同仁（没有待审队列），所以列表请求不需要带身份；
+      // credentials 仍然带上，服务端若哪天按身份返回不同内容也不会踩空。
       var headers = { Accept: 'application/json' };
-      if (state.adminToken) headers['x-admin-token'] = state.adminToken;
 
       var collected = [];
       function fetchPage(offset) {
         var url = opts.api + '?thread=' + encodeURIComponent(opts.threadKey) +
           '&limit=200&offset=' + offset;
-        return fetch(url, { headers: headers })
+        return apiFetch(url, { headers: headers })
           .then(function (res) { return res.json(); })
           .then(function (data) {
             if (!data || !data.ok) throw new Error((data && data.error && data.error.message) || '加载失败');
@@ -1571,12 +1592,12 @@
     function revealEntry(show) {
       if (!entryBtn) return;
       entryBtn.dataset.show = show ? '1' : '';
-      entryBtn.hidden = !show || Boolean(state.adminToken);
+      entryBtn.hidden = !show || Boolean(state.admin);
     }
 
     var triggerTimer = null;
     function checkTrigger() {
-      if (!opts.adminHash || state.adminToken) return;
+      if (!opts.adminHash || state.admin) return;
       var value = (emailInput ? emailInput.value : '').trim().toLowerCase();
       clearTimeout(triggerTimer);
       if (!value) {
@@ -1608,11 +1629,8 @@
 
     if (entryBtn) {
       entryBtn.addEventListener('click', function () {
-        // 口令还记着就直接进，弹框只在第一次或口令过期时出现
-        if (state.adminSaved) {
-          activateAdmin(state.adminSaved, { silent: true });
-          return;
-        }
+        // 会话没过期就不用再输口令了（进页面时 syncSession 已经问过服务端），
+        // 这里弹出输入框只可能是真的没登录。
         login.hidden = false;
         loginInput.value = '';
         loginInput.focus();
@@ -1620,38 +1638,39 @@
       });
     }
 
-    // 进入管理模式：校验口令 → 记住 → 打开模式开关
-    function activateAdmin(token, options) {
-      var opts2 = options || {};
+    /**
+     * 登录：口令只发这一次，换回 HttpOnly 会话 Cookie + CSRF 令牌。
+     * 之后 30 天内（同浏览器）所有标签页都自动是博主身份，前端不再保存口令。
+     */
+    function loginWithToken(token) {
       loginBtn.disabled = true;
       loginBtn.textContent = '验证中…';
-      return fetch(opts.api + '/admin?limit=1', { headers: { 'x-admin-token': token } })
-        .then(function (res) { return res.ok; })
-        .then(function (ok) {
-          if (!ok) throw new Error(opts2.silent ? '记着的口令失效了，请重新输入' : '口令不对');
-          state.adminToken = token;
-          state.adminSaved = token;
-          saveAdminToken(token);
-          writeAdminActive(true);
+      return apiFetch(sessionUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      })
+        .then(function (res) {
+          return res.json().then(function (body) { return { res: res, body: body }; });
+        })
+        .then(function (result) {
+          var body = result.body || {};
+          if (!result.res.ok || !body.ok) {
+            var error = new Error((body.error && body.error.message) || '口令不对');
+            error.code = body.error && body.error.code;
+            throw error;
+          }
+          applySession(body);
           login.hidden = true;
           loginInput.value = '';
           revealEntry(false);
           renderAdminState();
           renderList();
-          setMessage(opts2.silent ? '已在管理模式（口令还记着，退出后随时可以再进）' : '管理已登录，30 天内不用再输口令', 'ok');
+          setMessage('已登录，这个浏览器 30 天内不用再输口令', 'ok');
           return load();
         })
         .catch(function (error) {
-          if (opts2.silent) {
-            // 缓存的口令已经不作数了：清掉，回到手输
-            clearAdminToken();
-            state.adminSaved = '';
-            login.hidden = false;
-            loginInput.value = '';
-            loginInput.focus();
-          } else {
-            loginInput.select();
-          }
+          loginInput.select();
           setMessage(error.message || '登录失败', 'error');
         })
         .finally(function () {
@@ -1676,47 +1695,57 @@
     function submitLogin() {
       var token = loginInput.value.trim();
       if (!token) return;
-      activateAdmin(token, { silent: false });
+      loginWithToken(token);
     }
 
     tools.querySelector('.cm-logout').addEventListener('click', function () {
-      // 只关模式，不清口令：下次点「管理」还能直接进
-      state.adminToken = '';
-      writeAdminActive(false);
-      renderAdminState();
-      revealEntry(Boolean(entryBtn && entryBtn.dataset.show));
-      renderList();
-      setMessage('已退出管理模式（口令还记着，下次点「管理」直接进）', 'ok');
-      load();
+      // 退出 = 让服务端把这条会话删掉，再清掉浏览器 Cookie。
+      // 别处留着的同一份 Cookie 也就一起失效了。
+      endSession(false);
     });
 
-    // 公共电脑上想连口令一起忘掉
+    // 口令泄露时的一键止损：所有设备的会话一起作废
     var forgetBtn = tools.querySelector('.cm-forget');
     if (forgetBtn) {
       forgetBtn.addEventListener('click', function () {
-        state.adminToken = '';
-        state.adminSaved = '';
-        writeAdminActive(false);
-        clearAdminToken();
-        renderAdminState();
-        revealEntry(false);
-        renderList();
-        setMessage('已退出，并忘掉了记着的口令', 'ok');
-        load();
+        endSession(true);
       });
     }
 
+    /**
+     * 退出。all = true 时连别的设备一起撤。
+     * DELETE 不需要额外请求体；workers 那边有 CSRF 校验，apiFetch 会自动补头。
+     */
+    function endSession(all) {
+      return apiFetch(sessionUrl() + (all ? '?all=1' : ''), { method: 'DELETE' })
+        .catch(function () {
+          /* 网络失败也照样把本地状态清干净 */
+          return null;
+        })
+        .then(function () {
+          applySession({ admin: false });
+          revealEntry(Boolean(entryBtn && entryBtn.dataset.show));
+          renderList();
+          setMessage(all ? '已退出，所有设备都需要重新登录' : '已退出管理', 'ok');
+          load();
+        });
+    }
+
     function moderate(action, id, button) {
-      if (!state.adminToken || state.adminBusy) return;
+      if (!state.admin || state.adminBusy) return;
       state.adminBusy = true;
       if (button) button.disabled = true;
-      fetch(opts.api + '/admin', {
+      apiFetch(opts.api + '/admin', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-token': state.adminToken },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: action, id: id })
       })
         .then(function (res) {
-          if (res.status === 401) throw new Error('管理口令已失效，请重新登录');
+          if (res.status === 401 || res.status === 403) {
+            var expired = new Error('登录已失效，请重新登录');
+            expired.code = 'session_expired';
+            throw expired;
+          }
           return res.json();
         })
         .then(function (data) {
@@ -1725,11 +1754,11 @@
           return load();
         })
         .catch(function (error) {
-          // 口令换了/过期了，就退回未登录状态，别让「管理」按钮骗人
-          if (/口令/.test(String(error.message || ''))) {
-            state.adminToken = '';
-            clearAdminToken();
-            renderAdminState();
+          // 会话过期/被撤销了，就退回未登录状态，别让「管理」按钮骗人
+          if (error && error.code === 'session_expired') {
+            applySession({ admin: false });
+            revealEntry(Boolean(entryBtn && entryBtn.dataset.show));
+            renderList();
           }
           setMessage(error.message || '操作失败', 'error');
         })
@@ -1800,16 +1829,12 @@
         return say('请先完成人机验证', 'error');
       }
 
-      var postHeaders = { 'Content-Type': 'application/json' };
-      // 博主标识改由服务端判定（口令比对通过 + 邮箱等于博主邮箱，缺一不可）。
-      // 所以只要本标签页里记着口令就带上——不用先进管理模式，
-      // 否则博主随手留一句反而没有「博主」标。没口令的人带上也没用，服务端不认。
-      var adminCredential = state.adminToken || state.adminSaved;
-      if (adminCredential) postHeaders['x-admin-token'] = adminCredential;
-
-      fetch(opts.api, {
+      // 博主标识由服务端判定（会话凭据有效 + 邮箱等于博主邮箱，缺一不可）。
+      // 会话 Cookie 由浏览器自动带上，前端不需要、也拿不到任何口令；
+      // 写操作要的 CSRF 头由 apiFetch 统一补。
+      apiFetch(opts.api, {
         method: 'POST',
-        headers: postHeaders,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
         .then(function (res) {
@@ -1833,11 +1858,11 @@
             checkTrigger();
           }
 
-          if (adminCredential && body.comment && !body.comment.isAdmin) {
-            // 口令没通过校验（换过/没保存住）和邮箱填错是两回事，别给同一句提示
+          if (state.admin && body.comment && !body.comment.isAdmin) {
+            // 「会话过期」和「邮箱填错」是两回事，提示别混在一起
             say(body.adminVerified
               ? '发表成功。不过邮箱不是博主邮箱，这条按普通访客存的'
-              : '发表成功。管理口令已失效，这条按普通访客存的，重新点「管理」登录可恢复博主标识', 'warn');
+              : '发表成功。但博主登录已过期，这条按普通访客存的，重新点「管理」登录即可', 'warn');
           } else {
             say('发表成功，谢谢你的留言', 'ok');
           }
@@ -1934,6 +1959,13 @@
     root.__comments = instance;
     renderAdminState();
     renderStats();
+
+    // 先问身份，再拉评论：两个请求并行发出去，谁先回来都不影响对方。
+    // 身份回来后重绘一次，管理相关的按钮（垃圾/删除、改任意评论）才跟上。
+    syncSession().then(function () {
+      revealEntry(Boolean(entryBtn && entryBtn.dataset.show));
+      renderList();
+    });
     load();
     trackView();
     return instance;
@@ -2053,7 +2085,7 @@
     mount: mount,
     timeAgo: timeAgo,
     tip: { show: showTip, hide: hideTip },
-    version: '1.2.0'
+    version: '1.3.0'
   };
 
   // 自动挂载：<div id="comments" data-cm-thread="memo:1233" data-cm-url="...">

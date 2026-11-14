@@ -78,6 +78,20 @@ const SCHEMA = [
    )`,
   `CREATE INDEX IF NOT EXISTS idx_comment_rate_actor_time
      ON comment_rate_events (actor_hash, created_at)`,
+  // 博主会话（HttpOnly Cookie 背后的那一半）。
+  // 只存 session id 的 sha256：库被拖走也换不回可用的 Cookie。
+  // token_fp 是签发时 COMMENTS_ADMIN_TOKEN 的指纹，换口令 = 所有会话立刻失效。
+  `CREATE TABLE IF NOT EXISTS admin_sessions (
+     id_hash      TEXT PRIMARY KEY,
+     token_fp     TEXT NOT NULL,
+     ip_hash      TEXT,
+     ua           TEXT,
+     created_at   INTEGER NOT NULL,
+     last_seen_at INTEGER,
+     expires_at   INTEGER NOT NULL,
+     revoked_at   INTEGER
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires ON admin_sessions (expires_at)`,
 ];
 
 // 已有库（CREATE TABLE 不会补列）需要单独加字段，报「重复列」时忽略即可
@@ -105,7 +119,9 @@ let schemaPromise = null;
 // 「历史待审评论已放行过」的标记键
 const NO_REVIEW_FLAG = 'migrate:no-review';
 const SCHEMA_VERSION_KEY = 'schema:version';
-const SCHEMA_VERSION = '3';
+// 加表/加列都要升版本号，否则老库会走「版本一致就跳过建表」的捷径，
+// 新表永远建不出来（首次请求直接 no such table）。
+const SCHEMA_VERSION = '4';
 
 function normalizeArgs(args) {
   return args.map((v) => {

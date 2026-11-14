@@ -9,6 +9,9 @@
  *   POST /api/comments/view              { threadKey, session, visitor }  阅读量（按会话去重）
  *   POST /api/comments/like              { threadKey, visitor, action }   点赞 / 取消
  *   GET  /api/comments/stats?threads=<key,key>&v=<visitor>
+ *   GET  /api/comments/session           当前浏览器是不是博主（读 HttpOnly Cookie）
+ *   POST /api/comments/session           { token } 口令换会话 Cookie；{ action:'logout' } 退出
+ *   DELETE /api/comments/session[?all=1] 退出当前设备 / 所有设备
  *   GET  /api/comments/admin?status=all|approved|spam|deleted
  *   POST /api/comments/admin            { action, id, threadKey }
  *   POST /api/comments/admin/import     { items: [...] }
@@ -36,17 +39,29 @@ import {
 } from './service.js';
 import { notifyNewComment, notifyReply } from './mail.js';
 import {
+  buildSessionCookie,
+  createSession,
+  csrfOk,
+  csrfTokenFor,
+  isSecureRequest,
+  readSession,
+  revokeAllSessions,
+  revokeSession,
+} from './session.js';
+import {
   clientIp,
   fail,
   formatRegion,
   json,
   readJson,
   sha256,
+  timingSafeEqual,
   validateCommentInput,
 } from './util.js';
 
-const CORS_METHODS = 'GET,POST,OPTIONS';
-const CORS_HEADERS = 'Content-Type,x-admin-token,Authorization';
+const CORS_METHODS = 'GET,POST,DELETE,OPTIONS';
+// x-csrf-token 必须在白名单里，否则浏览器预检不会放行带它的写请求
+const CORS_HEADERS = 'Content-Type,x-admin-token,x-csrf-token,Authorization';
 
 function corsHeaders(request, env) {
   const origin = request.headers.get('Origin') || '';
@@ -60,13 +75,18 @@ function corsHeaders(request, env) {
     'Access-Control-Allow-Methods': CORS_METHODS,
     'Access-Control-Allow-Headers': CORS_HEADERS,
     'Access-Control-Max-Age': '86400',
-    Vary: 'Origin',
+    // 同一个 API 对不同 Origin、以及对带不带 Cookie 的请求响应不同，缓存键要都覆盖
+    Vary: 'Origin, Cookie',
   };
 
   if (allowAll) {
+    // `*` 与 credentials 不能共存：有来源就回显来源，没有来源（curl、迁移脚本）才是 `*`
     headers['Access-Control-Allow-Origin'] = origin || '*';
+    if (origin) headers['Access-Control-Allow-Credentials'] = 'true';
   } else if (origin && configured.includes(origin)) {
     headers['Access-Control-Allow-Origin'] = origin;
+    // 会话 Cookie 是 HttpOnly 的，浏览器只在这个头存在时才肯跨源收发
+    headers['Access-Control-Allow-Credentials'] = 'true';
   }
   return headers;
 }
@@ -89,23 +109,42 @@ function withCors(response, request, env) {
 
 /* --------------------------------- 鉴权 ---------------------------------- */
 
-function timingSafeEqual(a, b) {
-  const sa = String(a);
-  const sb = String(b);
-  if (sa.length !== sb.length) return false;
-  let diff = 0;
-  for (let i = 0; i < sa.length; i += 1) diff |= sa.charCodeAt(i) ^ sb.charCodeAt(i);
-  return diff === 0;
-}
+/**
+ * 两种凭据，任一即可通过：
+ *   1) x-admin-token / Authorization: Bearer —— curl、迁移脚本、老前端；
+ *   2) 浏览器里的 HttpOnly 会话 Cookie —— 正常访客不需要它。
+ * 返回 { ok, via, session }，via 决定要不要再查 CSRF：
+ * 请求头里的口令是调用方自己攥着的，天然没有跨站冒用的问题；Cookie 会被浏览器
+ * 自动带上，所以只有 via === 'session' 的写操作才需要 CSRF 令牌。
+ */
+async function authorize(request, env) {
+  const expected = String(env.COMMENTS_ADMIN_TOKEN || '');
+  if (!expected) return { ok: false, via: 'none' };
 
-function authorized(request, env, url) {
-  const expected = env.COMMENTS_ADMIN_TOKEN;
-  if (!expected) return false;
   const provided =
     request.headers.get('x-admin-token') ||
     (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '') ||
     '';
-  return timingSafeEqual(provided, expected);
+  if (provided && timingSafeEqual(provided, expected)) return { ok: true, via: 'token' };
+
+  const session = await readSession(env, request);
+  if (!session.ok) return { ok: false, via: 'none', reason: session.reason };
+  return { ok: true, via: 'session', session: session.session };
+}
+
+const isMutation = (request) => !['GET', 'HEAD', 'OPTIONS'].includes(request.method);
+
+/**
+ * 后台写操作闸门：先认证，再对 Cookie 会话验 CSRF。
+ * 口令头那条路不查 CSRF —— 跨站请求没法自己加这个头，也就带不了口令。
+ */
+async function adminGate(request, env) {
+  const auth = await authorize(request, env);
+  if (!auth.ok) return { ok: false, response: await rejectUnauthorized(request, env) };
+  if (auth.via === 'session' && isMutation(request) && !(await csrfOk(request, env, auth.session))) {
+    return { ok: false, response: fail(403, 'csrf_failed', '会话校验没通过，刷新页面再试一次') };
+  }
+  return { ok: true, auth };
 }
 
 /* --------------------------------- 路由 ---------------------------------- */
@@ -156,6 +195,11 @@ async function route(request, env, url, ctx) {
 
   if (path === '/api/comments' || path === '/comments') {
     return handleComments(request, env, url, ctx);
+  }
+
+  // 后台会话：口令换 Cookie、问当前身份、退出
+  if (path === '/api/comments/session' || path === '/comments/session') {
+    return handleSession(request, env, url);
   }
 
   // 影彩页：代理取 B 站 720P 直链（站外 iframe 播放器只给 360P）
@@ -375,13 +419,20 @@ async function handleComments(request, env, url, ctx) {
     const region = formatRegion(request);
     const turnstile = await verifyTurnstile(env, value.turnstileToken, clientIp(request));
     if (!turnstile.ok) return fail(403, 'captcha_failed', '人机验证没有通过，请重试');
-    // 博主身份由 service 层统一判定：口令在服务端比对通过 + 邮箱等于博主邮箱，
+
+    // 博主身份由 service 层统一判定：凭据在服务端校验通过 + 邮箱等于博主邮箱，
     // 缺一不可。邮箱本身不构成任何凭据（它是公开的）。
+    //
+    // 跨站请求降级：带 Cookie 却没有 CSRF 头，说明这条请求不是我们的页面发的
+    //（别的站点诱导浏览器自动带上 Cookie 也凑不出这个头），于是只按访客身份落库。
+    // 不直接报错是因为评论区首要是「能留言」，丢一个博主标远好过丢掉一条评论。
+    const auth = await authorize(request, env);
+    const adminTrusted = auth.ok && (auth.via === 'token' || (await csrfOk(request, env, auth.session)));
     const result = await createComment(env, value, {
       ip: clientIp(request),
       ua: String(request.headers.get('user-agent') || ''),
       region,
-      admin: authorized(request, env, url),
+      admin: adminTrusted,
     });
 
     if (!result.ok) return fail(result.status || 400, result.code, result.message);
@@ -467,6 +518,91 @@ async function handleComments(request, env, url, ctx) {
   }
 
   return new Response(null, { status: 405, headers: { Allow: 'GET,POST,OPTIONS' } });
+}
+
+/* --------------------------- /comments/session ---------------------------- */
+
+/**
+ * 博主会话。
+ *   GET    → { admin, csrf, expiresAt }：Cookie 是 HttpOnly 的，脚本读不到，
+ *            只能由服务端回答「我们现在算不算登录」。新标签页、重开浏览器都走这一条。
+ *   POST   → { token } 登录；{ action: 'logout' | 'revoke-all' } 退出
+ *   DELETE → 退出当前设备；?all=1 退出所有设备
+ *
+ * 退出必须落到库里删行，而不是只清 Cookie：别处留着的同一份 Cookie 也就一起废了。
+ */
+async function handleSession(request, env, url) {
+  const secure = isSecureRequest(request);
+
+  if (request.method === 'GET') {
+    const auth = await authorize(request, env);
+    if (!auth.ok) return json({ ok: true, admin: false });
+    // 用请求头口令调进来的（脚本），CSRF 无从谈起，也不给它发
+    if (auth.via === 'token') return json({ ok: true, admin: true, via: 'token', csrf: '' });
+    return json({
+      ok: true,
+      admin: true,
+      via: 'session',
+      csrf: await csrfTokenFor(env, auth.session.sid),
+      expiresAt: auth.session.expiresAt,
+    });
+  }
+
+  const cleared = { 'Set-Cookie': buildSessionCookie('', 0, secure) };
+
+  async function logout(all) {
+    const auth = await authorize(request, env);
+    if (!auth.ok) return json({ ok: true, admin: false }, 200, cleared);
+    if (auth.via === 'session' && !(await csrfOk(request, env, auth.session))) {
+      return fail(403, 'csrf_failed', '会话校验没通过，刷新页面再试一次');
+    }
+    const removed = all ? await revokeAllSessions(env) : await revokeSession(env, auth.session || {});
+    return json({ ok: true, admin: false, revoked: removed }, 200, cleared);
+  }
+
+  if (request.method === 'DELETE') {
+    return logout(url.searchParams.get('all') === '1');
+  }
+
+  if (request.method === 'POST') {
+    const body = await readJson(request);
+    const action = String((body && body.action) || 'login');
+    if (action === 'logout') return logout(false);
+    if (action === 'revoke-all') return logout(true);
+
+    const expected = String(env.COMMENTS_ADMIN_TOKEN || '');
+    if (!expected) return fail(503, 'admin_disabled', '后台还没配置管理口令');
+    const token = typeof (body && body.token) === 'string' ? body.token.trim() : '';
+    if (!token) return fail(400, 'token_required', '请填写管理口令');
+
+    // 口令是唯一还能被暴力猜的东西，按 IP 限速（和后台接口共用一套计数表）
+    const ipHash = await sha256(`login|${clientIp(request)}|${env.COMMENTS_SALT || 'comments-salt'}`);
+    const limited = await consumeRateLimit(env, {
+      actorHash: ipHash,
+      shortSeconds: 600,
+      shortMax: 10,
+      longSeconds: 3600,
+      longMax: 30,
+    });
+    if (!limited.ok) return fail(429, 'rate_limited', '口令尝试次数过多，请稍后再试');
+    if (!timingSafeEqual(token, expected)) return fail(401, 'invalid_token', '口令不对');
+
+    const created = await createSession(env, request);
+    if (!created) return fail(500, 'session_failed', '登录失败，请稍后再试');
+    return json(
+      {
+        ok: true,
+        admin: true,
+        via: 'session',
+        csrf: await csrfTokenFor(env, created.sid),
+        expiresAt: created.expiresAt,
+      },
+      200,
+      { 'Set-Cookie': buildSessionCookie(created.sid, created.maxAge, secure) }
+    );
+  }
+
+  return new Response(null, { status: 405, headers: { Allow: 'GET,POST,DELETE,OPTIONS' } });
 }
 
 /* --------------------------- /comments/count ------------------------------ */
@@ -556,11 +692,15 @@ async function handleEdit(request, env) {
     return new Response(null, { status: 405, headers: { Allow: 'POST,OPTIONS' } });
   }
   const body = await readJson(request);
+  // 这里不给 403：访客拿 edit_token 改自己的错别字跟博主身份无关，
+  // 会话没有 CSRF 头时只是「不算博主」，而不是整条请求作废。
+  const auth = await authorize(request, env);
+  const admin = auth.ok && (auth.via === 'token' || (await csrfOk(request, env, auth.session)));
   const result = await editComment(env, {
     id: body.id,
     content: body.content,
     token: typeof body.token === 'string' ? body.token.slice(0, 120) : '',
-    admin: authorized(request, env, new URL(request.url)),
+    admin,
   });
   if (!result.ok) return fail(result.status || 400, result.code, result.message);
   return json(result);
@@ -569,7 +709,8 @@ async function handleEdit(request, env) {
 /* ------------------------------ /comments/admin --------------------------- */
 
 async function handleAdmin(request, env, url) {
-  if (!authorized(request, env, url)) return rejectUnauthorized(request, env);
+  const gate = await adminGate(request, env);
+  if (!gate.ok) return gate.response;
   if (request.method === 'GET') {
     const data = await adminList(env, {
       status: url.searchParams.get('status') || 'all',
@@ -595,7 +736,8 @@ async function handleImport(request, env, url) {
   if (request.method !== 'POST') {
     return new Response(null, { status: 405, headers: { Allow: 'POST,OPTIONS' } });
   }
-  if (!authorized(request, env, url)) return rejectUnauthorized(request, env);
+  const gate = await adminGate(request, env);
+  if (!gate.ok) return gate.response;
   const body = await readJson(request);
   if (body && (body.format === 'comments-native-v2' || Array.isArray(body.threads) || Array.isArray(body.threadStats))) {
     const sizes = [body.threads, body.comments, body.threadStats]
@@ -626,7 +768,8 @@ async function handleExport(request, env, url) {
   if (request.method !== 'GET') {
     return new Response(null, { status: 405, headers: { Allow: 'GET,OPTIONS' } });
   }
-  if (!authorized(request, env, url)) return rejectUnauthorized(request, env);
+  const gate = await adminGate(request, env);
+  if (!gate.ok) return gate.response;
   const limit = Math.min(Number(url.searchParams.get('limit')) || 1000, 5000);
   const offset = Math.max(Number(url.searchParams.get('offset')) || 0, 0);
   const stamp = new Date().toISOString().slice(0, 10);

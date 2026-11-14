@@ -95,6 +95,38 @@ export async function sha256(value) {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+/** HMAC-SHA256，十六进制输出。会话 CSRF 用它对 (口令, sid) 做派生。 */
+export async function hmacHex(secret, message) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(String(secret)),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(String(message)));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * 等长常量时间比较：字符逐位异或，不提前返回，避免按字节猜口令。
+ * 长度不同直接 false —— 长度本身不是秘密。
+ */
+export function timingSafeEqual(a, b) {
+  const sa = String(a);
+  const sb = String(b);
+  if (sa.length !== sb.length) return false;
+  let diff = 0;
+  for (let i = 0; i < sa.length; i += 1) diff |= sa.charCodeAt(i) ^ sb.charCodeAt(i);
+  return diff === 0;
+}
+
+/** 32 字节随机数的十六进制，64 字符。会话 id 与 CSRF 都用它。 */
+export function randomHex(bytes = 32) {
+  const buf = crypto.getRandomValues(new Uint8Array(bytes));
+  return [...buf].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 /* ------------------------------- 响应工具 -------------------------------- */
 
 export function json(payload, status = 200, headers = {}) {
