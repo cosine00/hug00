@@ -5,6 +5,12 @@
  * 数据源只有一个：static/memos.json 里带 #影彩 标签的条目。
  * 条目的 content 形如：vlog03 [青海湖喂个鸟](https://www.bilibili.com/video/BV1G4WU6pEwQ) #影彩
  *
+ * 地址支持四种写法，最终都要落到 BV 号：
+ *   https://www.bilibili.com/video/BV1G4WU6pEwQ    ← 全程地址
+ *   https://m.bilibili.com/video/BV14wss6LEBv      ← 移动端地址
+ *   https://b23.tv/zNxZbJi                         ← 官方短链，跟一次 302 取落地页
+ *   https://www.bilibili.com/video/av113456789     ← 老 av 号，查接口换成 BV
+ *
  * 流程：
  *   1. 读 memos.json，筛 #影彩，解析出 Markdown 链接（标题 + B 站地址）
  *   2. 用 bvid 调 B 站 view 接口，取封面、时长、发布日、简介、画面比例
@@ -16,6 +22,7 @@
  *   node scripts/sync-videos.mjs --force      # 忽略封面缓存，全部重传
  *   node scripts/sync-videos.mjs --dry        # 只打印，不写文件
  *   node scripts/sync-videos.mjs --allow-partial  # 有条目拿不到元数据时仍然写入
+ *   node scripts/sync-videos.mjs --resolve https://b23.tv/zNxZbJi  # 只验证地址能不能解析
  *
  * 图床凭据（和 .github/scripts/fetch-memos.js 共用同一套，二选一即可）：
  *   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_ENDPOINT / R2_PUBLIC_DOMAIN
@@ -30,6 +37,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { createR2Uploader } from "./lib/r2.mjs"
+import { AVID_RE, collectLinks, extractBvid, findBvidInHtml, hostOf, isShortLink } from "./lib/bili-url.mjs"
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const MEMOS = path.join(ROOT, "static/memos.json")
@@ -82,23 +90,6 @@ function mmss(seconds) {
   return h ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`
 }
 
-/** 从 memos 的 content 里拆出 vlog 编号、标题、链接。 */
-function parseMemo(memo) {
-  const content = String(memo.content || "").replace(/\r/g, "")
-  const link = content.match(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/)
-  if (!link) return null
-  const title = link[1].trim()
-  const url = link[2].trim()
-  const bvid = (url.match(/(BV[0-9A-Za-z]{10})/) || [])[1]
-  if (!bvid) return null
-
-  // "vlog03 标题" 这种写法的前缀当成编号展示，正文标题仍取链接文字。
-  const prefix = (content.match(/^\s*(vlog\s*\d+)/i) || [])[1] || ""
-  const label = prefix ? prefix.replace(/vlog\s*/i, "VLOG ").replace(/\s+/g, " ").toUpperCase() : ""
-
-  return { bvid, title, url, label, memoId: String(memo.id || "") }
-}
-
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36"
 
@@ -139,6 +130,128 @@ function biliHeaders(cookie) {
   }
   if (cookie) headers.Cookie = cookie
   return headers
+}
+
+/* ── 地址解析：把各种 B 站写法统一成 BV 号 ───────────────── */
+
+/** 短链对桌面 UA 比较挑，重试时换成移动端。 */
+const MOBILE_UA =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
+
+/**
+ * 跟一次 302。b23.tv 正常会直接跳到 www.bilibili.com/video/BV…，
+ * fetch 默认 follow，res.url 就是落地地址；偶尔被风控成半截 HTML，
+ * 就从页面里捞 BV 号。重试两次，其中一次换移动端 UA。
+ */
+async function resolveShortLink(url) {
+  let lastErr = null
+  for (const ua of [UA, MOBILE_UA, UA]) {
+    try {
+      const res = await fetch(url, {
+        redirect: "follow",
+        headers: {
+          "User-Agent": ua,
+          Referer: "https://www.bilibili.com/",
+          Accept: "text/html,application/xhtml+xml,*/*",
+          "Accept-Language": "zh-CN,zh;q=0.9",
+        },
+        signal: AbortSignal.timeout(15000),
+      })
+      const finalUrl = res.url || url
+      const inUrl = extractBvid(finalUrl)
+      if (inUrl) return { bvid: inUrl, url: finalUrl }
+      if (!res.ok) throw new Error(`短链跳转返回 ${res.status}`)
+      const inHtml = findBvidInHtml(await res.text())
+      if (inHtml) return { bvid: inHtml, url: `https://www.bilibili.com/video/${inHtml}/` }
+      // 页面打开了但里面没有视频：番剧、专栏、动态之类，交给调用方当「非视频」处理。
+      return { bvid: "", url: finalUrl }
+    } catch (err) {
+      lastErr = err
+      await sleep(600)
+    }
+  }
+  throw new Error(`短链展开失败（${lastErr ? lastErr.message : "未知原因"}）`)
+}
+
+/** 老 av 号没有 BV，查一次 view 接口让 B 站自己换算。 */
+async function bvidFromAid(aid) {
+  const cookie = await getBuvidCookie()
+  const res = await fetch(`https://api.bilibili.com/x/web-interface/view?aid=${aid}`, {
+    headers: biliHeaders(cookie),
+  })
+  if (!res.ok) throw new Error(`av 号查询返回 ${res.status}`)
+  const json = await res.json()
+  const bvid = json?.data?.bvid || ""
+  if (json.code !== 0 || !bvid) throw new Error(`av${aid} 查不到对应视频（${json.code} ${json.message || ""}）`)
+  return bvid
+}
+
+/**
+ * 从任意一条 B 站地址取 BV 号。
+ * 返回 { bvid, url, via }；bvid 为空表示地址通、但不是视频页（不视为失败）。
+ * skip 为真表示这条地址压根不是 B 站的东西，跳过就好（一条哔哔里常混着图片链接）。
+ * 抛异常才代表「技术上没解析出来」——网络、风控、接口异常，调用方应当拦住写入。
+ */
+async function resolveVideoId(rawUrl) {
+  const url = String(rawUrl || "").trim()
+  const direct = extractBvid(url)
+  if (direct) return { bvid: direct, url, via: "direct" }
+
+  const aid = (url.match(AVID_RE) || [])[1]
+  if (aid) return { bvid: await bvidFromAid(aid), url: `https://www.bilibili.com/video/av${aid}/`, via: "aid" }
+
+  // 短链：b23.tv/zNxZbJi 这类，链接里根本没有 BV 号，只能跟一次跳转。
+  if (isShortLink(url)) {
+    const landed = await resolveShortLink(url)
+    return { bvid: landed.bvid, url: landed.url, via: "short" }
+  }
+
+  // b 站自己的站内地址但既没 BV 也没 av（番剧、专栏、动态），当「非视频」处理。
+  if (hostOf(url).endsWith("bilibili.com")) return { bvid: "", url, via: "bilibili-other" }
+
+  return { bvid: "", url, via: "none", skip: true }
+}
+
+/**
+ * 从 memo 里解析出 bvid、标题、vlog 编号。
+ * 返回三种结果：{ bvid } 成功、{ skip } 不是视频（跳过即可）、{ error } 解析失败（要拦住写入）。
+ */
+async function parseMemo(memo) {
+  const content = String(memo.content || "").replace(/\r/g, "")
+  const links = collectLinks(content)
+  if (!links.length) return { skip: "内容里没有链接" }
+
+  const errors = []
+  let hit = null
+  for (const link of links) {
+    let resolved
+    try {
+      resolved = await resolveVideoId(link.url)
+    } catch (err) {
+      errors.push(`${link.url}：${err.message}`)
+      continue
+    }
+    if (resolved.skip) continue
+    if (!resolved.bvid) {
+      console.log(`  · ${link.url} 不是视频页（${resolved.via}），换下一个链接`)
+      continue
+    }
+    if (resolved.via === "short") console.log(`  ⇢ 短链展开：${link.url} → ${resolved.url}`)
+    if (resolved.via === "aid") console.log(`  ⇢ av 号换算：${link.url} → ${resolved.bvid}`)
+    hit = { ...resolved, title: link.text || "" }
+    break
+  }
+
+  if (!hit) {
+    // 全部链接都不是视频 → 正常跳过；有技术性失败 → 报错，别让它悄悄消失。
+    return errors.length ? { error: errors.join("；") } : { skip: "没有 B 站视频链接" }
+  }
+
+  // "vlog03 标题" 这种写法的前缀当成编号展示，正文标题仍取链接文字。
+  const prefix = (content.match(/^\s*(vlog\s*\d+)/i) || [])[1] || ""
+  const label = prefix ? prefix.replace(/vlog\s*/i, "VLOG ").replace(/\s+/g, " ").toUpperCase() : ""
+
+  return { bvid: hit.bvid, title: hit.title, url: hit.url, label, memoId: String(memo.id || "") }
 }
 
 function metaFromView(d) {
@@ -254,6 +367,42 @@ async function uploadToImgHost(file, name, token) {
 
 /* ── 主流程 ─────────────────────────────────────────────── */
 
+/**
+ * --resolve <地址>：只验证一条地址能不能解析出 BV 号，读写任何数据文件都不碰。
+ * 用来在本地确认短链、av 号、移动端地址是否都被认出来。
+ */
+const resolveIdx = process.argv.indexOf("--resolve")
+if (resolveIdx !== -1) {
+  const target = process.argv[resolveIdx + 1]
+  if (!target) {
+    console.error("用法：node scripts/sync-videos.mjs --resolve https://b23.tv/xxxxxxx")
+    process.exit(1)
+  }
+  console.log(`解析 ${target}`)
+  try {
+    const r = await resolveVideoId(target)
+    if (!r.bvid) {
+      console.log(`  ⚠ 地址能打开，但不是视频页：${r.url}`)
+      process.exit(0)
+    }
+    console.log(`  方式：${r.via}`)
+    console.log(`  BV 号：${r.bvid}`)
+    console.log(`  落地页：${r.url}`)
+    const meta = await fetchMeta(r.bvid).catch((err) => {
+      console.warn(`  ! 元数据没取到（${err.message}），BV 号本身是有效的`)
+      return null
+    })
+    if (meta) console.log(`  标题：${meta.title}\n  发布：${meta.date}　时长：${mmss(meta.seconds)}　画幅：${meta.aspect}`)
+  } catch (err) {
+    console.error(`  ✕ 解析失败：${err.message}`)
+    if (/fetch failed|ECONNRESET|ENOTFOUND|EAI_AGAIN/i.test(String(err.message))) {
+      console.error("  提示：本机挂着系统代理时，Node 的 fetch 默认不读 HTTPS_PROXY，先关代理或走全局模式再试。")
+    }
+    process.exit(1)
+  }
+  process.exit(0)
+}
+
 const memos = JSON.parse(fs.readFileSync(MEMOS, "utf8"))
 const picked = memos
   .filter((m) => Array.isArray(m.tags) && m.tags.some((t) => String(t).trim() === TAG))
@@ -294,9 +443,16 @@ const videos = []
 const failures = []
 
 for (const memo of picked) {
-  const parsed = parseMemo(memo)
-  if (!parsed) {
-    console.warn(`  ✕ memo ${memo.id} 里没找到 B 站链接，跳过`)
+  const parsed = await parseMemo(memo)
+  if (!parsed.bvid) {
+    if (parsed.error) {
+      // 地址解析不出来（短链打不开、av 号查不到）属于技术失败：
+      // 这一条很可能本该出现在页面上，不能悄悄丢掉，一并拦住写入。
+      failures.push(`memo ${memo.id}：${parsed.error}`)
+      console.warn(`  ✕ memo ${memo.id} 地址解析失败：${parsed.error}`)
+    } else {
+      console.warn(`  · memo ${memo.id} ${parsed.skip || "不是视频"}，跳过`)
+    }
     continue
   }
 
@@ -392,10 +548,11 @@ videos.sort((a, b) => (a.date === b.date ? String(b.label).localeCompare(String(
 // 有新增视频拿不到元数据时宁可不写：写下去会让这一条从页面上消失，
 // 而「什么都没变」的错误比「少一条视频」容易发现得多。
 if (failures.length && !ALLOW_PARTIAL) {
-  console.error(`\n✕ ${failures.length} 条视频拿不到元数据，且没有历史记录可沿用：`)
+  console.error(`\n✕ ${failures.length} 条 #${TAG} 同步失败（地址解析不出来，或拿不到元数据且无历史记录）：`)
   for (const f of failures) console.error(`   - ${f}`)
   console.error("已放弃写入，data/videos.json 保持原样。本机（家用 IP）跑一次即可补上：")
   console.error("   node scripts/sync-videos.mjs")
+  console.error("只想验证某条地址能不能解析：node scripts/sync-videos.mjs --resolve <地址>")
   console.error("确要写入不完整数据，加 --allow-partial。")
   process.exit(1)
 }

@@ -49,6 +49,10 @@ jobs:
       - name: Test public Memo visibility filter and single-memo merge
         run: node --test .github/scripts/memo-visibility.test.js .github/scripts/memo-merge.test.js
 
+      # 影彩地址解析（短链 / av 号 / 裸链接）都是纯函数，离线就能验，别等同步时才发现认不出来。
+      - name: Test 影彩 link parsing
+        run: node --test scripts/lib/bili-url.test.mjs
+
       # 有 MEMO_ID 时只拉这一条并与现有 memos.json 合并；没有则全量。
       # 脚本用 Node 18+ 内置 fetch，不再安装 node-fetch。
       - name: Fetch memos from FlareMo and mirror attachments to R2

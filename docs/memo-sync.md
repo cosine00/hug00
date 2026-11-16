@@ -119,9 +119,18 @@ vlog03 [青海湖喂个鸟](https://www.bilibili.com/video/BV1G4WU6pEwQ) #影彩
 `scripts/sync-videos.mjs` 会：
 
 1. 从 `static/memos.json` 筛出 `#影彩` 条目，正则取出链接、标题和 `vlogNN` 编号
-2. 用 bvid 调 B 站 view 接口，补全时长、发布日、简介、横竖屏
-3. 封面取 B 站图床的 `@1280w.webp` 压缩版（1.4MB → 约 190KB），传进 R2：`image/{yyyy}/{mm}/video-cover-{bvid}.webp`，仓库里不存图
-4. 写出 `data/videos.json`（按发布日倒序）
+2. 把链接统一解析成 BV 号，支持四种写法：全程地址 / 移动端地址 / `b23.tv` 短链 / 老 `av` 号；一条哔哔里有多个链接时逐个试，谁先解析出视频就用谁
+3. 用 bvid 调 B 站 view 接口，补全时长、发布日、简介、横竖屏
+4. 封面取 B 站图床的 `@1280w.webp` 压缩版（1.4MB → 约 190KB），传进 R2：`image/{yyyy}/{mm}/video-cover-{bvid}.webp`，仓库里不存图
+5. 写出 `data/videos.json`（按发布日倒序）
+
+短链（`https://b23.tv/zNxZbJi`）要先跟一次 302 才知道是哪个视频，所以本地想验证某条地址能不能认出来：
+
+```bash
+node scripts/sync-videos.mjs --resolve https://b23.tv/zNxZbJi
+```
+
+会打印解析方式（direct / short / aid）、BV 号、落地页和标题时长。地址能打开但不是视频（番剧、专栏、动态）时会明确提示，不会当成错误。
 
 `fetch-memos.yml` 已接上这一步，贴完链接等一次同步就行，不用手动跑。本地想自己跑：
 
@@ -144,6 +153,8 @@ B 站对机房 IP 的风控很凶：`api.bilibili.com` 的 view 接口从 GitHub
 
 - 有新增视频拿不到元数据、本地又没有历史记录时，脚本**直接非 0 退出、不落盘**（`data/videos.json` 保持原样），要强行写入得加 `--allow-partial`
 - 解析结果为空但旧文件里还有记录时，同样拒绝写入
+
+短链解析失败（`b23.tv` 打不开、302 跟不过去）也算「拿不到元数据」，同样会拦住写入——因为那多半意味着这条视频本该出现在页面上，悄悄跳过比整批不写更难发现。
 
 `fetch-memos.yml` 里这一步挂了 `continue-on-error: true`，所以 B 站抽风不会连累 `memos.json` 的正常提交。
 
