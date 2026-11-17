@@ -1726,9 +1726,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function openDraft(id) {
     if (id === store.activeId) {
-      // 关着的时候内容可能被改过（空稿被收走、云端覆盖），重灌一次再恢复
-      reopenPane();
-      loadActive();
+      // 已经是这篇：写作页开着就别重灌（会吃掉没落盘的字），
+      // 关着的时候才重灌一次（空稿被收走、云端覆盖都可能改过内容）
+      if (paneClosed) { reopenPane(); loadActive(); }
       closeSheet($('sheetDocs'));
       return;
     }
