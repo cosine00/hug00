@@ -38,7 +38,7 @@
   :root{ --bg:#0f1114; --desk:#0a0b0e; --panel:#1a1c21; --raised:#24262c;
     --fg:#e8e9ee; --muted:#9a9ca5; --faint:#6b6d76;
     --line:rgba(255,255,255,.09); --field:#1b1d23;
-    --accent:#e6a08b; --accent-fg:#fff; --danger:#f07b68; --ok:#6cc99a;
+    --accent:#e6a08b; --accent-fg:#2a1512; --danger:#f07b68; --ok:#6cc99a;
     --glass:rgba(40,44,52,.62); --glass-top:rgba(60,65,74,.62);
     --glass-edge:rgba(255,255,255,.10); --glass-shadow:rgba(0,0,0,.52);
     --glass-bar:rgba(34,38,45,.76); --glass-panel:rgba(28,30,36,.95);
@@ -63,13 +63,21 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .app{position:fixed;left:0;right:0;top:var(--vv-top);height:var(--app-h);display:flex;flex-direction:column;
   background:var(--app-grad);overflow:hidden}
 
-/* ── 顶栏：悬浮的玻璃胶囊，正文从它下面滚过 ── */
-.topbar{flex:0 0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;
-  min-height:52px;margin:calc(var(--sat) + 8px) 8px 0;padding:4px 8px;border-radius:20px;
+/* ── 顶栏：悬浮的玻璃胶囊，正文从它下面滚过 ──
+   绝对定位，脱离文档流：往下读的时候它滑上去，正文顶上不会再空出一条。
+   高度固定成 52，是为了让收起的过渡有具体数值可插值。 */
+.topbar{position:absolute;top:calc(var(--sat) + 8px);left:8px;right:8px;height:52px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;
+  margin:0;padding:4px 8px;border-radius:20px;
   background:var(--glass-bar);border:.5px solid var(--glass-edge);
   box-shadow:inset 0 1px 0 var(--glass-line),0 12px 30px -22px var(--glass-shadow);
   backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);
-  z-index:4}
+  z-index:5;
+  transition:transform .34s var(--ease),opacity .24s var(--ease),
+    border-color .24s var(--ease),box-shadow .24s var(--ease)}
+/* 往下读时整条滑走；往上滚一点就回来。pointer-events 一并关掉，免得摸到看不见的按钮 */
+.app.tb-away .topbar{transform:translateY(calc((100% + var(--sat) + 8px) * -1));
+  opacity:0;pointer-events:none;border-color:transparent;box-shadow:none}
 .tb-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   justify-self:start;
   color:var(--accent);background:transparent;border:0;box-shadow:none;
@@ -83,9 +91,144 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .save{font-size:11.5px;color:var(--faint);letter-spacing:.01em;text-align:center;white-space:nowrap;
   font-variant-numeric:tabular-nums;transition:color .2s var(--ease)}
 .save.saved{color:var(--muted)}
+/* 顶栏中间这一块就是把手：整个状态条都能点，也能按住往下拖 */
+.tb-peek{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;height:40px;
+  padding:0 11px;border-radius:13px;border:0;background:transparent;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .16s var(--ease);touch-action:none}
+.tb-peek:active{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.tb-peek .pk-chev{flex:0 0 auto;width:11px;height:11px;stroke:var(--faint);fill:none;
+  stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .34s var(--ease),stroke .2s var(--ease)}
+.app.peeking .tb-peek .pk-chev{transform:rotate(180deg);stroke:var(--accent)}
+.app.peeking .save{color:var(--accent)}
+
+/* ── 抽屉骨架：写作台在上、工作台在下，--fold-p 是手势的进度 ── */
+.deck{position:relative;flex:1;min-height:0;overflow:hidden;--fold-h:76px;
+  /* 顶栏改绝对定位以后，这里得自己把它那份高度让出来；
+     顶栏滑走时这块也让回去，读的时候才真的多出两行正文 */
+  margin-top:calc(var(--sat) + 60px);
+  transition:margin-top .34s var(--ease)}
+.app.tb-away .deck{margin-top:var(--sat)}
+.stage{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+  background:var(--app-grad);
+  transform:translateY(calc(100% * var(--fold-p,0)));
+  border-radius:calc(var(--fold-p,0) * 22px) calc(var(--fold-p,0) * 22px) 0 0;
+  box-shadow:0 calc(var(--fold-p,0) * -18px) calc(var(--fold-p,0) * 40px) calc(var(--fold-p,0) * -24px) rgba(0,0,0,.5);
+  transition:transform .46s var(--ease),border-radius .36s var(--ease),box-shadow .36s var(--ease)}
+.app.dragging .stage{transition:none}
+.app.peeking{--fold-p:1}
+/* 收下去以后写作台只当一张纸看，别让手一碰就弹键盘 */
+.app.peeking .stage{pointer-events:none}
+
+.peek{position:absolute;inset:0;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:9px 16px calc(var(--fold-h) + var(--sab) + 22px);
+  opacity:0;visibility:hidden;transform:translateY(-12px);
+  transition:opacity .3s var(--ease),transform .46s var(--ease),visibility .46s}
+.app.peeking .peek{opacity:1;visibility:visible;transform:none}
+.peek-inner{max-width:660px;margin:0 auto}
+
+/* 收下去以后留在底部的这条「纸脊」：既是把手，也告诉你稿子还在 */
+.fold-tap{position:absolute;left:8px;right:8px;bottom:0;z-index:3;display:none;
+  padding:calc(var(--sab) + 11px) 16px 15px;text-align:left;cursor:pointer;touch-action:none;
+  border:0;border-radius:18px 18px 0 0;background:var(--app-grad);
+  box-shadow:inset 0 1px 0 var(--glass-line),0 -18px 40px -30px rgba(0,0,0,.5);
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.app.peeking .fold-tap{display:block;animation:foldRise .46s var(--ease) both}
+@keyframes foldRise{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.ft-grip{display:block;width:34px;height:4px;margin:0 auto 9px;border-radius:2px;
+  background:color-mix(in srgb,var(--fg) 14%,transparent)}
+.ft-body{display:flex;align-items:baseline;gap:8px;min-width:0}
+.ft-title{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--fg);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ft-meta{flex:0 0 auto;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+
+/* ── 关掉当前稿之后的那一屏：写新的 / 翻旧的 ──
+   不做仪表盘，就是一张安静的入口页——三个去处，别的一概没有。 */
+.homepane{flex:1;min-height:0;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  width:100%;padding:8px var(--padl) calc(var(--sab) + 34px)}
+.app.closed .homepane{display:flex}
+.app.closed .doc,.app.closed .dock,.app.closed .editbar,.app.closed .banner{display:none}
+/* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉 */
+.hp-inner{width:100%;max-width:660px;margin:auto;padding:12px 0 0}
+.app.closed .hp-inner>*{animation:hpIn .34s var(--ease) both}
+.app.closed .hp-inner>*:nth-child(2){animation-delay:.04s}
+.app.closed .hp-inner>*:nth-child(3){animation-delay:.08s}
+@keyframes hpIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.hp-head{padding:0 4px 16px}
+.hp-head h2{margin:0;font-size:19px;font-weight:680;letter-spacing:-.015em;color:var(--fg)}
+.hp-head p{margin:6px 0 0;font-size:12.5px;line-height:1.6;color:var(--faint)}
+.hp-new{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:46px;
+  border-radius:14px;border:0;color:var(--accent-fg);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 92%,#fff 8%),var(--accent));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 12px 26px -18px color-mix(in srgb,var(--accent) 70%,transparent);
+  font-size:14px;font-weight:560;letter-spacing:.01em;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:transform .16s var(--ease),filter .16s var(--ease)}
+.hp-new:active{transform:scale(.985);filter:brightness(.96)}
+.hp-new svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+/* ── 工作台内容 ── */
+.pk-top{display:flex;align-items:baseline;gap:10px;padding:2px 4px 10px}
+.pk-eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.pk-stamp{flex:1;text-align:right;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums;
+  background:none;border:0;box-shadow:none;padding:2px 0 2px 12px;
+  backdrop-filter:none;-webkit-backdrop-filter:none;transition:color .16s var(--ease)}
+.pk-stamp:active{color:var(--accent)}
+.pk-card{margin:0 0 11px;padding:13px 14px 10px;border-radius:18px;
+  background:color-mix(in srgb,var(--panel) 76%,transparent);
+  border:.5px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.44),0 14px 34px -30px var(--glass-shadow);
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.pk-h{display:flex;align-items:baseline;gap:8px;margin:0 0 9px}
+.pk-h h3{margin:0;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--fg)}
+.pk-h .pk-sub{flex:1;min-width:0;font-size:10.5px;color:var(--faint);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-h a{flex:0 0 auto;font-size:11.5px;color:var(--accent);text-decoration:none;padding:2px 0 2px 10px;
+  letter-spacing:.01em}
+.pk-stat{display:flex;align-items:flex-end;gap:14px}
+.pk-big{display:flex;align-items:baseline;font-size:26px;font-weight:700;line-height:1;
+  letter-spacing:-.025em;color:var(--fg);font-variant-numeric:tabular-nums}
+.pk-big small{margin-left:3px;font-size:11px;font-weight:500;letter-spacing:0;color:var(--muted)}
+.pk-facts{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:3px 15px;padding-bottom:1px;
+  font-size:11.5px;color:var(--muted)}
+.pk-facts b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
+.pk-spark{display:flex;align-items:flex-end;gap:3px;height:34px;margin:11px 0 0;
+  padding-bottom:2px;border-bottom:.5px solid var(--line)}
+.pk-bar{flex:1;min-width:0;min-height:2px;border-radius:3px 3px 1px 1px;
+  background:color-mix(in srgb,var(--fg) 9%,transparent);transition:height .3s var(--ease)}
+.pk-bar.on{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 84%,transparent),
+  color-mix(in srgb,var(--accent) 46%,transparent))}
+.pk-runs{list-style:none;margin:6px 0 0;padding:0}
+.pk-run{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:.5px solid var(--line);
+  font-size:12.5px;color:var(--muted)}
+.pk-run:last-child{border-bottom:0}
+.pk-run .pr-dot{flex:0 0 auto;width:5px;height:5px;border-radius:50%;
+  background:color-mix(in srgb,var(--accent) 62%,transparent)}
+.pk-run .pr-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)}
+.pk-run .pr-val{flex:0 0 auto;color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums}
+.pk-run .pr-when{flex:0 0 auto;min-width:48px;text-align:right;color:var(--faint);font-size:10.5px;
+  font-variant-numeric:tabular-nums}
+.pk-feed{list-style:none;margin:0;padding:0}
+/* 博友列表：滚到底自动再添五篇，按钮只是给个「还没到头」的暗示 */
+.pk-more{display:block;width:100%;margin:3px 0 0;padding:9px 0 3px;border:0;border-top:.5px solid var(--line);
+  background:none;color:var(--faint);font-size:11.5px;letter-spacing:.02em;
+  backdrop-filter:none;-webkit-backdrop-filter:none;transition:color .16s var(--ease)}
+.pk-more[hidden]{display:none}
+.pk-more:active{color:var(--accent)}
+.pk-item{display:flex;gap:10px;padding:9px 0;border-bottom:.5px solid var(--line);
+  text-decoration:none;color:inherit}
+.pk-item:last-child{border-bottom:0}
+.pk-item img{flex:0 0 auto;width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--field)}
+.pk-it-main{flex:1;min-width:0}
+.pk-it-title{font-size:13px;line-height:1.38;color:var(--fg);
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pk-it-sub{margin-top:3px;font-size:10.5px;color:var(--faint);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-empty{padding:16px 2px;font-size:12px;color:var(--faint);line-height:1.6}
 
 /* ── 更新模式提示条 ── */
-.editbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:6px 8px 0;padding:8px 14px;
+.editbar{display:flex;align-items:center;gap:10px;margin:2px 0 0;padding:8px 14px;
   border-radius:14px;background:color-mix(in srgb,var(--accent) 12%,transparent);
   border:.5px solid color-mix(in srgb,var(--accent) 20%,transparent);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.34);
@@ -98,7 +241,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 
 /* ── 未登录提示条 ── */
-.banner{flex:0 0 auto;display:flex;align-items:center;gap:12px;margin:9px 12px 0;padding:10px 12px 10px 14px;
+.banner{display:flex;align-items:center;gap:12px;margin:2px 0 0;padding:10px 12px 10px 14px;
   border-radius:14px;background:color-mix(in srgb,var(--accent) 9%,var(--bg));
   border:.5px solid color-mix(in srgb,var(--accent) 30%,transparent)}
 .banner[hidden]{display:none}
@@ -116,7 +259,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .doc::-webkit-scrollbar-track{background:transparent}
 .doc::-webkit-scrollbar-thumb{background:transparent;border-radius:6px;border:3px solid transparent;background-clip:content-box}
 .doc:hover::-webkit-scrollbar-thumb{background:rgba(122,102,88,.28);background-clip:content-box}
-.preview-body,.sheet-panel,.tagpicks{scrollbar-width:thin;scrollbar-color:rgba(120,120,128,.3) transparent}
+.sheet-panel,.tagpicks{scrollbar-width:thin;scrollbar-color:rgba(120,120,128,.3) transparent}
 .doc-inner{max-width:660px;margin:0 auto;padding:6px var(--padl) calc(var(--sab) + 40px)}
 #title{display:block;width:100%;border:0;background:none;outline:none;resize:none;overflow:hidden;
   font-size:29px;font-weight:720;line-height:1.22;letter-spacing:-.022em;
@@ -214,6 +357,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .tool:active{background:color-mix(in srgb,var(--accent) 9%,transparent);transform:scale(.93)}
 .tool.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .tool svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+/* 关掉这篇：放在最右，和左边的工具隔一道浅线，不至于误点成收键盘 */
+.tool-close{position:relative;color:var(--muted);margin-left:12px}
+.tool-close::before{content:"";position:absolute;left:-7px;top:50%;width:.5px;height:17px;
+  margin-top:-8.5px;background:var(--line);pointer-events:none}
+.tool-close:active{color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.tool-close svg{width:19px;height:19px;stroke-width:1.9}
 .tool.aa{font-size:15px;font-weight:500;letter-spacing:-.015em}
 .count{margin-left:auto;padding:0 8px;font-size:11.5px;color:var(--faint);
   font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -227,6 +376,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .tool.size+.tool.size{border-left:.5px solid color-mix(in srgb,var(--accent) 14%,transparent)}
 .tool.size:active{background:color-mix(in srgb,var(--accent) 16%,transparent);transform:none}
 .sizegroup+.count{margin-left:0;padding-left:8px}
+
+/* 窄屏：工具行收一收。多了一个「关掉这篇」，不省着点最右边的 ✕ 会被挤出屏幕 */
+@media (max-width:420px){
+  .toolbar{gap:0}
+  .tool{min-width:40px}
+  .tool.size{min-width:26px}
+  .sizegroup{margin-left:auto}
+  .count{padding:0 5px;font-size:11px}
+  .tool-close{margin-left:8px}
+}
+@media (max-width:344px){
+  .tool[data-act="dismiss"]{display:none}
+}
 
 /* ── 面板 ── */
 .sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;
@@ -388,25 +550,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 .preview-close:active,.preview-action:active{background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .preview-action{justify-self:end}
-.preview-meta{max-width:100%;margin:0 0 22px;color:var(--muted);font-size:12.5px}
-.preview-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 22px calc(var(--sab) + 44px);
-  font-size:calc(17px * var(--read));line-height:1.78}
-.preview-body>*{max-width:100%;margin-left:auto;margin-right:auto}
-/* 只改上下边距：写成 margin 简写会把上面居中用的 auto 左右边距一起盖掉 */
-.preview-body h1,.preview-body h2,.preview-body h3{line-height:1.35;margin-block:1.5em .55em;letter-spacing:-.01em}
-.preview-body h1{font-size:1.48em} .preview-body h2{font-size:1.26em} .preview-body h3{font-size:1.1em}
-.preview-body p{margin-block:.9em}
-.preview-body img{max-width:100%;border-radius:12px;display:block;margin-block:1.1em;margin-inline:auto}
-.preview-body blockquote{margin-block:1.1em;padding:.15em 0 .15em 1em;border-left:3px solid var(--line);color:var(--muted)}
-.preview-body code{background:var(--field);padding:.15em .38em;border-radius:5px;font-size:.88em;
-  font-family:ui-monospace,"SF Mono",Menlo,monospace}
-.preview-body pre{background:var(--field);padding:14px;border-radius:12px;overflow-x:auto;font-size:.84em;line-height:1.62}
-.preview-body pre code{background:none;padding:0}
-.preview-body a{color:var(--accent)}
-.preview-body hr{border:0;border-top:.5px solid var(--line);margin:1.8em 0}
-.preview-body ul,.preview-body ol{padding-left:1.45em}
-.preview-body li{margin:.35em 0}
-.preview-body .todo{list-style:none;margin-left:-1.2em;display:flex;gap:.55em;align-items:baseline}
+/* 预览用 iframe 装真正的博客正文：样式表一毛一样，编辑器的 CSS 也漏不进去 */
+.preview-frame{flex:1;min-height:0;width:100%;display:block;border:0;background:var(--bg)}
 
 /* ── 提示条 ── */
 .toast{position:fixed;left:50%;top:calc(var(--sat) + 76px);transform:translate(-50%,-140%);z-index:40;
@@ -430,8 +575,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .app{position:relative;top:auto;left:auto;height:100vh;width:100%;
     border:0;border-radius:0;box-shadow:none;background:transparent}
   :root{--padl:18px}
-  .topbar{width:min(660px,calc(100% - 40px));margin:16px auto 0;padding:5px 10px;min-height:54px}
-  .editbar{width:min(660px,calc(100% - 40px));margin:8px auto 0}
+  .topbar{top:16px;left:0;right:0;width:min(660px,calc(100% - 40px));height:54px;
+    margin:0 auto;padding:5px 10px}
+  /* 顶栏绝对定位后，桌面端让出它那 70 的高度；收起时也让回去 */
+  .deck{margin-top:70px}
+  .app.tb-away .deck{margin-top:6px}
   /* 桌面端隐藏滚动条：鼠标在页面里晃时那条浅色轨道特别扎眼 */
   .doc{scrollbar-width:none}
   .doc::-webkit-scrollbar{width:0;height:0}
@@ -443,13 +591,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .toolbar{padding:0 0 0 var(--gut);height:46px}
   /* 预览也收在同一个 660 的栏里，否则顶栏横贯全屏、正文却缩在中间 */
   .preview-bar{width:min(660px,calc(100% - 40px));margin:16px auto 0}
-  /* 预览正文与正文区共用一条左缘：左边多让出行号列，读起来才不会跳 */
-  .preview-body{width:min(660px,calc(100% - 40px));margin:0 auto;
-    padding:26px var(--padl) 72px calc(var(--padl) + var(--gut))}
   .fmtbar{flex-wrap:wrap;overflow:visible}
   .tool[data-act="dismiss"]{display:none}
   .toast{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 26px)}
   .sheet-panel{border-radius:20px}
+  /* 抽屉在桌面端也收在同一条栏宽里，纸边留高一点，标题能露全 */
+  .deck{--fold-h:84px}
+  .peek{padding:6px 12px calc(var(--fold-h) + 30px)}
+  /* 纸脊也跟着收进 660 的栏里，不然桌面端它横贯整屏 */
+  .fold-tap{left:0;right:0;max-width:660px;margin:0 auto}
 }
 /* 关闭透明效果的用户（设置 → 辅助功能）回退成实色，别让文字飘在模糊底上 */
 @media (prefers-reduced-transparency:reduce){
@@ -472,7 +622,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .doc:hover::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);background-clip:content-box}
   /* 亮底转到暗底时字重会「发胀」，标题收一点，正文比纯白柔一档 */
   #title{color:#f3f4f7;font-weight:700}
-  #body,.preview-body{color:#e2e4ea}
+  #body{color:#e2e4ea}
   .save{color:var(--muted)}
   .count{color:var(--muted)}
   .tagchip{background:rgba(230,160,139,.16);color:#f2c4b0}
@@ -494,103 +644,207 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .toast{background:rgba(52,46,42,.86)}
   .toast.ok{background:rgba(40,150,96,.86)}
   .toast.err{background:rgba(198,58,50,.86)}
+  /* 工作台：暗色下玻璃别透出纸面，卡片靠一道内发光提起来 */
+  .pk-card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.08);
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.07),0 14px 34px -30px rgba(0,0,0,.8)}
+  .pk-item img{background:rgba(255,255,255,.06)}
+  .ft-grip{background:rgba(255,255,255,.18)}
+  .fold-tap{box-shadow:inset 0 .5px 0 rgba(255,255,255,.08),0 -18px 40px -30px rgba(0,0,0,.9)}
 }
 </style>
 </head>
 <body>
 
-<div class="app">
+<div class="app" id="app">
   <header class="topbar">
     <button class="tb-btn" id="docsBtn" aria-label="草稿与最近文章">
       <svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><path d="M9.8 4.6v14.8"/></svg>
     </button>
-    <div class="save" id="saveState" role="status" aria-live="polite">新草稿</div>
+    <button class="tb-peek" id="peekBtn" type="button" aria-expanded="false" aria-controls="peek" aria-label="下拉工作台">
+      <span class="save" id="saveState" role="status" aria-live="polite">新草稿</span>
+      <svg class="pk-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.2 6.4 8 10.2l3.8-3.8"/></svg>
+    </button>
     <button class="tb-btn tb-btn-end" id="actionsBtn" aria-label="保存与发布">
       <svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><path d="M14.4 4.6v14.8"/></svg>
     </button>
   </header>
 
-  <div class="dock">
-    <div class="toolbar">
-      <button class="tool" data-act="image" aria-label="插入图片">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3.2"/><circle cx="8.6" cy="10" r="1.55"/><path d="M4.2 17.2l4.7-4.4a1.9 1.9 0 012.6 0l6.3 5.7"/></svg>
-      </button>
-      <button class="tool aa" data-act="format" aria-label="格式" aria-expanded="false" id="fmtBtn">Aa</button>
-      <button class="tool" data-act="preview" aria-label="预览">
-        <svg viewBox="0 0 24 24"><path d="M2.6 12S6.4 5.8 12 5.8 21.4 12 21.4 12 17.6 18.2 12 18.2 2.6 12 2.6 12z"/><circle cx="12" cy="12" r="2.7"/></svg>
-      </button>
-      <span class="sizegroup">
-        <button class="tool size" data-fmt="smaller" aria-label="正文字号小一点">A−</button>
-        <button class="tool size" data-fmt="bigger" aria-label="正文字号大一点">A＋</button>
-      </span>
-      <span class="count" id="count">0 字</span>
-      <button class="tool" data-act="dismiss" aria-label="收起键盘">
-        <svg viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
-      </button>
-    </div>
-    <div class="fmtbar" id="fmtbar">
-      <button class="chip" data-fmt="h1">大标题</button>
-      <button class="chip" data-fmt="h2">小标题</button>
-      <button class="chip" data-fmt="bold"><b>B</b>&nbsp;加粗</button>
-      <button class="chip" data-fmt="italic"><i>I</i>&nbsp;斜体</button>
-      <button class="chip" data-fmt="ul">・列表</button>
-      <button class="chip" data-fmt="todo">☑︎ 待办</button>
-      <button class="chip" data-fmt="quote">&ldquo; 引用</button>
-      <button class="chip mono" data-fmt="code">&lt;/&gt; 代码</button>
-      <button class="chip" data-fmt="link">链接</button>
-      <button class="chip" data-fmt="hr">分隔线</button>
-      <button class="chip undo" data-fmt="undo">↶ 撤销</button>
-    </div>
-  </div>
+  <div class="deck" id="deck">
 
-  <div class="editbar" id="editBar" hidden>
-    <span class="eb-text" id="ebText">正在更新</span>
-    <button id="ebDetach">另存新文</button>
-  </div>
+    <!-- 往下拉露出来的这一层：最近运动 + 博友近况 -->
+    <section class="peek" id="peek" aria-hidden="true" aria-label="工作台">
+      <div class="peek-inner">
+        <div class="pk-top">
+          <span class="pk-eyebrow">工作台</span>
+          <button class="pk-stamp" id="pkStamp" type="button" title="点一下刷新" aria-label="刷新工作台">刷新</button>
+        </div>
 
-  <div class="banner" id="loginBanner" hidden>
-    <div class="banner-txt">
-      <b>还没登录</b>
-      <span>输入一次管理口令，这台设备 30 天内免输</span>
-    </div>
-    <button id="bannerLogin">登录</button>
-  </div>
-
-  <main class="doc" id="doc">
-    <div class="doc-inner">
-      <textarea id="title" rows="1" placeholder="标题" autocomplete="off" autocapitalize="sentences"
-        spellcheck="false" enterkeyhint="next" aria-label="标题"></textarea>
-
-      <div class="meta" id="meta">
-        <button class="meta-toggle" id="metaToggle" type="button" aria-expanded="false" aria-controls="metaFields">
-          <svg class="meta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.2l-6.8 6.8a2.8 2.8 0 01-4 0L3.9 14.7a2.8 2.8 0 010-4L10.7 4H20v9.2z"/><circle cx="15.9" cy="8.1" r="1.2"/></svg>
-          <span class="meta-summary" id="metaSummary">添加标签与链接</span>
-          <svg class="meta-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6l4.5 4 4.5-4"/></svg>
-        </button>
-        <div class="meta-fields" id="metaFields" hidden>
-          <div class="mline" id="tagLine">
-            <span class="mlabel">标签</span>
-            <span id="tagChips" style="display:contents"></span>
-            <input class="taginput" id="tagInput" placeholder="添加标签…" autocomplete="off"
-              autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="添加标签">
+        <article class="pk-card">
+          <header class="pk-h">
+            <h3>悦动</h3>
+            <span class="pk-sub" id="pkSportSub"></span>
+            <a href="/admin/?page=sports">管理</a>
+          </header>
+          <div class="pk-stat">
+            <div class="pk-big"><span id="pkWeek">—</span><small>km</small></div>
+            <div class="pk-facts" id="pkFacts"></div>
           </div>
-          <div class="tagpicks" id="tagPicks" role="listbox" aria-label="标签候选"></div>
-          <div class="mline" id="slugLine">
-            <span class="mlabel">链接</span>
-            <span class="slugfix">/posts/</span>
-            <input class="sluginput" id="slugInput" placeholder="按标题自动" autocomplete="off"
-              autocapitalize="off" spellcheck="false" inputmode="latin" enterkeyhint="done" aria-label="链接别名">
+          <div class="pk-spark" id="pkSpark" aria-hidden="true"></div>
+          <ul class="pk-runs" id="pkRuns"></ul>
+        </article>
+
+        <article class="pk-card">
+          <header class="pk-h">
+            <h3>博友在写</h3>
+            <span class="pk-sub" id="pkFeedSub"></span>
+            <a href="/recent/">全部</a>
+          </header>
+          <ul class="pk-feed" id="pkFeed"></ul>
+          <button class="pk-more" id="pkMore" type="button" hidden>再看五篇</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- 写作台：整层往下滑走，露出上面那一层 -->
+    <div class="stage" id="stage">
+
+    <div class="dock">
+      <div class="toolbar">
+        <button class="tool" data-act="image" aria-label="插入图片">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3.2"/><circle cx="8.6" cy="10" r="1.55"/><path d="M4.2 17.2l4.7-4.4a1.9 1.9 0 012.6 0l6.3 5.7"/></svg>
+        </button>
+        <button class="tool aa" data-act="format" aria-label="格式" aria-expanded="false" id="fmtBtn">Aa</button>
+        <button class="tool" data-act="preview" aria-label="预览">
+          <svg viewBox="0 0 24 24"><path d="M2.6 12S6.4 5.8 12 5.8 21.4 12 21.4 12 17.6 18.2 12 18.2 2.6 12 2.6 12z"/><circle cx="12" cy="12" r="2.7"/></svg>
+        </button>
+        <span class="sizegroup">
+          <button class="tool size" data-fmt="smaller" aria-label="正文字号小一点">A−</button>
+          <button class="tool size" data-fmt="bigger" aria-label="正文字号大一点">A＋</button>
+        </span>
+        <span class="count" id="count">0 字</span>
+        <button class="tool" data-act="dismiss" aria-label="收起键盘">
+          <svg viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
+        </button>
+        <button class="tool tool-close" data-act="close" id="closeBtn" aria-label="关掉这篇，回到入口">
+          <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
+        </button>
+      </div>
+      <div class="fmtbar" id="fmtbar">
+        <button class="chip" data-fmt="h1">大标题</button>
+        <button class="chip" data-fmt="h2">小标题</button>
+        <button class="chip" data-fmt="bold"><b>B</b>&nbsp;加粗</button>
+        <button class="chip" data-fmt="italic"><i>I</i>&nbsp;斜体</button>
+        <button class="chip" data-fmt="ul">・列表</button>
+        <button class="chip" data-fmt="todo">☑︎ 待办</button>
+        <button class="chip" data-fmt="quote">&ldquo; 引用</button>
+        <button class="chip mono" data-fmt="code">&lt;/&gt; 代码</button>
+        <button class="chip" data-fmt="link">链接</button>
+        <button class="chip" data-fmt="hr">分隔线</button>
+        <button class="chip undo" data-fmt="undo">↶ 撤销</button>
+      </div>
+    </div>
+
+    <main class="doc" id="doc">
+      <div class="doc-inner">
+        <!-- 提示条也放进文档流：往上读的时候自然滚走，不在顶上压一条 -->
+        <div class="editbar" id="editBar" hidden>
+          <span class="eb-text" id="ebText">正在更新</span>
+          <button id="ebDetach">另存新文</button>
+        </div>
+
+        <div class="banner" id="loginBanner" hidden>
+          <div class="banner-txt">
+            <b>还没登录</b>
+            <span>输入一次管理口令，这台设备 30 天内免输</span>
+          </div>
+          <button id="bannerLogin">登录</button>
+        </div>
+
+        <textarea id="title" rows="1" placeholder="标题" autocomplete="off" autocapitalize="sentences"
+          spellcheck="false" enterkeyhint="next" aria-label="标题"></textarea>
+
+        <div class="meta" id="meta">
+          <button class="meta-toggle" id="metaToggle" type="button" aria-expanded="false" aria-controls="metaFields">
+            <svg class="meta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.2l-6.8 6.8a2.8 2.8 0 01-4 0L3.9 14.7a2.8 2.8 0 010-4L10.7 4H20v9.2z"/><circle cx="15.9" cy="8.1" r="1.2"/></svg>
+            <span class="meta-summary" id="metaSummary">添加标签与链接</span>
+            <svg class="meta-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6l4.5 4 4.5-4"/></svg>
+          </button>
+          <div class="meta-fields" id="metaFields" hidden>
+            <div class="mline" id="tagLine">
+              <span class="mlabel">标签</span>
+              <span id="tagChips" style="display:contents"></span>
+              <input class="taginput" id="tagInput" placeholder="添加标签…" autocomplete="off"
+                autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="添加标签">
+            </div>
+            <div class="tagpicks" id="tagPicks" role="listbox" aria-label="标签候选"></div>
+            <div class="mline" id="slugLine">
+              <span class="mlabel">链接</span>
+              <span class="slugfix">/posts/</span>
+              <input class="sluginput" id="slugInput" placeholder="按标题自动" autocomplete="off"
+                autocapitalize="off" spellcheck="false" inputmode="latin" enterkeyhint="done" aria-label="链接别名">
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="bodywrap">
-        <div class="gutter" id="gutter" aria-hidden="true"></div>
-        <textarea id="body" rows="1" placeholder="开始写…支持 Markdown"
-          autocapitalize="sentences" spellcheck="false" enterkeyhint="enter" aria-label="正文"></textarea>
+        <div class="bodywrap">
+          <div class="gutter" id="gutter" aria-hidden="true"></div>
+          <textarea id="body" rows="1" placeholder="开始写…支持 Markdown"
+            autocapitalize="sentences" spellcheck="false" enterkeyhint="enter" aria-label="正文"></textarea>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+
+    <!-- 关掉这篇以后回到这里：写新的，或者翻旧的 -->
+    <section class="homepane" id="homePane" aria-label="没有打开的稿件">
+      <div class="hp-inner">
+        <div class="hp-head">
+          <h2>这篇收进草稿了</h2>
+          <p>接着写新的，或者翻翻以前的。</p>
+        </div>
+        <button class="hp-new" id="hpNew" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
+          写新的一篇
+        </button>
+        <div class="menu-list" id="hpMenu">
+          <button class="menu-row" data-go="drafts">
+            <svg class="mr-ico" viewBox="0 0 24 24"><path d="M7.4 3.8h6.4l4.2 4.2v11.9a1.4 1.4 0 01-1.4 1.4H7.4A1.4 1.4 0 016 19.9V5.2a1.4 1.4 0 011.4-1.4z"/><path d="M13.6 3.8v4.4h4.4"/></svg>
+            <span class="mr-main">
+              <span class="mr-title">草稿</span>
+              <span class="mr-sub" id="hpDraftSub">还没写完的都在这里</span>
+            </span>
+            <span class="mr-badge" id="hpDraftNum"></span>
+            <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          </button>
+          <button class="menu-row" data-go="recent">
+            <svg class="mr-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3.1 1.9"/></svg>
+            <span class="mr-main">
+              <span class="mr-title">最近发布</span>
+              <span class="mr-sub">先预览，再决定要不要改</span>
+            </span>
+            <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          </button>
+          <button class="menu-row" data-go="images">
+            <svg class="mr-ico" viewBox="0 0 24 24"><rect x="3.6" y="5.2" width="16.8" height="13.6" rx="2.8"/><circle cx="8.6" cy="10" r="1.3"/><path d="M4.4 16.4l4.5-4.2 3.1 3 2.6-2.3 4.8 4.5"/></svg>
+            <span class="mr-main">
+              <span class="mr-title">最近图片</span>
+              <span class="mr-sub">复制链接，或直接插进正文</span>
+            </span>
+            <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+    </div><!-- /.stage -->
+
+    <!-- 折叠后剩下的一条纸边：点一下回到写作 -->
+    <button class="fold-tap" id="foldTap" type="button" aria-label="回到写作">
+      <span class="ft-grip" aria-hidden="true"></span>
+      <span class="ft-body">
+        <span class="ft-title" id="foldTitle">未命名草稿</span>
+        <span class="ft-meta" id="foldMeta"></span>
+      </span>
+    </button>
+  </div><!-- /.deck -->
 
 </div>
 
@@ -712,13 +966,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <div class="sheet-backdrop" data-close></div>
   <div class="sheet-panel drawer-panel from-right" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
     <h2 id="menuTitle">这篇</h2>
-    <p class="sub" id="menuSub">保存只落到草稿，发布才写进仓库。</p>
+    <p class="sub" id="menuSub">保存＝存进这台设备，并备份到云端；发布＝写进仓库。</p>
     <div class="menu-list">
       <button class="menu-row" id="rowSave">
         <svg class="mr-ico" viewBox="0 0 24 24"><path d="M5 5.6a1.6 1.6 0 011.6-1.6h8.9l4 4v10.4a1.6 1.6 0 01-1.6 1.6H6.6A1.6 1.6 0 015 18.4z"/><path d="M8.4 4v5h6.4V4"/><path d="M7.6 20v-6.2h8.8V20"/></svg>
         <span class="mr-main">
           <span class="mr-title">保存草稿</span>
-          <span class="mr-sub" id="rowSaveSub">立刻存下，其它设备也能看到</span>
+          <span class="mr-sub" id="rowSaveSub">存进这台设备，并备份到云端</span>
         </span>
         <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
@@ -755,7 +1009,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <h2>预览</h2>
     <button class="preview-action" id="previewEdit" hidden>编辑</button>
   </div>
-  <div class="preview-body" id="previewBody"></div>
+  <iframe class="preview-frame" id="previewFrame" title="文章预览" referrerpolicy="no-referrer"></iframe>
 </div>
 
 <!-- 图片大图预览 -->
@@ -790,7 +1044,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   var titleEl = $('title'), bodyEl = $('body'), slugEl = $('slugInput'), tagInput = $('tagInput');
   var saveStateEl = $('saveState'), fileEl = $('file'), mdFileEl = $('mdFile');
-  var toastEl = $('toast'), previewEl = $('preview'), previewBody = $('previewBody');
+  var toastEl = $('toast'), previewEl = $('preview'), previewFrame = $('previewFrame');
+  var appEl = $('app'), deckEl = $('deck'), stageEl = $('stage'), peekEl = $('peek');
+  var peekBtn = $('peekBtn'), foldTap = $('foldTap');
   var banner = $('loginBanner'), fmtbar = $('fmtbar'), fmtBtn = $('fmtBtn');
   var docEl = $('doc'), countEl = $('count'), gutterEl = $('gutter');
   var metaEl = $('meta'), metaToggle = $('metaToggle'), metaFields = $('metaFields'), metaSummary = $('metaSummary');
@@ -1082,24 +1338,34 @@ input,textarea{-webkit-user-select:text;user-select:text}
     saveStateEl.className = 'save' + (kind ? ' ' + kind : '');
   }
 
-  /** 顶栏那行字要能回答「同步上没有」，别让人去菜单里翻。 */
+  /**
+   * 顶栏那行字分成两截，各说一件事：
+   *   前半截「已存 20:16」= 已经写进这台设备的浏览器（localStorage），断网关机都不丢；
+   *   后半截「云端 …」= 有没有备份到 Cloudflare D1，换设备才拉得回来。
+   * 两件事互相独立，所以从来不会只有一个时间——本机永远先存下，云端随后追。
+   */
   function syncSuffix() {
-    if (!authed) return '';
-    if (syncing) return ' · 同步中';
-    if (syncBroken) return ' · 未同步';
-    if (lastSyncAt) return ' · 已同步';
-    return '';
+    if (!authed) return ' · 仅本机';
+    if (syncing) return ' · 云端上传中';
+    if (syncBroken) return ' · 云端待重试';
+    if (lastSyncAt) return ' · 云端 ✓';
+    return ' · 待上传';
+  }
+
+  /** 顶栏那行字的唯一出口：空稿没什么可存，就别挂着「云端 ✓」让人以为存过。 */
+  function saveLine(draft) {
+    if (!hasContent(draft)) return '新草稿';
+    return '已存 ' + timeLabel(draft.updatedAt) + syncSuffix();
   }
 
   function refreshSaveState() {
+    // 关掉以后顶栏这行不该再报「已存 20:16」——那说的是刚才那篇
+    if (paneClosed) { setSaveState('未打开', ''); return; }
     var draft = activeDraft();
     if (!draft) return;
     // 用户又敲字了就别抢这行字，等下一次 flushSave
     if (String(saveStateEl.textContent).indexOf('编辑中') === 0) return;
-    setSaveState(
-      (hasContent(draft) ? '已存 ' + timeLabel(draft.updatedAt) : '新草稿') + syncSuffix(),
-      'saved'
-    );
+    setSaveState(saveLine(draft), 'saved');
   }
 
   var saveTimer = 0;
@@ -1114,7 +1380,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     var draft = capture();
     if (!draft) return;
     if (!persist()) { setSaveState('存不下（空间满）'); return; }
-    setSaveState('已存 ' + timeLabel(draft.updatedAt) + syncSuffix(), 'saved');
+    setSaveState(saveLine(draft), 'saved');
     markDirty(draft.id);
     scheduleSync();
   }
@@ -1156,11 +1422,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var syncBroken = false;
 
   function syncLabel() {
-    if (!authed) return '仅本机';
-    if (syncing) return '同步中';
-    if (syncBroken) return '待重试';
-    if (lastSyncAt) return '已同步 ' + timeLabel(lastSyncAt);
-    return '待同步';
+    if (!authed) return '只在这台设备上';
+    if (syncing) return '云端上传中';
+    if (syncBroken) return '云端待重试';
+    if (lastSyncAt) return '云端已同步 ' + timeLabel(lastSyncAt);
+    return '待上传到云端';
   }
 
   function isEditingNow() {
@@ -1357,6 +1623,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   /* ------------------------------ 编辑区装载 ------------------------------ */
 
   function loadActive() {
+    reopenPane();
     var draft = activeDraft();
     if (!draft) return;
     titleEl.value = draft.title || '';
@@ -1371,13 +1638,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
     syncMeta();
     resetHistory();
     renderEditBar();
-    setSaveState(hasContent(draft) ? '已存 ' + timeLabel(draft.updatedAt) : '新草稿', 'saved');
+    setSaveState(saveLine(draft), 'saved');
     closeTagPicks();
     scheduleGutter();
   }
 
   function openDraft(id) {
-    if (id === store.activeId) { closeSheet($('sheetDocs')); return; }
+    if (id === store.activeId) { reopenPane(); closeSheet($('sheetDocs')); return; }
     flushSave();
     store.activeId = id;
     persist();
@@ -1790,6 +2057,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return;
     }
     if (act === 'preview') { renderPreview(); return; }
+    if (act === 'close') { closeCurrent(); return; }
     if (act === 'dismiss') {
       var active = document.activeElement;
       if (active && active !== document.body && active.blur) active.blur();
@@ -1922,7 +2190,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return authed;
     }).catch(function () {
       authed = false;
-      setSaveState('离线');
+      setSaveState('离线 · 仍存本机');
       applyAuthState();
       return false;
     });
@@ -1960,8 +2228,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     var drafts = store.drafts.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; });
     $('draftNum').textContent = drafts.length > 1 ? String(drafts.length) : '';
 
-    // 菜单里给一句「现在在写哪篇」，比干巴巴的「自动保存」有用
-    var current = activeDraft();
+    // 菜单里给一句「现在在写哪篇」，比干巴巴的「自动保存」有用；
+    // 篇子关掉以后就别再标「正在写」了
+    var current = paneClosed ? null : activeDraft();
     var currentTitle = current ? String(current.title || '').trim() : '';
     $('menuDraftSub').textContent = (current && hasContent(current)
       ? (current.edit ? '更新中 · ' : '正在写 · ') + (currentTitle || '无标题')
@@ -1969,7 +2238,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
     drafts.forEach(function (draft) {
       // 用 div 而不是 button：里面还要放一个删除按钮，button 不能嵌 button
-      var row = el('div', 'docitem' + (draft.id === store.activeId ? ' cur' : ''));
+      var row = el('div', 'docitem' + (!paneClosed && draft.id === store.activeId ? ' cur' : ''));
       row.setAttribute('role', 'button');
       row.tabIndex = 0;
       var main = el('div', 'di-main');
@@ -2247,7 +2516,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     draft.publishedAt = 0;
     persist();
     renderEditBar();
-    if (draft.id === store.activeId) setSaveState('已存 ' + timeLabel(draft.updatedAt), 'saved');
+    if (draft.id === store.activeId) setSaveState(saveLine(draft), 'saved');
     toast('已转为新文章');
   }
 
@@ -2320,24 +2589,83 @@ input,textarea{-webkit-user-select:text;user-select:text}
     return html;
   }
 
+  /* ------------------------------ 预览 ------------------------------
+     不是「照着正文仿一套样式」，而是把博客自己的样式表原样搬进 iframe：
+     同一套 Fangsong 字体、同一个配色、同一套标题与引用规则。
+     iframe 自带文档，编辑器 CSS 漏不进去，博客 CSS 也不会把写作页搞乱。
+  */
+
+  var PALETTES = ['paper', 'night', 'sepia', 'mist'];
+  var BLOG_FONT_CSS = {
+    zhuque: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',
+    wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
+    xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css',
+    zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css'
+  };
+
+  /* 预览页里的收尾样式：博客 CSS 只管 .main 里的东西，外壳的宽度得自己收 */
+  var PREVIEW_CSS = [
+    'html{background:var(--page-bg)}',
+    'body{width:auto;margin:0;padding:0}',
+    '.main{width:auto;max-width:none;margin:0;border-left:0;padding:20px 22px 72px}',
+    '.post-content>.pv-empty{padding:56px 0;text-align:center;color:var(--faint);font-size:14px}',
+    '@media (min-width:700px){.main{max-width:720px;margin:0 auto;padding:34px 40px 96px}}'
+  ].join('');
+
+  /** 博客那头存的配色与字体，写稿页是同源，直接跟着用；暗色下强制 night。 */
+  function blogLook() {
+    var palette = 'paper', font = 'zhuque';
+    try {
+      var savedPalette = localStorage.getItem('blog-palette');
+      if (PALETTES.indexOf(savedPalette) > -1) palette = savedPalette;
+      var savedFont = localStorage.getItem('blog-font');
+      if (BLOG_FONT_CSS[savedFont]) font = savedFont;
+    } catch (e) {}
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) palette = 'night';
+    return { palette: palette, font: font };
+  }
+
+  function previewShell(title, date, tags, html) {
+    var look = blogLook();
+    var stamp = String(date || '').slice(0, 10) || todayDate();
+    var tagLine = '';
+    if (tags && tags.length) {
+      tagLine = '<div class="post-tags">' + tags.map(function (tag) {
+        return '#' + escapeHtml(tag);
+      }).join('&nbsp; ') + '</div>';
+    }
+    return '<!doctype html><html lang="zh-CN" data-theme="' + look.palette + '" data-font="' + look.font +
+      '" style="color-scheme:' + (look.palette === 'night' ? 'dark' : 'light') + '"><head>' +
+      '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<link rel="stylesheet" href="/css/custom.css?v=20261111-1">' +
+      '<link rel="stylesheet" href="' + BLOG_FONT_CSS[look.font] + '">' +
+      '<link rel="stylesheet" href="/css/style.css?v=20261111-01">' +
+      '<link rel="stylesheet" href="/css/fonts.css">' +
+      '<link rel="stylesheet" href="/css/palettes.css?v=20260924-2">' +
+      '<style>' + PREVIEW_CSS + '</style></head>' +
+      '<body class="posts"><article class="main">' +
+      '<header class="title"><h1>' + (title ? escapeHtml(title) : '还没起标题') + '</h1>' +
+      '<div class="post-rule-date"><time datetime="' + stamp + '">' + stamp + '</time></div></header>' +
+      '<div class="post-content">' + html + '</div>' +
+      '<div class="post-footer-meta">' + tagLine +
+      '<div class="post-footer-date"><time datetime="' + stamp + '">' + stamp + '</time></div></div>' +
+      '</article><script>document.addEventListener("click",function(e){' +
+      'if(e.target.closest("a"))e.preventDefault()},true)<\/script></body></html>';
+  }
+
   function renderPreview(post) {
     previewPost = post || null;
     var text = String(post ? post.content : bodyEl.value).trim();
     var title = String(post ? (post.title || post.name || '') : titleEl.value).trim();
-    var head = title ? '<h1>' + inline(escapeHtml(title)) + '</h1>' : '';
-    var meta = '';
-    if (post) {
-      var bits = [String(post.date || '').slice(0, 16)];
-      if (post.tags && post.tags.length) bits.push(post.tags.join(' · '));
-      bits.push((post.words || wordCount(post.content)) + ' 字');
-      meta = '<div class="preview-meta">' + escapeHtml(bits.filter(Boolean).join('　')) + '</div>';
-    }
-    previewBody.innerHTML = text || head
-      ? head + meta + (text ? markdown(text) : '<p class="empty">正文还是空的</p>')
-      : '<div class="empty">还没开始写</div>';
+    var draft = post ? null : activeDraft();
+    var tags = post ? (post.tags || []) : (draft ? draft.tags : []);
+    var date = post ? String(post.date || '') : '';
+    var html = text ? markdown(text) : '<p class="pv-empty">正文还是空的</p>';
+    // 首段首字下沉，和 Hugo 那层 replaceRE 干的是同一件事（空状态不算首段）
+    if (text) html = html.replace(/^(<p(?:\s[^>]*)?>\s*)([^<\s])/, '$1<span class="post-dropcap">$2</span>');
+    previewFrame.srcdoc = previewShell(title, date, tags, html);
     $('previewEdit').hidden = !post;
     previewEl.classList.add('open');
-    previewBody.scrollTop = 0;
   }
 
   $('previewClose').addEventListener('click', function () {
@@ -2352,6 +2680,356 @@ input,textarea{-webkit-user-select:text;user-select:text}
     previewPost = null;
     setTimeout(function () { editRecent(post); }, 100);
   });
+
+  /* ------------------------------ 工作台抽屉 ------------------------------
+     顶栏那条「已存 … · 云端 ✓」就是把手：点一下，或者按住往下拖，写作台整层滑走，
+     露出运动与博友近况。拖动时只写 --fold-p，纯 transform，不碰布局。
+  */
+
+  var DESK_TTL = 10 * 60 * 1000;
+  var foldOpen = false, foldDrag = null, suppressPeekClickUntil = 0;
+  var deskCache = null, deskLoading = false;
+
+  /* 拖动距离换算成进度：拿 80% 的版心高度当满格，手指走一半纸就收上去一半，
+     比 1:1 更跟手，也不用从屏幕顶一路拖到底。 */
+  function foldLimit() {
+    return Math.max(80, deckEl.getBoundingClientRect().height * 0.8);
+  }
+
+  function setFold(progress) {
+    var p = Math.min(1, Math.max(0, progress));
+    appEl.style.setProperty('--fold-p', String(Math.round(p * 1000) / 1000));
+  }
+
+  /** 底部纸脊上写清楚「收起来的是哪一篇」，别让人对着空壳猜。 */
+  function paintFoldStrip() {
+    var draft = activeDraft();
+    var title = (titleEl.value || (draft && draft.title) || '').trim();
+    var words = wordCount(bodyEl.value);
+    var meta = words ? words + ' 字' : '还没有正文';
+    // 顶栏那行字怎么写的，纸脊就怎么说：本机存着 + 云端有没有备份
+    var cloud = String(saveStateEl.textContent || '');
+    if (cloud.indexOf('云端 ✓') > -1) meta += ' · 云端 ✓';
+    else if (cloud.indexOf('上传中') > -1) meta += ' · 上传中';
+    else if (cloud.indexOf('待重试') > -1) meta += ' · 待重试';
+    $('foldTitle').textContent = title || '未命名草稿';
+    $('foldMeta').textContent = meta;
+  }
+
+  function setPeek(open) {
+    if (open === foldOpen) return;
+    foldOpen = open;
+    appEl.classList.remove('dragging');
+    appEl.style.removeProperty('--fold-p');
+    appEl.classList.toggle('peeking', open);
+    setTopbarAway(false);
+    peekBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    peekEl.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (!open) return;
+    // 键盘先收：不然抽屉一开，屏幕下半截还压着键盘
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    flushSave();
+    paintFoldStrip();
+    docEl.scrollTop = 0;
+    peekEl.scrollTop = 0;
+    loadDesk();
+  }
+
+  function bindPull(node) {
+    if (!node) return;
+
+    node.addEventListener('pointerdown', function (event) {
+      if (event.button != null && event.button > 0) return;
+      foldDrag = { y: event.clientY, base: foldOpen ? 1 : 0, moved: false };
+      appEl.classList.add('dragging');
+      if (node.setPointerCapture) { try { node.setPointerCapture(event.pointerId); } catch (e) {} }
+    });
+
+    node.addEventListener('pointermove', function (event) {
+      if (!foldDrag) return;
+      var dy = event.clientY - foldDrag.y;
+      if (Math.abs(dy) > 3) foldDrag.moved = true;
+      setFold(foldDrag.base + dy / foldLimit());
+    });
+
+    var finish = function () {
+      if (!foldDrag) return;
+      var moved = foldDrag.moved;
+      foldDrag = null;
+      appEl.classList.remove('dragging');
+      var current = parseFloat(appEl.style.getPropertyValue('--fold-p'));
+      if (isNaN(current)) current = foldOpen ? 1 : 0;
+      appEl.style.removeProperty('--fold-p');
+      if (!moved) return;
+      // 拖完浏览器还会补一个 click，别让它把刚拉开的抽屉又关回去
+      suppressPeekClickUntil = Date.now() + 400;
+      setPeek(current > 0.3);
+    };
+
+    node.addEventListener('pointerup', finish);
+    node.addEventListener('pointercancel', finish);
+  }
+
+  function toggleFrom(next) {
+    if (Date.now() < suppressPeekClickUntil) return;
+    setPeek(typeof next === 'boolean' ? next : !foldOpen);
+  }
+
+  $('pkStamp').addEventListener('click', function () { loadDesk(true); });
+  peekBtn.addEventListener('click', function () { toggleFrom(); });
+  foldTap.addEventListener('click', function () { toggleFrom(false); });
+  bindPull(peekBtn);
+  bindPull(foldTap);
+
+  // 顶栏两侧按钮之外的地方同样是把手
+  document.querySelector('.topbar').addEventListener('click', function (event) {
+    if (event.target.closest('.tb-btn') || event.target.closest('.tb-peek')) return;
+    toggleFrom();
+  });
+
+  /* --------------------------- 顶栏自动隐藏 ---------------------------
+     顶栏改成绝对定位，正文从它下面滚过去。往下读就滑走，往上滚一点就回来。
+     只认方向、不认位置：慢慢滚也不会一阵一阵地闪。
+  */
+  var tbAway = false, tbAnchor = 0;
+
+  function setTopbarAway(away) {
+    if (away === tbAway) return;
+    tbAway = away;
+    appEl.classList.toggle('tb-away', away);
+  }
+
+  /**
+   * 标题和「添加标签」那一行还在视野里，就别收顶栏。
+   * 收起时 .deck 整体上移 60px，正在看标题的人会觉得「标题被一起藏了」；
+   * 等它们真滚出去了再收，收的时候谁也看不见，才不突兀。
+   */
+  function headInSight() {
+    if (!metaEl || !metaEl.offsetParent) return false;
+    return metaEl.getBoundingClientRect().bottom > docEl.getBoundingClientRect().top + 10;
+  }
+
+  docEl.addEventListener('scroll', function () {
+    var top = docEl.scrollTop;
+    tbAnchor = tbAnchor || 0;
+    if (top <= 6) { tbAnchor = top; setTopbarAway(false); return; }
+    if (top > tbAnchor + 6) {
+      tbAnchor = top;
+      if (headInSight()) { setTopbarAway(false); return; }
+      setTopbarAway(true);
+    } else if (top < tbAnchor - 6) { tbAnchor = top; setTopbarAway(false); }
+  }, { passive: true });
+
+  /* --------------------------- 关掉当前稿 ---------------------------
+     关掉不是删掉：内容还在草稿里。关掉以后不摆一张空白纸，而是给三个去处。
+  */
+  var paneClosed = false;
+
+  function reopenPane() {
+    if (!paneClosed) return;
+    paneClosed = false;
+    appEl.classList.remove('closed');
+    setTopbarAway(false);
+    tbAnchor = docEl.scrollTop;
+    refreshSaveState();
+    scheduleGutter();
+  }
+
+  function renderHomePane() {
+    var open = store.drafts.filter(function (draft) { return hasContent(draft); });
+    $('hpDraftNum').textContent = open.length ? String(open.length) : '';
+    $('hpDraftSub').textContent = open.length
+      ? open.length + ' 篇没写完的，随时能接上'
+      : '还没有草稿，写一篇吧';
+  }
+
+  function closeCurrent() {
+    flushSave();
+    var draft = activeDraft();
+    // 一个字都没有的稿子，关掉就等于扔掉，别在列表里攒一堆「无标题」
+    if (draft && !hasContent(draft)) {
+      var index = store.drafts.indexOf(draft);
+      if (index > -1) store.drafts.splice(index, 1);
+    }
+    if (!store.drafts.length) store.drafts.push(blankDraft());
+    store.activeId = store.drafts[0].id;
+    persist();
+    // 先滚回顶上再藏：藏起来以后 .doc 没有布局，scrollTop 赋值就不作数了
+    docEl.scrollTop = 0;
+    paneClosed = true;
+    appEl.classList.add('closed');
+    setTopbarAway(false);
+    if (foldOpen) setPeek(false);
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    setSaveState('未打开', '');
+    renderHomePane();
+    renderDraftList();
+    peekEl.scrollTop = 0;
+  }
+
+  $('hpNew').addEventListener('click', function () { startNewDraft(); });
+
+  $('hpMenu').addEventListener('click', function (event) {
+    var row = event.target.closest('[data-go]');
+    if (row) openDocsAt(row.getAttribute('data-go'));
+  });
+
+  $('pkMore').addEventListener('click', function () { appendFeed(FEED_PAGE); });
+
+  // 抽屉滚到底：不用点，自己接着添五条
+  peekEl.addEventListener('scroll', function () {
+    if (!foldOpen || feedShown >= feedItems.length) return;
+    if (Date.now() - feedStamp < 340) return;
+    if (peekEl.scrollTop + peekEl.clientHeight < peekEl.scrollHeight - 120) return;
+    appendFeed(FEED_PAGE);
+  }, { passive: true });
+
+  function shortAgo(text) {
+    var ts = Date.parse(String(text || '').replace(' ', 'T'));
+    if (!ts) return '';
+    var diff = Date.now() - ts;
+    if (diff < 0) return '刚刚';
+    if (diff < 3600000) return Math.max(1, Math.round(diff / 60000)) + ' 分钟前';
+    if (diff < 86400000) return Math.round(diff / 3600000) + ' 小时前';
+    if (diff < 7 * 86400000) return Math.round(diff / 86400000) + ' 天前';
+    return String(text).slice(5, 10);
+  }
+
+  function loadDesk(force) {
+    if (deskLoading) return;
+    if (!force && deskCache && Date.now() - deskCache.at < DESK_TTL) { renderDesk(deskCache.data); return; }
+    deskLoading = true;
+    fetch('/desk-index.json', { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        deskCache = { at: Date.now(), data: data };
+        renderDesk(data);
+      })
+      .catch(function () { renderDesk(null); })
+      .then(function () { deskLoading = false; });
+  }
+
+  function renderDesk(data) {
+    var sport = data && data.sport;
+    var friends = data && data.friends;
+    var stamp = data && data.generatedAt ? new Date(data.generatedAt) : null;
+    $('pkStamp').textContent = stamp && !isNaN(stamp)
+      // 构建机在 UTC，直接截字符串会显示成伦敦时间，换成访客本地时区
+      ? '更新于 ' + pad2(stamp.getHours()) + ':' + pad2(stamp.getMinutes())
+      : '刷新';
+
+    /* 运动 */
+    var runsBox = $('pkRuns'), sparkBox = $('pkSpark'), factsBox = $('pkFacts');
+    runsBox.innerHTML = '';
+    sparkBox.innerHTML = '';
+    factsBox.innerHTML = '';
+
+    if (!sport) {
+      $('pkWeek').textContent = '—';
+      $('pkSportSub').textContent = '';
+      runsBox.appendChild(el('li', 'pk-empty', '还没读到运动数据，连上网再看。'));
+    } else {
+      var week = sport.week || {}, month = sport.month || {}, year = sport.year || {};
+      $('pkWeek').textContent = (Number(week.km) || 0).toFixed(1);
+      $('pkSportSub').textContent = '累计 ' + (sport.total || 0) + ' 次';
+
+      var facts = [
+        ['近 7 天', (week.n || 0) + ' 次'],
+        ['本月', (Number(month.km) || 0).toFixed(1) + ' km'],
+        ['今年', (year.n || 0) + ' 次']
+      ];
+      facts.forEach(function (pair) {
+        var span = el('span');
+        span.appendChild(document.createTextNode(pair[0] + ' '));
+        span.appendChild(el('b', null, pair[1]));
+        factsBox.appendChild(span);
+      });
+
+      var days = sport.days || [];
+      var peak = 0;
+      days.forEach(function (day) {
+        var score = Number(day.km) > 0 ? Number(day.km) : (day.n ? 0.6 : 0);
+        if (score > peak) peak = score;
+      });
+      days.forEach(function (day, index) {
+        var score = Number(day.km) > 0 ? Number(day.km) : (day.n ? 0.6 : 0);
+        var bar = el('span', 'pk-bar' + (day.n ? ' on' : ''));
+        bar.style.height = (score ? Math.max(5, Math.round((score / (peak || 1)) * 26)) : 3) + 'px';
+        bar.title = day.d + ' · ' + (day.n || 0) + ' 次';
+        if (index === days.length - 1) bar.style.opacity = '1';
+        sparkBox.appendChild(bar);
+      });
+
+      (sport.recent || []).slice(0, 4).forEach(function (run) {
+        var row = el('li', 'pk-run');
+        row.appendChild(el('span', 'pr-dot'));
+        row.appendChild(el('span', 'pr-name', run.name || '运动'));
+        row.appendChild(el('span', 'pr-val',
+          Number(run.km) > 0 ? Number(run.km).toFixed(1) + ' km' : (run.min || 0) + ' 分'));
+        row.appendChild(el('span', 'pr-when', String(run.when || '').slice(5, 10)));
+        runsBox.appendChild(row);
+      });
+      if (!(sport.recent || []).length) {
+        runsBox.appendChild(el('li', 'pk-empty', '最近没记录，动一动吧。'));
+      }
+    }
+
+    /* 博友 */
+    var feedBox = $('pkFeed');
+    feedBox.innerHTML = '';
+    feedItems = (friends && friends.items) || [];
+    feedShown = 0;
+    $('pkMore').hidden = true;
+    if (!feedItems.length) {
+      $('pkFeedSub').textContent = '';
+      feedBox.appendChild(el('li', 'pk-empty', '还没读到博友近况，稍后再试。'));
+      return;
+    }
+    $('pkFeedSub').textContent = (friends.friends || 0) + ' 位订阅';
+    appendFeed(FEED_PAGE);
+  }
+
+  /* 博友列表分页：先给五条，滚到底再添五条。整份数据早就在手里（构建时算好的静态 JSON），
+     翻页只是少画几行——不额外发请求，也就不会因为「多看几篇」多算一次请求。 */
+  var FEED_PAGE = 5;
+  var feedItems = [], feedShown = 0, feedStamp = 0;
+
+  function appendFeed(count) {
+    var feedBox = $('pkFeed');
+    var end = Math.min(feedItems.length, feedShown + count);
+    for (var i = feedShown; i < end; i += 1) {
+      var item = feedItems[i] || {};
+      var link = /^https?:\/\//.test(String(item.link || '')) ? item.link : '';
+      var row = el(link ? 'a' : 'div', 'pk-item');
+      if (link) {
+        row.href = link;
+        row.target = '_blank';
+        row.rel = 'noopener noreferrer';
+      }
+      if (item.avatar) {
+        var face = document.createElement('img');
+        face.src = item.avatar;
+        face.alt = '';
+        face.loading = 'lazy';
+        face.referrerPolicy = 'no-referrer';
+        row.appendChild(face);
+      }
+      var main = el('div', 'pk-it-main');
+      main.appendChild(el('div', 'pk-it-title', item.title || '无标题'));
+      main.appendChild(el('div', 'pk-it-sub',
+        (item.author || '') + (item.when ? ' · ' + shortAgo(item.when) : '')));
+      row.appendChild(main);
+      feedBox.appendChild(row);
+    }
+    feedShown = end;
+    var more = feedItems.length - feedShown;
+    $('pkMore').hidden = more <= 0;
+    $('pkMore').textContent = more > 0 ? '再看五篇 · 还有 ' + more + ' 条' : '';
+    feedStamp = Date.now();
+  }
 
   /* ------------------------------ 登录 ------------------------------ */
 
@@ -2453,7 +3131,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (!draft) return;
     if (!hasContent(draft)) { toast('还什么都没写'); return; }
     if (!persist()) { toast('本机存不下了，先删几篇旧草稿', 'err', 3200); return; }
-    setSaveState('已存 ' + timeLabel(draft.updatedAt) + syncSuffix(), 'saved');
+    setSaveState(saveLine(draft), 'saved');
     markDirty(draft.id);
     if (!authed) { toast('已存到这台设备', 'ok', 1700); return; }
     runSync().then(function () {
@@ -2505,7 +3183,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       markDirty(draft.id);
       scheduleSync(400);
       renderEditBar();
-      setSaveState('已存 ' + timeLabel(draft.updatedAt), 'saved');
+      setSaveState(saveLine(draft), 'saved');
       toast(result.updated || payload.path ? '已更新，约 1 分钟生效' : '已发布，约 1 分钟上线', 'ok', 3600);
 
       var open = $('rowOpen');
@@ -2529,6 +3207,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (authed) loadRecent(false); else renderRecentList();
     openSheet('sheetDocs');
   });
+
+  /** 从「关掉以后」那屏直接落到某一个抽屉内页，不用再点一层。 */
+  function openDocsAt(tab) {
+    if (tab !== 'drafts') flushSave();
+    showPane(tab);
+    openSheet('sheetDocs');
+  }
 
   $('newDraft').addEventListener('click', startNewDraft);
   $('recentRefresh').addEventListener('click', function () { loadRecent(true); });
@@ -2810,6 +3495,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       var open = document.querySelector('.sheet.open');
       if (open) { closeSheet(open); return; }
       if (previewEl.classList.contains('open')) { previewEl.classList.remove('open'); previewPost = null; return; }
+      if (foldOpen) { setPeek(false); return; }
       if (fmtbar.classList.contains('open')) {
         fmtbar.classList.remove('open');
         fmtBtn.classList.remove('on');
@@ -2891,6 +3577,22 @@ input,textarea{-webkit-user-select:text;user-select:text}
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('/update/sw.js', { scope: '/update/' }).catch(function () {});
+
+      /* 旧写作页 /write/ 已经删了，但老设备上可能还挂着它的 Service Worker
+         和 hux-write* 缓存。那个 SW 是 cache-first，只要还在，访问 /write/
+         就会一直吐缓存里的旧页面。打开新页面时顺手把它们清干净。 */
+      navigator.serviceWorker.getRegistrations().then(function (list) {
+        list.forEach(function (reg) {
+          if (reg.scope.indexOf('/write/') === 0) reg.unregister();
+        });
+      }).catch(function () {});
+      if (window.caches && caches.keys) {
+        caches.keys().then(function (keys) {
+          keys.forEach(function (key) {
+            if (key.indexOf('hux-write') === 0) caches.delete(key);
+          });
+        }).catch(function () {});
+      }
     });
   }
 })();

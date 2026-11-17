@@ -9,11 +9,26 @@
  * 注意 iOS 没有 Background Sync，发布失败只能靠前台重试 —— 页面里没做队列，
  * 因为草稿永远在 localStorage，重新点一次发布就够了。
  */
-const CACHE = 'hux-update-v10';
+const CACHE = 'hux-update-v13';
 const SHELL = ['/update/', '/update/manifest.webmanifest', '/update/icon.svg', '/update/icon-180.png'];
 
+// 预览借用博客自己的样式表，顺手存一份：断网也能看到真正的排版。
+// 版本号跟着 layouts/partials/header.html 走，改了主题记得一起换。
+const BLOG_CSS = [
+  '/css/style.css?v=20261111-01',
+  '/css/fonts.css',
+  '/css/palettes.css?v=20260924-2',
+  '/css/custom.css?v=20261111-1'
+];
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      // 单个文件失败不能连累整个安装，CSS 少一份只是预览掉点样式
+      .then((cache) => Promise.allSettled(SHELL.concat(BLOG_CSS).map((url) => cache.add(url))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -59,6 +74,23 @@ self.addEventListener('fetch', (event) => {
             return response;
           })
       )
+    );
+    return;
+  }
+
+  // 博客样式表与工作台数据：先问网络（主题改了要能立刻看到），断网才回缓存
+  const isShared = url.pathname.startsWith('/css/') || url.pathname === '/desk-index.json';
+  if (isShared) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || Response.error()))
     );
   }
 });

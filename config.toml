@@ -125,8 +125,8 @@ endLevel = 6
 ordered = false
 startLevel = 1
 
-# 首页输出 HTML + RSS，另外多一个 write-index.json。
-# 它只有文章路径、标题和 front matter 日期（约 30KB），给 /update/ 的「最近五篇」按真实日期排序。
+# 首页额外输出一份 write-index.json。
+# 只有文章路径、标题和 front matter 日期（约 30KB），给 Worker 的「最近五篇」按真实日期排序用。
 # 注：以前的 /index.json（约 800KB）是本地搜索的数据源，搜索已下线，不再生成。
 [outputFormats.WriteIndex]
   mediaType = "application/json"
@@ -134,6 +134,14 @@ startLevel = 1
   isPlainText = true
   notAlternative = true
 
+# /update/ 顶部下拉抽屉（工作台）用的数据：最近运动 + 博友近况。
+# 同样在构建时算好，只有几 KB；不进 Worker、不查 D1。
+[outputFormats.DeskIndex]
+  mediaType = "application/json"
+  baseName = "desk-index"
+  isPlainText = true
+  notAlternative = true
+
 [outputs]
-  home = ["HTML","RSS","WriteIndex"]
+  home = ["HTML","RSS","WriteIndex","DeskIndex"]
   page = ["HTML"]

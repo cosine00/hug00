@@ -9,5 +9,17 @@
       "source": "/m/:id/",
       "destination": "/memo/"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/write",
+      "destination": "/update/",
+      "permanent": false
+    },
+    {
+      "source": "/write/",
+      "destination": "/update/",
+      "permanent": false
+    }
   ]
 }

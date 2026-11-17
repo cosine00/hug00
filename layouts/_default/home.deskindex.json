@@ -1,0 +1,135 @@
+{{- /*
+  写稿页抽屉（工作台）的数据。
+
+  运动与博友近况都在构建时算完，前端只取这一份几 KB 的 JSON：
+  不经过 Worker，也不碰 D1，打开抽屉一次请求就够，断网时还有 SW 兜底。
+*/ -}}
+
+{{- $rawSynced := resources.Get "activities.json" | unmarshal -}}
+{{- $rawManual := resources.Get "act.json" | unmarshal -}}
+
+{{- $overrides := dict -}}
+{{- with resources.Get "activity-name-overrides.json" -}}
+  {{- $parsed := . | unmarshal -}}
+  {{- if reflect.IsMap $parsed -}}{{- $overrides = $parsed -}}{{- end -}}
+{{- end -}}
+
+{{- /* 同步记录与手工记录合成一张表，字段收窄到抽屉要用的那几个 */ -}}
+{{- $all := slice -}}
+{{- range $rawSynced -}}
+  {{- $name := .name -}}
+  {{- with index $overrides .start_date_local -}}{{- $name = . -}}{{- end -}}
+  {{- $km := 0.0 -}}
+  {{- with .distance -}}{{- $km = div (float .) 1000.0 -}}{{- end -}}
+  {{- $mins := 0 -}}
+  {{- with .moving_time -}}
+    {{- $p := split . ":" -}}
+    {{- if ge (len $p) 2 -}}{{- $mins = add (mul (int (float (index $p 0))) 60) (int (float (index $p 1))) -}}{{- end -}}
+  {{- end -}}
+  {{- $all = $all | append (dict
+      "name" $name
+      "type" (.type | default "Workout")
+      "when" .start_date_local
+      "km" (div (math.Round (mul $km 10)) 10)
+      "min" $mins
+    ) -}}
+{{- end -}}
+{{- range $rawManual -}}
+  {{- $mins := 0 -}}
+  {{- with .moving_time -}}
+    {{- $p := split . ":" -}}
+    {{- if ge (len $p) 2 -}}{{- $mins = add (mul (int (float (index $p 0))) 60) (int (float (index $p 1))) -}}{{- end -}}
+  {{- end -}}
+  {{- $km := 0.0 -}}
+  {{- with .distance -}}{{- $km = div (float .) 1000.0 -}}{{- end -}}
+  {{- $all = $all | append (dict
+      "name" (.name | default "运动")
+      "type" (.type | default "Workout")
+      "when" (.start_date_local | default "")
+      "km" (div (math.Round (mul $km 10)) 10)
+      "min" $mins
+    ) -}}
+{{- end -}}
+{{- $all = sort $all "when" "desc" -}}
+
+{{- $now := now -}}
+{{- $weekFrom := ($now.AddDate 0 0 -6).Format "2006-01-02" -}}
+{{- $monthKey := $now.Format "2006-01" -}}
+{{- $yearKey := $now.Format "2006" -}}
+
+{{- $weekN := 0 }}{{ $weekKm := 0.0 }}{{ $weekMin := 0 -}}
+{{- $monthN := 0 }}{{ $monthKm := 0.0 }}{{ $monthMin := 0 -}}
+{{- $yearN := 0 }}{{ $yearKm := 0.0 -}}
+{{- range $all -}}
+  {{- $day := substr .when 0 10 -}}
+  {{- $km := float .km -}}
+  {{- $mins := int .min -}}
+  {{- if ge $day $weekFrom -}}
+    {{- $weekN = add $weekN 1 -}}{{- $weekKm = add $weekKm $km -}}{{- $weekMin = add $weekMin $mins -}}
+  {{- end -}}
+  {{- if hasPrefix $day $monthKey -}}
+    {{- $monthN = add $monthN 1 -}}{{- $monthKm = add $monthKm $km -}}{{- $monthMin = add $monthMin $mins -}}
+  {{- end -}}
+  {{- if hasPrefix $day $yearKey -}}
+    {{- $yearN = add $yearN 1 -}}{{- $yearKm = add $yearKm $km -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* 最近 14 天：柱状图只关心「有没有动、动了多久」，所以给次数和公里数 */ -}}
+{{- $days := slice -}}
+{{- range $i := seq 0 13 -}}
+  {{- $key := ($now.AddDate 0 0 (sub $i 13)).Format "2006-01-02" -}}
+  {{- $n := 0 }}{{ $km := 0.0 -}}
+  {{- range $all -}}
+    {{- if hasPrefix .when $key -}}
+      {{- $n = add $n 1 -}}{{- $km = add $km (float .km) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $days = $days | append (dict "d" (substr $key 5 5) "n" $n "km" (div (math.Round (mul $km 10)) 10)) -}}
+{{- end -}}
+
+{{- /* 最近 4 条，给抽屉里的一行一条 */ -}}
+{{- $recent := slice -}}
+{{- range first 4 $all -}}
+  {{- $recent = $recent | append (dict "name" .name "type" .type "when" .when "km" .km "min" .min) -}}
+{{- end -}}
+
+{{- $sport := dict
+  "total" (len $all)
+  "week" (dict "n" $weekN "km" $weekKm "min" $weekMin)
+  "month" (dict "n" $monthN "km" $monthKm "min" $monthMin)
+  "year" (dict "n" $yearN "km" $yearKm)
+  "days" $days
+  "recent" $recent
+-}}
+
+{{- /* 博友：抽屉里先给五条，滚到底再添五条。整份数据一次给足，
+      翻页只在本地截取——多看几篇不会多发一次请求，也不会多碰一次 Worker。 */ -}}
+{{- $friends := dict -}}
+{{- with resources.Get "rss.json" -}}
+  {{- $rss := . | unmarshal -}}
+  {{- with $rss.statistical_data -}}
+    {{- $friends = merge $friends (dict
+        "friends" (int .friends_num)
+        "articles" (int .article_num)
+        "updated" (.last_updated_time | default "")
+      ) -}}
+  {{- end -}}
+  {{- $items := slice -}}
+  {{- range first 40 $rss.article_data -}}
+    {{- $items = $items | append (dict
+        "title" (.title | plainify | default "无标题")
+        "author" (.author | default "")
+        "avatar" (.avatar | default "")
+        "link" (.link | default "")
+        "when" (.created | default "")
+      ) -}}
+  {{- end -}}
+  {{- $friends = merge $friends (dict "items" $items) -}}
+{{- end -}}
+
+{{- dict
+  "generatedAt" ($now.Format "2006-01-02T15:04:05Z07:00")
+  "sport" $sport
+  "friends" $friends
+  | jsonify -}}
