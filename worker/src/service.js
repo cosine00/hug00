@@ -1,5 +1,6 @@
 import { batch, ensureSchema, first, run, all } from './db.js';
 import {
+  cleanText,
   levelFor,
   md5,
   normalizeThreadKey,
@@ -229,6 +230,7 @@ export function resolveSubmitterIdentity(env, input = {}, context = {}) {
   const adminEmail = String(env.COMMENTS_ADMIN_EMAIL || '').trim().toLowerCase();
   const email = String(input.email || '').trim().toLowerCase();
   const verified = Boolean(context.admin);
+  // 空邮箱一律不算博主：口令泄露时，脚本不填邮箱也冒充不了
   const isAdmin = Boolean(verified && adminEmail && email && email === adminEmail);
   return { verified, email, adminEmail, isAdmin };
 }
@@ -244,12 +246,18 @@ export async function createComment(env, input, context = {}) {
   const ip = context.ip || '';
   const ipHash = ip ? await sha256(`${ip}|${env.COMMENTS_SALT || 'comments-salt'}`) : '';
   const now = nowSeconds();
-  const limited = await consumeRateLimit(env, { actorHash: ipHash });
+  const identity = resolveSubmitterIdentity(env, input, context);
+  // 访客那套 30 秒 3 条 / 小时 10 条，对博主自己在手机上一串回复太紧
+  const limited = await consumeRateLimit(
+    env,
+    identity.verified
+      ? { actorHash: ipHash, shortMax: 15, longMax: 80 }
+      : { actorHash: ipHash }
+  );
   if (!limited.ok) return limited;
 
   // 脚本类 UA 静默丢弃：和垃圾分一样不给任何反馈，扫描器探不出边界在哪
   const uaText = String(context.ua || '').trim();
-  const identity = resolveSubmitterIdentity(env, input, context);
   // 放行只看服务端校验过的口令。以前这里还认「邮箱 == 博主邮箱」，
   // 而博主邮箱是写在公开仓库里的，等于给脚本留了一道后门。
   if (!identity.verified && SCRIPT_UA_RE.test(uaText)) {
@@ -498,25 +506,67 @@ export async function adminList(env, { status = 'all', threadKey = '', limit = 5
   const where = [];
   const args = [];
   if (status && status !== 'all') {
-    where.push('status = ?');
+    where.push('c.status = ?');
     args.push(status);
   }
   if (threadKey) {
-    where.push('thread_key = ?');
+    where.push('c.thread_key = ?');
     args.push(normalizeThreadKey(threadKey));
   }
   const clause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
+  // 连 threads 一起取：写作台的评论抽屉要显示「哪一篇」，光有 thread_key 认不出来
   const rows = await all(
     env,
-    `SELECT id, thread_key, parent_id, nick, email, website, content, ua, region, status, is_admin, created_at
-       FROM comments ${clause}
-      ORDER BY created_at DESC
+    `SELECT c.id, c.thread_key, c.parent_id, c.nick, c.email, c.website, c.content,
+            c.ua, c.region, c.status, c.is_admin, c.created_at,
+            t.title AS thread_title, t.url AS thread_url
+       FROM comments c LEFT JOIN threads t ON t.key = c.thread_key
+       ${clause}
+      ORDER BY c.created_at DESC
       LIMIT ? OFFSET ?`,
     [...args, Math.min(Number(limit) || 50, 200), Number(offset) || 0]
   );
-  const total = await first(env, `SELECT COUNT(*) AS c FROM comments ${clause}`, args);
+  const total = await first(env, `SELECT COUNT(*) AS c FROM comments c ${clause}`, args);
   return { rows, total: Number(total ? total.c : 0) };
+}
+
+/**
+ * 博主在写作台里回一条评论。
+ * 不走普通的 createComment 前端：那边的规矩是「邮箱必须由提交人填、且等于博主邮箱」，
+ * 而回复框里没有邮箱这一栏。这里由服务端拿会话 + 父评论自己补齐，
+ * 既不用在教育前端暴露博主邮箱，也不用放宽那条身份规则。
+ */
+export async function adminReply(env, { id, content }, context = {}) {
+  await ensureSchema(env);
+  const commentId = Number(id);
+  const text = cleanText(content, 2000);
+  if (!commentId) return { ok: false, code: 'id_required', message: '缺少要回复的评论', status: 400 };
+  if (!text) return { ok: false, code: 'content_required', message: '回复不能为空', status: 400 };
+
+  const parent = await first(
+    env,
+    `SELECT id, thread_key, status FROM comments WHERE id = ?`,
+    [commentId]
+  );
+  if (!parent || parent.status !== 'approved') {
+    return { ok: false, code: 'parent_invalid', message: '这条评论已经不在了', status: 404 };
+  }
+
+  return createComment(
+    env,
+    {
+      threadKey: parent.thread_key,
+      parentId: parent.id,
+      nick: String(env.COMMENTS_ADMIN_NICK || '博主').trim(),
+      email: String(env.COMMENTS_ADMIN_EMAIL || '').trim(),
+      content: text,
+      notify: false,
+      // 写作台不是「打开页面就提交」的脚本，别撞那条 2 秒的防刷规则
+      elapsed: 0,
+    },
+    { ...context, admin: true }
+  );
 }
 
 export async function adminUpdate(env, { action, id, threadKey }) {

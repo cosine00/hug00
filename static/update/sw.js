@@ -9,7 +9,7 @@
  * 注意 iOS 没有 Background Sync，发布失败只能靠前台重试 —— 页面里没做队列，
  * 因为草稿永远在 localStorage，重新点一次发布就够了。
  */
-const CACHE = 'hux-update-v13';
+const CACHE = 'hux-update-v14';
 const SHELL = ['/update/', '/update/manifest.webmanifest', '/update/icon.svg', '/update/icon-180.png'];
 
 // 预览借用博客自己的样式表，顺手存一份：断网也能看到真正的排版。

@@ -150,7 +150,22 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .app.closed .homepane{display:flex}
 .app.closed .doc,.app.closed .dock,.app.closed .editbar,.app.closed .banner{display:none}
 /* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉 */
-.hp-inner{width:100%;max-width:660px;margin:auto;padding:12px 0 0}
+.hp-inner{width:100%;max-width:660px;margin:auto;padding:12px 0 clamp(38px,9vh,92px)}
+
+/* 底部三个去处：比上面那条入口轻一档，不跟「写新的一篇」抢视线 */
+.hp-links{display:flex;justify-content:center;gap:6px;margin:26px 0 0}
+.hp-link{flex:0 0 auto;width:82px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:2px 0;background:none;border:0;box-shadow:none;color:var(--faint);font:inherit;
+  font-size:11px;line-height:1;letter-spacing:.01em;text-decoration:none;cursor:pointer;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:color .18s var(--ease)}
+.hp-ico{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;
+  background:var(--field);border:.5px solid var(--line);
+  transition:background .18s var(--ease),border-color .18s var(--ease),transform .18s var(--ease)}
+.hp-link svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.hp-link:active{color:var(--accent)}
+.hp-link:active .hp-ico{transform:scale(.94);border-color:color-mix(in srgb,var(--accent) 24%,var(--line))}
 .app.closed .hp-inner>*{animation:hpIn .34s var(--ease) both}
 .app.closed .hp-inner>*:nth-child(2){animation-delay:.04s}
 .app.closed .hp-inner>*:nth-child(3){animation-delay:.08s}
@@ -171,6 +186,37 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* ── 工作台内容 ── */
 .pk-top{display:flex;align-items:baseline;gap:10px;padding:2px 4px 10px}
 .pk-eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+
+/* ── 评论管理（入口页第三个图标） ── */
+.cm-list{display:flex;flex-direction:column;margin-top:2px}
+.cm-item{padding:13px 0;border-bottom:.5px solid var(--line)}
+.cm-item:last-child{border-bottom:0;padding-bottom:4px}
+.cm-top{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.cm-nick{font-size:12.5px;font-weight:590;color:var(--fg)}
+.cm-nick.me{color:var(--accent)}
+.cm-time{margin-left:auto;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cm-text{font-size:13px;line-height:1.62;color:var(--muted);word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.cm-foot{display:flex;align-items:center;gap:10px;margin-top:8px}
+.cm-post{flex:1;min-width:0;font-size:10.5px;color:var(--faint);text-decoration:none;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-post:active{color:var(--accent)}
+.cm-reply{flex:0 0 auto;font-size:11px;color:var(--accent);background:none;border:0;
+  padding:3px 0;cursor:pointer;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.cm-form{margin-top:9px}
+.cm-form textarea{width:100%;min-height:66px;resize:none;font:inherit;font-size:13px;line-height:1.6;
+  padding:9px 11px;border-radius:12px;border:.5px solid var(--line);background:var(--field);
+  color:var(--fg);outline:none}
+.cm-form textarea:focus{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.cm-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:7px}
+.cm-acts button{font:inherit;font-size:12px;padding:6px 13px;border-radius:9px;border:.5px solid var(--line);
+  background:var(--field);color:var(--muted);cursor:pointer;box-shadow:none}
+.cm-acts button.send{background:var(--accent);border-color:transparent;color:var(--accent-fg);font-weight:550}
+.cm-acts button:disabled{opacity:.6}
+.cm-mine{margin-top:9px;padding:9px 11px;border-radius:11px;background:var(--field);
+  border:.5px solid var(--line);font-size:12.5px;line-height:1.6;color:var(--muted)}
+.cm-empty{padding:26px 0;text-align:center;font-size:12.5px;color:var(--faint)}
+
 .pk-stamp{flex:1;text-align:right;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums;
   background:none;border:0;box-shadow:none;padding:2px 0 2px 12px;
   backdrop-filter:none;-webkit-backdrop-filter:none;transition:color .16s var(--ease)}
@@ -832,6 +878,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
             <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
           </button>
         </div>
+        <!-- 三个去处：都不占草稿这条线，icon 一点就走 -->
+        <nav class="hp-links" aria-label="其它入口">
+          <a class="hp-link" href="https://drafts.hux.ink/" target="_blank" rel="noopener">
+            <span class="hp-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="4.8" y="3.9" width="14.4" height="16.2" rx="3"/><path d="M8.6 9.1h6.8M8.6 12.7h6.8M8.6 16.3h4.1"/></svg>
+            </span>
+            <span class="hp-label">Memos</span>
+          </a>
+          <a class="hp-link" href="https://hux.ink/" target="_blank" rel="noopener">
+            <span class="hp-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4.5 10.3L12 4.2l7.5 6.1v7.7a1.9 1.9 0 01-1.9 1.9H6.4a1.9 1.9 0 01-1.9-1.9z"/><path d="M9.5 19.9v-4.7a1.1 1.1 0 011.1-1.1h2.8a1.1 1.1 0 011.1 1.1v4.7"/></svg>
+            </span>
+            <span class="hp-label">博客主页</span>
+          </a>
+          <button class="hp-link" id="hpComments" type="button">
+            <span class="hp-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20.1 11.3c0 3.5-3.6 6.3-8.1 6.3-1 0-1.9-.13-2.8-.38L4.8 19.4l1.2-3.3c-1.3-1.2-2-2.8-2-4.8 0-3.5 3.6-6.3 8.1-6.3s8 2.8 8 6.3z"/></svg>
+            </span>
+            <span class="hp-label">评论</span>
+          </button>
+        </nav>
       </div>
     </section>
     </div><!-- /.stage -->
@@ -916,6 +983,17 @@ input,textarea{-webkit-user-select:text;user-select:text}
     </div>
 
     <div class="btns" style="margin-top:18px"><button class="btn btn-ghost" data-close>收起</button></div>
+  </div>
+</div>
+
+<!-- 评论管理：入口页第三个图标进这里，就地回复 -->
+<div class="sheet drawer right" id="sheetComments" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel drawer-panel from-right" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+    <h2 id="cmTitle">最新评论</h2>
+    <p class="sub" id="cmSub">加载中…</p>
+    <div class="cm-list" id="cmList"></div>
+    <div class="btns" style="margin-top:16px"><button class="btn btn-ghost" data-close>收起</button></div>
   </div>
 </div>
 
@@ -1372,7 +1450,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function scheduleSave() {
     clearTimeout(saveTimer);
     setSaveState('编辑中…');
-    saveTimer = setTimeout(function () { flushSave(); }, 550);
+    saveTimer = setTimeout(function () { flushSave(); }, 2500);
   }
 
   function flushSave() {
@@ -1455,7 +1533,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function scheduleSync(delay) {
     if (!authed) return;
     clearTimeout(syncTimer);
-    syncTimer = setTimeout(runSync, delay == null ? 1200 : delay);
+    syncTimer = setTimeout(runSync, delay == null ? 15000 : delay);
   }
 
   function pendingPayload() {
@@ -2776,6 +2854,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   $('pkStamp').addEventListener('click', function () { loadDesk(true); });
+  $('hpComments').addEventListener('click', openComments);
   peekBtn.addEventListener('click', function () { toggleFrom(); });
   foldTap.addEventListener('click', function () { toggleFrom(false); });
   bindPull(peekBtn);
@@ -2893,6 +2972,161 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (diff < 86400000) return Math.round(diff / 3600000) + ' 小时前';
     if (diff < 7 * 86400000) return Math.round(diff / 86400000) + ' 天前';
     return String(text).slice(5, 10);
+  }
+
+  /* ------------------------------ 评论管理 ------------------------------
+     入口页第三个图标：读最新评论，就地以博主身份回复。
+     不另开一页，因为回一条评论常常是「瞄一眼、回一句」的事。
+  */
+
+  var SITE_ORIGIN = 'https://hux.ink';
+  var commentsLoading = false;
+
+  function stampAgo(sec) {
+    var ts = Number(sec) * 1000;
+    if (!ts) return '';
+    var diff = Date.now() - ts;
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return Math.round(diff / 60000) + ' 分钟前';
+    if (diff < 86400000) return Math.round(diff / 3600000) + ' 小时前';
+    if (diff < 7 * 86400000) return Math.round(diff / 86400000) + ' 天前';
+    var d = new Date(ts);
+    return (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日';
+  }
+
+  /** thread_key 是 post:/posts/x/ 这种内部写法，转成能点开的地址。 */
+  function threadHref(key, url) {
+    if (url) return String(url);
+    if (/^post:/.test(key)) return SITE_ORIGIN + key.slice(5);
+    if (/^page:/.test(key)) return SITE_ORIGIN + key.slice(5);
+    if (/^memo:/.test(key)) return SITE_ORIGIN + '/m/' + key.slice(5) + '/';
+    return '';
+  }
+
+  function threadLabel(row) {
+    if (row.thread_title) return String(row.thread_title);
+    var key = String(row.thread_key || '');
+    if (/^memo:/.test(key)) return '哔哔 ' + key.slice(5);
+    return key.replace(/^(post|page):/, '').replace(/\/$/, '') || '未命名';
+  }
+
+  function openComments() {
+    if (!authed) {
+      toast('先登录，才能回评论', null, 2400);
+      openSheet('sheetLogin');
+      return;
+    }
+    openSheet('sheetComments');
+    loadComments();
+  }
+
+  function loadComments() {
+    if (commentsLoading) return;
+    commentsLoading = true;
+    $('cmSub').textContent = '加载中…';
+    api('/api/comments/admin?status=all&limit=15').then(function (data) {
+      var rows = data.rows || [];
+      $('cmSub').textContent = rows.length
+        ? '最新 ' + rows.length + ' 条 · 共 ' + (data.total || rows.length) + ' 条'
+        : '还没有人留言';
+      renderComments(rows);
+    }).catch(function (error) {
+      $('cmSub').textContent = '读不出来：' + (error.message || '网络问题');
+    }).then(function () { commentsLoading = false; });
+  }
+
+  function renderComments(rows) {
+    var list = $('cmList');
+    list.innerHTML = '';
+    if (!rows.length) {
+      list.appendChild(el('div', 'cm-empty', '这里静悄悄的'));
+      return;
+    }
+    rows.forEach(function (row) {
+      var item = el('div', 'cm-item');
+      item.dataset.id = String(row.id);
+
+      var top = el('div', 'cm-top');
+      top.appendChild(el('span', 'cm-nick' + (Number(row.is_admin) === 1 ? ' me' : ''),
+        row.nick || '匿名'));
+      top.appendChild(el('span', 'cm-time', stampAgo(row.created_at)));
+      item.appendChild(top);
+
+      item.appendChild(el('div', 'cm-text', row.content || ''));
+
+      var foot = el('div', 'cm-foot');
+      var href = threadHref(row.thread_key, row.thread_url);
+      var where = href ? el('a', 'cm-post', threadLabel(row)) : el('span', 'cm-post', threadLabel(row));
+      if (href) {
+        where.href = href;
+        where.target = '_blank';
+        where.rel = 'noopener noreferrer';
+      }
+      foot.appendChild(where);
+      var replyBtn = el('button', 'cm-reply', '回复');
+      replyBtn.type = 'button';
+      foot.appendChild(replyBtn);
+      item.appendChild(foot);
+
+      replyBtn.addEventListener('click', function () { openReplyForm(item, row, replyBtn); });
+      list.appendChild(item);
+    });
+  }
+
+  function openReplyForm(item, row, btn) {
+    var existing = item.querySelector('.cm-form');
+    if (existing) {
+      var old = existing.querySelector('textarea');
+      if (old) old.focus();
+      return;
+    }
+    var form = el('div', 'cm-form');
+    var box = document.createElement('textarea');
+    box.placeholder = '以博主身份回复 ' + (row.nick || '这条') + '…';
+    box.setAttribute('aria-label', '回复内容');
+    var acts = el('div', 'cm-acts');
+    var cancel = el('button', '', '取消');
+    cancel.type = 'button';
+    var send = el('button', 'send', '发送');
+    send.type = 'button';
+    acts.appendChild(cancel);
+    acts.appendChild(send);
+    form.appendChild(box);
+    form.appendChild(acts);
+    item.appendChild(form);
+    box.focus();
+
+    cancel.addEventListener('click', function () { form.remove(); });
+    send.addEventListener('click', function () {
+      var text = box.value.trim();
+      if (!text) { box.focus(); return; }
+      send.disabled = true;
+      cancel.disabled = true;
+      send.textContent = '发送中…';
+      // 只报「回哪条、回什么」：thread 与博主身份都由服务端补齐，
+      // 页面上既不需要知道博主邮箱，也不会因为少传字段被当成访客
+      api('/api/comments/reply', {
+        method: 'POST',
+        body: { id: row.id, content: text }
+      }).then(function () {
+        form.remove();
+        item.appendChild(el('div', 'cm-mine', text));
+        toast('已回复', 'ok', 1500);
+        if (btn) btn.remove();
+      }).catch(function (error) {
+        send.disabled = false;
+        cancel.disabled = false;
+        send.textContent = '发送';
+        toast(error.message || '没发出去，再试一次', 'err', 3000);
+      });
+    });
+
+    box.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        send.click();
+      }
+    });
   }
 
   function loadDesk(force) {
@@ -3565,7 +3799,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
   renderDraftList();
 
   // 关页面/切后台前把没落盘的草稿写进去
-  document.addEventListener('visibilitychange', function () { if (document.hidden) flushSave(); });
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) return;
+    flushSave();
+    // 15 秒的云端节流在「写完就切走」时容易漏一拍：切后台的瞬间补推一次
+    if (authed) scheduleSync(0);
+  });
   window.addEventListener('pagehide', flushSave);
   window.addEventListener('beforeunload', function () { flushSave(); });
   // 断网时攒下的改动，一恢复就补推

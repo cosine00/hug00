@@ -12,6 +12,7 @@
  *   GET  /api/comments/session           当前浏览器是不是博主（读 HttpOnly Cookie）
  *   POST /api/comments/session           { token } 口令换会话 Cookie；{ action:'logout' } 退出
  *   DELETE /api/comments/session[?all=1] 退出当前设备 / 所有设备
+ *   POST /api/comments/reply             { id, content }  博主回一条（父评论与 thread 由服务端查）
  *   GET  /api/comments/admin?status=all|approved|spam|deleted
  *   POST /api/comments/admin            { action, id, threadKey }
  *   POST /api/comments/admin/import     { items: [...] }
@@ -30,6 +31,7 @@
 
 import {
   adminList,
+  adminReply,
   adminUpdate,
   editComment,
   exportTwikoo,
@@ -237,6 +239,10 @@ async function route(request, env, url, ctx) {
 
   if (path === '/api/comments/edit' || path === '/comments/edit') {
     return handleEdit(request, env, url);
+  }
+
+  if (path === '/api/comments/reply' || path === '/comments/reply') {
+    return handleReply(request, env);
   }
 
   if (path === '/api/comments/admin' || path === '/comments/admin') {
@@ -792,6 +798,25 @@ async function handleAdmin(request, env, url) {
     return json(result, result.ok ? 200 : 400);
   }
   return new Response(null, { status: 405, headers: { Allow: 'GET,POST,OPTIONS' } });
+}
+
+/** 写作台的评论抽屉：以博主身份回一条，父评论和目标文章都由服务端查。 */
+async function handleReply(request, env) {
+  if (request.method !== 'POST') {
+    return new Response(null, { status: 405, headers: { Allow: 'POST,OPTIONS' } });
+  }
+  const gate = await adminGate(request, env);
+  if (!gate.ok) return gate.response;
+  const body = await readJson(request);
+  if (!body) return fail(400, 'bad_json', '请求格式不对');
+  const result = await adminReply(env, { id: body.id, content: body.content }, {
+    ip: clientIp(request),
+    ua: String(request.headers.get('user-agent') || ''),
+    region: formatRegion(request),
+    admin: true,
+  });
+  if (!result.ok) return fail(result.status || 400, result.code, result.message);
+  return json({ ok: true, comment: result.comment });
 }
 
 async function handleImport(request, env, url) {

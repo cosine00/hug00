@@ -523,3 +523,31 @@ npx wrangler secret put GITHUB_TOKEN
 **顶栏收起的门槛。** 原来只要往下滚 6px 就收，此时标题和「添加标签」那一行还在视野里；而收起会把 `.deck` 整体上移 60px，于是标题、标签被一起顶出屏幕——看起来就像「自动隐藏把标题也藏了」。现在加一道 `headInSight()`：`.meta`（标题下面那一行，含标签/链接）的底边还在 `.doc` 顶部以下 10px 内，就不收；等它们真滚出去了才收，收的时候谁也看不见。往上滚仍然立即展开，第一时间能把标题看回来。
 
 **`/write/` 彻底清退。** 删掉 `static/write/`（跳转页 + kill-switch SW），改由 `vercel.json` 的 redirects 把 `/write` 与 `/write/` 转到 `/update/`（307，不用 308，免得到时候难改）。老设备上可能还挂着 scope 为 `/write/` 的 Service Worker 和 `hux-write*` 缓存，那个 SW 是 cache-first，只要活着就会一直吐旧页面；所以 `/update/` 在 `load` 时顺手 `getRegistrations()` 注销 `/write/` 下的注册、删掉 `hux-write` 前缀的缓存，打开一次新页面就干净了。接口路径 `/api/write/*`、`write-index.json`、`worker/src/write.js` 都不是旧页面，保留。
+
+---
+
+## 13. 入口页三个去处、评论就地回复、保存节奏调松
+
+**保存从「每敲几下就发一次」改成正常笔记软件的节奏。** 原来本机 0.55 秒落盘、云端 1.2 秒上行，等于一句话没打完就发了两三个请求。现在是：
+
+| 触发 | 间隔 | 代价 |
+| --- | --- | --- |
+| 输入停顿后写 localStorage | 2.5 秒 | 0 请求 |
+| 再往后上行到 D1 | 15 秒 | 1 请求（只带脏的那几篇） |
+| 切后台 / 关页面 | 立刻落盘，并补推一次 | 1 请求 |
+
+15 秒是「能忍的丢失窗口」和「请求量」的折中：真断了网，本地那份还在，下次打开 `pullDrafts` 会按 `updatedAt` 把漏推的重新标脏补上去。写两小时大约 40～60 次上行，比原来少一个数量级。
+
+**入口页整体上移 + 底部三个入口。** `.hp-inner` 的下内边距从 0 加到 `clamp(38px,9vh,92px)`，`margin:auto` 剩下的空间上下重分，整块因此上移约 40～50px；空出来的位置放 `.hp-links`：三个 46×46 的圆角方块 + 线性图标 + 11px 小字，配色走 `--field` / `--line` / `--faint`，比上面那张卡片低一档，不跟「写新的一篇」抢视线。
+
+- **Memos** → `https://drafts.hux.ink/`（新窗口）
+- **博客主页** → `https://hux.ink/`（新窗口）
+- **评论** → 从右滑入的抽屉，读最新 15 条，就地回复
+
+**评论回复为什么另开一个接口。** 普通 `POST /api/comments` 的身份规则是「会话通过 + 提交的邮箱等于博主邮箱」，而回复框里根本没有邮箱这一栏。看起来最省事的改法是「会话通过且没带邮箱就当博主邮箱」，但那会直接废掉 `resolveSubmitterIdentity` 的安全断言（`tests/comment-identity.test.mjs` 里锁着「邮箱为空时即便带口令也不是博主」）。
+
+所以新增 `POST /api/comments/reply { id, content }`：走 `adminGate`（口令头或会话 + CSRF），服务端用 `id` 自己查父评论拿 `thread_key`，再以 `COMMENTS_ADMIN_EMAIL` 和 `COMMENTS_ADMIN_NICK` 的身份调 `createComment`。前端只需要知道「回哪条、回什么」，页面上不出现博主邮箱，那条身份规则一个字没动。
+
+- `GET /api/comments/admin` 的 SQL 加了 `LEFT JOIN threads`，顺带返回 `thread_title` / `thread_url`，抽屉里才能显示「哪一篇」而不是 `post:/posts/xxx/`。
+- 博主回复放宽限流：访客 30 秒 3 条 / 小时 10 条，博主 30 秒 15 条 / 小时 80 条。手机上连着回三四条是常事。
+- 回复落库后 `notify: false`（博主自己不订阅），但被回复的人仍会收到邮件（`notifyReply` 看的是父评论的订阅状态）。
