@@ -13,12 +13,22 @@
   "redirects": [
     {
       "source": "/write",
-      "destination": "/update/",
+      "destination": "/beta/",
       "permanent": false
     },
     {
       "source": "/write/",
-      "destination": "/update/",
+      "destination": "/beta/",
+      "permanent": false
+    },
+    {
+      "source": "/update",
+      "destination": "/beta/",
+      "permanent": false
+    },
+    {
+      "source": "/update/",
+      "destination": "/beta/",
       "permanent": false
     }
   ]

@@ -134,7 +134,7 @@ startLevel = 1
   isPlainText = true
   notAlternative = true
 
-# /update/ 顶部下拉抽屉（工作台）用的数据：最近运动 + 博友近况。
+# /beta/ 顶部下拉抽屉（工作台）用的数据：最近运动 + 博友近况。
 # 同样在构建时算好，只有几 KB；不进 Worker、不查 D1。
 [outputFormats.DeskIndex]
   mediaType = "application/json"

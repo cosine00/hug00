@@ -1,0 +1,18 @@
+{
+  "id": "/beta/",
+  "name": "写文章 · Counting Stars",
+  "short_name": "写文章",
+  "description": "给 Counting Stars 博客写文章：撰写、传图、一键发布",
+  "lang": "zh-CN",
+  "start_url": "/beta/",
+  "scope": "/beta/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fdfcf9",
+  "theme_color": "#fdfcf9",
+  "icons": [
+    { "src": "/beta/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/beta/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/beta/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

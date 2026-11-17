@@ -32,6 +32,7 @@
 import {
   adminList,
   adminReply,
+  adminThreads,
   adminUpdate,
   editComment,
   exportTwikoo,
@@ -783,6 +784,14 @@ async function handleAdmin(request, env, url) {
   const gate = await adminGate(request, env);
   if (!gate.ok) return gate.response;
   if (request.method === 'GET') {
+    // tree=1：评论抽屉按完整线程取（楼主 + 楼里的回复），不是平铺原始记录
+    if (url.searchParams.get('tree') === '1') {
+      const threaded = await adminThreads(env, {
+        status: url.searchParams.get('status') || 'all',
+        limit: url.searchParams.get('limit') || 15,
+      });
+      return json({ ok: true, ...threaded });
+    }
     const data = await adminList(env, {
       status: url.searchParams.get('status') || 'all',
       threadKey: url.searchParams.get('thread') || '',

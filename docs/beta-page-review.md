@@ -1,10 +1,10 @@
-# 博客独立撰写发布页 `/update/` —— 需求与实现说明（审计稿）
+# 博客独立撰写发布页 `/beta/` —— 需求与实现说明（审计稿）
 
-> 注：页面地址原名 `/write/`，2026-11-17 起改为 `/update/`，旧目录已删除，`/write/` 由 `vercel.json` 的 redirect 转到 `/update/`。下文出现的 `/api/write/*` 是接口路径，没有跟着改。
+> 注：页面地址 2026-11-17 由 `/write/` 改为 `/beta/`（中间短暂用过 `/update/`），旧目录都已删除，`/write`、`/update` 由 `vercel.json` 的 redirect 307 转到 `/beta/`。下文出现的 `/api/write/*` 是接口路径，没有跟着改。
 
 > 用途：交给第三方助手做代码/设计审计与校对。
 > 仓库：`cosine00/hug00`（Hugo 静态站 + Cloudflare Worker）
-> 线上：<https://hux.ink/update/>（前端） / `https://comments.hux.ink`（API）
+> 线上：<https://hux.ink/beta/>（前端） / `https://comments.hux.ink`（API）
 > 整理时间：2026-11-17，对应提交 `9517d1f`
 
 ---
@@ -522,7 +522,7 @@ npx wrangler secret put GITHUB_TOKEN
 
 **顶栏收起的门槛。** 原来只要往下滚 6px 就收，此时标题和「添加标签」那一行还在视野里；而收起会把 `.deck` 整体上移 60px，于是标题、标签被一起顶出屏幕——看起来就像「自动隐藏把标题也藏了」。现在加一道 `headInSight()`：`.meta`（标题下面那一行，含标签/链接）的底边还在 `.doc` 顶部以下 10px 内，就不收；等它们真滚出去了才收，收的时候谁也看不见。往上滚仍然立即展开，第一时间能把标题看回来。
 
-**`/write/` 彻底清退。** 删掉 `static/write/`（跳转页 + kill-switch SW），改由 `vercel.json` 的 redirects 把 `/write` 与 `/write/` 转到 `/update/`（307，不用 308，免得到时候难改）。老设备上可能还挂着 scope 为 `/write/` 的 Service Worker 和 `hux-write*` 缓存，那个 SW 是 cache-first，只要活着就会一直吐旧页面；所以 `/update/` 在 `load` 时顺手 `getRegistrations()` 注销 `/write/` 下的注册、删掉 `hux-write` 前缀的缓存，打开一次新页面就干净了。接口路径 `/api/write/*`、`write-index.json`、`worker/src/write.js` 都不是旧页面，保留。
+**`/write/` 彻底清退。** 删掉 `static/write/`（跳转页 + kill-switch SW），改由 `vercel.json` 的 redirects 把 `/write` 与 `/write/` 转到 `/beta/`（307，不用 308，免得到时候难改）。老设备上可能还挂着 scope 为 `/write/` 的 Service Worker 和 `hux-write*` 缓存，那个 SW 是 cache-first，只要活着就会一直吐旧页面；所以 `/beta/` 在 `load` 时顺手 `getRegistrations()` 注销 `/write/` 下的注册、删掉 `hux-write` 前缀的缓存，打开一次新页面就干净了。接口路径 `/api/write/*`、`write-index.json`、`worker/src/write.js` 都不是旧页面，保留。
 
 ---
 
@@ -554,7 +554,7 @@ npx wrangler secret put GITHUB_TOKEN
 
 ## 14. 入口页变成默认落点、未登录不读草稿
 
-**默认落点改了。** 以前打开 `/update/` 直接落进编辑器，那是一张「上次那篇」的空白纸，光标在哪、写没写完全靠猜。现在启动时先 `enterHome()`：顶栏「未打开」、写作层隐藏、停在入口页，刷新和从主屏图标重开都一样。想写就点「写新的一篇」，想接着写就从「草稿」里挑——`loadActive()` 只负责把内容灌进 textarea，切不切回写作页交给 `reopenPane()`，所以入口页不会被它拽走。
+**默认落点改了。** 以前打开 `/beta/` 直接落进编辑器，那是一张「上次那篇」的空白纸，光标在哪、写没写完全靠猜。现在启动时先 `enterHome()`：顶栏「未打开」、写作层隐藏、停在入口页，刷新和从主屏图标重开都一样。想写就点「写新的一篇」，想接着写就从「草稿」里挑——`loadActive()` 只负责把内容灌进 textarea，切不切回写作页交给 `reopenPane()`，所以入口页不会被它拽走。
 
 **入口页上不再有「这篇」的信息。** 顺手修掉了三处串味：
 
@@ -577,3 +577,19 @@ npx wrangler secret put GITHUB_TOKEN
 **三个图标跟菜单行统一了。** 原来的 46×46 圆角方块 + 边框 + 文字，跟上面「草稿 / 最近发布 / 最近图片」的裸描边图标完全是两套语言。现在去掉容器和文字，图标 25px、`stroke:var(--accent)`、`stroke-width:1.7`，和 `.mr-ico` 同一套参数只放大一号；无障碍名字走 `aria-label`，点按有 `scale(.9)` 反馈。
 
 - Service Worker 缓存名提到 `hux-update-v15`，新壳和旧缓存不打架。
+
+## 15. 地址改 `/beta`，评论抽屉按楼加载，图标放大
+
+**`/update/` → `/beta`。** `git mv static/update static/beta`，manifest 的 `id` / `start_url` / `scope` / 图标、SW 的 scope 与 SHELL、页面里的 `<link>` 和注册语句全部跟着换。`vercel.json` 的 redirects 变成 `/write`、`/write/`、`/update`、`/update/` → `/beta/`（307）。`/api/write/*` 是接口，不动。
+
+老设备的善后：页面 load 时注销 scope 在 `/write/` 或 `/update/` 下的 Service Worker，并删掉 `hux-write*`、`hux-update*` 缓存；SW 缓存名从 `hux-update-v15` 换成 `hux-beta-v1`，`activate` 只清 `hux-` 前缀的旧缓存，不再碰同源别的缓存。**已经装到主屏的旧图标，其 `start_url` 仍是 `/update/`，会 307 跳到 `/beta` 但 PWA scope 不匹配，需要删掉重新添加一次。**
+
+**评论抽屉按楼取。** 新增 `GET /api/comments/admin?tree=1`（`adminThreads`）：先按时间取最新 N 条记录摊成楼号，再把每一楼的楼主和全部回复补齐（`c.id IN (…) OR c.root_id IN (…)`），按「最近有动静」排序返回 `{ groups: [{…root, replies: []}] }`。
+
+- 没有回复的独立评论就是单独一条，和以前一样；
+- 是回复的，把整楼拉出来：楼主在上，回复缩进挂在左边竖线上，回复头部标「回复 @某人」；
+- 已经在楼里出现过的回复不再单独成行，楼内不再重复标「哪一篇」（出处写在楼顶）；
+- 楼主本身被他删/标 spam 时整楼不摆，避免回复悬空；
+- 抽屉副标题改成「最新 N 楼 · 共 M 条」。
+
+**三个图标放大。** 25px → 32px，`stroke-width` 1.7 → 1.6（放大后线条不显粗），点按区 44 → 54，间距 16 → 20。

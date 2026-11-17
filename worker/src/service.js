@@ -532,6 +532,68 @@ export async function adminList(env, { status = 'all', threadKey = '', limit = 5
 }
 
 /**
+ * 写作台评论抽屉按「楼」取。
+ * adminList 只给最近 N 条原始记录：里面可能混着楼中楼的回复，光有「+1」
+ * 看不出在回谁；楼主不在窗口里时更是整段语境都丢了。这里先把最近 N 条
+ * 摊开成楼号，再把每一楼的楼主和全部回复补齐，让页面按完整线程渲染，
+ * 已经在楼里出现过的回复不再单独成行。
+ */
+export async function adminThreads(env, { status = 'all', limit = 15 } = {}) {
+  await ensureSchema(env);
+  const size = Math.min(Math.max(Number(limit) || 15, 1), 50);
+  const where = [];
+  const args = [];
+  if (status && status !== 'all') {
+    where.push('c.status = ?');
+    args.push(status);
+  }
+  const clause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+  const recent = await all(
+    env,
+    `SELECT c.id, c.root_id FROM comments c ${clause} ORDER BY c.created_at DESC LIMIT ?`,
+    [...args, size]
+  );
+  // 楼号按「最近有动静」排序：先见到的楼排前面
+  const rootIds = [];
+  recent.forEach((row) => {
+    const root = row.root_id == null ? Number(row.id) : Number(row.root_id);
+    if (!rootIds.includes(root)) rootIds.push(root);
+  });
+  if (!rootIds.length) return { groups: [], total: 0 };
+
+  const marks = rootIds.map(() => '?').join(',');
+  const rows = await all(
+    env,
+    `SELECT c.id, c.thread_key, c.parent_id, c.root_id, c.nick, c.content,
+            c.status, c.is_admin, c.created_at,
+            t.title AS thread_title, t.url AS thread_url
+       FROM comments c LEFT JOIN threads t ON t.key = c.thread_key
+      WHERE (c.id IN (${marks}) OR c.root_id IN (${marks})) ${clause}
+      ORDER BY c.created_at ASC`,
+    [...rootIds, ...rootIds, ...args]
+  );
+
+  const byRoot = new Map();
+  rows.forEach((row) => {
+    const root = row.root_id == null ? Number(row.id) : Number(row.root_id);
+    if (!byRoot.has(root)) byRoot.set(root, { root: null, replies: [] });
+    const group = byRoot.get(root);
+    if (Number(row.id) === root) group.root = row;
+    else group.replies.push(row);
+  });
+
+  // 楼主本身被删/被标 spam 时这一楼就不摆了，免得一串回复悬空
+  const groups = rootIds
+    .map((id) => byRoot.get(id))
+    .filter((group) => group && group.root)
+    .map((group) => ({ ...group.root, replies: group.replies }));
+
+  const total = await first(env, `SELECT COUNT(*) AS c FROM comments c ${clause}`, args);
+  return { groups, total: Number(total ? total.c : 0) };
+}
+
+/**
  * 博主在写作台里回一条评论。
  * 不走普通的 createComment 前端：那边的规矩是「邮箱必须由提交人填、且等于博主邮箱」，
  * 而回复框里没有邮箱这一栏。这里由服务端拿会话 + 父评论自己补齐，

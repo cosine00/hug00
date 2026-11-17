@@ -9,8 +9,8 @@
  * 注意 iOS 没有 Background Sync，发布失败只能靠前台重试 —— 页面里没做队列，
  * 因为草稿永远在 localStorage，重新点一次发布就够了。
  */
-const CACHE = 'hux-update-v15';
-const SHELL = ['/update/', '/update/manifest.webmanifest', '/update/icon.svg', '/update/icon-180.png'];
+const CACHE = 'hux-beta-v1';
+const SHELL = ['/beta/', '/beta/manifest.webmanifest', '/beta/icon.svg', '/beta/icon-180.png'];
 
 // 预览借用博客自己的样式表，顺手存一份：断网也能看到真正的排版。
 // 版本号跟着 layouts/partials/header.html 走，改了主题记得一起换。
@@ -35,7 +35,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE && key.indexOf('hux-') === 0).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -47,21 +47,21 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  const isShell = url.pathname === '/update/' || url.pathname === '/update/index.html';
+  const isShell = url.pathname === '/beta/' || url.pathname === '/beta/index.html';
   if (isShell) {
     event.respondWith(
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put('/update/', copy));
+          caches.open(CACHE).then((cache) => cache.put('/beta/', copy));
           return response;
         })
-        .catch(() => caches.match('/update/'))
+        .catch(() => caches.match('/beta/'))
     );
     return;
   }
 
-  if (url.pathname.startsWith('/update/')) {
+  if (url.pathname.startsWith('/beta/')) {
     event.respondWith(
       caches.match(request).then(
         (cached) =>
