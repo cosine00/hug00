@@ -152,20 +152,18 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉 */
 .hp-inner{width:100%;max-width:660px;margin:auto;padding:12px 0 clamp(38px,9vh,92px)}
 
-/* 底部三个去处：比上面那条入口轻一档，不跟「写新的一篇」抢视线 */
-.hp-links{display:flex;justify-content:center;gap:6px;margin:26px 0 0}
-.hp-link{flex:0 0 auto;width:82px;display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:2px 0;background:none;border:0;box-shadow:none;color:var(--faint);font:inherit;
-  font-size:11px;line-height:1;letter-spacing:.01em;text-decoration:none;cursor:pointer;
+/* 底部三个去处：跟上面那三行入口用同一套图标语言——裸描边、无容器、无文字，
+   只是放大一号，别让人以为它们是另一种按钮 */
+.hp-links{display:flex;justify-content:center;align-items:center;gap:16px;margin:26px 0 0}
+.hp-link{flex:0 0 auto;display:grid;place-items:center;width:44px;height:44px;padding:0;
+  background:none;border:0;box-shadow:none;color:var(--accent);font:inherit;
+  text-decoration:none;cursor:pointer;
   backdrop-filter:none;-webkit-backdrop-filter:none;
-  transition:color .18s var(--ease)}
-.hp-ico{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;
-  background:var(--field);border:.5px solid var(--line);
-  transition:background .18s var(--ease),border-color .18s var(--ease),transform .18s var(--ease)}
-.hp-link svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;
+  transition:opacity .16s var(--ease),transform .16s var(--ease)}
+.hp-link svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round}
-.hp-link:active{color:var(--accent)}
-.hp-link:active .hp-ico{transform:scale(.94);border-color:color-mix(in srgb,var(--accent) 24%,var(--line))}
+.hp-link:active{transform:scale(.9);opacity:.72}
+.hp-link:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 34%,transparent);outline-offset:2px}
 .app.closed .hp-inner>*{animation:hpIn .34s var(--ease) both}
 .app.closed .hp-inner>*:nth-child(2){animation-delay:.04s}
 .app.closed .hp-inner>*:nth-child(3){animation-delay:.08s}
@@ -844,12 +842,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <section class="homepane" id="homePane" aria-label="没有打开的稿件">
       <div class="hp-inner">
         <div class="hp-head">
-          <h2>这篇收进草稿了</h2>
-          <p>接着写新的，或者翻翻以前的。</p>
+          <h2 id="hpTitle">写点什么</h2>
+          <p id="hpSub">先落几个字，剩下的慢慢来。</p>
         </div>
         <button class="hp-new" id="hpNew" type="button">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
-          写新的一篇
+          <svg id="hpNewIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
+          <span id="hpNewLabel">写新的一篇</span>
         </button>
         <div class="menu-list" id="hpMenu">
           <button class="menu-row" data-go="drafts">
@@ -878,25 +876,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
             <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
           </button>
         </div>
-        <!-- 三个去处：都不占草稿这条线，icon 一点就走 -->
+        <!-- 三个去处：跟上面三行入口同一个图标体系，只是没有文字、没有容器 -->
         <nav class="hp-links" aria-label="其它入口">
-          <a class="hp-link" href="https://drafts.hux.ink/" target="_blank" rel="noopener">
-            <span class="hp-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><rect x="4.8" y="3.9" width="14.4" height="16.2" rx="3"/><path d="M8.6 9.1h6.8M8.6 12.7h6.8M8.6 16.3h4.1"/></svg>
-            </span>
-            <span class="hp-label">Memos</span>
+          <a class="hp-link" href="https://drafts.hux.ink/" target="_blank" rel="noopener" aria-label="Memos（新标签打开）">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.8" y="3.9" width="14.4" height="16.2" rx="3"/><path d="M8.6 9.1h6.8M8.6 12.7h6.8M8.6 16.3h4.1"/></svg>
           </a>
-          <a class="hp-link" href="https://hux.ink/" target="_blank" rel="noopener">
-            <span class="hp-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4.5 10.3L12 4.2l7.5 6.1v7.7a1.9 1.9 0 01-1.9 1.9H6.4a1.9 1.9 0 01-1.9-1.9z"/><path d="M9.5 19.9v-4.7a1.1 1.1 0 011.1-1.1h2.8a1.1 1.1 0 011.1 1.1v4.7"/></svg>
-            </span>
-            <span class="hp-label">博客主页</span>
+          <a class="hp-link" href="https://hux.ink/" target="_blank" rel="noopener" aria-label="博客主页（新标签打开）">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.3L12 4.2l7.5 6.1v7.7a1.9 1.9 0 01-1.9 1.9H6.4a1.9 1.9 0 01-1.9-1.9z"/><path d="M9.5 19.9v-4.7a1.1 1.1 0 011.1-1.1h2.8a1.1 1.1 0 011.1 1.1v4.7"/></svg>
           </a>
-          <button class="hp-link" id="hpComments" type="button">
-            <span class="hp-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M20.1 11.3c0 3.5-3.6 6.3-8.1 6.3-1 0-1.9-.13-2.8-.38L4.8 19.4l1.2-3.3c-1.3-1.2-2-2.8-2-4.8 0-3.5 3.6-6.3 8.1-6.3s8 2.8 8 6.3z"/></svg>
-            </span>
-            <span class="hp-label">评论</span>
+          <button class="hp-link" id="hpComments" type="button" aria-label="评论管理">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 11.3c0 3.5-3.6 6.3-8.1 6.3-1 0-1.9-.13-2.8-.38L4.8 19.4l1.2-3.3c-1.3-1.2-2-2.8-2-4.8 0-3.5 3.6-6.3 8.1-6.3s8 2.8 8 6.3z"/></svg>
           </button>
         </nav>
       </div>
@@ -1073,8 +1062,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
     </div>
     <div class="sect">服务状态</div>
     <div class="kv"><span>接口</span><b id="apiState">—</b></div>
-    <div class="kv"><span>仓库写入</span><b id="ghState">—</b></div>
-    <div class="kv"><span>图床</span><b id="r2State">—</b></div>
+    <div class="kv"><span>仓库写入</span><b id="ghState">登录后可见</b></div>
+    <div class="kv"><span>图床</span><b id="r2State">登录后可见</b></div>
     <p class="sub" style="margin-top:16px" id="installTip"></p>
     <div class="btns"><button class="btn btn-ghost" data-close>好</button></div>
   </div>
@@ -1134,6 +1123,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var csrf = '';
   var authed = false;
   var health = null;
+  var healthPromise = null;
   var busy = false;
   var toastTimer = 0;
   var lastSel = { start: 0, end: 0 };
@@ -1345,6 +1335,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function loadStore() {
+    // 没登录就不碰 localStorage：本机那份草稿要等解锁之后才装进内存
+    if (!authed) { store = sessionStore(); return store; }
+
     var parsed = null;
     try { parsed = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { parsed = null; }
 
@@ -1370,7 +1363,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
     return store;
   }
 
+  /** 未登录时用的替身草稿库：只在内存里，既不读盘也不写盘。 */
+  function sessionStore() {
+    var draft = blankDraft();
+    return { activeId: draft.id, drafts: [draft], syncAt: 0 };
+  }
+
   function persist() {
+    // 没解锁时绝不能写盘——store 里是空稿，一写就把本机真正的草稿盖掉了
+    if (!authed) return false;
     try {
       // 只留最近 30 篇，避免 localStorage 无限膨胀；当前编辑的那篇永远保留
       if (store.drafts.length > MAX_DRAFTS) {
@@ -1455,6 +1456,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function flushSave() {
     clearTimeout(saveTimer);
+    // 入口页上没有打开的稿子；未登录时也不该往盘里写东西
+    if (paneClosed || !authed) return;
     var draft = capture();
     if (!draft) return;
     if (!persist()) { setSaveState('存不下（空间满）'); return; }
@@ -1700,8 +1703,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   /* ------------------------------ 编辑区装载 ------------------------------ */
 
+  /** 只负责把当前稿灌进编辑区：切不切到写作页由调用方决定（入口页上不该被它拽走）。 */
   function loadActive() {
-    reopenPane();
     var draft = activeDraft();
     if (!draft) return;
     titleEl.value = draft.title || '';
@@ -1722,21 +1725,30 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function openDraft(id) {
-    if (id === store.activeId) { reopenPane(); closeSheet($('sheetDocs')); return; }
+    if (id === store.activeId) {
+      // 关着的时候内容可能被改过（空稿被收走、云端覆盖），重灌一次再恢复
+      reopenPane();
+      loadActive();
+      closeSheet($('sheetDocs'));
+      return;
+    }
     flushSave();
     store.activeId = id;
     persist();
+    reopenPane();
     loadActive();
     closeSheet($('sheetDocs'));
     docEl.scrollTop = 0;
   }
 
   function startNewDraft() {
+    if (!authed) { openSheet('sheetLogin'); return; }
     flushSave();
     var draft = blankDraft();
     store.drafts.unshift(draft);
     store.activeId = draft.id;
     persist();
+    reopenPane();
     loadActive();
     closeSheet($('sheetDocs'));
     docEl.scrollTop = 0;
@@ -2261,17 +2273,71 @@ input,textarea{-webkit-user-select:text;user-select:text}
       authed = Boolean(data.admin);
       csrf = data.csrf || '';
       applyAuthState();
-      if (authed) {
-        loadTags();
-        pullDrafts();
-      }
       return authed;
     }).catch(function () {
       authed = false;
-      setSaveState('离线 · 仍存本机');
       applyAuthState();
       return false;
     });
+  }
+
+  /**
+   * 解锁＝把本机草稿装进内存并拉一次云端；上锁＝立刻清空内存里那份。
+   * 没登录的时候，草稿连读都不读：换台设备、别人拿起来看，列表是空的。
+   */
+  var storeLoaded = false;
+
+  function unlockStore() {
+    if (storeLoaded) return;
+    storeLoaded = true;
+    loadStore();
+    loadActive();
+    renderDraftList();
+    renderHomePane();
+    loadTags();
+    pullDrafts();
+  }
+
+  function lockStore() {
+    if (!storeLoaded) return;
+    storeLoaded = false;
+    store = sessionStore();
+    allTags = [];
+    recentPosts = null;
+    recentImages = null;
+    titleEl.value = '';
+    bodyEl.value = '';
+    slugEl.value = '';
+    tagInput.value = '';
+    renderTags();
+    growAll();
+    updateCount();
+    enterHome();
+  }
+
+  function checkHealth() {
+    if (!authed) {
+      health = null;
+      healthPromise = null;
+      $('apiState').textContent = '—';
+      $('ghState').textContent = '登录后可见';
+      $('r2State').textContent = '登录后可见';
+      return Promise.resolve();
+    }
+    if (healthPromise) return healthPromise;
+    healthPromise = api('/api/write/health').then(function (data) {
+      health = data;
+      $('apiState').textContent = '正常';
+      $('ghState').textContent = data.github ? (data.repo + ' @ ' + data.branch) : '未配置 GITHUB_TOKEN';
+      $('r2State').textContent = data.r2 ? data.r2Public : '未绑定 R2 桶';
+    }).catch(function (error) {
+      health = null;
+      healthPromise = null;
+      $('apiState').textContent = error && error.status === 401 ? '登录后可见' : '连不上（' + error.message + '）';
+      $('ghState').textContent = '—';
+      $('r2State').textContent = '—';
+    });
+    return healthPromise;
   }
 
   function applyAuthState() {
@@ -2279,23 +2345,31 @@ input,textarea{-webkit-user-select:text;user-select:text}
     $('loginState').textContent = authed ? '已登录' : '未登录';
     $('rowAuthLabel').textContent = authed ? '退出登录' : '登录';
     $('rowAuth').classList.toggle('accent', !authed);
-    $('menuSub').textContent = authed
-      ? '草稿会同步到云端，另一台设备登录后接着写；发布才写进仓库。'
-      : '未登录：草稿只存在这台设备上，登录后可在设备之间同步。';
+
+    if (authed) unlockStore(); else lockStore();
+
+    renderHomePane();
+    renderDraftList();
+    renderActionsSheet();
+    checkHealth();
     renderInstallTip();
     refreshSaveState();
   }
 
-  function checkHealth() {
-    return api('/api/write/health').then(function (data) {
-      health = data;
-      $('apiState').textContent = '正常';
-      $('ghState').textContent = data.github ? (data.repo + ' @ ' + data.branch) : '未配置 GITHUB_TOKEN';
-      $('r2State').textContent = data.r2 ? data.r2Public : '未绑定 R2 桶';
-    }).catch(function (error) {
-      health = null;
-      $('apiState').textContent = '连不上（' + error.message + '）';
-    });
+  /** 「这篇」那张抽屉：入口页上没有「这篇」，就别摆保存、发布、删除。 */
+  function renderActionsSheet() {
+    $('menuTitle').textContent = paneClosed ? '这台设备' : '这篇';
+    $('menuSub').textContent = paneClosed
+      ? (authed ? '草稿和文章在左边那个抽屉里；这里只管登录、导入导出。' : '未登录：本机草稿不显示，也读不到仓库信息。')
+      : (authed
+        ? '保存＝存进这台设备，并备份到云端；发布＝写进仓库。'
+        : '未登录：草稿只存在这台设备上，登录后可在设备之间同步。');
+
+    $('rowSave').hidden = paneClosed;
+    $('rowPublish').hidden = paneClosed;
+    $('rowExport').hidden = paneClosed;
+    $('rowClear').hidden = paneClosed;
+    $('actionsBtn').setAttribute('aria-label', paneClosed ? '登录与设置' : '保存与发布');
   }
 
   /* ------------------------------ 文章列表 ------------------------------ */
@@ -2303,7 +2377,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function renderDraftList() {
     var list = $('draftList');
     list.innerHTML = '';
+
+    // 未登录：连本机那份草稿都不读出来，列表只留一个登录口
+    if (!authed) {
+      $('newDraft').hidden = true;
+      $('draftNum').textContent = '';
+      $('menuDraftSub').textContent = '登录后才显示本机草稿';
+      var locked = el('div', 'empty', '未登录，草稿不读取、也不显示');
+      var login = el('button', null, '登录');
+      login.addEventListener('click', function () {
+        closeSheet($('sheetDocs'));
+        setTimeout(function () { openSheet('sheetLogin'); }, 160);
+      });
+      locked.appendChild(document.createElement('br'));
+      locked.appendChild(login);
+      list.appendChild(locked);
+      renderHomePane();
+      return;
+    }
+
     var drafts = store.drafts.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    $('newDraft').hidden = false;
     $('draftNum').textContent = drafts.length > 1 ? String(drafts.length) : '';
 
     // 菜单里给一句「现在在写哪篇」，比干巴巴的「自动保存」有用；
@@ -2350,6 +2444,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
       });
       list.appendChild(row);
     });
+
+    // 入口页上那个「草稿 N」跟着这份列表一起变
+    renderHomePane();
   }
 
   function renderRecentList() {
@@ -2543,6 +2640,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (existing) {
       store.activeId = existing.id;
       persist();
+      reopenPane();
       loadActive();
       closeSheet($('sheetDocs'));
       return;
@@ -2558,6 +2656,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     store.drafts.unshift(draft);
     store.activeId = draft.id;
     persist();
+    reopenPane();
     loadActive();
     closeSheet($('sheetDocs'));
     docEl.scrollTop = 0;
@@ -2568,7 +2667,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function renderEditBar() {
     var draft = activeDraft();
-    var editing = Boolean(draft && draft.edit);
+    var editing = Boolean(draft && draft.edit) && !paneClosed;
     editBar.hidden = !editing;
     $('rowOpen').hidden = !editing;
     $('rowDetach').hidden = !editing;
@@ -2781,6 +2880,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   /** 底部纸脊上写清楚「收起来的是哪一篇」，别让人对着空壳猜。 */
   function paintFoldStrip() {
+    // 入口页上根本没有打开的稿子，这时候纸脊只是一条把手，别报标题和字数
+    if (paneClosed) {
+      $('foldTitle').textContent = '回到入口';
+      $('foldMeta').textContent = '';
+      return;
+    }
     var draft = activeDraft();
     var title = (titleEl.value || (draft && draft.title) || '').trim();
     var words = wordCount(bodyEl.value);
@@ -2899,8 +3004,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     } else if (top < tbAnchor - 6) { tbAnchor = top; setTopbarAway(false); }
   }, { passive: true });
 
-  /* --------------------------- 关掉当前稿 ---------------------------
-     关掉不是删掉：内容还在草稿里。关掉以后不摆一张空白纸，而是给三个去处。
+  /* --------------------------- 入口页 ---------------------------
+     关掉不是删掉：内容还在草稿里。所以这里不摆一张空白纸，而是给几个去处。
+     页面默认也落在这里（见启动段），刷新、重开都不会直接把人丢进编辑器。
   */
   var paneClosed = false;
 
@@ -2915,11 +3021,39 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function renderHomePane() {
-    var open = store.drafts.filter(function (draft) { return hasContent(draft); });
+    var open = authed && store ? store.drafts.filter(function (draft) { return hasContent(draft); }) : [];
+
+    $('hpTitle').textContent = authed
+      ? (open.length ? '接着写点什么' : '写点什么')
+      : '还没解锁';
+    $('hpSub').textContent = authed
+      ? (open.length ? '手上有 ' + open.length + ' 篇没收尾，随时能接上。' : '先落几个字，剩下的慢慢来。')
+      : '登录后才显示这台设备上的草稿，也才能写新的。';
+    $('hpNewLabel').textContent = authed ? '写新的一篇' : '登录';
+    // 加号配「登录」太怪，未解锁时只留文字
+    $('hpNewIco').style.display = authed ? '' : 'none';
+
     $('hpDraftNum').textContent = open.length ? String(open.length) : '';
-    $('hpDraftSub').textContent = open.length
-      ? open.length + ' 篇没写完的，随时能接上'
-      : '还没有草稿，写一篇吧';
+    $('hpDraftSub').textContent = !authed
+      ? '登录后显示'
+      : (open.length ? open.length + ' 篇没写完的，随时能接上' : '还没有草稿，写一篇吧');
+  }
+
+  /** 落到入口页：没有任何「这篇」的信息，顶栏和纸脊都不该再报字数与同步。 */
+  function enterHome() {
+    // 先滚回顶上再藏：藏起来以后 .doc 没有布局，scrollTop 赋值就不作数了
+    docEl.scrollTop = 0;
+    paneClosed = true;
+    appEl.classList.add('closed');
+    setTopbarAway(false);
+    if (foldOpen) setPeek(false);
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    setSaveState('未打开', '');
+    renderHomePane();
+    renderDraftList();
+    renderActionsSheet();
+    paintFoldStrip();
+    peekEl.scrollTop = 0;
   }
 
   function closeCurrent() {
@@ -2933,17 +3067,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (!store.drafts.length) store.drafts.push(blankDraft());
     store.activeId = store.drafts[0].id;
     persist();
-    // 先滚回顶上再藏：藏起来以后 .doc 没有布局，scrollTop 赋值就不作数了
-    docEl.scrollTop = 0;
-    paneClosed = true;
-    appEl.classList.add('closed');
-    setTopbarAway(false);
-    if (foldOpen) setPeek(false);
-    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    setSaveState('未打开', '');
-    renderHomePane();
-    renderDraftList();
-    peekEl.scrollTop = 0;
+    enterHome();
   }
 
   $('hpNew').addEventListener('click', function () { startNewDraft(); });
@@ -3282,7 +3406,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
         closeSheet($('sheetLogin'));
         toast('登录成功', 'ok');
         applyAuthState();
-        loadTags();
         loadRecent(true);
         if (pendingPublish) {
           pendingPublish = false;
@@ -3644,6 +3767,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function importFiles(list) {
+    // 导入的是草稿，得先有能存草稿的地方
+    if (!authed) { toast('先登录，再导入', null, 2400); openSheet('sheetLogin'); return; }
     var files = Array.prototype.slice.call(list || []).filter(function (file) {
       return file && file.name && file.size <= 4 * 1024 * 1024;
     }).slice(0, 20);
@@ -3677,6 +3802,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       if (!added.length) { toast('这些文件里没读到内容'); return; }
       store.activeId = added[0].id;
       persist();
+      reopenPane();
       loadActive();
       renderDraftList();
       added.forEach(function (draft) { markDirty(draft.id); });
@@ -3790,8 +3916,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   renderInstallTip();
 
+  /* 默认落点：入口页。未登录时 store 只是一份内存里的空稿，
+     本机草稿要等 checkAuth 通过（unlockStore）才读出来。 */
   loadStore();
   loadActive();
+  enterHome();
 
   var savedScale = Number(localStorage.getItem(SCALE_KEY));
   if (savedScale >= 0.85 && savedScale <= 1.35) applyReadScale(savedScale, false);
@@ -3811,7 +3940,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   window.addEventListener('online', function () { if (authed) scheduleSync(400); });
 
   checkAuth();
-  checkHealth();
+  // checkHealth 挂在 applyAuthState 里：没登录时不该去问仓库和图床的地址
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {

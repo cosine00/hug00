@@ -261,8 +261,11 @@ async function route(request, env, url, ctx) {
     return handleUnsubscribe(request, env, url);
   }
 
-  // 撰写页：配置自检不涉及密钥内容，公开读；上传与提交都走后台鉴权
+  // 撰写页：配置自检会吐出仓库名、分支和 R2 公开地址，属于不该外露的信息，
+  // 所以和发布、传图一样要过后台鉴权（页面未登录时也不会来问）。
   if (path === '/api/write/health') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
     return handleWriteHealth(env);
   }
 
