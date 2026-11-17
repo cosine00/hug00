@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>写文章</title>
+<title>上新啦</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcf9">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1114">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="写文章">
+<meta name="apple-mobile-web-app-title" content="上新啦">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="/beta/manifest.webmanifest">
@@ -1444,7 +1444,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function refreshSaveState() {
     // 关掉以后顶栏这行不该再报「已存 20:16」——那说的是刚才那篇
-    if (paneClosed) { setSaveState('未打开', ''); return; }
+    if (paneClosed) { setSaveState('就绪', ''); return; }
     var draft = activeDraft();
     if (!draft) return;
     // 用户又敲字了就别抢这行字，等下一次 flushSave
@@ -3053,7 +3053,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     setTopbarAway(false);
     if (foldOpen) setPeek(false);
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    setSaveState('未打开', '');
+    setSaveState('就绪', '');
     renderHomePane();
     renderDraftList();
     renderActionsSheet();
