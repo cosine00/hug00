@@ -27,3 +27,8 @@ node_modules
 
 # Hugo 图片处理的缓存（assets 里的封面会被裁切成 webp/jpg）
 resources/_gen
+
+# 本地预览/截图产生的临时目录
+.chrome-*/
+.hugo-preview/
+static/write/__preview-seed.html

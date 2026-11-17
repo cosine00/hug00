@@ -125,8 +125,15 @@ endLevel = 6
 ordered = false
 startLevel = 1
 
-# 首页只输出 HTML 与 RSS。/index.json（约 800KB）原先是本地搜索的数据源，
-# 搜索功能已下线（content/search.md、search.js、fastsearch.js 均已移除），故不再生成。
+# 首页输出 HTML + RSS，另外多一个 write-index.json。
+# 它只有文章路径、标题和 front matter 日期（约 30KB），给 /update/ 的「最近五篇」按真实日期排序。
+# 注：以前的 /index.json（约 800KB）是本地搜索的数据源，搜索已下线，不再生成。
+[outputFormats.WriteIndex]
+  mediaType = "application/json"
+  baseName = "write-index"
+  isPlainText = true
+  notAlternative = true
+
 [outputs]
-  home = ["HTML","RSS"]
+  home = ["HTML","RSS","WriteIndex"]
   page = ["HTML"]

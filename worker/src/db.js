@@ -92,6 +92,23 @@ const SCHEMA = [
      revoked_at   INTEGER
    )`,
   `CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires ON admin_sessions (expires_at)`,
+  // 撰写页草稿：本机仍然是工作副本，这张表只负责把草稿搬到另一台设备。
+  // 时间戳统一用毫秒（前端 Date.now() 直传），排序和「谁新谁胜」都靠它。
+  `CREATE TABLE IF NOT EXISTS write_drafts (
+     id           TEXT PRIMARY KEY,
+     title        TEXT    NOT NULL DEFAULT '',
+     body         TEXT    NOT NULL DEFAULT '',
+     tags         TEXT    NOT NULL DEFAULT '[]',
+     slug         TEXT    NOT NULL DEFAULT '',
+     edit_path    TEXT,
+     edit_name    TEXT,
+     edit_url     TEXT,
+     published_at INTEGER NOT NULL DEFAULT 0,
+     created_at   INTEGER NOT NULL,
+     updated_at   INTEGER NOT NULL,
+     deleted_at   INTEGER NOT NULL DEFAULT 0
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at)`,
 ];
 
 // 已有库（CREATE TABLE 不会补列）需要单独加字段，报「重复列」时忽略即可
@@ -121,7 +138,7 @@ const NO_REVIEW_FLAG = 'migrate:no-review';
 const SCHEMA_VERSION_KEY = 'schema:version';
 // 加表/加列都要升版本号，否则老库会走「版本一致就跳过建表」的捷径，
 // 新表永远建不出来（首次请求直接 no such table）。
-const SCHEMA_VERSION = '4';
+const SCHEMA_VERSION = '5';
 
 function normalizeArgs(args) {
   return args.map((v) => {

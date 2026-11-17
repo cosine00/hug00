@@ -26,10 +26,24 @@ COMMENTS_MAIL_ACCENT = "#6870a8"
 # 站点主页：邮件页脚里的品牌名会链到这里
 COMMENTS_SITE_URL = "https://hux.ink"
 
+# ── 撰写页（/write/）用的配置 ───────────────────────────────
+# 密钥不放这里，用 `npx wrangler secret put GITHUB_TOKEN` 写进 secrets。
+WRITE_GITHUB_REPO = "cosine00/hug00"
+WRITE_GITHUB_BRANCH = "master"
+# 标签候选从站点的 /tags/ 页抓，改域名时这里也要跟着改
+WRITE_SITE_ORIGIN = "https://hux.ink"
+# 图床公开域名。R2 自定义域已指向 img.hux.ink，这里只拼 URL 用
+R2_PUBLIC_URL = "https://img.hux.ink"
+
 # 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
 [[routes]]
 pattern = "comments.hux.ink/*"
 zone_name = "hux.ink"
+
+# R2 桶绑定：沿用现有的图床桶，自定义域 img.hux.ink 就指向它
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "image"
 
 [observability]
 enabled = true

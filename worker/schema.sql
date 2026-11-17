@@ -86,3 +86,22 @@ CREATE TABLE IF NOT EXISTS comment_rate_events (
 
 CREATE INDEX IF NOT EXISTS idx_comment_rate_actor_time
   ON comment_rate_events (actor_hash, created_at);
+
+-- 撰写页草稿：本机仍是工作副本，这张表只用来在设备之间搬运。
+-- 删除用软删（deleted_at），否则另一端丢掉草稿后，这边又会把它推回去。
+CREATE TABLE IF NOT EXISTS write_drafts (
+  id           TEXT PRIMARY KEY,
+  title        TEXT    NOT NULL DEFAULT '',
+  body         TEXT    NOT NULL DEFAULT '',
+  tags         TEXT    NOT NULL DEFAULT '[]',
+  slug         TEXT    NOT NULL DEFAULT '',
+  edit_path    TEXT,
+  edit_name    TEXT,
+  edit_url     TEXT,
+  published_at INTEGER NOT NULL DEFAULT 0,
+  created_at   INTEGER NOT NULL,
+  updated_at   INTEGER NOT NULL,
+  deleted_at   INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at);

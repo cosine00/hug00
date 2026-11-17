@@ -17,6 +17,15 @@
  *   POST /api/comments/admin/import     { items: [...] }
  *   GET  /api/comments/admin/export
  *   GET  /api/bili?bvid=&cid=             影彩页取 B 站 720P 直链（代取，绕 CORS）
+ *
+ *   GET  /api/write/health               撰写页配置自检（GitHub / R2 是否就位）
+ *   GET  /api/write/posts?limit=5        最近发布的文章（含正文），用于选一篇来改
+ *   GET  /api/write/images?limit=10      R2 最近上传的图片
+ *   GET  /api/write/tags                 已有标签候选（抓站点的 /tags/ 页，缓存 15 分钟）
+ *   POST /api/write/upload               原始图片字节 → R2，返回公开地址
+ *   POST /api/write/post                 新建文章；带 path 则原地更新那个文件
+ *   GET  /api/write/drafts               云端草稿列表（?since=毫秒）
+ *   POST /api/write/drafts               批量上行草稿，冲突按 updated_at 判
  */
 
 import {
@@ -38,6 +47,7 @@ import {
   unsubscribeComment,
 } from './service.js';
 import { notifyNewComment, notifyReply } from './mail.js';
+import { handleWriteDraftsGet, handleWriteDraftsSave, handleWriteHealth, handleWriteImages, handleWritePost, handleWritePosts, handleWriteTags, handleWriteUpload } from './write.js';
 import {
   buildSessionCookie,
   createSession,
@@ -243,6 +253,50 @@ async function route(request, env, url, ctx) {
 
   if (path === '/api/comments/unsubscribe' || path === '/comments/unsubscribe') {
     return handleUnsubscribe(request, env, url);
+  }
+
+  // 撰写页：配置自检不涉及密钥内容，公开读；上传与提交都走后台鉴权
+  if (path === '/api/write/health') {
+    return handleWriteHealth(env);
+  }
+
+  if (path === '/api/write/posts') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    return handleWritePosts(env, url);
+  }
+
+  if (path === '/api/write/tags') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    return handleWriteTags(env);
+  }
+
+  if (path === '/api/write/images') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    return handleWriteImages(env, url);
+  }
+
+  if (path === '/api/write/upload') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    return handleWriteUpload(request, env);
+  }
+
+  if (path === '/api/write/post') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    return handleWritePost(request, env);
+  }
+
+  // 草稿同步：读走 GET，写走 POST（批量 upsert，同 id 按 updated_at 定胜负）
+  if (path === '/api/write/drafts') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    if (request.method === 'GET') return handleWriteDraftsGet(env, url);
+    if (request.method === 'POST') return handleWriteDraftsSave(request, env);
+    return fail(405, 'method_not_allowed', '草稿接口只接受 GET 和 POST');
   }
 
   return fail(404, 'not_found', '接口不存在');

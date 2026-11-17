@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>写作页搬到 /update/ 了</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="/update/">
+<style>
+  html,body{margin:0;height:100%;background:#fdfcf9;color:#111114;
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+  @media (prefers-color-scheme:dark){html,body{background:#0f1114;color:#e8e9ee}}
+  .box{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center}
+  a{color:#b45c42}
+</style>
+<script>
+  /* 写作页从 /write/ 搬到 /update/。
+     老的主屏 App 还指着这个地址，所以在这里交接：先注销旧 Service Worker，
+     再跳过去，否则缓存里的旧壳会一直盖着新页面。 */
+  (function () {
+    function go() { location.replace('/update/' + location.search + location.hash); }
+    if (!('serviceWorker' in navigator)) { go(); return; }
+    navigator.serviceWorker.getRegistrations().then(function (list) {
+      return Promise.all(list
+        .filter(function (reg) { return reg.scope.indexOf('/write/') === 0; })
+        .map(function (reg) { return reg.unregister(); }));
+    }).catch(function () {}).then(function () { setTimeout(go, 40); });
+  })();
+</script>
+</head>
+<body>
+<div class="box">
+  <p>写作页已经搬到 <a href="/update/">/update/</a>。</p>
+  <p style="font-size:13px;opacity:.6">没有自动跳转就点上面的链接。</p>
+</div>
+</body>
+</html>

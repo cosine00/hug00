@@ -1,0 +1,12 @@
+{{- $posts := slice -}}
+{{- range where .Site.RegularPages.ByDate.Reverse "Section" "posts" -}}
+  {{- if not .Draft -}}
+    {{- $posts = $posts | append (dict
+      "path" (printf "content/%s" (replace .File.Path "\\" "/"))
+      "title" .Title
+      "date" (.Date.Format "2006-01-02 15:04:05")
+      "url" .RelPermalink
+    ) -}}
+  {{- end -}}
+{{- end -}}
+{{- dict "generatedAt" (now.Format "2006-01-02T15:04:05Z07:00") "posts" $posts | jsonify -}}

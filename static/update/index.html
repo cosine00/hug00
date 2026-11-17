@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>写文章</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcf9">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1114">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="写文章">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="/update/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/update/icon-180.png">
+<link rel="icon" href="/update/icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#ffffff; --desk:#f5f0ea; --panel:#ffffff; --raised:#ffffff;
+  --fg:#111114; --muted:#76767d; --faint:#aeaeb4;
+  --line:rgba(60,60,67,.13); --field:#f2f2f7;
+  --accent:#b45c42; --accent-fg:#fff; --danger:#e0503c; --ok:#4f9668;
+  --glass:rgba(248,248,252,.58); --glass-top:rgba(255,255,255,.82);
+  --glass-edge:rgba(255,255,255,.84); --glass-shadow:rgba(31,38,54,.18);
+  /* 悬浮工具条与弹层用更厚的玻璃：前者要托住按钮，后者要托住文字 */
+  --glass-bar:rgba(250,250,253,.62); --glass-panel:rgba(253,253,255,.92);
+  --glass-line:rgba(255,255,255,.72);
+  --app-grad:linear-gradient(180deg,#fdfcf9 0%,#f8f3ed 54%,#f1eae2 100%);
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --app-h:100vh; --vv-top:0px;
+  --ease:cubic-bezier(.32,.72,0,1);
+  /* 行号列：--gut 是「行号宽 + 间距」，标题、元信息、工具栏都按它缩进，左缘才对得齐 */
+  --padl:16px; --gut:30px; --read:1;
+}
+@media (prefers-color-scheme:dark){
+  /* 深色不铺纯黑：一层带冷调的近黑，中间稍亮，玻璃才托得起来 */
+  :root{ --bg:#0f1114; --desk:#0a0b0e; --panel:#1a1c21; --raised:#24262c;
+    --fg:#e8e9ee; --muted:#9a9ca5; --faint:#6b6d76;
+    --line:rgba(255,255,255,.09); --field:#1b1d23;
+    --accent:#e6a08b; --accent-fg:#fff; --danger:#f07b68; --ok:#6cc99a;
+    --glass:rgba(40,44,52,.62); --glass-top:rgba(60,65,74,.62);
+    --glass-edge:rgba(255,255,255,.10); --glass-shadow:rgba(0,0,0,.52);
+    --glass-bar:rgba(34,38,45,.76); --glass-panel:rgba(28,30,36,.95);
+    --glass-line:rgba(255,255,255,.075);
+    --app-grad:radial-gradient(96% 68% at 50% -8%,#222732 0%,#161922 42%,#0b0c0f 100%); }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);color:var(--fg)}
+body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+  -webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit;font-family:inherit}
+button{border:.5px solid var(--glass-edge);background:linear-gradient(180deg,var(--glass-top),var(--glass));padding:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.46),inset 0 -.5px 0 rgba(60,60,67,.08),0 8px 22px -16px var(--glass-shadow);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+button:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 34%,transparent);outline-offset:2px}
+input,textarea{-webkit-user-select:text;user-select:text}
+::selection{background:color-mix(in srgb,var(--accent) 24%,transparent)}
+
+/* ── 骨架：跟着 visualViewport 走，键盘弹出时整体收窄 ── */
+.app{position:fixed;left:0;right:0;top:var(--vv-top);height:var(--app-h);display:flex;flex-direction:column;
+  background:var(--app-grad);overflow:hidden}
+
+/* ── 顶栏：悬浮的玻璃胶囊，正文从它下面滚过 ── */
+.topbar{flex:0 0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;
+  min-height:52px;margin:calc(var(--sat) + 8px) 8px 0;padding:4px 8px;border-radius:20px;
+  background:var(--glass-bar);border:.5px solid var(--glass-edge);
+  box-shadow:inset 0 1px 0 var(--glass-line),0 12px 30px -22px var(--glass-shadow);
+  backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);
+  z-index:4}
+.tb-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  justify-self:start;
+  color:var(--accent);background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .16s var(--ease),transform .16s var(--ease)}
+.tb-btn:active{background:color-mix(in srgb,var(--accent) 10%,transparent);transform:scale(.92)}
+.tb-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tb-btn svg.dots{fill:currentColor;stroke:none}
+.tb-btn-end{justify-self:end}
+.tb-right{display:flex;align-items:center;gap:2px;justify-self:end}
+.save{font-size:11.5px;color:var(--faint);letter-spacing:.01em;text-align:center;white-space:nowrap;
+  font-variant-numeric:tabular-nums;transition:color .2s var(--ease)}
+.save.saved{color:var(--muted)}
+
+/* ── 更新模式提示条 ── */
+.editbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:6px 8px 0;padding:8px 14px;
+  border-radius:14px;background:color-mix(in srgb,var(--accent) 12%,transparent);
+  border:.5px solid color-mix(in srgb,var(--accent) 20%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34);
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+  font-size:12px;color:var(--muted)}
+.editbar[hidden]{display:none}
+.editbar .eb-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.editbar .eb-text b{color:var(--fg);font-weight:600}
+.editbar button{color:var(--accent);font-size:11.5px;font-weight:500;letter-spacing:.014em;flex:0 0 auto;padding:2px 0;
+  background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* ── 未登录提示条 ── */
+.banner{flex:0 0 auto;display:flex;align-items:center;gap:12px;margin:9px 12px 0;padding:10px 12px 10px 14px;
+  border-radius:14px;background:color-mix(in srgb,var(--accent) 9%,var(--bg));
+  border:.5px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.banner[hidden]{display:none}
+.banner-txt{min-width:0;flex:1}
+.banner-txt b{display:block;font-size:13.5px;font-weight:600;letter-spacing:.01em}
+.banner-txt span{display:block;font-size:12px;color:var(--muted);line-height:1.45;margin-top:1px}
+.banner button{flex:0 0 auto;background:color-mix(in srgb,var(--accent) 78%,transparent);color:var(--accent-fg);font-size:12.5px;font-weight:500;letter-spacing:.014em;
+  padding:8px 15px;border-radius:999px}
+.banner button:active{transform:scale(.95)}
+
+/* ── 正文区：整页是一篇文档，标题、元信息、正文都在同一滚动流里 ── */
+.doc{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.doc{scrollbar-color:rgba(122,102,88,.28) transparent}
+.doc::-webkit-scrollbar{width:10px}
+.doc::-webkit-scrollbar-track{background:transparent}
+.doc::-webkit-scrollbar-thumb{background:transparent;border-radius:6px;border:3px solid transparent;background-clip:content-box}
+.doc:hover::-webkit-scrollbar-thumb{background:rgba(122,102,88,.28);background-clip:content-box}
+.preview-body,.sheet-panel,.tagpicks{scrollbar-width:thin;scrollbar-color:rgba(120,120,128,.3) transparent}
+.doc-inner{max-width:660px;margin:0 auto;padding:6px var(--padl) calc(var(--sab) + 40px)}
+#title{display:block;width:100%;border:0;background:none;outline:none;resize:none;overflow:hidden;
+  font-size:29px;font-weight:720;line-height:1.22;letter-spacing:-.022em;
+  padding:18px 0 4px var(--gut);min-height:48px;
+  caret-color:var(--accent)}
+#title::placeholder{color:var(--faint);font-weight:700}
+/* 正文与行号并排：行号在左、随文档一起滚，不单独滚动 */
+.bodywrap{display:flex;align-items:flex-start;gap:10px}
+.bodywrap>#body{flex:1;min-width:0}
+#body{display:block;width:100%;border:0;background:none;outline:none;resize:none;overflow:hidden;
+  font-size:calc(17px * var(--read));line-height:1.74;padding:18px 0 0;min-height:44vh;
+  letter-spacing:.002em;caret-color:var(--accent)}
+#body::placeholder{color:var(--faint)}
+.gutter{position:relative;flex:0 0 20px;width:20px;margin-top:18px;height:0;
+  font-size:10.5px;text-align:right;color:var(--faint);
+  font-variant-numeric:tabular-nums;letter-spacing:0;
+  pointer-events:none;-webkit-user-select:none;user-select:none;
+  opacity:0;transition:opacity .2s var(--ease)}
+.gutter.on{opacity:1}
+.gutter span{position:absolute;right:0;white-space:nowrap;font-size:10.5px}
+/* 量换行用的镜像：宽度、字体、行高都和 textarea 一致，只用来算每行占几行高 */
+.gutter-mirror{position:absolute;left:-9999px;top:0;visibility:hidden;pointer-events:none;
+  padding:0;border:0;white-space:pre-wrap;overflow-wrap:break-word}
+
+/* ── 元信息行：标签 / 链接别名 ── */
+.meta{padding:8px 0 0;margin-left:var(--gut)}
+.meta-toggle{display:flex;align-items:center;gap:7px;max-width:100%;height:29px;padding:0 10px;color:var(--muted);
+  font-size:12.5px;letter-spacing:.012em;text-align:left;border-radius:9px;
+  background:color-mix(in srgb,var(--accent) 7%,transparent);
+  border:.5px solid color-mix(in srgb,var(--accent) 15%,transparent);
+  box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:color .16s var(--ease),background .16s var(--ease)}
+.meta-toggle:active{color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.meta-toggle .meta-icon{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.meta-toggle .meta-summary{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta-toggle .meta-chevron{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .2s var(--ease)}
+.meta-toggle[aria-expanded="true"] .meta-chevron{transform:rotate(180deg)}
+.meta-fields{margin-top:7px;border-radius:13px;background:var(--field);padding:3px 12px}
+.mline{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:42px}
+.mline+.mline{border-top:.5px solid var(--line)}
+.mlabel{flex:0 0 34px;font-size:12px;color:var(--muted);letter-spacing:.01em;padding-right:2px}
+.tagchip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 9px 0 10px;border-radius:8px;
+  background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+  font-size:13.5px;font-weight:500;letter-spacing:.01em}
+.tagchip:active{opacity:.6}
+.tagchip svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;opacity:.65}
+.taginput{flex:1 1 96px;min-width:96px;height:26px;border:0;background:none;outline:none;
+  font-size:16px;color:var(--fg);padding:0}
+.taginput::placeholder{color:var(--faint);font-size:13px}
+.slugfix{font-size:16px;color:var(--faint);flex:0 0 auto}
+.sluginput{flex:1 1 90px;min-width:80px;height:26px;border:0;background:none;outline:none;
+  font-size:16px;color:var(--fg);padding:0}
+.sluginput::placeholder{color:var(--faint);font-size:13px}
+
+/* 标签候选：在标签行下面原地展开。浮层方案会盖住上面的折叠按钮，键盘一弹又被顶到看不见的地方 */
+.tagpicks{display:none;margin:1px 0 9px;padding:4px;border-radius:11px;
+  background:var(--panel);border:.5px solid var(--line);
+  max-height:min(42vh,300px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:rgba(120,120,128,.32) transparent;
+  box-shadow:0 10px 26px -24px rgba(0,0,0,.55)}
+.tagpicks.open{display:block}
+.tp-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:7px;
+  font-size:13.5px;letter-spacing:.01em;text-align:left;color:var(--fg);
+  background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.tp-item:active{background:var(--field)}
+@media (hover:hover){ .tp-item:hover{background:var(--field)} }
+.tp-item .tp-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-item .tp-n{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.tp-item.new .tp-name{color:var(--accent)}
+.tp-empty{padding:10px 12px;font-size:12.5px;color:var(--faint)}
+
+/* ── 工具行：就在标题上方，不再贴在键盘上 ── */
+.dock{flex:0 0 auto;z-index:4;width:100%;max-width:660px;margin:2px auto 0;padding:0 var(--padl);
+  display:flex;flex-direction:column}
+.fmtbar{display:none;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  padding:2px 2px 10px var(--gut)}
+.fmtbar::-webkit-scrollbar{display:none}
+.fmtbar.open{display:flex}
+.chip{flex:0 0 auto;height:32px;padding:0 11px;border-radius:10px;
+  font-size:12.5px;font-weight:500;letter-spacing:.012em;color:var(--fg);display:flex;align-items:center;white-space:nowrap;
+  background:linear-gradient(180deg,var(--glass-top),var(--glass));
+  border:.5px solid var(--glass-edge);box-shadow:inset 0 1px 0 var(--glass-line);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:transform .14s var(--ease),background .14s var(--ease)}
+.chip:active{transform:scale(.94)}
+.chip.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;letter-spacing:0}
+.chip.undo{color:var(--muted)}
+.toolbar{display:flex;align-items:center;gap:2px;padding:0 0 0 var(--gut);height:44px}
+.toolbar>.tool:first-child{margin-left:-11px}
+.tool{height:44px;min-width:44px;padding:0 2px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  color:var(--accent);background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .15s var(--ease),transform .15s var(--ease),color .15s var(--ease)}
+.tool:active{background:color-mix(in srgb,var(--accent) 9%,transparent);transform:scale(.93)}
+.tool.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.tool svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.tool.aa{font-size:15px;font-weight:500;letter-spacing:-.015em}
+.count{margin-left:auto;padding:0 8px;font-size:11.5px;color:var(--faint);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+/* 字号调节：两个键合成一个小胶囊，和右边的字数统计分开，免得看成「A− A＋ 77 字」 */
+.sizegroup{display:flex;align-items:center;margin-left:auto;flex:0 0 auto;overflow:hidden;
+  border-radius:9px;border:.5px solid color-mix(in srgb,var(--accent) 16%,transparent);
+  background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.tool.size{min-width:27px;height:27px;padding:0 4px;border-radius:0;font-size:11.5px;font-weight:500;
+  letter-spacing:0;color:var(--accent);background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.tool.size+.tool.size{border-left:.5px solid color-mix(in srgb,var(--accent) 14%,transparent)}
+.tool.size:active{background:color-mix(in srgb,var(--accent) 16%,transparent);transform:none}
+.sizegroup+.count{margin-left:0;padding-left:8px}
+
+/* ── 面板 ── */
+.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .26s var(--ease)}
+.sheet.open{opacity:1;pointer-events:auto}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(18,18,24,.24);-webkit-backdrop-filter:blur(10px) saturate(120%);backdrop-filter:blur(10px) saturate(120%)}
+.sheet-panel{position:relative;width:100%;max-width:560px;background:var(--glass-panel);
+  border:.5px solid var(--glass-edge);border-bottom:0;border-radius:22px 22px 0 0;
+  padding:8px 20px calc(var(--sab) + 18px);transform:translateY(100%);transition:transform .32s var(--ease);
+  box-shadow:inset 0 1px 0 var(--glass-line),0 -10px 50px rgba(0,0,0,.20);
+  backdrop-filter:blur(34px) saturate(185%);-webkit-backdrop-filter:blur(34px) saturate(185%);
+  max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sheet.open .sheet-panel{transform:translateY(0)}
+@media (min-width:620px){
+  .sheet{align-items:center}
+  .sheet-panel{border-radius:22px;border-bottom:.5px solid var(--glass-edge);transform:translateY(12px) scale(.98);padding-bottom:22px;max-height:80vh}
+  .sheet.open .sheet-panel{transform:translateY(0) scale(1)}
+}
+/* ── 抽屉：左右两侧的面板，横向推入而不是从下往上 ── */
+.sheet.drawer{align-items:stretch;justify-content:flex-start}
+.sheet.drawer.right{justify-content:flex-end}
+.sheet-panel.drawer-panel{width:min(320px,84vw);max-width:none;height:100%;max-height:none;
+  border-radius:0 20px 20px 0;border-left:0;border-bottom:.5px solid transparent;border-right:.5px solid var(--glass-edge);
+  padding:calc(var(--sat) + 18px) 18px calc(var(--sab) + 18px);
+  transform:translateX(-102%);
+  box-shadow:inset 0 1px 0 var(--glass-line),14px 0 60px -30px rgba(0,0,0,.5);
+  transition:transform .36s var(--ease);overflow-y:auto;overscroll-behavior:contain}
+.sheet-panel.drawer-panel.from-right{border-radius:20px 0 0 20px;border-right:0;border-left:.5px solid var(--glass-edge);
+  transform:translateX(102%);
+  box-shadow:inset 0 1px 0 var(--glass-line),-14px 0 60px -30px rgba(0,0,0,.5)}
+.sheet.open .sheet-panel.drawer-panel{transform:translateX(0)}
+.sheet-panel.drawer-panel .grabber{display:none}
+.sheet-panel.drawer-panel h2{font-size:16px}
+.grabber{width:36px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 14px}
+@media (min-width:620px){ .grabber{display:none} }
+.sheet h2{margin:0 0 4px;font-size:17px;font-weight:600;letter-spacing:.005em}
+.sheet .sub{margin:0 0 16px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.field{display:block;margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;letter-spacing:.02em}
+.field input{width:100%;border:0;background:var(--field);border-radius:11px;padding:12px 13px;font-size:16px;outline:none}
+.field input::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:6px}
+.btn{flex:1;height:44px;border-radius:12px;font-size:14px;font-weight:500;letter-spacing:.014em;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--glass-top),var(--glass));border:.5px solid var(--glass-edge);
+  box-shadow:inset 0 1px 0 var(--glass-line),0 10px 24px -20px var(--glass-shadow);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:transform .16s var(--ease),opacity .16s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn-primary{color:var(--accent-fg);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 82%,white 18%),color-mix(in srgb,var(--accent) 94%,transparent));
+  border-color:color-mix(in srgb,var(--accent) 48%,white 52%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 12px 26px -18px color-mix(in srgb,var(--accent) 60%,transparent)}
+.btn-ghost{color:var(--fg)}
+.btn[disabled]{opacity:.5}
+.rows{display:grid;gap:0;margin:0 0 4px;border-top:0}
+/* 行间只用一条直线分隔：带圆角的下边框会在两端翘起来，像一张张小卡片 */
+.rows .row{border-radius:0;border-bottom:.5px solid var(--line)}
+.rows .row:last-child{border-bottom:0}
+.rows .row:active{background:rgba(120,120,128,.11);opacity:1}
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;border-radius:14px;
+  font-size:14.5px;letter-spacing:.012em;text-align:left;color:var(--fg);background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  border-bottom:.5px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row:active{opacity:.55}
+.row .k{flex:1;min-width:0}
+.row .v{color:var(--muted);font-size:13px;flex:0 0 auto;max-width:54%;text-align:right;word-break:break-all}
+.row.accent{color:var(--accent);font-weight:500}
+.row.danger{color:var(--danger)}
+.kv{display:flex;justify-content:space-between;gap:14px;font-size:12.5px;color:var(--muted);padding:4px 2px}
+.kv b{color:var(--fg);font-weight:500;text-align:right;word-break:break-all}
+.sect{font-size:11.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 4px}
+
+/* ── 文章列表入口：纵向菜单 ── */
+.menu-list{display:flex;flex-direction:column;margin:14px 0 0;border-radius:16px;overflow:hidden;
+  background:rgba(120,120,128,.07);border:.5px solid var(--line)}
+.menu-list[hidden]{display:none}
+.menu-row{display:flex;align-items:center;gap:13px;width:100%;padding:14px;text-align:left;
+  background:transparent;border:0;border-bottom:.5px solid var(--line);box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .16s var(--ease)}
+.menu-row:last-child{border-bottom:0}
+.menu-row:active{background:rgba(120,120,128,.13)}
+.mr-ico{flex:0 0 auto;width:22px;height:22px;stroke:var(--accent);fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.mr-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mr-title{font-size:14.5px;font-weight:500;color:var(--fg);letter-spacing:.012em}
+.mr-sub{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mr-badge{flex:0 0 auto;min-width:21px;height:21px;padding:0 6px;border-radius:11px;
+  background:rgba(120,120,128,.15);color:var(--muted);font-size:11.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.mr-badge:empty{display:none}
+.mr-chev{flex:0 0 auto;width:17px;height:17px;stroke:var(--faint);fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sheet-head{display:flex;align-items:center;gap:1px;margin:0 0 4px}
+.sheet-head h2{margin:0}
+.head-back{flex:0 0 auto;width:30px;height:30px;margin-left:-8px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--accent);
+  background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .15s var(--ease)}
+.head-back[hidden]{display:none}
+.head-back:active{background:rgba(120,120,128,.15)}
+.head-back svg{width:19px;height:19px;stroke:currentColor;fill:none;
+  stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.pane{min-height:180px}
+.pane[hidden]{display:none}
+.pane-bar{display:flex;align-items:center;gap:8px;padding:8px 2px 2px}
+.pane-bar .pb-sub{flex:1;font-size:11.5px;color:var(--faint)}
+.pane-bar button{font-size:11.5px;color:var(--accent);font-weight:500;letter-spacing:.014em;padding:6px 10px;border-radius:10px;
+  background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.pane-bar button:active{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.docitem{display:flex;align-items:center;gap:12px;width:100%;padding:12px 2px;border-bottom:.5px solid var(--line);
+  text-align:left;cursor:pointer}
+.docitem:active{opacity:.6}
+.di-main{flex:1;min-width:0}
+.di-title{font-size:14px;font-weight:500;letter-spacing:.012em;letter-spacing:.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docitem.cur .di-title{color:var(--accent)}
+.di-sub{font-size:11.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.di-sub .dot{margin:0 5px;color:var(--faint)}
+.docdel{flex:0 0 auto;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  color:var(--faint)}
+.docdel:active{background:var(--field);color:var(--danger)}
+.docdel svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.newbtn{width:100%;height:44px;margin:12px 0 4px;border-radius:12px;background:linear-gradient(180deg,var(--glass-top),var(--glass));
+  border:.5px solid var(--glass-edge);box-shadow:inset 0 1px 0 var(--glass-line);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  font-size:13.5px;font-weight:500;letter-spacing:.014em;color:var(--fg);display:flex;align-items:center;justify-content:center;gap:6px}
+.newbtn:active{transform:scale(.985)}
+.empty{color:var(--muted);text-align:center;padding:40px 8px;font-size:13.5px;line-height:1.6}
+.empty button{color:var(--accent);font-weight:500;margin-top:8px;font-size:13px}
+
+/* ── 最近图片 ── */
+.image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 0 2px}
+.image-card{min-width:0;padding:7px;border:.5px solid var(--glass-edge);border-radius:16px;
+  background:linear-gradient(180deg,var(--glass-top),var(--glass));box-shadow:0 10px 28px -22px var(--glass-shadow);
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.image-thumb{display:block;width:100%;padding:0;overflow:hidden;border-radius:11px;background:color-mix(in srgb,var(--field) 72%,transparent);
+  border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.image-thumb img{display:block;width:100%;aspect-ratio:1.5;object-fit:cover}
+.image-info{padding:7px 2px 5px;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.image-actions{display:flex;gap:6px}
+.image-actions button{flex:1;height:30px;border-radius:10px;color:var(--accent);font-size:12px;font-weight:600;
+  background:transparent;border:.5px solid var(--glass-edge);box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.image-actions button:last-child{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 18%,white),color-mix(in srgb,var(--accent) 12%,transparent))}
+.image-sheet-img{display:block;width:100%;max-height:56vh;object-fit:contain;border-radius:16px;margin:4px 0 14px;background:var(--field)}
+.image-url{margin:0 0 14px;font:11px/1.45 ui-monospace,"SF Mono",Menlo,monospace;color:var(--muted);word-break:break-all}
+
+/* ── 预览 ── */
+.preview{position:fixed;inset:0;z-index:25;background:var(--app-grad);display:none;flex-direction:column}
+.preview.open{display:flex}
+.preview-bar{flex:0 0 auto;display:flex;align-items:center;gap:10px;
+  margin:calc(var(--sat) + 8px) 8px 0;padding:4px 8px;min-height:52px;border-radius:20px;
+  background:var(--glass-bar);border:.5px solid var(--glass-edge);
+  box-shadow:inset 0 1px 0 var(--glass-line),0 12px 30px -22px var(--glass-shadow);
+  backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%)}
+.preview-bar h2{flex:1;margin:0;font-size:15px;font-weight:600;text-align:center}
+.preview-close,.preview-action{font-size:15px;color:var(--accent);font-weight:600;min-width:56px;height:38px;border-radius:11px;padding:0 10px;
+  background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.preview-close:active,.preview-action:active{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.preview-action{justify-self:end}
+.preview-meta{max-width:100%;margin:0 0 22px;color:var(--muted);font-size:12.5px}
+.preview-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 22px calc(var(--sab) + 44px);
+  font-size:calc(17px * var(--read));line-height:1.78}
+.preview-body>*{max-width:100%;margin-left:auto;margin-right:auto}
+/* 只改上下边距：写成 margin 简写会把上面居中用的 auto 左右边距一起盖掉 */
+.preview-body h1,.preview-body h2,.preview-body h3{line-height:1.35;margin-block:1.5em .55em;letter-spacing:-.01em}
+.preview-body h1{font-size:1.48em} .preview-body h2{font-size:1.26em} .preview-body h3{font-size:1.1em}
+.preview-body p{margin-block:.9em}
+.preview-body img{max-width:100%;border-radius:12px;display:block;margin-block:1.1em;margin-inline:auto}
+.preview-body blockquote{margin-block:1.1em;padding:.15em 0 .15em 1em;border-left:3px solid var(--line);color:var(--muted)}
+.preview-body code{background:var(--field);padding:.15em .38em;border-radius:5px;font-size:.88em;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.preview-body pre{background:var(--field);padding:14px;border-radius:12px;overflow-x:auto;font-size:.84em;line-height:1.62}
+.preview-body pre code{background:none;padding:0}
+.preview-body a{color:var(--accent)}
+.preview-body hr{border:0;border-top:.5px solid var(--line);margin:1.8em 0}
+.preview-body ul,.preview-body ol{padding-left:1.45em}
+.preview-body li{margin:.35em 0}
+.preview-body .todo{list-style:none;margin-left:-1.2em;display:flex;gap:.55em;align-items:baseline}
+
+/* ── 提示条 ── */
+.toast{position:fixed;left:50%;top:calc(var(--sat) + 76px);transform:translate(-50%,-140%);z-index:40;
+  max-width:calc(100vw - 40px);padding:10px 16px;border-radius:999px;color:#fff;
+  background:rgba(42,36,32,.78);border:.5px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+  font-size:13.5px;font-weight:500;letter-spacing:.01em;box-shadow:0 10px 34px rgba(0,0,0,.28);
+  transition:transform .32s var(--ease),opacity .32s var(--ease);opacity:0;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast.ok{background:rgba(47,158,99,.80)}
+.toast.err{background:rgba(209,59,50,.82)}
+.toast.busy::after{content:"";display:inline-block;width:10px;height:10px;margin-left:8px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite;vertical-align:-1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── 桌面端：不铺满整屏，做成一张居中的写稿台 ── */
+@media (min-width:900px){
+  /* 写作区与页面同底：不是「白卡片浮在灰底上」，而是整页一块纸 */
+  body{display:block;background:var(--app-grad);padding:0}
+  .app{position:relative;top:auto;left:auto;height:100vh;width:100%;
+    border:0;border-radius:0;box-shadow:none;background:transparent}
+  :root{--padl:18px}
+  .topbar{width:min(660px,calc(100% - 40px));margin:16px auto 0;padding:5px 10px;min-height:54px}
+  .editbar{width:min(660px,calc(100% - 40px));margin:8px auto 0}
+  /* 桌面端隐藏滚动条：鼠标在页面里晃时那条浅色轨道特别扎眼 */
+  .doc{scrollbar-width:none}
+  .doc::-webkit-scrollbar{width:0;height:0}
+  .doc-inner{padding:22px var(--padl) 96px;max-width:660px}
+  #title{font-size:calc(31px * var(--read));padding-top:26px;letter-spacing:-.022em;line-height:1.26}
+  #body{font-size:calc(17.5px * var(--read));line-height:1.8;min-height:52vh}
+  .meta{padding-top:8px}
+  .dock{width:min(660px,calc(100% - 40px));margin:4px auto 0;padding:0 var(--padl)}
+  .toolbar{padding:0 0 0 var(--gut);height:46px}
+  /* 预览也收在同一个 660 的栏里，否则顶栏横贯全屏、正文却缩在中间 */
+  .preview-bar{width:min(660px,calc(100% - 40px));margin:16px auto 0}
+  /* 预览正文与正文区共用一条左缘：左边多让出行号列，读起来才不会跳 */
+  .preview-body{width:min(660px,calc(100% - 40px));margin:0 auto;
+    padding:26px var(--padl) 72px calc(var(--padl) + var(--gut))}
+  .fmtbar{flex-wrap:wrap;overflow:visible}
+  .tool[data-act="dismiss"]{display:none}
+  .toast{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 26px)}
+  .sheet-panel{border-radius:20px}
+}
+/* 关闭透明效果的用户（设置 → 辅助功能）回退成实色，别让文字飘在模糊底上 */
+@media (prefers-reduced-transparency:reduce){
+  .app,.preview{background:var(--bg)}
+  .topbar,.dock,.preview-bar,.sheet-panel,.btn,.chip,.image-card{
+    background:var(--panel);backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+
+/* ── 深色补丁：放在样式表末尾，才压得住上面那些同名的浅色规则 ── */
+@media (prefers-color-scheme:dark){
+  /* 纯白内高光在暗色下会「烧边」，压到只剩一道柔光 */
+  button{box-shadow:inset 0 .5px 0 rgba(255,255,255,.10),0 8px 22px -18px rgba(0,0,0,.6)}
+  .editbar{background:rgba(230,160,139,.10);border-color:rgba(230,160,139,.16)}
+  .banner{background:rgba(230,160,139,.07);border-color:rgba(230,160,139,.20)}
+  .banner button{background:rgba(230,160,139,.95)}
+  .doc{scrollbar-color:rgba(255,255,255,.16) transparent}
+  .doc:hover::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);background-clip:content-box}
+  /* 亮底转到暗底时字重会「发胀」，标题收一点，正文比纯白柔一档 */
+  #title{color:#f3f4f7;font-weight:700}
+  #body,.preview-body{color:#e2e4ea}
+  .save{color:var(--muted)}
+  .count{color:var(--muted)}
+  .tagchip{background:rgba(230,160,139,.16);color:#f2c4b0}
+  .meta-toggle{color:#f2c4b0;background:rgba(230,160,139,.10);border-color:rgba(230,160,139,.16)}
+  .tagpicks{box-shadow:0 10px 26px -22px rgba(0,0,0,.8)}
+  .menu-list{background:rgba(255,255,255,.045)}
+  .menu-row:active{background:rgba(255,255,255,.075)}
+  .mr-badge{background:rgba(255,255,255,.09)}
+  .head-back:active,.tp-item:active,.docdel:active{background:rgba(255,255,255,.08)}
+  .docitem:hover{background:rgba(255,255,255,.03)}
+  .sheet-backdrop{background:rgba(0,0,0,.46)}
+  .sheet-panel{box-shadow:inset 0 .5px 0 rgba(255,255,255,.09),0 -10px 60px rgba(0,0,0,.55)}
+  .field input{background:rgba(255,255,255,.06)}
+  .image-thumb{background:rgba(255,255,255,.05)}
+  .image-actions button:last-child{background:rgba(230,160,139,.16)}
+  .btn-primary{background:linear-gradient(180deg,#cc7a58,#a9573c);
+    border-color:rgba(230,160,139,.36);
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.18),0 12px 26px -18px rgba(140,60,35,.55)}
+  .toast{background:rgba(52,46,42,.86)}
+  .toast.ok{background:rgba(40,150,96,.86)}
+  .toast.err{background:rgba(198,58,50,.86)}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <button class="tb-btn" id="docsBtn" aria-label="草稿与最近文章">
+      <svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><path d="M9.8 4.6v14.8"/></svg>
+    </button>
+    <div class="save" id="saveState" role="status" aria-live="polite">新草稿</div>
+    <button class="tb-btn tb-btn-end" id="actionsBtn" aria-label="保存与发布">
+      <svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><path d="M14.4 4.6v14.8"/></svg>
+    </button>
+  </header>
+
+  <div class="dock">
+    <div class="toolbar">
+      <button class="tool" data-act="image" aria-label="插入图片">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3.2"/><circle cx="8.6" cy="10" r="1.55"/><path d="M4.2 17.2l4.7-4.4a1.9 1.9 0 012.6 0l6.3 5.7"/></svg>
+      </button>
+      <button class="tool aa" data-act="format" aria-label="格式" aria-expanded="false" id="fmtBtn">Aa</button>
+      <button class="tool" data-act="preview" aria-label="预览">
+        <svg viewBox="0 0 24 24"><path d="M2.6 12S6.4 5.8 12 5.8 21.4 12 21.4 12 17.6 18.2 12 18.2 2.6 12 2.6 12z"/><circle cx="12" cy="12" r="2.7"/></svg>
+      </button>
+      <span class="sizegroup">
+        <button class="tool size" data-fmt="smaller" aria-label="正文字号小一点">A−</button>
+        <button class="tool size" data-fmt="bigger" aria-label="正文字号大一点">A＋</button>
+      </span>
+      <span class="count" id="count">0 字</span>
+      <button class="tool" data-act="dismiss" aria-label="收起键盘">
+        <svg viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
+      </button>
+    </div>
+    <div class="fmtbar" id="fmtbar">
+      <button class="chip" data-fmt="h1">大标题</button>
+      <button class="chip" data-fmt="h2">小标题</button>
+      <button class="chip" data-fmt="bold"><b>B</b>&nbsp;加粗</button>
+      <button class="chip" data-fmt="italic"><i>I</i>&nbsp;斜体</button>
+      <button class="chip" data-fmt="ul">・列表</button>
+      <button class="chip" data-fmt="todo">☑︎ 待办</button>
+      <button class="chip" data-fmt="quote">&ldquo; 引用</button>
+      <button class="chip mono" data-fmt="code">&lt;/&gt; 代码</button>
+      <button class="chip" data-fmt="link">链接</button>
+      <button class="chip" data-fmt="hr">分隔线</button>
+      <button class="chip undo" data-fmt="undo">↶ 撤销</button>
+    </div>
+  </div>
+
+  <div class="editbar" id="editBar" hidden>
+    <span class="eb-text" id="ebText">正在更新</span>
+    <button id="ebDetach">另存新文</button>
+  </div>
+
+  <div class="banner" id="loginBanner" hidden>
+    <div class="banner-txt">
+      <b>还没登录</b>
+      <span>输入一次管理口令，这台设备 30 天内免输</span>
+    </div>
+    <button id="bannerLogin">登录</button>
+  </div>
+
+  <main class="doc" id="doc">
+    <div class="doc-inner">
+      <textarea id="title" rows="1" placeholder="标题" autocomplete="off" autocapitalize="sentences"
+        spellcheck="false" enterkeyhint="next" aria-label="标题"></textarea>
+
+      <div class="meta" id="meta">
+        <button class="meta-toggle" id="metaToggle" type="button" aria-expanded="false" aria-controls="metaFields">
+          <svg class="meta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.2l-6.8 6.8a2.8 2.8 0 01-4 0L3.9 14.7a2.8 2.8 0 010-4L10.7 4H20v9.2z"/><circle cx="15.9" cy="8.1" r="1.2"/></svg>
+          <span class="meta-summary" id="metaSummary">添加标签与链接</span>
+          <svg class="meta-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6l4.5 4 4.5-4"/></svg>
+        </button>
+        <div class="meta-fields" id="metaFields" hidden>
+          <div class="mline" id="tagLine">
+            <span class="mlabel">标签</span>
+            <span id="tagChips" style="display:contents"></span>
+            <input class="taginput" id="tagInput" placeholder="添加标签…" autocomplete="off"
+              autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="添加标签">
+          </div>
+          <div class="tagpicks" id="tagPicks" role="listbox" aria-label="标签候选"></div>
+          <div class="mline" id="slugLine">
+            <span class="mlabel">链接</span>
+            <span class="slugfix">/posts/</span>
+            <input class="sluginput" id="slugInput" placeholder="按标题自动" autocomplete="off"
+              autocapitalize="off" spellcheck="false" inputmode="latin" enterkeyhint="done" aria-label="链接别名">
+          </div>
+        </div>
+      </div>
+
+      <div class="bodywrap">
+        <div class="gutter" id="gutter" aria-hidden="true"></div>
+        <textarea id="body" rows="1" placeholder="开始写…支持 Markdown"
+          autocapitalize="sentences" spellcheck="false" enterkeyhint="enter" aria-label="正文"></textarea>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<input type="file" id="file" accept="image/*" multiple hidden>
+<!-- 从「文件」App 里挑 .md：iOS 会直接弹出文件选择器，iCloud 云盘也在里面 -->
+<input type="file" id="mdFile" accept=".md,.markdown,.txt,text/markdown,text/plain" multiple hidden>
+
+<!-- 草稿 / 最近发布 -->
+<div class="sheet drawer" id="sheetDocs" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel drawer-panel" role="dialog" aria-modal="true" aria-labelledby="docsTitle">
+    <div class="sheet-head">
+      <button class="head-back" id="menuBackBtn" aria-label="返回文章列表" hidden>
+        <svg viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></svg>
+      </button>
+      <h2 id="docsTitle">文章</h2>
+    </div>
+
+    <div class="menu-list" id="docsMenu">
+      <button class="menu-row" data-tab="drafts">
+        <svg class="mr-ico" viewBox="0 0 24 24"><path d="M7.4 3.8h6.4l4.2 4.2v11.9a1.4 1.4 0 01-1.4 1.4H7.4A1.4 1.4 0 016 19.9V5.2a1.4 1.4 0 011.4-1.4z"/><path d="M13.6 3.8v4.4h4.4"/></svg>
+        <span class="mr-main">
+          <span class="mr-title">草稿</span>
+          <span class="mr-sub" id="menuDraftSub">自动保存，最多 30 篇</span>
+        </span>
+        <span class="mr-badge" id="draftNum"></span>
+        <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </button>
+      <button class="menu-row" data-tab="recent">
+        <svg class="mr-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3.1 1.9"/></svg>
+        <span class="mr-main">
+          <span class="mr-title">最近发布</span>
+          <span class="mr-sub" id="menuRecentSub">先预览，再决定要不要改</span>
+        </span>
+        <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </button>
+      <button class="menu-row" data-tab="images">
+        <svg class="mr-ico" viewBox="0 0 24 24"><rect x="3.6" y="5.2" width="16.8" height="13.6" rx="2.8"/><circle cx="8.6" cy="10" r="1.3"/><path d="M4.4 16.4l4.5-4.2 3.1 3 2.6-2.3 4.8 4.5"/></svg>
+        <span class="mr-main">
+          <span class="mr-title">最近图片</span>
+          <span class="mr-sub" id="menuImageSub">复制链接，或直接插进正文</span>
+        </span>
+        <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </button>
+    </div>
+
+    <div class="pane" id="paneDrafts" hidden>
+      <button class="newbtn" id="newDraft">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round"><path d="M12 5.5v13M5.5 12h13"/></svg>
+        新草稿
+      </button>
+      <div id="draftList"></div>
+    </div>
+
+    <div class="pane" id="paneRecent" hidden>
+      <div class="pane-bar">
+        <span class="pb-sub" id="recentSub">最近 5 篇已发布</span>
+        <button id="recentRefresh">刷新</button>
+      </div>
+      <div id="recentList"><div class="empty">正在读取…</div></div>
+    </div>
+
+    <div class="pane" id="paneImages" hidden>
+      <div class="pane-bar">
+        <span class="pb-sub" id="imageSub">最近上传的 10 张</span>
+        <button id="imageRefresh">刷新</button>
+      </div>
+      <div id="imageList"><div class="empty">正在读取…</div></div>
+    </div>
+
+    <div class="btns" style="margin-top:18px"><button class="btn btn-ghost" data-close>收起</button></div>
+  </div>
+</div>
+
+<!-- 登录 -->
+<div class="sheet" id="sheetLogin" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="grabber"></div>
+    <h2 id="loginTitle">登录</h2>
+    <p class="sub">输入博客管理口令（就是评论后台那个）。登录状态在这台设备上保持 30 天，之后发布和传图都不再问。</p>
+    <form id="loginForm">
+      <div class="field">
+        <input id="token" type="password" placeholder="管理口令" autocomplete="current-password"
+          enterkeyhint="go" autocapitalize="off" spellcheck="false" required>
+      </div>
+      <div class="btns">
+        <button type="button" class="btn btn-ghost" data-close>取消</button>
+        <button type="submit" class="btn btn-primary" id="loginBtn">登录</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 发布确认 -->
+<div class="sheet" id="sheetPublish" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="pubTitle">
+    <div class="grabber"></div>
+    <h2 id="pubTitle">发布到博客</h2>
+    <p class="sub" id="pubSub">提交后 Vercel 会自动构建，通常 1 分钟内上线。</p>
+    <div class="rows" style="border-top:0">
+      <div class="row" style="border-bottom:.5px solid var(--line)"><span class="k" style="color:var(--muted);font-size:13px">标题</span><span class="v" id="pubTitleText" style="color:var(--fg);font-size:14px;max-width:64%"></span></div>
+      <div class="row"><span class="k" style="color:var(--muted);font-size:13px">标签</span><span class="v" id="pubTags" style="max-width:64%"></span></div>
+    </div>
+    <div class="kv" style="margin-top:10px"><span>时间</span><b id="pubTime">—</b></div>
+    <div class="kv"><span>链接</span><b id="pubUrl">—</b></div>
+    <div class="kv"><span>文件名</span><b id="pubFile">—</b></div>
+    <div class="kv"><span>字数</span><b id="pubWords">—</b></div>
+    <div class="btns" style="margin-top:18px">
+      <button class="btn btn-ghost" data-close>再改改</button>
+      <button class="btn btn-primary" id="pubConfirm">发布</button>
+    </div>
+  </div>
+</div>
+
+<!-- 右侧抽屉：保存 / 发布 / 这篇的其它动作 -->
+<div class="sheet drawer right" id="sheetActions" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel drawer-panel from-right" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+    <h2 id="menuTitle">这篇</h2>
+    <p class="sub" id="menuSub">保存只落到草稿，发布才写进仓库。</p>
+    <div class="menu-list">
+      <button class="menu-row" id="rowSave">
+        <svg class="mr-ico" viewBox="0 0 24 24"><path d="M5 5.6a1.6 1.6 0 011.6-1.6h8.9l4 4v10.4a1.6 1.6 0 01-1.6 1.6H6.6A1.6 1.6 0 015 18.4z"/><path d="M8.4 4v5h6.4V4"/><path d="M7.6 20v-6.2h8.8V20"/></svg>
+        <span class="mr-main">
+          <span class="mr-title">保存草稿</span>
+          <span class="mr-sub" id="rowSaveSub">立刻存下，其它设备也能看到</span>
+        </span>
+        <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </button>
+      <button class="menu-row" id="rowPublish">
+        <svg class="mr-ico" viewBox="0 0 24 24"><path d="M12 19.5V5.2"/><path d="M6.6 10.6L12 5.2l5.4 5.4"/><path d="M4.6 19.5h14.8"/></svg>
+        <span class="mr-main">
+          <span class="mr-title" id="publishRowTitle">发布到博客</span>
+          <span class="mr-sub" id="publishRowSub">写入仓库，约 1 分钟上线</span>
+        </span>
+        <svg class="mr-chev" viewBox="0 0 24 24"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </button>
+    </div>
+    <div class="rows">
+      <button class="row" id="rowAuth"><span class="k" id="rowAuthLabel">登录</span><span class="v" id="loginState">未登录</span></button>
+      <button class="row" id="rowOpen" hidden><span class="k">查看已发布文章</span><span class="v">↗</span></button>
+      <button class="row" id="rowDetach" hidden><span class="k">另存为新文章</span><span class="v">不动原文件</span></button>
+      <button class="row" id="rowImport"><span class="k">导入 Markdown</span><span class="v">从文件 / iCloud</span></button>
+      <button class="row" id="rowExport"><span class="k">导出 Markdown</span><span class="v">存到文件 / iCloud</span></button>
+      <button class="row danger" id="rowClear"><span class="k">删除这篇草稿</span><span class="v">不可撤销</span></button>
+    </div>
+    <div class="sect">服务状态</div>
+    <div class="kv"><span>接口</span><b id="apiState">—</b></div>
+    <div class="kv"><span>仓库写入</span><b id="ghState">—</b></div>
+    <div class="kv"><span>图床</span><b id="r2State">—</b></div>
+    <p class="sub" style="margin-top:16px" id="installTip"></p>
+    <div class="btns"><button class="btn btn-ghost" data-close>好</button></div>
+  </div>
+</div>
+
+<!-- 预览 -->
+<div class="preview" id="preview">
+  <div class="preview-bar">
+    <button class="preview-close" id="previewClose">关闭</button>
+    <h2>预览</h2>
+    <button class="preview-action" id="previewEdit" hidden>编辑</button>
+  </div>
+  <div class="preview-body" id="previewBody"></div>
+</div>
+
+<!-- 图片大图预览 -->
+<div class="sheet" id="sheetImage" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="imageTitle">
+    <div class="grabber"></div>
+    <h2 id="imageTitle">图片预览</h2>
+    <img class="image-sheet-img" id="imagePreview" alt="最近上传的图片">
+    <p class="image-url" id="imageUrl"></p>
+    <div class="btns">
+      <button class="btn btn-ghost" id="imageCopy">复制链接</button>
+      <button class="btn btn-primary" id="imageInsert">插入正文</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = 'https://comments.hux.ink';
+  var STORE_KEY = 'hux-write-v3';
+  var LEGACY_KEY = 'hux-write-draft-v2';
+  var MAX_DRAFTS = 30;
+  var MAX_TAGS = 8;
+  var MAX_SIDE = 1600;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var titleEl = $('title'), bodyEl = $('body'), slugEl = $('slugInput'), tagInput = $('tagInput');
+  var saveStateEl = $('saveState'), fileEl = $('file'), mdFileEl = $('mdFile');
+  var toastEl = $('toast'), previewEl = $('preview'), previewBody = $('previewBody');
+  var banner = $('loginBanner'), fmtbar = $('fmtbar'), fmtBtn = $('fmtBtn');
+  var docEl = $('doc'), countEl = $('count'), gutterEl = $('gutter');
+  var metaEl = $('meta'), metaToggle = $('metaToggle'), metaFields = $('metaFields'), metaSummary = $('metaSummary');
+  var tagChips = $('tagChips'), tagLine = $('tagLine'), tagPicks = $('tagPicks');
+  var editBar = $('editBar'), ebText = $('ebText');
+
+  var csrf = '';
+  var authed = false;
+  var health = null;
+  var busy = false;
+  var toastTimer = 0;
+  var lastSel = { start: 0, end: 0 };
+  var pendingPublish = false;
+  var pendingUpload = null;
+  var allTags = [];
+  var recentPosts = null;
+  var recentLoading = false;
+  var recentImages = null;
+  var imageLoading = false;
+  var selectedImage = null;
+  var previewPost = null;
+  var store = null;
+  var metaExpanded = false;
+
+  /* ------------------------------ 小工具 ------------------------------ */
+
+  function toast(message, kind, ms) {
+    clearTimeout(toastTimer);
+    toastEl.textContent = message;
+    toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
+    if (ms !== 0) {
+      toastTimer = setTimeout(function () { toastEl.className = 'toast' + (kind ? ' ' + kind : ''); }, ms || 2200);
+    }
+  }
+
+  function openSheet(id) {
+    var el = $(id);
+    if (!el) return;
+    el.classList.add('open');
+    el.setAttribute('aria-hidden', 'false');
+    // 抽屉里没有要马上打字的输入框，别抢焦点
+    if (window.innerWidth > 620 && !el.classList.contains('drawer')) {
+      var focusable = el.querySelector('input,button.btn-primary');
+      if (focusable) setTimeout(function () { focusable.focus(); }, 270);
+    }
+  }
+
+  function closeSheet(el) {
+    if (!el) return;
+    el.classList.remove('open');
+    el.setAttribute('aria-hidden', 'true');
+  }
+
+  document.addEventListener('click', function (event) {
+    var closer = event.target.closest('[data-close]');
+    if (!closer) return;
+    var sheet = closer.closest('.sheet');
+    if (sheet && sheet.id === 'sheetLogin') pendingPublish = false;
+    closeSheet(sheet);
+  });
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function pad2(n) { return ('0' + n).slice(-2); }
+
+  /* ------------------------------ 行号 ------------------------------ */
+
+  var gutterMirror = null, gutterTimer = 0;
+
+  function scheduleGutter() {
+    clearTimeout(gutterTimer);
+    gutterTimer = setTimeout(renderGutter, 120);
+  }
+
+  /**
+   * 行号贴在正文左边的页边里。textarea 是自动撑高的，所以行号跟着文档流走，
+   * 不需要同步滚动。麻烦的是软换行：一个逻辑行可能占两三个视觉行，后面的号
+   * 就得往后挪——用一个同宽同字体的隐藏镜像量出每个逻辑行真正占的高度。
+   */
+  function renderGutter() {
+    if (!gutterEl) return;
+    var text = bodyEl.value;
+    if (!text) {
+      gutterEl.innerHTML = '';
+      gutterEl.classList.remove('on');
+      gutterEl.style.height = '0px';
+      return;
+    }
+
+    var cs = getComputedStyle(bodyEl);
+    if (!gutterMirror) {
+      gutterMirror = document.createElement('div');
+      gutterMirror.className = 'gutter-mirror';
+      gutterMirror.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(gutterMirror);
+    }
+    gutterMirror.style.width = bodyEl.clientWidth + 'px';
+    gutterMirror.style.fontFamily = cs.fontFamily;
+    gutterMirror.style.fontSize = cs.fontSize;
+    gutterMirror.style.fontWeight = cs.fontWeight;
+    gutterMirror.style.lineHeight = cs.lineHeight;
+    gutterMirror.style.letterSpacing = cs.letterSpacing;
+
+    var lines = text.split('\n');
+    var rows = [];
+    gutterMirror.textContent = '';
+    for (var i = 0; i < lines.length; i += 1) {
+      var row = document.createElement('div');
+      // 空行塞个零宽空格，不然 div 高度会塌成 0，后面所有行号全错位
+      row.textContent = lines[i] || '\u200b';
+      gutterMirror.appendChild(row);
+      rows.push(row);
+    }
+
+    var lineHeight = parseFloat(cs.lineHeight) || 24;
+    var frag = document.createDocumentFragment();
+    var top = 0;
+    for (var j = 0; j < rows.length; j += 1) {
+      var height = rows[j].offsetHeight || lineHeight;
+      var num = document.createElement('span');
+      num.textContent = String(j + 1);
+      num.style.top = top + 'px';
+      num.style.height = lineHeight + 'px';
+      num.style.lineHeight = lineHeight + 'px';
+      frag.appendChild(num);
+      top += height;
+    }
+    gutterEl.innerHTML = '';
+    gutterEl.appendChild(frag);
+    gutterEl.style.height = top + 'px';
+    gutterEl.classList.add('on');
+  }
+
+  /* ------------------------------ 正文字号 ------------------------------ */
+
+  var SCALE_KEY = 'hux-write-scale';
+  var readScale = 1;
+
+  function applyReadScale(next, announce) {
+    var value = Math.round(Math.min(1.35, Math.max(0.85, next)) * 100) / 100;
+    if (Math.abs(value - readScale) < 0.001) {
+      if (announce) toast(value >= 1.35 ? '已经最大了' : '已经最小了', null, 1200);
+      return;
+    }
+    readScale = value;
+    document.documentElement.style.setProperty('--read', String(value));
+    try { localStorage.setItem(SCALE_KEY, String(value)); } catch (e) {}
+    growAll();
+    scheduleGutter();
+    if (announce) toast('正文字号 ' + Math.round(value * 100) + '%', null, 1300);
+  }
+
+  function timeLabel(ts) {
+    var d = new Date(ts);
+    return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function dayLabel(ts) {
+    var d = new Date(ts);
+    var now = new Date();
+    var sameDay = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
+    if (sameDay) return '今天 ' + timeLabel(ts);
+    var diff = (now - d) / 86400000;
+    if (diff < 2) return '昨天 ' + timeLabel(ts);
+    if (d.getFullYear() === now.getFullYear()) return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  function todayDate() {
+    var now = new Date();
+    return now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  }
+
+  function slugify(text) {
+    return String(text || '')
+      .trim()
+      .toLowerCase()
+      .replace(/['"’‘“”]/g, '')
+      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function wordCount(text) {
+    var plain = String(text || '').replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/[#>*`\-\[\]()|]/g, ' ');
+    return plain.replace(/\s+/g, '').length;
+  }
+
+  /* ------------------------------ 草稿仓库 ------------------------------ */
+
+  function blankDraft() {
+    var now = Date.now();
+    return {
+      id: 'd' + now.toString(36) + Math.random().toString(36).slice(2, 6),
+      title: '', tags: [], slug: '', body: '',
+      createdAt: now, updatedAt: now,
+      edit: null,
+      publishedAt: 0
+    };
+  }
+
+  /** 老版本只存了一篇（hux-write-draft-v2），第一次打开时搬过来，别让人白写。 */
+  function migrateLegacy() {
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null'); } catch (e) { raw = null; }
+    if (!raw || (!raw.title && !raw.body)) return null;
+    var draft = blankDraft();
+    draft.title = raw.title || '';
+    draft.body = raw.body || '';
+    draft.slug = raw.slug || '';
+    draft.tags = String(raw.tags || '').split(/[\s,，、]+/).filter(Boolean).slice(0, MAX_TAGS);
+    draft.updatedAt = raw.savedAt || Date.now();
+    return draft;
+  }
+
+  function loadStore() {
+    var parsed = null;
+    try { parsed = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { parsed = null; }
+
+    if (!parsed || !Array.isArray(parsed.drafts) || !parsed.drafts.length) {
+      var migrated = migrateLegacy();
+      store = { activeId: '', drafts: migrated ? [migrated] : [blankDraft()] };
+      store.activeId = store.drafts[0].id;
+      if (migrated) {
+        persist();
+        localStorage.removeItem(LEGACY_KEY);
+      }
+      return store;
+    }
+
+    store = parsed;
+    store.drafts.forEach(function (draft) {
+      if (!Array.isArray(draft.tags)) draft.tags = String(draft.tags || '').split(/[\s,，、]+/).filter(Boolean);
+      if (!draft.id) draft.id = blankDraft().id;
+      if (!draft.createdAt) draft.createdAt = draft.updatedAt || Date.now();
+      if (!draft.updatedAt) draft.updatedAt = draft.createdAt;
+    });
+    if (!activeDraft()) store.activeId = store.drafts[0].id;
+    return store;
+  }
+
+  function persist() {
+    try {
+      // 只留最近 30 篇，避免 localStorage 无限膨胀；当前编辑的那篇永远保留
+      if (store.drafts.length > MAX_DRAFTS) {
+        var current = activeDraft();
+        var rest = store.drafts
+          .filter(function (draft) { return draft !== current; })
+          .sort(function (a, b) { return b.updatedAt - a.updatedAt; })
+          .slice(0, MAX_DRAFTS - 1);
+        store.drafts = [current].concat(rest);
+      }
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function activeDraft() {
+    if (!store) return null;
+    for (var i = 0; i < store.drafts.length; i += 1) {
+      if (store.drafts[i].id === store.activeId) return store.drafts[i];
+    }
+    return null;
+  }
+
+  function hasContent(draft) {
+    return Boolean(draft && (String(draft.title).trim() || String(draft.body).trim()));
+  }
+
+  /** 把界面上的输入写回草稿对象；纯读取的场景（渲染列表）不会调它。 */
+  function capture() {
+    var draft = activeDraft();
+    if (!draft) return null;
+    draft.title = titleEl.value;
+    draft.body = bodyEl.value;
+    draft.slug = slugEl.value.trim().replace(/^\/+|\/+$/g, '');
+    draft.updatedAt = Date.now();
+    return draft;
+  }
+
+  function setSaveState(text, kind) {
+    saveStateEl.textContent = text;
+    saveStateEl.className = 'save' + (kind ? ' ' + kind : '');
+  }
+
+  /** 顶栏那行字要能回答「同步上没有」，别让人去菜单里翻。 */
+  function syncSuffix() {
+    if (!authed) return '';
+    if (syncing) return ' · 同步中';
+    if (syncBroken) return ' · 未同步';
+    if (lastSyncAt) return ' · 已同步';
+    return '';
+  }
+
+  function refreshSaveState() {
+    var draft = activeDraft();
+    if (!draft) return;
+    // 用户又敲字了就别抢这行字，等下一次 flushSave
+    if (String(saveStateEl.textContent).indexOf('编辑中') === 0) return;
+    setSaveState(
+      (hasContent(draft) ? '已存 ' + timeLabel(draft.updatedAt) : '新草稿') + syncSuffix(),
+      'saved'
+    );
+  }
+
+  var saveTimer = 0;
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    setSaveState('编辑中…');
+    saveTimer = setTimeout(function () { flushSave(); }, 550);
+  }
+
+  function flushSave() {
+    clearTimeout(saveTimer);
+    var draft = capture();
+    if (!draft) return;
+    if (!persist()) { setSaveState('存不下（空间满）'); return; }
+    setSaveState('已存 ' + timeLabel(draft.updatedAt) + syncSuffix(), 'saved');
+    markDirty(draft.id);
+    scheduleSync();
+  }
+
+  function renderMetaSummary() {
+    var draft = activeDraft();
+    var tags = draft && Array.isArray(draft.tags) ? draft.tags : [];
+    var slug = slugEl.value.trim().replace(/^\/+|\/+$/g, '');
+    var parts = [];
+    if (tags.length) parts.push(tags.slice(0, 3).join(' · ') + (tags.length > 3 ? ' +' + (tags.length - 3) : ''));
+    if (slug) parts.push('/posts/' + slug + '/');
+    var summary = parts.length ? parts.join('  ·  ') : '添加标签与链接';
+    metaSummary.textContent = summary;
+    metaToggle.setAttribute('aria-label', '文章属性：' + summary);
+  }
+
+  function setMetaExpanded(expanded, focusInput) {
+    metaExpanded = Boolean(expanded);
+    metaToggle.setAttribute('aria-expanded', String(metaExpanded));
+    metaFields.hidden = !metaExpanded;
+    if (!metaExpanded) { tagInput.blur(); closeTagPicks(); }
+    if (metaExpanded && focusInput) setTimeout(function () { tagInput.focus(); }, 80);
+    renderMetaSummary();
+  }
+
+  /* ------------------------------ 云端同步 ------------------------------ */
+
+  /**
+   * 本地优先：localStorage 还是工作副本，断网、没登录都照写不误。
+   * 登录后多一层同步——写进 D1，另一台设备拉下来。冲突不做智能合并，
+   * 谁的 updatedAt 大听谁的；云端赢了就把本地换掉，保证两边收敛到同一份。
+   */
+
+  var dirty = {};
+  var tombstones = [];
+  var syncing = false;
+  var syncTimer = 0;
+  var lastSyncAt = 0;
+  var syncBroken = false;
+
+  function syncLabel() {
+    if (!authed) return '仅本机';
+    if (syncing) return '同步中';
+    if (syncBroken) return '待重试';
+    if (lastSyncAt) return '已同步 ' + timeLabel(lastSyncAt);
+    return '待同步';
+  }
+
+  function isEditingNow() {
+    return document.activeElement === titleEl || document.activeElement === bodyEl;
+  }
+
+  /** 上行时裁成接口认的字段，多余的一律不带过去。 */
+  function wireDraft(draft) {
+    return {
+      id: draft.id,
+      title: draft.title || '',
+      body: draft.body || '',
+      tags: Array.isArray(draft.tags) ? draft.tags : [],
+      slug: draft.slug || '',
+      edit: draft.edit ? { path: draft.edit.path, name: draft.edit.name || '', url: draft.edit.url || '' } : null,
+      publishedAt: draft.publishedAt || 0,
+      createdAt: draft.createdAt || Date.now(),
+      updatedAt: draft.updatedAt || Date.now()
+    };
+  }
+
+  function markDirty(id) {
+    if (id) dirty[id] = true;
+  }
+
+  function scheduleSync(delay) {
+    if (!authed) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(runSync, delay == null ? 1200 : delay);
+  }
+
+  function pendingPayload() {
+    var out = [];
+    Object.keys(dirty).forEach(function (id) {
+      for (var i = 0; i < store.drafts.length; i += 1) {
+        if (store.drafts[i].id === id) { out.push(wireDraft(store.drafts[i])); return; }
+      }
+    });
+    return out.concat(tombstones);
+  }
+
+  /** 分批发：单篇长文可能几十 KB，一次全塞过去会顶到请求体上限。 */
+  function chunkPayload(items) {
+    var batches = [];
+    var current = [];
+    var size = 0;
+    items.forEach(function (item) {
+      var cost = String(item.body || '').length + 320;
+      if (current.length && (current.length >= 6 || size + cost > 12000)) {
+        batches.push(current);
+        current = [];
+        size = 0;
+      }
+      current.push(item);
+      size += cost;
+    });
+    if (current.length) batches.push(current);
+    return batches;
+  }
+
+  function runSync() {
+    clearTimeout(syncTimer);
+    if (!authed || syncing) return Promise.resolve();
+    var payload = pendingPayload();
+    if (!payload.length) { renderDraftList(); return Promise.resolve(); }
+
+    syncing = true;
+    renderDraftList();
+
+    var batches = chunkPayload(payload);
+    var rejected = [];
+    var chain = Promise.resolve();
+
+    batches.forEach(function (items) {
+      chain = chain.then(function () {
+        return api('/api/write/drafts', { method: 'POST', body: { drafts: items } }).then(function (res) {
+          // 云端赢了的那几条要用它的版本覆盖本地，否则下次打开还是旧的
+          rejected = rejected.concat(res.drafts || []);
+          items.forEach(function (item) {
+            delete dirty[item.id];
+            tombstones = tombstones.filter(function (t) { return t.id !== item.id; });
+          });
+        });
+      });
+    });
+
+    return chain.then(function () {
+      syncing = false;
+      syncBroken = false;
+      lastSyncAt = Date.now();
+      store.syncAt = lastSyncAt;
+      persist();
+      if (rejected.length) adoptRemote(rejected);
+      renderDraftList();
+      refreshSaveState();
+    }).catch(function (error) {
+      syncing = false;
+      syncBroken = true;
+      if (error && error.status === 401) { authed = false; applyAuthState(); }
+      renderDraftList();
+      refreshSaveState();
+    });
+  }
+
+  /** 把云端的版本落到本地：被删的删掉、缺的补上、新的盖旧的。 */
+  function adoptRemote(list) {
+    var removedActive = false;
+    var activeChanged = false;
+
+    list.forEach(function (remote) {
+      if (!remote || !remote.id) return;
+      var local = null;
+      for (var i = 0; i < store.drafts.length; i += 1) {
+        if (store.drafts[i].id === remote.id) { local = store.drafts[i]; break; }
+      }
+
+      if (remote.deletedAt > 0) {
+        if (!local) return;
+        store.drafts.splice(store.drafts.indexOf(local), 1);
+        if (store.activeId === remote.id) removedActive = true;
+        return;
+      }
+
+      if (!local) {
+        if (!hasContent(remote)) return;
+        store.drafts.unshift({
+          id: remote.id,
+          title: remote.title || '',
+          tags: remote.tags || [],
+          slug: remote.slug || '',
+          body: remote.body || '',
+          createdAt: remote.createdAt || remote.updatedAt,
+          updatedAt: remote.updatedAt,
+          edit: remote.edit || null,
+          publishedAt: remote.publishedAt || 0
+        });
+        if (store.drafts.length > MAX_DRAFTS) {
+          // 别把正在写的这篇截掉，其余按原有顺序保留（persist 里也是同一套规矩）
+          var keep = activeDraft();
+          store.drafts = [keep].concat(store.drafts.filter(function (item) { return item !== keep; }).slice(0, MAX_DRAFTS - 1));
+        }
+        return;
+      }
+
+      if (remote.updatedAt <= local.updatedAt) return;
+      // 正在打字的那篇不覆盖，免得把刚敲的字吃掉
+      if (local.id === store.activeId && (dirty[local.id] || isEditingNow())) return;
+
+      local.title = remote.title || '';
+      local.body = remote.body || '';
+      local.tags = (remote.tags || []).slice(0, MAX_TAGS);
+      local.slug = remote.slug || '';
+      local.edit = remote.edit || null;
+      local.publishedAt = remote.publishedAt || 0;
+      local.updatedAt = remote.updatedAt;
+      if (local.id === store.activeId) activeChanged = true;
+    });
+
+    if (!store.drafts.length) store.drafts.push(blankDraft());
+    persist();
+    if (removedActive || !activeDraft()) {
+      store.activeId = store.drafts[0].id;
+      loadActive();
+    } else if (activeChanged) {
+      loadActive();
+    }
+    renderDraftList();
+  }
+
+  function pullDrafts() {
+    if (!authed) return Promise.resolve();
+    var watermark = Number(store.syncAt || 0);
+    return api('/api/write/drafts').then(function (res) {
+      adoptRemote(res.drafts || []);
+      var stamp = Date.now();
+      lastSyncAt = stamp;
+      store.syncAt = stamp;
+      // 上次同步之后动过的（离线写的、这台机器第一次登录时留下的），补推一遍
+      store.drafts.forEach(function (draft) {
+        if (hasContent(draft) && Number(draft.updatedAt || 0) > watermark) markDirty(draft.id);
+      });
+      persist();
+      renderDraftList();
+      refreshSaveState();
+      scheduleSync(600);
+    }).catch(function (error) {
+      syncBroken = true;
+      if (error && error.status === 401) { authed = false; applyAuthState(); }
+      renderDraftList();
+      refreshSaveState();
+    });
+  }
+
+  /* ------------------------------ 编辑区装载 ------------------------------ */
+
+  function loadActive() {
+    var draft = activeDraft();
+    if (!draft) return;
+    titleEl.value = draft.title || '';
+    bodyEl.value = draft.body || '';
+    slugEl.value = draft.slug || '';
+    slugEl.placeholder = slugify(draft.title) || '按标题自动';
+    tagInput.value = '';
+    renderTags();
+    setMetaExpanded(false);
+    growAll();
+    updateCount();
+    syncMeta();
+    resetHistory();
+    renderEditBar();
+    setSaveState(hasContent(draft) ? '已存 ' + timeLabel(draft.updatedAt) : '新草稿', 'saved');
+    closeTagPicks();
+    scheduleGutter();
+  }
+
+  function openDraft(id) {
+    if (id === store.activeId) { closeSheet($('sheetDocs')); return; }
+    flushSave();
+    store.activeId = id;
+    persist();
+    loadActive();
+    closeSheet($('sheetDocs'));
+    docEl.scrollTop = 0;
+  }
+
+  function startNewDraft() {
+    flushSave();
+    var draft = blankDraft();
+    store.drafts.unshift(draft);
+    store.activeId = draft.id;
+    persist();
+    loadActive();
+    closeSheet($('sheetDocs'));
+    docEl.scrollTop = 0;
+    setTimeout(function () { titleEl.focus(); }, 320);
+  }
+
+  function removeDraft(id) {
+    var index = -1;
+    for (var i = 0; i < store.drafts.length; i += 1) {
+      if (store.drafts[i].id === id) { index = i; break; }
+    }
+    if (index < 0) return;
+
+    var wasActive = store.activeId === id;
+    store.drafts.splice(index, 1);
+    if (!store.drafts.length) store.drafts.push(blankDraft());
+    if (wasActive) store.activeId = store.drafts[0].id;
+    persist();
+    if (wasActive) loadActive();
+    dropRemote(id);
+    renderDraftList();
+  }
+
+  /**
+   * 云端要收到一块「墓碑」才知道这篇是被删了，而不是这台设备还没上传。
+   * 只删本地的话，另一台设备一推就会把它复活。
+   */
+  function dropRemote(id) {
+    var now = Date.now();
+    delete dirty[id];
+    tombstones.push({
+      id: id, title: '', body: '', tags: [], slug: '',
+      edit: null, publishedAt: 0, createdAt: now, updatedAt: now, deletedAt: now
+    });
+    scheduleSync(200);
+  }
+
+  /* ------------------------------ 标签 ------------------------------ */
+
+  function renderTags() {
+    var draft = activeDraft();
+    tagChips.innerHTML = '';
+    (draft ? draft.tags : []).forEach(function (name) {
+      var chip = el('button', 'tagchip');
+      chip.appendChild(el('span', null, name));
+      var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('viewBox', '0 0 24 24');
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M6 6l12 12M18 6L6 18');
+      icon.appendChild(path);
+      chip.appendChild(icon);
+      chip.addEventListener('click', function () { toggleTag(name, false); });
+      tagChips.appendChild(chip);
+    });
+    renderMetaSummary();
+  }
+
+  function toggleTag(name, add) {
+    var draft = activeDraft();
+    if (!draft) return;
+    var key = String(name || '').trim();
+    if (!key) return;
+    var at = draft.tags.indexOf(key);
+    if (add) {
+      if (at >= 0) return;
+      if (draft.tags.length >= MAX_TAGS) { toast('标签最多 ' + MAX_TAGS + ' 个'); return; }
+      draft.tags.push(key);
+    } else {
+      if (at < 0) return;
+      draft.tags.splice(at, 1);
+    }
+    renderTags();
+    flushSave();
+    if (tagInput === document.activeElement) renderPicks();
+  }
+
+  function commitTagInput() {
+    var text = tagInput.value.trim().replace(/[,，、]+$/, '');
+    if (!text) return;
+    tagInput.value = '';
+    // 一次粘贴多个也吃得下
+    text.split(/[,，、\s]+/).filter(Boolean).forEach(function (name) { toggleTag(name, true); });
+    renderPicks();
+  }
+
+  function visibleTags(query) {
+    var draft = activeDraft();
+    var chosen = draft ? draft.tags : [];
+    var q = String(query || '').trim().toLowerCase();
+    return allTags
+      .filter(function (tag) { return chosen.indexOf(tag.name) < 0; })
+      .filter(function (tag) { return !q || tag.name.toLowerCase().indexOf(q) >= 0; });
+  }
+
+  function renderPicks() {
+    var query = tagInput.value;
+    var picks = visibleTags(query);
+    tagPicks.innerHTML = '';
+
+    if (!picks.length) {
+      if (query.trim()) {
+        var add = el('button', 'tp-item new');
+        add.appendChild(el('span', 'tp-name', '新建标签「' + query.trim() + '」'));
+        add.addEventListener('mousedown', function (event) { event.preventDefault(); });
+        add.addEventListener('click', function () { commitTagInput(); });
+        tagPicks.appendChild(add);
+        tagPicks.classList.add('open');
+        return;
+      }
+      tagPicks.classList.remove('open');
+      return;
+    }
+
+    picks.forEach(function (tag) {
+      var item = el('button', 'tp-item');
+      item.appendChild(el('span', 'tp-name', tag.name));
+      if (tag.count) item.appendChild(el('span', 'tp-n', String(tag.count)));
+      // mousedown 先 preventDefault，输入框才不失焦，点完还能接着加
+      item.addEventListener('mousedown', function (event) { event.preventDefault(); });
+      item.addEventListener('click', function () {
+        toggleTag(tag.name, true);
+        tagInput.value = '';
+        renderPicks();
+        tagInput.focus();
+      });
+      tagPicks.appendChild(item);
+    });
+
+    tagPicks.classList.add('open');
+  }
+
+  function closeTagPicks() {
+    tagPicks.classList.remove('open');
+  }
+
+  function loadTags() {
+    if (!authed) return Promise.resolve();
+    return api('/api/write/tags').then(function (data) {
+      allTags = Array.isArray(data.tags) ? data.tags : [];
+    }).catch(function () { allTags = []; });
+  }
+
+  tagInput.addEventListener('focus', renderPicks);
+  tagInput.addEventListener('input', renderPicks);
+  tagInput.addEventListener('blur', function () {
+    // 失焦顺手把没提交的标签存进去，别让它烂在输入框里
+    if (tagInput.value.trim()) commitTagInput();
+    setTimeout(closeTagPicks, 120);
+  });
+  tagInput.addEventListener('keydown', function (event) {
+    if (event.isComposing) return;
+    if (event.key === 'Enter' || event.key === ',' || event.key === '，') {
+      event.preventDefault();
+      commitTagInput();
+      closeTagPicks();
+      return;
+    }
+    if (event.key === 'Backspace' && !tagInput.value) {
+      var draft = activeDraft();
+      if (draft && draft.tags.length) toggleTag(draft.tags[draft.tags.length - 1], false);
+    }
+  });
+
+
+  /* ------------------------------ 自适应高度 ------------------------------ */
+
+  function grow(node) {
+    node.style.height = 'auto';
+    node.style.height = node.scrollHeight + 'px';
+  }
+
+  function growAll() { grow(titleEl); grow(bodyEl); }
+
+  function updateCount() {
+    var n = wordCount(bodyEl.value);
+    countEl.textContent = (n ? n : 0) + ' 字';
+  }
+
+  /* ------------------------------ 撤销栈 ------------------------------ */
+
+  var history = [];
+  var historyIndex = -1;
+
+  function snapshot() { return { t: titleEl.value, b: bodyEl.value }; }
+
+  function resetHistory() {
+    history = [snapshot()];
+    historyIndex = 0;
+  }
+
+  function pushHistory() {
+    var snap = snapshot();
+    var last = history[historyIndex];
+    if (last && last.t === snap.t && last.b === snap.b) return;
+    history = history.slice(0, historyIndex + 1);
+    history.push(snap);
+    if (history.length > 80) history.shift();
+    historyIndex = history.length - 1;
+  }
+
+  var historyTimer = 0;
+  function scheduleHistory() {
+    clearTimeout(historyTimer);
+    historyTimer = setTimeout(pushHistory, 500);
+  }
+
+  /** 做格式操作前先把「改之前」的样子记下来，否则连点两下按钮就撤不回去了。 */
+  function flushHistory() {
+    clearTimeout(historyTimer);
+    pushHistory();
+  }
+
+  function undo() {
+    if (historyIndex <= 0) { toast('没有可撤销的操作'); return; }
+    historyIndex -= 1;
+    var snap = history[historyIndex];
+    titleEl.value = snap.t;
+    bodyEl.value = snap.b;
+    growAll(); updateCount(); scheduleSave(); scheduleGutter();
+    toast('已撤销一步');
+  }
+
+  /* ------------------------------ 编辑动作 ------------------------------ */
+
+  function caretRange() {
+    var editing = document.activeElement === bodyEl;
+    return editing
+      ? { start: bodyEl.selectionStart, end: bodyEl.selectionEnd }
+      : { start: lastSel.start, end: lastSel.end };
+  }
+
+  function setCaret(start, end) {
+    bodyEl.focus();
+    bodyEl.setSelectionRange(start, end == null ? start : end);
+    lastSel = { start: start, end: end == null ? start : end };
+    grow(bodyEl); updateCount();
+  }
+
+  function afterEdit() {
+    growAll(); updateCount(); scheduleSave(); scheduleHistory(); syncMeta(); scheduleGutter();
+  }
+
+  /** 白纸一张时把标签/别名两行收起来，只剩标题和正文，写起来更清静。 */
+  function syncMeta() {
+    metaEl.hidden = !(titleEl.value.trim() || bodyEl.value.trim());
+    if (metaEl.hidden) closeTagPicks();
+    renderMetaSummary();
+  }
+
+  metaToggle.addEventListener('click', function () {
+    setMetaExpanded(!metaExpanded, !metaExpanded);
+  });
+
+  /** 格式操作是原子的一步，改完立刻入栈，撤销才会一次退一步而不是退两步。 */
+  function commitEdit() {
+    clearTimeout(historyTimer);
+    pushHistory();
+  }
+
+  function surround(before, after, placeholder) {
+    flushHistory();
+    var range = caretRange();
+    var value = bodyEl.value;
+    var selected = value.slice(range.start, range.end) || placeholder || '';
+    bodyEl.value = value.slice(0, range.start) + before + selected + after + value.slice(range.end);
+    afterEdit();
+    setCaret(range.start + before.length, range.start + before.length + selected.length);
+    commitEdit();
+  }
+
+  function insertAtCursor(text) {
+    flushHistory();
+    // 选完图片后 textarea 已失焦，Safari 会丢掉光标位置，所以用失焦前记住的位置
+    var range = caretRange();
+    var value = bodyEl.value;
+    var needsGap = range.start > 0 && value[range.start - 1] !== '\n';
+    var payload = (needsGap ? '\n' : '') + text + '\n';
+    bodyEl.value = value.slice(0, range.start) + payload + value.slice(range.end);
+    afterEdit();
+    setCaret(range.start + payload.length);
+    commitEdit();
+  }
+
+  /** 在光标所在行的行首加/去一个前缀（标题、列表、引用都走这里）。 */
+  function linePrefix(prefix) {
+    flushHistory();
+    var range = caretRange();
+    var value = bodyEl.value;
+    var lineStart = value.lastIndexOf('\n', range.start - 1) + 1;
+    var lineEnd = value.indexOf('\n', range.start);
+    if (lineEnd === -1) lineEnd = value.length;
+    var line = value.slice(lineStart, lineEnd);
+
+    var has = line.indexOf(prefix) === 0;
+    var next, caret;
+
+    if (has) {
+      next = value.slice(0, lineStart) + line.slice(prefix.length) + value.slice(lineEnd);
+      caret = Math.max(lineStart, range.start - prefix.length);
+    } else {
+      // 先剥掉行首已有的同类前缀，避免 ## ## 叠起来
+      var stripped = line.replace(/^(#{1,6}\s+|[-*+]\s+(?:\[[ xX]\]\s+)?|>\s+|\d+[.)]\s+)/, '');
+      next = value.slice(0, lineStart) + prefix + stripped + value.slice(lineEnd);
+      var offset = Math.min(range.start - lineStart, stripped.length);
+      caret = lineStart + prefix.length + offset;
+    }
+    bodyEl.value = next;
+    afterEdit();
+    setCaret(caret);
+    commitEdit();
+  }
+
+  function insertBlock(text) {
+    flushHistory();
+    var range = caretRange();
+    var value = bodyEl.value;
+    var before = value.slice(0, range.start);
+    var after = value.slice(range.end);
+    var padBefore = before.length === 0 || before.slice(-1) === '\n' ? '' : '\n';
+    var padAfter = after.length === 0 || after.charAt(0) === '\n' ? '' : '\n';
+    bodyEl.value = before + padBefore + text + padAfter + after;
+    afterEdit();
+    setCaret((before + padBefore + text).length);
+    commitEdit();
+  }
+
+  function applyFormat(fmt) {
+    if (fmt === 'h1') return linePrefix('# ');
+    if (fmt === 'h2') return linePrefix('## ');
+    if (fmt === 'ul') return linePrefix('- ');
+    if (fmt === 'todo') return linePrefix('- [ ] ');
+    if (fmt === 'quote') return linePrefix('> ');
+    if (fmt === 'bold') return surround('**', '**', '加粗文字');
+    if (fmt === 'italic') return surround('*', '*', '斜体文字');
+    if (fmt === 'code') return insertBlock('```\n\n```\n');
+    if (fmt === 'link') return surround('[', '](https://)', '链接文字');
+    if (fmt === 'hr') return insertBlock('---\n');
+    if (fmt === 'undo') return undo();
+    if (fmt === 'smaller') return applyReadScale(readScale - 0.05, true);
+    if (fmt === 'bigger') return applyReadScale(readScale + 0.05, true);
+  }
+
+  [titleEl, bodyEl].forEach(function (node) {
+    node.addEventListener('input', function () {
+      grow(node);
+      // 标题变了，别名的占位提示跟着变
+      if (node === titleEl) slugEl.placeholder = slugify(titleEl.value) || '按标题自动';
+      afterEdit();
+    });
+  });
+
+  titleEl.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && !event.isComposing) {
+      event.preventDefault();
+      bodyEl.focus();
+      setCaret(bodyEl.value.length);
+    }
+  });
+
+  bodyEl.addEventListener('select', function () {
+    lastSel = { start: bodyEl.selectionStart, end: bodyEl.selectionEnd };
+  });
+  bodyEl.addEventListener('blur', function () {
+    lastSel = { start: bodyEl.selectionStart || 0, end: bodyEl.selectionEnd || 0 };
+  });
+
+  slugEl.addEventListener('input', function () {
+    var draft = activeDraft();
+    if (draft) { draft.slug = slugEl.value; scheduleSave(); }
+    renderMetaSummary();
+  });
+  slugEl.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && !event.isComposing) { event.preventDefault(); slugEl.blur(); }
+  });
+
+  /* ------------------------------ 工具栏 ------------------------------ */
+
+  fmtbar.addEventListener('click', function (event) {
+    var chip = event.target.closest('[data-fmt]');
+    if (!chip) return;
+    applyFormat(chip.getAttribute('data-fmt'));
+  });
+
+  document.querySelector('.toolbar').addEventListener('click', function (event) {
+    var fmtButton = event.target.closest('[data-fmt]');
+    if (fmtButton) { applyFormat(fmtButton.getAttribute('data-fmt')); return; }
+
+    var button = event.target.closest('[data-act]');
+    if (!button) return;
+    var act = button.getAttribute('data-act');
+    if (act === 'image') { fileEl.click(); return; }
+    if (act === 'format') {
+      fmtbar.classList.toggle('open');
+      fmtBtn.classList.toggle('on', fmtbar.classList.contains('open'));
+      fmtBtn.setAttribute('aria-expanded', String(fmtbar.classList.contains('open')));
+      return;
+    }
+    if (act === 'preview') { renderPreview(); return; }
+    if (act === 'dismiss') {
+      var active = document.activeElement;
+      if (active && active !== document.body && active.blur) active.blur();
+      closeTagPicks();
+      return;
+    }
+  });
+
+  /* ------------------------------ 图片 ------------------------------ */
+
+  function loadImage(file) {
+    if (window.createImageBitmap) {
+      return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(function () { return loadViaImg(file); });
+    }
+    return loadViaImg(file);
+  }
+
+  function loadViaImg(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('这个格式读不了，试试截图再传')); };
+      img.src = url;
+    });
+  }
+
+  function toBlob(canvas, type, quality) {
+    return new Promise(function (resolve) {
+      canvas.toBlob(function (blob) { resolve(blob); }, type, quality);
+    });
+  }
+
+  function compress(file) {
+    // 已经是压缩过的小图就直接传，别做无谓的重编码
+    if (file.size < 220 * 1024 && /^image\/(webp|jpeg)$/.test(file.type)) {
+      return Promise.resolve(file);
+    }
+    return loadImage(file).then(function (img) {
+      var w = img.width || img.naturalWidth;
+      var h = img.height || img.naturalHeight;
+      var scale = Math.min(1, MAX_SIDE / Math.max(w, h));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(w * scale));
+      canvas.height = Math.max(1, Math.round(h * scale));
+      var ctx = canvas.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      return toBlob(canvas, 'image/webp', 0.82).then(function (blob) {
+        if (!blob || blob.type !== 'image/webp') return toBlob(canvas, 'image/jpeg', 0.86);
+        return blob;
+      });
+    });
+  }
+
+  fileEl.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(fileEl.files || []);
+    fileEl.value = '';
+    if (!files.length) return;
+    uploadAll(files);
+  });
+
+  function uploadAll(files) {
+    if (!authed) { pendingUpload = files; openSheet('sheetLogin'); return; }
+    var done = 0;
+    toast('处理图片 1/' + files.length, 'busy', 0);
+    var chain = Promise.resolve();
+    files.forEach(function (file, index) {
+      chain = chain.then(function () {
+        toast('上传图片 ' + (index + 1) + '/' + files.length, 'busy', 0);
+        return compress(file).then(function (blob) {
+          return api('/api/write/upload', {
+            method: 'POST',
+            raw: blob,
+            contentType: blob.type || 'image/webp'
+          });
+        }).then(function (result) {
+          insertAtCursor('![](' + result.url + ')');
+          recentImages = null;
+          done += 1;
+        });
+      });
+    });
+    chain.then(function () {
+      toast(done + ' 张图片已插入', 'ok');
+    }).catch(function (error) {
+      toast(error.message || '上传失败', 'err', 3200);
+    });
+  }
+
+  /* ------------------------------ 接口层 ------------------------------ */
+
+  function api(path, options) {
+    options = options || {};
+    var headers = { Accept: 'application/json' };
+    var init = { method: options.method || 'GET', credentials: 'include', headers: headers };
+
+    if (options.raw) {
+      headers['Content-Type'] = options.contentType || 'application/octet-stream';
+      init.body = options.raw;
+    } else if (options.body) {
+      headers['Content-Type'] = 'application/json';
+      init.body = JSON.stringify(options.body);
+    }
+    if (init.method !== 'GET' && csrf) headers['x-csrf-token'] = csrf;
+
+    return fetch(API + path, init).then(function (response) {
+      return response.json().catch(function () { return {}; }).then(function (payload) {
+        if (!response.ok || payload.ok === false) {
+          var message = (payload.error && payload.error.message) || ('请求失败 ' + response.status);
+          var error = new Error(message);
+          error.status = response.status;
+          error.code = payload.error && payload.error.code;
+          throw error;
+        }
+        return payload;
+      });
+    });
+  }
+
+  function checkAuth() {
+    return api('/api/comments/session').then(function (data) {
+      authed = Boolean(data.admin);
+      csrf = data.csrf || '';
+      applyAuthState();
+      if (authed) {
+        loadTags();
+        pullDrafts();
+      }
+      return authed;
+    }).catch(function () {
+      authed = false;
+      setSaveState('离线');
+      applyAuthState();
+      return false;
+    });
+  }
+
+  function applyAuthState() {
+    banner.hidden = authed;
+    $('loginState').textContent = authed ? '已登录' : '未登录';
+    $('rowAuthLabel').textContent = authed ? '退出登录' : '登录';
+    $('rowAuth').classList.toggle('accent', !authed);
+    $('menuSub').textContent = authed
+      ? '草稿会同步到云端，另一台设备登录后接着写；发布才写进仓库。'
+      : '未登录：草稿只存在这台设备上，登录后可在设备之间同步。';
+    renderInstallTip();
+    refreshSaveState();
+  }
+
+  function checkHealth() {
+    return api('/api/write/health').then(function (data) {
+      health = data;
+      $('apiState').textContent = '正常';
+      $('ghState').textContent = data.github ? (data.repo + ' @ ' + data.branch) : '未配置 GITHUB_TOKEN';
+      $('r2State').textContent = data.r2 ? data.r2Public : '未绑定 R2 桶';
+    }).catch(function (error) {
+      health = null;
+      $('apiState').textContent = '连不上（' + error.message + '）';
+    });
+  }
+
+  /* ------------------------------ 文章列表 ------------------------------ */
+
+  function renderDraftList() {
+    var list = $('draftList');
+    list.innerHTML = '';
+    var drafts = store.drafts.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    $('draftNum').textContent = drafts.length > 1 ? String(drafts.length) : '';
+
+    // 菜单里给一句「现在在写哪篇」，比干巴巴的「自动保存」有用
+    var current = activeDraft();
+    var currentTitle = current ? String(current.title || '').trim() : '';
+    $('menuDraftSub').textContent = (current && hasContent(current)
+      ? (current.edit ? '更新中 · ' : '正在写 · ') + (currentTitle || '无标题')
+      : '自动保存，最多 30 篇') + ' · ' + syncLabel();
+
+    drafts.forEach(function (draft) {
+      // 用 div 而不是 button：里面还要放一个删除按钮，button 不能嵌 button
+      var row = el('div', 'docitem' + (draft.id === store.activeId ? ' cur' : ''));
+      row.setAttribute('role', 'button');
+      row.tabIndex = 0;
+      var main = el('div', 'di-main');
+      main.appendChild(el('div', 'di-title', String(draft.title || '').trim() || '无标题草稿'));
+
+      var sub = el('div', 'di-sub');
+      sub.appendChild(document.createTextNode(dayLabel(draft.updatedAt)));
+      sub.appendChild(el('span', 'dot', '·'));
+      sub.appendChild(document.createTextNode(wordCount(draft.body) + ' 字'));
+      if (draft.edit) {
+        sub.appendChild(el('span', 'dot', '·'));
+        sub.appendChild(document.createTextNode('更新中'));
+      }
+      main.appendChild(sub);
+      row.appendChild(main);
+
+      var del = el('button', 'docdel');
+      del.setAttribute('aria-label', '删除草稿');
+      del.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      del.addEventListener('click', function (event) {
+        event.stopPropagation();
+        var name = String(draft.title || '').trim() || '无标题草稿';
+        if (!window.confirm('删除「' + name + '」？这不可撤销。')) return;
+        removeDraft(draft.id);
+      });
+      row.appendChild(del);
+
+      row.addEventListener('click', function () { openDraft(draft.id); });
+      row.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDraft(draft.id); }
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function renderRecentList() {
+    var box = $('recentList');
+    box.innerHTML = '';
+
+    if (!authed) {
+      var tip = el('div', 'empty', '登录后可以读到最近发布的文章');
+      var btn = el('button', null, '登录');
+      btn.addEventListener('click', function () { closeSheet($('sheetDocs')); setTimeout(function () { openSheet('sheetLogin'); }, 160); });
+      tip.appendChild(document.createElement('br'));
+      tip.appendChild(btn);
+      box.appendChild(tip);
+      return;
+    }
+
+    if (recentLoading && !recentPosts) { box.appendChild(el('div', 'empty', '正在读取…')); return; }
+    if (!recentPosts) { box.appendChild(el('div', 'empty', '还没读到')); return; }
+    if (recentPosts.error) {
+      var err = el('div', 'empty', recentPosts.error);
+      var retry = el('button', null, '重试');
+      retry.addEventListener('click', function () { loadRecent(true); });
+      err.appendChild(document.createElement('br'));
+      err.appendChild(retry);
+      box.appendChild(err);
+      return;
+    }
+
+    recentPosts.posts.forEach(function (post) {
+      var row = el('div', 'docitem');
+      row.setAttribute('role', 'button');
+      row.tabIndex = 0;
+      var main = el('div', 'di-main');
+      main.appendChild(el('div', 'di-title', post.title || post.name));
+
+      var sub = el('div', 'di-sub');
+      sub.appendChild(document.createTextNode(String(post.date || '').slice(0, 10)));
+      if (post.tags && post.tags.length) {
+        sub.appendChild(el('span', 'dot', '·'));
+        sub.appendChild(document.createTextNode(post.tags.slice(0, 3).join(' / ')));
+      }
+      sub.appendChild(el('span', 'dot', '·'));
+      sub.appendChild(document.createTextNode((post.words || 0) + ' 字'));
+      main.appendChild(sub);
+      row.appendChild(main);
+
+      row.addEventListener('click', function () { previewRecent(post); });
+      row.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); previewRecent(post); }
+      });
+      box.appendChild(row);
+    });
+
+    $('recentSub').textContent = recentPosts.order === 'filename_fallback'
+      ? '按文件名排序（日期索引还没构建出来）'
+      : '最近 ' + recentPosts.posts.length + ' 篇 / 共 ' + recentPosts.total + ' 篇';
+  }
+
+  function loadRecent(force) {
+    if (!authed) { renderRecentList(); return Promise.resolve(); }
+    if (recentLoading) return Promise.resolve();
+    if (recentPosts && !force && !recentPosts.error) { renderRecentList(); return Promise.resolve(); }
+
+    recentLoading = true;
+    if (!recentPosts) renderRecentList();
+    return api('/api/write/posts?limit=5').then(function (data) {
+      recentPosts = { posts: data.posts || [], total: data.total || 0, order: data.order || 'front_matter_date' };
+    }).catch(function (error) {
+      recentPosts = { error: error.message || '读取失败', posts: [], total: 0 };
+    }).then(function () {
+      recentLoading = false;
+      renderRecentList();
+    });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    var input = document.createElement('textarea');
+    input.value = text;
+    input.setAttribute('readonly', '');
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+    input.remove();
+    return ok ? Promise.resolve() : Promise.reject(new Error('复制失败'));
+  }
+
+  function imageTimeLabel(image) {
+    if (!image.uploaded) return image.key.split('/').pop();
+    var stamp = new Date(image.uploaded).getTime();
+    return dayLabel(stamp) + (image.size ? ' · ' + Math.max(1, Math.round(image.size / 1024)) + ' KB' : '');
+  }
+
+  function showImage(image) {
+    selectedImage = image;
+    $('imagePreview').src = image.url;
+    $('imageUrl').textContent = image.url;
+    openSheet('sheetImage');
+  }
+
+  function renderImageList() {
+    var box = $('imageList');
+    box.innerHTML = '';
+    if (!authed) {
+      var tip = el('div', 'empty', '登录后可以读取最近上传的图片');
+      var login = el('button', null, '登录');
+      login.addEventListener('click', function () { closeSheet($('sheetDocs')); setTimeout(function () { openSheet('sheetLogin'); }, 160); });
+      tip.appendChild(document.createElement('br'));
+      tip.appendChild(login);
+      box.appendChild(tip);
+      return;
+    }
+    if (imageLoading && !recentImages) { box.appendChild(el('div', 'empty', '正在读取图片…')); return; }
+    if (!recentImages) { box.appendChild(el('div', 'empty', '还没读到图片')); return; }
+    if (recentImages.error) {
+      var err = el('div', 'empty', recentImages.error);
+      var retry = el('button', null, '重试');
+      retry.addEventListener('click', function () { loadRecentImages(true); });
+      err.appendChild(document.createElement('br'));
+      err.appendChild(retry);
+      box.appendChild(err);
+      return;
+    }
+    if (!recentImages.images.length) { box.appendChild(el('div', 'empty', '图床里还没有图片')); return; }
+
+    var grid = el('div', 'image-grid');
+    recentImages.images.forEach(function (image) {
+      var card = el('div', 'image-card');
+      var thumb = el('button', 'image-thumb');
+      thumb.setAttribute('aria-label', '预览图片');
+      var img = document.createElement('img');
+      img.src = image.url;
+      img.alt = '';
+      img.loading = 'lazy';
+      thumb.appendChild(img);
+      thumb.addEventListener('click', function () { showImage(image); });
+      card.appendChild(thumb);
+      card.appendChild(el('div', 'image-info', imageTimeLabel(image)));
+      var actions = el('div', 'image-actions');
+      var copy = el('button', null, '复制链接');
+      copy.addEventListener('click', function () {
+        copyText(image.url).then(function () { toast('图片链接已复制', 'ok'); }).catch(function () { toast('复制失败，请长按图片', 'err'); });
+      });
+      var insert = el('button', null, '插入');
+      insert.addEventListener('click', function () {
+        closeSheet($('sheetDocs'));
+        insertAtCursor('![](' + image.url + ')');
+        toast('图片已插入正文', 'ok');
+      });
+      actions.appendChild(copy);
+      actions.appendChild(insert);
+      card.appendChild(actions);
+      grid.appendChild(card);
+    });
+    box.appendChild(grid);
+    $('imageSub').textContent = '最近上传的 ' + recentImages.images.length + ' 张';
+  }
+
+  function loadRecentImages(force) {
+    if (!authed) { renderImageList(); return Promise.resolve(); }
+    if (imageLoading) return Promise.resolve();
+    if (recentImages && !force && !recentImages.error) { renderImageList(); return Promise.resolve(); }
+    imageLoading = true;
+    if (!recentImages) renderImageList();
+    return api('/api/write/images?limit=10').then(function (data) {
+      recentImages = { images: data.images || [] };
+    }).catch(function (error) {
+      recentImages = { error: error.message || '读取失败', images: [] };
+    }).then(function () {
+      imageLoading = false;
+      renderImageList();
+    });
+  }
+
+  function previewRecent(post) {
+    closeSheet($('sheetDocs'));
+    setTimeout(function () { renderPreview(post); }, 120);
+  }
+
+  /** 只有在预览页点「编辑」后，才把已发布文章装进草稿。 */
+  function editRecent(post) {
+    flushSave();
+    var existing = null;
+    store.drafts.forEach(function (draft) {
+      if (draft.edit && draft.edit.path === post.path) existing = draft;
+    });
+
+    if (existing) {
+      store.activeId = existing.id;
+      persist();
+      loadActive();
+      closeSheet($('sheetDocs'));
+      return;
+    }
+
+    var draft = blankDraft();
+    draft.title = post.title || '';
+    draft.body = post.content || '';
+    draft.slug = post.slug || '';
+    draft.tags = Array.isArray(post.tags) ? post.tags.slice(0, MAX_TAGS) : [];
+    draft.edit = { path: post.path, name: post.name, url: post.url || '' };
+    draft.publishedAt = Date.now();
+    store.drafts.unshift(draft);
+    store.activeId = draft.id;
+    persist();
+    loadActive();
+    closeSheet($('sheetDocs'));
+    docEl.scrollTop = 0;
+    // 顶部 editBar 已经写着「正在更新《标题》」，不再弹 toast，免得遮住顶栏
+  }
+
+  /* ------------------------------ 更新状态 ------------------------------ */
+
+  function renderEditBar() {
+    var draft = activeDraft();
+    var editing = Boolean(draft && draft.edit);
+    editBar.hidden = !editing;
+    $('rowOpen').hidden = !editing;
+    $('rowDetach').hidden = !editing;
+
+    if (editing) {
+      var label = (String(draft.title || '').trim() || String(draft.edit.name || '').replace(/\.md$/i, '').replace(/^\d{4}-\d{2}-\d{2}[ -]*/, ''));
+      ebText.innerHTML = '';
+      ebText.appendChild(document.createTextNode('正在更新 '));
+      ebText.appendChild(el('b', null, '《' + label + '》'));
+      $('publishRowTitle').textContent = '更新这篇';
+      $('publishRowSub').textContent = '覆盖原文件，日期与其它字段不变';
+    } else {
+      $('publishRowTitle').textContent = '发布到博客';
+      $('publishRowSub').textContent = '写入仓库，约 1 分钟上线';
+    }
+  }
+
+  function detachEdit() {
+    var draft = activeDraft();
+    if (!draft || !draft.edit) return;
+    if (!window.confirm('把这篇当作新文章发布？原文件不会被改动。')) return;
+    draft.edit = null;
+    draft.publishedAt = 0;
+    persist();
+    renderEditBar();
+    if (draft.id === store.activeId) setSaveState('已存 ' + timeLabel(draft.updatedAt), 'saved');
+    toast('已转为新文章');
+  }
+
+  /* ------------------------------ 预览 ------------------------------ */
+
+  function escapeHtml(text) {
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function inline(text) {
+    return text
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img alt="$1" src="$2" loading="lazy">')
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+      .replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  }
+
+  function markdown(source) {
+    var escaped = escapeHtml(source.replace(/\r\n/g, '\n'));
+    var blocks = escaped.split(/```/);
+    var html = '';
+    blocks.forEach(function (block, index) {
+      if (index % 2 === 1) {
+        html += '<pre><code>' + block.replace(/^\n/, '') + '</code></pre>';
+        return;
+      }
+      var lines = block.split('\n');
+      var buffer = [];
+      var mode = '';
+      function flush() {
+        if (!buffer.length) return;
+        if (mode === 'ul') html += '<ul>' + buffer.map(function (li) { return '<li>' + inline(li) + '</li>'; }).join('') + '</ul>';
+        else if (mode === 'ol') html += '<ol>' + buffer.map(function (li) { return '<li>' + inline(li) + '</li>'; }).join('') + '</ol>';
+        else if (mode === 'quote') html += '<blockquote>' + buffer.map(inline).join('<br>') + '</blockquote>';
+        else html += '<p>' + buffer.map(inline).join('<br>') + '</p>';
+        buffer = [];
+        mode = '';
+      }
+      lines.forEach(function (line) {
+        var trimmed = line.trim();
+        if (!trimmed) { flush(); return; }
+        if (/^!\[[^\]]*\]\([^)]+\)$/.test(trimmed)) { flush(); html += '<p>' + inline(trimmed) + '</p>'; return; }
+        var heading = trimmed.match(/^(#{1,6})\s+(.*)$/);
+        if (heading) { flush(); html += '<h' + heading[1].length + '>' + inline(heading[2]) + '</h' + heading[1].length + '>'; return; }
+        if (/^(-{3,}|\*{3,})$/.test(trimmed)) { flush(); html += '<hr>'; return; }
+        var todo = trimmed.match(/^[-*+]\s+\[([ xX])\]\s+(.*)$/);
+        if (todo) {
+          flush();
+          html += '<ul><li class="todo">' + (todo[1].toLowerCase() === 'x' ? '☑︎' : '☐') + ' <span>' + inline(todo[2]) + '</span></li></ul>';
+          return;
+        }
+        var bullet = trimmed.match(/^[-*+]\s+(.*)$/);
+        if (bullet) { if (mode !== 'ul') { flush(); mode = 'ul'; } buffer.push(bullet[1]); return; }
+        var ordered = trimmed.match(/^\d+[.)]\s+(.*)$/);
+        if (ordered) { if (mode !== 'ol') { flush(); mode = 'ol'; } buffer.push(ordered[1]); return; }
+        // 注意：正文已经过 escapeHtml，行首的 > 变成了 &gt;
+        if (/^(&gt;|>)\s?/.test(trimmed)) {
+          if (mode !== 'quote') { flush(); mode = 'quote'; }
+          buffer.push(trimmed.replace(/^(&gt;|>)\s?/, ''));
+          return;
+        }
+        if (mode === 'ul' || mode === 'ol' || mode === 'quote') flush();
+        mode = mode || 'p';
+        buffer.push(line);
+      });
+      flush();
+    });
+    return html;
+  }
+
+  function renderPreview(post) {
+    previewPost = post || null;
+    var text = String(post ? post.content : bodyEl.value).trim();
+    var title = String(post ? (post.title || post.name || '') : titleEl.value).trim();
+    var head = title ? '<h1>' + inline(escapeHtml(title)) + '</h1>' : '';
+    var meta = '';
+    if (post) {
+      var bits = [String(post.date || '').slice(0, 16)];
+      if (post.tags && post.tags.length) bits.push(post.tags.join(' · '));
+      bits.push((post.words || wordCount(post.content)) + ' 字');
+      meta = '<div class="preview-meta">' + escapeHtml(bits.filter(Boolean).join('　')) + '</div>';
+    }
+    previewBody.innerHTML = text || head
+      ? head + meta + (text ? markdown(text) : '<p class="empty">正文还是空的</p>')
+      : '<div class="empty">还没开始写</div>';
+    $('previewEdit').hidden = !post;
+    previewEl.classList.add('open');
+    previewBody.scrollTop = 0;
+  }
+
+  $('previewClose').addEventListener('click', function () {
+    previewEl.classList.remove('open');
+    previewPost = null;
+  });
+
+  $('previewEdit').addEventListener('click', function () {
+    var post = previewPost;
+    if (!post) return;
+    previewEl.classList.remove('open');
+    previewPost = null;
+    setTimeout(function () { editRecent(post); }, 100);
+  });
+
+  /* ------------------------------ 登录 ------------------------------ */
+
+  $('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var token = $('token').value.trim();
+    if (!token) return;
+    var btn = $('loginBtn');
+    btn.disabled = true;
+    btn.textContent = '登录中…';
+    api('/api/comments/session', { method: 'POST', body: { token: token } })
+      .then(function (data) {
+        authed = true;
+        csrf = data.csrf || '';
+        $('token').value = '';
+        closeSheet($('sheetLogin'));
+        toast('登录成功', 'ok');
+        applyAuthState();
+        loadTags();
+        loadRecent(true);
+        if (pendingPublish) {
+          pendingPublish = false;
+          setTimeout(openPublish, 220);
+        }
+        if (pendingUpload) {
+          var files = pendingUpload;
+          pendingUpload = null;
+          setTimeout(function () { uploadAll(files); }, 240);
+        }
+      })
+      .catch(function (error) {
+        toast(error.message || '登录失败', 'err', 3000);
+      })
+      .then(function () {
+        btn.disabled = false;
+        btn.textContent = '登录';
+      });
+  });
+
+  function logout() {
+    api('/api/comments/session', { method: 'DELETE' }).catch(function () {}).then(function () {
+      authed = false;
+      csrf = '';
+      allTags = [];
+      recentPosts = null;
+      recentImages = null;
+      applyAuthState();
+      toast('已退出登录');
+    });
+  }
+
+  $('bannerLogin').addEventListener('click', function () { openSheet('sheetLogin'); });
+
+  /* ------------------------------ 发布 ------------------------------ */
+
+  /** 后台按北京时间取 date，这里只负责把那一刻显示出来，好让人确认。 */
+  function beijingStamp() {
+    var t = new Date(Date.now() + 8 * 3600 * 1000);
+    return t.getUTCFullYear() + '-' + pad2(t.getUTCMonth() + 1) + '-' + pad2(t.getUTCDate()) +
+      ' ' + pad2(t.getUTCHours()) + ':' + pad2(t.getUTCMinutes());
+  }
+
+  function renderPublishSummary(draft) {
+    var tags = draft.tags || [];
+    $('pubTitleText').textContent = draft.title.trim();
+    $('pubTags').textContent = tags.length ? tags.join(' · ') : '无';
+    $('pubUrl').textContent = '/posts/' + (draft.slug || slugify(draft.title) || '…') + '/';
+    $('pubFile').textContent = draft.edit
+      ? draft.edit.path
+      : 'content/posts/' + todayDate() + ' ' + draft.title.trim().slice(0, 24) + '.md';
+    $('pubWords').textContent = wordCount(draft.body) + ' 字';
+    $('pubTime').textContent = draft.edit ? '保留原文日期' : beijingStamp();
+
+    if (draft.edit) {
+      $('pubTitle').textContent = '更新文章';
+      $('pubSub').textContent = '会覆盖仓库里的原文件，只更新 lastmod，date 与其它字段不变。';
+      $('pubConfirm').textContent = '更新';
+    } else {
+      $('pubTitle').textContent = '发布到博客';
+      $('pubSub').textContent = '日期取你点下「发布」的这一刻（北京时间），提交后约 1 分钟上线。';
+      $('pubConfirm').textContent = '发布';
+    }
+  }
+
+  function openPublish() {
+    var draft = capture();
+    if (!draft) return;
+    if (!String(draft.title).trim()) { titleEl.focus(); toast('先写个标题'); return; }
+    if (!String(draft.body).trim()) { bodyEl.focus(); toast('正文还是空的'); return; }
+    if (!authed) { pendingPublish = true; openSheet('sheetLogin'); return; }
+
+    renderPublishSummary(draft);
+    openSheet('sheetPublish');
+  }
+
+  /** 手动暂存：立刻落盘；登录了就当场推上去，不等那 1.2 秒的节流。 */
+  function manualSave() {
+    var draft = capture();
+    if (!draft) return;
+    if (!hasContent(draft)) { toast('还什么都没写'); return; }
+    if (!persist()) { toast('本机存不下了，先删几篇旧草稿', 'err', 3200); return; }
+    setSaveState('已存 ' + timeLabel(draft.updatedAt) + syncSuffix(), 'saved');
+    markDirty(draft.id);
+    if (!authed) { toast('已存到这台设备', 'ok', 1700); return; }
+    runSync().then(function () {
+      if (syncBroken) toast('已存到本机，云端稍后重试', 'err', 2600);
+      else toast('已保存，其它设备也能看到', 'ok', 1700);
+    });
+  }
+
+  $('rowSave').addEventListener('click', function () {
+    closeSheet($('sheetActions'));
+    manualSave();
+  });
+
+  $('rowPublish').addEventListener('click', function () {
+    closeSheet($('sheetActions'));
+    setTimeout(openPublish, 190);
+  });
+
+  $('pubConfirm').addEventListener('click', function () {
+    var btn = $('pubConfirm');
+    if (busy) return;
+    var draft = capture();
+    if (!draft) return;
+
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = draft.edit ? '更新中…' : '提交中…';
+
+    var payload = {
+      title: String(draft.title).trim(),
+      content: draft.body,
+      tags: draft.tags || [],
+      slug: draft.slug || ''
+    };
+    if (draft.edit && draft.edit.path) payload.path = draft.edit.path;
+
+    api('/api/write/post', { method: 'POST', body: payload }).then(function (result) {
+      closeSheet($('sheetPublish'));
+
+      if (!draft.edit) {
+        draft.edit = { path: result.path, name: result.name, url: result.liveUrl || '' };
+      } else if (result.path) {
+        draft.edit.path = result.path;
+        draft.edit.name = result.name || draft.edit.name;
+        draft.edit.url = result.liveUrl || draft.edit.url;
+      }
+      draft.publishedAt = Date.now();
+      persist();
+      markDirty(draft.id);
+      scheduleSync(400);
+      renderEditBar();
+      setSaveState('已存 ' + timeLabel(draft.updatedAt), 'saved');
+      toast(result.updated || payload.path ? '已更新，约 1 分钟生效' : '已发布，约 1 分钟上线', 'ok', 3600);
+
+      var open = $('rowOpen');
+      open.dataset.url = draft.edit.url || '';
+      recentPosts = null;
+    }).catch(function (error) {
+      toast(error.message || '发布失败', 'err', 3600);
+    }).then(function () {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = draft.edit ? '更新' : '发布';
+    });
+  });
+
+  /* ------------------------------ 菜单 / 列表 ------------------------------ */
+
+  $('docsBtn').addEventListener('click', function () {
+    flushSave();
+    renderDraftList();
+    showPane(null);
+    if (authed) loadRecent(false); else renderRecentList();
+    openSheet('sheetDocs');
+  });
+
+  $('newDraft').addEventListener('click', startNewDraft);
+  $('recentRefresh').addEventListener('click', function () { loadRecent(true); });
+  $('imageRefresh').addEventListener('click', function () { loadRecentImages(true); });
+
+  $('imageCopy').addEventListener('click', function () {
+    if (!selectedImage) return;
+    copyText(selectedImage.url).then(function () { toast('图片链接已复制', 'ok'); }).catch(function () { toast('复制失败，请长按链接', 'err'); });
+  });
+
+  $('imageInsert').addEventListener('click', function () {
+    if (!selectedImage) return;
+    closeSheet($('sheetImage'));
+    closeSheet($('sheetDocs'));
+    insertAtCursor('![](' + selectedImage.url + ')');
+    toast('图片已插入正文', 'ok');
+  });
+
+  var PANE_TITLES = { drafts: '草稿', recent: '最近发布', images: '最近图片' };
+
+  function showPane(name) {
+    var on = Boolean(name && PANE_TITLES[name]);
+    $('docsMenu').hidden = on;
+    $('menuBackBtn').hidden = !on;
+    $('docsTitle').textContent = on ? PANE_TITLES[name] : '文章';
+    $('paneDrafts').hidden = name !== 'drafts';
+    $('paneRecent').hidden = name !== 'recent';
+    $('paneImages').hidden = name !== 'images';
+    if (name === 'drafts') renderDraftList();
+    if (name === 'recent') loadRecent(false);
+    if (name === 'images') loadRecentImages(false);
+  }
+
+  $('docsMenu').addEventListener('click', function (event) {
+    var row = event.target.closest('[data-tab]');
+    if (row) showPane(row.getAttribute('data-tab'));
+  });
+
+  $('menuBackBtn').addEventListener('click', function () { showPane(null); });
+
+  $('actionsBtn').addEventListener('click', function () {
+    flushSave();
+    applyAuthState();
+    renderEditBar();
+    openSheet('sheetActions');
+  });
+
+  $('rowAuth').addEventListener('click', function () {
+    if (authed) {
+      closeSheet($('sheetActions'));
+      logout();
+    } else {
+      closeSheet($('sheetActions'));
+      setTimeout(function () { openSheet('sheetLogin'); }, 180);
+    }
+  });
+
+  $('rowOpen').addEventListener('click', function () {
+    var draft = activeDraft();
+    var url = (draft && draft.edit && draft.edit.url) || this.dataset.url;
+    if (!url) { toast('还没有可打开的链接'); return; }
+    window.open(url, '_blank', 'noopener');
+  });
+
+  $('rowDetach').addEventListener('click', function () {
+    closeSheet($('sheetActions'));
+    setTimeout(detachEdit, 180);
+  });
+
+  $('ebDetach').addEventListener('click', detachEdit);
+
+  function safeFileName(text) {
+    return String(text || '未命名').replace(/[\\/:*?"<>|]/g, '-').replace(/\s+/g, ' ').trim().slice(0, 60) || '未命名';
+  }
+
+  function markdownOf(draft) {
+    var lines = ['---', 'title: ' + JSON.stringify(draft.title.trim() || '未命名'), 'date: ' + todayDate(), 'draft: true'];
+    if (draft.slug) lines.push('slug: ' + JSON.stringify(draft.slug));
+    if (draft.tags.length) {
+      lines.push('tags:');
+      draft.tags.forEach(function (tag) { lines.push('  - ' + JSON.stringify(tag)); });
+    }
+    lines.push('---', '', draft.body || '', '');
+    return lines.join('\n');
+  }
+
+  function downloadFile(file, name) {
+    var url = URL.createObjectURL(file);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  /**
+   * iOS 上 a[download] 往往只是把文件打开给你看一眼，不会落盘。
+   * 走系统分享面板才有「存储到文件 → iCloud 云盘」这一项，所以优先 share。
+   * 注意 share 必须在点击的同一拍里调用，前面不能 await，否则会被拦。
+   */
+  function exportDraft() {
+    flushSave();
+    var draft = capture();
+    if (!draft || !hasContent(draft)) { toast('这篇草稿还是空的'); return; }
+    var name = todayDate() + ' ' + safeFileName(draft.title) + '.md';
+    var file = new File([markdownOf(draft)], name, { type: 'text/markdown;charset=utf-8' });
+    closeSheet($('sheetActions'));
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: draft.title || '草稿' }).then(function () {
+        toast('已存到所选位置', 'ok');
+      }).catch(function (error) {
+        if (error && error.name === 'AbortError') return;
+        downloadFile(file, name);
+        toast('已下载 Markdown', 'ok');
+      });
+      return;
+    }
+    downloadFile(file, name);
+    toast('已导出 Markdown', 'ok');
+  }
+
+  $('rowExport').addEventListener('click', exportDraft);
+
+  /* ------------------------------ 导入 md ------------------------------ */
+
+  function unquote(text) {
+    var value = String(text == null ? '' : text).trim();
+    if (value.length >= 2) {
+      var head = value.charAt(0);
+      var tail = value.charAt(value.length - 1);
+      if ((head === '"' && tail === '"') || (head === "'" && tail === "'")) {
+        value = value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+      }
+    }
+    return value;
+  }
+
+  /** 只认 title / slug / tags 三个键，其余 front matter 扔掉——导入的是草稿，不是原文备份。 */
+  function parseMarkdown(text, fileName) {
+    var source = String(text || '').replace(/\r\n/g, '\n');
+    var title = '';
+    var slug = '';
+    var tags = [];
+    var body = source;
+
+    if (source.slice(0, 4) === '---\n') {
+      var end = source.indexOf('\n---', 3);
+      if (end > -1) {
+        var header = source.slice(4, end);
+        var next = source.indexOf('\n', end + 1);
+        body = next === -1 ? '' : source.slice(next + 1).replace(/^(?:[ \t]*\n)+/, '');
+
+        var inTags = false;
+        header.split('\n').forEach(function (line) {
+          if (inTags && /^\s*-\s+/.test(line)) {
+            tags.push(unquote(line.replace(/^\s*-\s+/, '')));
+            return;
+          }
+          inTags = false;
+          var match = line.match(/^(title|slug|tags)\s*:\s*(.*)$/);
+          if (!match) return;
+          if (match[1] === 'tags') {
+            var inline = match[2].trim();
+            if (inline.charAt(0) === '[') {
+              tags = inline.replace(/^\[|\]$/g, '').split(',').map(unquote).filter(Boolean);
+            } else if (!inline) {
+              inTags = true;
+            }
+          } else if (match[1] === 'title') {
+            title = unquote(match[2]);
+          } else {
+            slug = unquote(match[2]);
+          }
+        });
+      }
+    }
+
+    if (!title) {
+      title = String(fileName || '').replace(/\.(md|markdown|txt)$/i, '').replace(/^\d{4}-\d{2}-\d{2}[ -]*/, '');
+    }
+    return { title: title, slug: slug, tags: tags.filter(Boolean).slice(0, MAX_TAGS), body: body };
+  }
+
+  function readTextFile(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result || '')); };
+      reader.onerror = function () { reject(reader.error || new Error('读取失败')); };
+      reader.readAsText(file, 'utf-8');
+    });
+  }
+
+  function importFiles(list) {
+    var files = Array.prototype.slice.call(list || []).filter(function (file) {
+      return file && file.name && file.size <= 4 * 1024 * 1024;
+    }).slice(0, 20);
+    if (!files.length) { toast('没选到可导入的文件'); return; }
+
+    flushSave();
+    var added = [];
+    var chain = Promise.resolve();
+
+    files.forEach(function (file) {
+      chain = chain.then(function () {
+        return readTextFile(file).then(function (text) {
+          var parsed = parseMarkdown(text, file.name);
+          if (!parsed.title && !parsed.body.trim()) return;
+          var draft = blankDraft();
+          draft.title = parsed.title;
+          draft.body = parsed.body;
+          draft.tags = parsed.tags;
+          draft.slug = parsed.slug;
+          // 按选择顺序排进列表，不然同一秒导入的几篇会乱序
+          var stamp = Date.now() + added.length;
+          draft.createdAt = stamp;
+          draft.updatedAt = stamp;
+          store.drafts.unshift(draft);
+          added.push(draft);
+        }).catch(function () {});
+      });
+    });
+
+    chain.then(function () {
+      if (!added.length) { toast('这些文件里没读到内容'); return; }
+      store.activeId = added[0].id;
+      persist();
+      loadActive();
+      renderDraftList();
+      added.forEach(function (draft) { markDirty(draft.id); });
+      scheduleSync(600);
+      closeSheet($('sheetDocs'));
+      docEl.scrollTop = 0;
+      toast('已导入 ' + added.length + ' 篇', 'ok');
+    });
+  }
+
+  $('rowImport').addEventListener('click', function () {
+    closeSheet($('sheetActions'));
+    // 给弹层收起留一拍，iOS 上立刻 click 输入框容易被吃掉
+    setTimeout(function () { mdFileEl.click(); }, 200);
+  });
+
+  mdFileEl.addEventListener('change', function () {
+    importFiles(mdFileEl.files);
+    mdFileEl.value = '';
+  });
+
+  $('rowClear').addEventListener('click', function () {
+    var draft = activeDraft();
+    if (!draft) return;
+    if (!window.confirm('删除当前这篇草稿？这不可撤销。')) return;
+    closeSheet($('sheetActions'));
+    removeDraft(draft.id);
+    toast('已删除');
+  });
+
+  document.addEventListener('keydown', function (event) {
+    var command = event.metaKey || event.ctrlKey;
+    if (command && event.key.toLowerCase() === 's') {
+      event.preventDefault();
+      flushSave();
+      toast('已保存到本机', 'ok');
+      return;
+    }
+    if (command && event.key === 'Enter') {
+      event.preventDefault();
+      openPublish();
+      return;
+    }
+    if (command && event.shiftKey && event.key.toLowerCase() === 'p') {
+      event.preventDefault();
+      renderPreview();
+      return;
+    }
+    if (event.key === 'Escape') {
+      var open = document.querySelector('.sheet.open');
+      if (open) { closeSheet(open); return; }
+      if (previewEl.classList.contains('open')) { previewEl.classList.remove('open'); previewPost = null; return; }
+      if (fmtbar.classList.contains('open')) {
+        fmtbar.classList.remove('open');
+        fmtBtn.classList.remove('on');
+        fmtBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  /* ------------------------------ 视口 ------------------------------ */
+
+  function syncViewport() {
+    var vv = window.visualViewport;
+    var height = vv ? vv.height : window.innerHeight;
+    var top = vv ? vv.offsetTop : 0;
+    document.documentElement.style.setProperty('--app-h', Math.round(height) + 'px');
+    document.documentElement.style.setProperty('--vv-top', Math.round(top) + 'px');
+    if (document.documentElement.scrollTop) window.scrollTo(0, 0);
+  }
+
+  syncViewport();
+  // 断点切换（手机 ↔ 桌面）会改字号，textarea 高度得跟着重算，否则标题会被裁一半
+  window.addEventListener('resize', function () { syncViewport(); growAll(); });
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () { syncViewport(); growAll(); }, 120);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncViewport);
+    window.visualViewport.addEventListener('scroll', syncViewport);
+  }
+
+  // 键盘弹出后把光标滚进可视区（iOS 有时不会自己滚）
+  [titleEl, bodyEl, tagInput].forEach(function (node) {
+    node.addEventListener('focus', function () {
+      setTimeout(function () {
+        if (node.scrollIntoView) node.scrollIntoView({ block: 'nearest' });
+        // 候选面板在文档流里，键盘占了半屏时它可能整个落在下面看不见
+        if (node === tagInput && tagPicks.classList.contains('open')) {
+          var box = tagPicks.getBoundingClientRect();
+          var vv = window.visualViewport;
+          var bottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+          if (box.bottom > bottom - 8) tagPicks.scrollIntoView({ block: 'nearest' });
+        }
+      }, 320);
+    });
+  });
+
+  /* ------------------------------ 启动 ------------------------------ */
+
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  function renderInstallTip() {
+    $('installTip').textContent = standalone
+      ? '已从主屏幕打开，全屏运行。' + (authed ? '草稿会自动同步到云端。' : '草稿只在这台设备上。')
+      : (authed
+        ? '草稿会同步到云端，Safari 和主屏 App 打开的是同一份。'
+        : '想更像 App：Safari 里点「分享 → 添加到主屏幕」，之后从主屏图标打开就没有地址栏了。');
+  }
+
+  renderInstallTip();
+
+  loadStore();
+  loadActive();
+
+  var savedScale = Number(localStorage.getItem(SCALE_KEY));
+  if (savedScale >= 0.85 && savedScale <= 1.35) applyReadScale(savedScale, false);
+
+  renderDraftList();
+
+  // 关页面/切后台前把没落盘的草稿写进去
+  document.addEventListener('visibilitychange', function () { if (document.hidden) flushSave(); });
+  window.addEventListener('pagehide', flushSave);
+  window.addEventListener('beforeunload', function () { flushSave(); });
+  // 断网时攒下的改动，一恢复就补推
+  window.addEventListener('online', function () { if (authed) scheduleSync(400); });
+
+  checkAuth();
+  checkHealth();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/update/sw.js', { scope: '/update/' }).catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>
