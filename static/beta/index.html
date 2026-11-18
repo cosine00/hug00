@@ -412,7 +412,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .tool:active{background:color-mix(in srgb,var(--accent) 9%,transparent);transform:scale(.93)}
 .tool.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .tool svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
-/* 关掉这篇：放在最右，和左边的工具隔一道浅线，不至于误点成收键盘 */
+/* 关掉这篇：放在最右，和左边的工具隔一道浅线，不至于误点成 AI 或预览 */
 .tool-close{position:relative;color:var(--muted);margin-left:12px}
 .tool-close::before{content:"";position:absolute;left:-7px;top:50%;width:.5px;height:17px;
   margin-top:-8.5px;background:var(--line);pointer-events:none}
@@ -441,8 +441,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .count{padding:0 5px;font-size:11px}
   .tool-close{margin-left:8px}
 }
+/* 320 宽的机器（SE 一代那类）实在塞不下：让字数给 AI 让位，比把它藏掉有用 */
 @media (max-width:344px){
-  .tool[data-act="dismiss"]{display:none}
+  .count{display:none}
 }
 
 /* ── 面板 ── */
@@ -674,11 +675,17 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .ai-render img{max-width:100%;height:auto;border-radius:12px}
 .ai-render hr{border:0;border-top:.5px solid var(--line);margin:1.4em 0}
 .ai-render a{color:var(--accent)}
-/* 入口：格式条上的第一颗 chip，用主色把人勾过去 */
-.chip.ai-chip{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 26%,transparent);
-  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 13%,white),color-mix(in srgb,var(--accent) 8%,transparent))}
-.chip.ai-chip svg{width:13px;height:13px;margin-right:5px;stroke:currentColor;fill:none;
-  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* 入口：顶栏上那颗星。同排其余都是纯描边，这里垫一层比按钮小一圈的主色胶囊，
+   一眼能认出来，又不会整格填满看着像被按住 */
+.tool.tool-ai{position:relative;color:var(--accent)}
+/* 清掉通用的整格底：按下和展开都由里面那层胶囊表示 */
+.tool.tool-ai.on,.tool.tool-ai:active{background:transparent}
+.tool.tool-ai::before{content:"";position:absolute;left:5px;right:5px;top:5px;bottom:5px;
+  border-radius:9px;z-index:0;background:color-mix(in srgb,var(--accent) 9%,transparent);
+  transition:background .15s var(--ease)}
+.tool.tool-ai.on::before{background:color-mix(in srgb,var(--accent) 17%,transparent)}
+.tool.tool-ai:active::before{background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.tool.tool-ai svg{position:relative;z-index:1;width:21px;height:21px;stroke-width:1.5}
 
 /* ── 提示条 ── */
 .toast{position:fixed;left:50%;top:calc(var(--sat) + 76px);transform:translate(-50%,-140%);z-index:40;
@@ -727,7 +734,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
   /* 预览也收在同一个 660 的栏里，否则顶栏横贯全屏、正文却缩在中间 */
   .preview-bar{width:min(660px,calc(100% - 40px));margin:16px auto 0}
   .fmtbar{flex-wrap:wrap;overflow:visible}
-  .tool[data-act="dismiss"]{display:none}
   .toast{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 26px)}
   .sheet-panel{border-radius:20px}
   /* 抽屉在桌面端也收在同一条栏宽里，纸边留高一点，标题能露全 */
@@ -763,7 +769,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .tagchip{background:rgba(230,160,139,.16);color:#f2c4b0}
   .meta-toggle{color:#f2c4b0;background:rgba(230,160,139,.10);border-color:rgba(230,160,139,.16)}
   /* AI 入口与差异色：浅色那套混了白，暗底上会发灰，这里单独压一版 */
-  .chip.ai-chip{color:#f2c4b0;border-color:rgba(230,160,139,.28);background:rgba(230,160,139,.14)}
+  .tool.tool-ai{color:#f2c4b0}
+  .tool.tool-ai::before{background:rgba(230,160,139,.14)}
+  .tool.tool-ai.on::before{background:rgba(230,160,139,.24)}
+  .tool.tool-ai:active::before{background:rgba(230,160,139,.28)}
   .ai-seg button.on{background:rgba(255,255,255,.09);box-shadow:none}
   .ai-diff .dl-del{background:rgba(240,123,104,.09);box-shadow:inset 2px 0 0 rgba(240,123,104,.5)}
   .ai-diff .dl-ins{background:rgba(108,201,154,.10);box-shadow:inset 2px 0 0 rgba(108,201,154,.52)}
@@ -866,15 +875,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
           <button class="tool size" data-fmt="bigger" aria-label="正文字号大一点">A＋</button>
         </span>
         <span class="count" id="count">0 字</span>
-        <button class="tool" data-act="dismiss" aria-label="收起键盘">
-          <svg viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
+        <button class="tool tool-ai" data-act="ai" id="aiBtn" aria-label="AI 润色" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.2 3.6l1.7 4.5 4.5 1.7-4.5 1.7-1.7 4.5-1.7-4.5L5 9.8l4.5-1.7z"/><path d="M17.5 15.1l.75 1.95 1.95.75-1.95.75-.75 1.95-.75-1.95-1.95-.75 1.95-.75z"/></svg>
         </button>
         <button class="tool tool-close" data-act="close" id="closeBtn" aria-label="关掉这篇，回到入口">
           <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
         </button>
       </div>
       <div class="fmtbar" id="fmtbar">
-        <button class="chip ai-chip" data-fmt="ai"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.4 3.8l1.7 4.4 4.4 1.7-4.4 1.7-1.7 4.4-1.7-4.4L5.3 9.9l4.4-1.7z"/><path d="M17.4 15.6l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>AI 润色</button>
         <button class="chip" data-fmt="h1">大标题</button>
         <button class="chip" data-fmt="h2">小标题</button>
         <button class="chip" data-fmt="bold"><b>B</b>&nbsp;加粗</button>
@@ -2500,7 +2508,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function applyFormat(fmt) {
-    if (fmt === 'ai') return openPolish();
     if (fmt === 'h1') return linePrefix('# ');
     if (fmt === 'h2') return linePrefix('## ');
     if (fmt === 'ul') return linePrefix('- ');
@@ -2638,12 +2645,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
     if (act === 'preview') { renderPreview(); return; }
     if (act === 'close') { closeCurrent(); return; }
-    if (act === 'dismiss') {
-      var active = document.activeElement;
-      if (active && active !== document.body && active.blur) active.blur();
-      closeTagPicks();
-      return;
-    }
+    // 原来的「收起键盘」下箭头：点了等于没点（iOS 上 tap 按钮本身就已经让正文失焦），
+    // 换成 AI 润色入口。它一样会 blur 正文，键盘照样收起来。
+    if (act === 'ai') { closeTagPicks(); openPolish(); return; }
   });
 
   /* ------------------------------ 图片 ------------------------------ */
@@ -3407,6 +3411,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var AI_TIMEOUT_MS = 75000;
 
   var aiPanel = $('aiPanel'), aiBodyEl = $('aiBody'), aiScopeEl = $('aiScope');
+  var aiBtn = $('aiBtn');
   var aiModesEl = $('aiModes'), aiHintEl = $('aiHint'), aiWarnEl = $('aiWarn');
   var aiResultWrap = $('aiResult'), aiTabsEl = $('aiTabs');
   var aiDiffEl = $('aiDiff'), aiRenderEl = $('aiRender');
@@ -3498,6 +3503,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     aiBodyEl.scrollTop = 0;
     aiPanel.classList.add('open');
     aiPanel.setAttribute('aria-hidden', 'false');
+    aiBtn.classList.add('on');
 
     var active = document.activeElement;
     if (active && active !== document.body && active.blur) active.blur();
@@ -3511,6 +3517,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     aiState.busy = false;
     aiState.open = false;
     setAiBusy(false);
+    aiBtn.classList.remove('on');
     aiPanel.classList.remove('open');
     aiPanel.setAttribute('aria-hidden', 'true');
   }
