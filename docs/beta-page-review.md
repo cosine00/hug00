@@ -669,3 +669,30 @@ deleted_at   0
 - 落在四处：`loadActive()`（老稿子打开就补齐，看到的就是发布后的间隔）、`renderPreview()`（所见即所发）、发布 payload 的 `content`、导出 `.md` 的 `markdownOf()`。
 
 **没做的事。** `body` 仍是 textarea，没有换成 contenteditable——行号镜像、Markdown 工具栏的选区替换、撤销栈、自动撑高全都挂在 `.value` 和 `selectionStart` 上，换编辑器的回归面太大。现在这套用「空行」表达段间距，和最终 HTML 的 `<p>` 一一对应，视觉与结果都是对的。
+
+## 20. 段间距可调：正文从 textarea 换成 contenteditable
+
+**为什么以前调不动。** textarea 里「分段」只能靠一个空行表达，而空行的高度恒等于一行行高（17px × 1.74 ≈ 29.6px）。想让段落之间紧一点，除了删掉那个空行（那就不是段落了）没有任何中间档——CSS 管不到 textarea 内部的某一类行。
+
+**改法：正文换成 contenteditable，每段一个 `<p>`，间距交给 `--para-gap`**（默认 `.95em`，约 16px，原来是 29.6px 的一整行）。
+
+文本模型不变：段与段之间两个换行，段内软换行一个换行。为了不让工具栏、撤销栈、行号、字数统计这些基于 `.value` / `selectionStart` 的代码全重写，在 `#body` 上补了一层垫片：
+
+| 接口 | 实现 |
+| --- | --- |
+| `value` getter | 遍历段落级子节点，段内 `<br>` 还原成 `\n`，段间拼 `\n\n` |
+| `value` setter | 按 `\n\n` 切段重建 `<p>`；空段补一个 `<br>` 撑高度；同步 `.is-empty` |
+| `selectionStart` / `selectionEnd` | 从 Selection 的 Range 起止点折算成文本偏移 |
+| `setSelectionRange(a, b)` | 反向把偏移折回 `(node, offset)` 再落到 Range 上 |
+
+因此 `surround()`、`linePrefix()`、`insertBlock()`、`insertAtCursor()`、`undo()`、`renderGutter()`、`updateCount()` 一行都没改。
+
+**顺带修掉一个真 bug。** 原来的回车逻辑是「先吃掉光标两边已有的换行，再补 `\n\n`」。光标在段尾时这等于什么都没做——吃掉原有分隔符又补回去，用户按回车页面毫无反应。现在直接插入 `\n\n`，并且空段落（连续回车）也能留住：`paintBody` 用 `split('\n\n')` 而不是 `split(/\n{2,}/)`，`A\n\n\n\nB` 会解析成 `['A', '', 'B']` 三个段落；`renderGutter` 同步改用同一切法，行号不会少算。
+
+粘贴统一按 `text/plain` 收，富文本自带的 `span` / 样式不会进正文。`keydown` 之外还挂了 `beforeinput` 的 `insertParagraph`（部分输入法的换行不走 keydown），两者用 30ms 窗口去重——窗口给大了会吃掉用户快速连按的第二下回车。
+
+**行号镜像跟着段间距走。** 镜像原来是「一个逻辑行一个 div」，段间距出现后它的 offsetTop 会比正文少算，越往下一页越飘。现在镜像按段落切，段首那行补上同样的 `margin-top`，行号位置直接取 `offsetTop`，不再一路累加高度。
+
+**关于那条 `^ v ✓` 工具条。** 那是 iOS Safari 给表单控件（`input` / `textarea`）配的「表单辅助栏」，属于系统 UI，网页既不能自定义内容，也没有 CSS/JS 能可靠隐藏它，`enterkeyhint` 只能改右下角那个键的文案。正文换成 contenteditable 之后，iOS 不再把它当表单字段，这条栏通常就不再出现——这算这次改造的副产品。
+
+验证（无头 Chrome 390×844 + 1280×900）：3 段结构正确、段间距 16.15px、正文左右各 16px 宽 358px；段尾回车插入新段（`A\n\n\n\nB`，光标落在新段首）；段中回车拆成两段；真实 `insertText` 打字后 `value` 与 DOM 一致；工具栏加粗得到 `**我是一行。**`、撤销回滚正常；空稿占位符正常；桌面行号 3 行，`span.top` 与各段 `getBoundingClientRect().top` 完全对齐；200 段 9088 字读一次 `value` 0.1ms，连续 10 次 input 共 6.5ms；预览 iframe 里 `article p` 为 3。

@@ -318,10 +318,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 正文与行号并排：行号在左、随文档一起滚，不单独滚动 */
 .bodywrap{display:flex;align-items:flex-start;gap:10px}
 .bodywrap>#body{flex:1;min-width:0}
-#body{display:block;width:100%;border:0;background:none;outline:none;resize:none;overflow:hidden;
+#body{display:block;width:100%;border:0;background:none;outline:none;overflow:hidden;
+  position:relative;word-break:break-word;
   font-size:calc(17px * var(--read));line-height:1.74;padding:18px 0 0;min-height:44vh;
-  letter-spacing:.002em;caret-color:var(--accent)}
-#body::placeholder{color:var(--faint)}
+  letter-spacing:.002em;caret-color:var(--accent);--para-gap:.95em}
+/* 段落是真段落：间距由 margin 控制，比 textarea 里塞一个空行紧得多。
+   连 <div> 一起管，是因为个别输入法按回车时会自己塞 div，样式不能只认 p。 */
+#body>p,#body>div{margin:0}
+#body>p+p,#body>p+div,#body>div+p,#body>div+div{margin-top:var(--para-gap)}
+#body.is-empty::before{content:attr(data-ph);position:absolute;top:18px;left:0;
+  color:var(--faint);pointer-events:none}
 .gutter{position:relative;flex:0 0 20px;width:20px;margin-top:18px;height:0;
   font-size:10.5px;text-align:right;color:var(--faint);
   font-variant-numeric:tabular-nums;letter-spacing:0;
@@ -849,8 +855,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
         <div class="bodywrap">
           <div class="gutter" id="gutter" aria-hidden="true"></div>
-          <textarea id="body" rows="1" placeholder="开始写…支持 Markdown"
-            autocapitalize="sentences" spellcheck="false" enterkeyhint="enter" aria-label="正文"></textarea>
+          <div id="body" contenteditable="true" role="textbox" aria-multiline="true"
+            data-ph="开始写…支持 Markdown" autocapitalize="sentences" spellcheck="false"
+            enterkeyhint="enter" aria-label="正文"></div>
         </div>
       </div>
     </main>
@@ -1252,33 +1259,41 @@ input,textarea{-webkit-user-select:text;user-select:text}
     gutterMirror.style.lineHeight = cs.lineHeight;
     gutterMirror.style.letterSpacing = cs.letterSpacing;
 
-    var lines = text.split('\n');
+    // 段间距现在由 CSS 的 margin 拉开，镜像得跟着补，不然越往下一页行号越飘
+    var gap = 0;
+    var gapRaw = (cs.getPropertyValue('--para-gap') || '').trim();
+    if (gapRaw) gap = (parseFloat(gapRaw) || 0) * (/em$/.test(gapRaw) ? (parseFloat(cs.fontSize) || 17) : 1);
+
+    var paras = text.split('\n\n');
     var rows = [];
     gutterMirror.textContent = '';
-    for (var i = 0; i < lines.length; i += 1) {
-      var row = document.createElement('div');
-      // 空行塞个零宽空格，不然 div 高度会塌成 0，后面所有行号全错位
-      row.textContent = lines[i] || '\u200b';
-      gutterMirror.appendChild(row);
-      rows.push(row);
+    for (var p = 0; p < paras.length; p += 1) {
+      var lines = paras[p].split('\n');
+      for (var i = 0; i < lines.length; i += 1) {
+        var row = document.createElement('div');
+        // 空行塞个零宽空格，不然 div 高度会塌成 0，后面所有行号全错位
+        row.textContent = lines[i] || '\u200b';
+        if (p > 0 && i === 0) row.style.marginTop = gap + 'px';
+        gutterMirror.appendChild(row);
+        rows.push(row);
+      }
     }
 
     var lineHeight = parseFloat(cs.lineHeight) || 24;
     var frag = document.createDocumentFragment();
-    var top = 0;
     for (var j = 0; j < rows.length; j += 1) {
-      var height = rows[j].offsetHeight || lineHeight;
       var num = document.createElement('span');
       num.textContent = String(j + 1);
-      num.style.top = top + 'px';
+      // offsetTop 已经把段间距算进去了，比一路累加高度稳
+      num.style.top = rows[j].offsetTop + 'px';
       num.style.height = lineHeight + 'px';
       num.style.lineHeight = lineHeight + 'px';
       frag.appendChild(num);
-      top += height;
     }
+    var lastRow = rows[rows.length - 1];
     gutterEl.innerHTML = '';
     gutterEl.appendChild(frag);
-    gutterEl.style.height = top + 'px';
+    gutterEl.style.height = (lastRow ? lastRow.offsetTop + lastRow.offsetHeight : 0) + 'px';
     gutterEl.classList.add('on');
   }
 
@@ -1999,9 +2014,215 @@ input,textarea{-webkit-user-select:text;user-select:text}
   });
 
 
+  /* ------------------- 正文：contenteditable 上的文本垫片 -------------------
+     textarea 里「分段」只能是空一行，段间距等于一整行行高，想紧也紧不了。
+     正文换成 contenteditable 之后每段是一个 <p>，间距交给 CSS 的 --para-gap。
+     代价是 .value / selectionStart 这些 textarea 专有接口没了——下面把垫片补齐，
+     工具栏、撤销栈、行号、字数统计一行都不用改。
+     文本模型：段与段之间两个换行，段内软换行一个换行。 */
+
+  function pieceLen(node) {
+    if (node.nodeType === 3) return node.nodeValue.length;
+    if (node.nodeName === 'BR') return 1;
+    if (node.nodeType !== 1) return 0;
+    var n = 0;
+    for (var i = 0; i < node.childNodes.length; i += 1) n += pieceLen(node.childNodes[i]);
+    return n;
+  }
+
+  function pieceText(node) {
+    if (node.nodeType === 3) return node.nodeValue;
+    if (node.nodeName === 'BR') return '\n';
+    if (node.nodeType !== 1) return '';
+    var s = '';
+    for (var i = 0; i < node.childNodes.length; i += 1) s += pieceText(node.childNodes[i]);
+    return s;
+  }
+
+  /** 段落级子节点；浏览器偶尔把文本直接塞在根下，那也算一段。 */
+  function bodyBlocks() {
+    var out = [];
+    var kids = bodyEl.childNodes;
+    for (var i = 0; i < kids.length; i += 1) {
+      var node = kids[i];
+      if (node.nodeType === 3) {
+        if (node.nodeValue.replace(/[\s\u200b]/g, '')) out.push(node);
+      } else if (node.nodeType === 1 && node.nodeName !== 'BR') {
+        out.push(node);
+      }
+    }
+    return out;
+  }
+
+  function readBody() {
+    var blocks = bodyBlocks();
+    var parts = [];
+    for (var i = 0; i < blocks.length; i += 1) {
+      var text = pieceText(blocks[i]);
+      // 空段只有一个占位 br；段尾那个换行是浏览器补的，别当成软换行
+      if (text === '\n') text = '';
+      else if (text.slice(-1) === '\n') text = text.slice(0, -1);
+      parts.push(text);
+    }
+    return parts.join('\n\n');
+  }
+
+  function paintBody(next) {
+    var raw = String(next == null ? '' : next).replace(/\r\n?/g, '\n');
+    bodyEl.textContent = '';
+    // 只认「正好两个换行」做段落分隔：这样中间的空白段（连续按回车留下的）
+    // 会变成空字符串留下来，不会像 /\n{2,}/ 那样被一起吞掉
+    var paras = raw ? raw.split('\n\n') : [''];
+    for (var i = 0; i < paras.length; i += 1) {
+      var p = document.createElement('p');
+      var lines = paras[i].split('\n');
+      for (var j = 0; j < lines.length; j += 1) {
+        if (j) p.appendChild(document.createElement('br'));
+        if (lines[j]) p.appendChild(document.createTextNode(lines[j]));
+      }
+      // 空段塞一个 br，不然这段塌成 0 高，光标进不去
+      if (!p.firstChild) p.appendChild(document.createElement('br'));
+      bodyEl.appendChild(p);
+    }
+    syncBodyEmpty();
+  }
+
+  function syncBodyEmpty() {
+    bodyEl.classList.toggle('is-empty', !readBody().trim());
+  }
+
+  /** 从段落开头数到 (node, offset) 有多少个字符。 */
+  function prefixLen(root, target, targetOffset) {
+    var total = 0;
+    var done = false;
+    (function visit(node) {
+      for (var i = 0; i < node.childNodes.length && !done; i += 1) {
+        var child = node.childNodes[i];
+        if (child === target) {
+          if (child.nodeType === 3) {
+            total += Math.min(targetOffset, child.nodeValue.length);
+          } else {
+            for (var k = 0; k < targetOffset && k < child.childNodes.length; k += 1) {
+              total += pieceLen(child.childNodes[k]);
+            }
+          }
+          done = true;
+          return;
+        }
+        if (child.nodeType === 1 && child.contains(target)) { visit(child); return; }
+        total += pieceLen(child);
+      }
+    })(root);
+    return total;
+  }
+
+  function offsetAtPoint(node, offset) {
+    var blocks = bodyBlocks();
+    var total = 0;
+    for (var i = 0; i < blocks.length; i += 1) {
+      if (i) total += 2;
+      var block = blocks[i];
+      if (block === node) {
+        if (block.nodeType === 3) return total + Math.min(offset, block.nodeValue.length);
+        var n = 0;
+        for (var k = 0; k < offset && k < block.childNodes.length; k += 1) n += pieceLen(block.childNodes[k]);
+        return total + n;
+      }
+      if (block.nodeType === 1 && block.contains(node)) return total + prefixLen(block, node, offset);
+      total += pieceLen(block);
+    }
+    return total;
+  }
+
+  function descend(block, k) {
+    if (block.nodeType === 3) return { node: block, offset: Math.min(k, block.nodeValue.length) };
+    var found = null;
+    (function walk(node) {
+      for (var i = 0; i < node.childNodes.length && !found; i += 1) {
+        var child = node.childNodes[i];
+        if (child.nodeType === 3) {
+          if (k <= child.nodeValue.length) { found = { node: child, offset: k }; return; }
+          k -= child.nodeValue.length;
+        } else if (child.nodeName === 'BR') {
+          if (k === 0) { found = { node: node, offset: i }; return; }
+          k -= 1;
+        } else if (child.nodeType === 1) {
+          walk(child);
+          if (found) return;
+        }
+      }
+    })(block);
+    return found || { node: block, offset: block.childNodes.length };
+  }
+
+  function pointAtOffset(off) {
+    var blocks = bodyBlocks();
+    if (!blocks.length) return { node: bodyEl, offset: 0 };
+    var left = Math.max(0, off || 0);
+    for (var i = 0; i < blocks.length; i += 1) {
+      if (i) {
+        if (left < 2) return { node: blocks[i], offset: 0 };
+        left -= 2;
+      }
+      var len = pieceLen(blocks[i]);
+      if (left <= len) return descend(blocks[i], left);
+      left -= len;
+    }
+    var last = blocks[blocks.length - 1];
+    return last.nodeType === 3
+      ? { node: last, offset: last.nodeValue.length }
+      : { node: last, offset: last.childNodes.length };
+  }
+
+  function bodyRange() {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return null;
+    var range = sel.getRangeAt(0);
+    if (!bodyEl.contains(range.startContainer)) return null;
+    return range;
+  }
+
+  Object.defineProperty(bodyEl, 'value', {
+    configurable: true,
+    get: readBody,
+    set: paintBody
+  });
+  Object.defineProperty(bodyEl, 'selectionStart', {
+    configurable: true,
+    get: function () {
+      var range = bodyRange();
+      return range ? offsetAtPoint(range.startContainer, range.startOffset) : (lastSel.start || 0);
+    }
+  });
+  Object.defineProperty(bodyEl, 'selectionEnd', {
+    configurable: true,
+    get: function () {
+      var range = bodyRange();
+      return range ? offsetAtPoint(range.endContainer, range.endOffset) : (lastSel.end || 0);
+    }
+  });
+  bodyEl.setSelectionRange = function (start, end) {
+    var from = Math.max(0, start || 0);
+    var to = Math.max(from, end == null ? from : end);
+    var head = pointAtOffset(from);
+    var tail = pointAtOffset(to);
+    var range = document.createRange();
+    try {
+      range.setStart(head.node, head.offset);
+      range.setEnd(tail.node, tail.offset);
+    } catch (error) { return; }
+    var sel = window.getSelection();
+    if (!sel) return;
+    sel.removeAllRanges();
+    sel.addRange(range);
+    lastSel = { start: from, end: to };
+  };
+
   /* ------------------------------ 自适应高度 ------------------------------ */
 
   function grow(node) {
+    // 正文是 contenteditable，高度天然跟着内容走；钉死成 px 反而会在改字号后卡住
+    if (node === bodyEl) return;
     node.style.height = 'auto';
     node.style.height = node.scrollHeight + 'px';
   }
@@ -2182,6 +2403,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       grow(node);
       // 标题变了，别名的占位提示跟着变
       if (node === titleEl) slugEl.placeholder = slugify(titleEl.value) || '按标题自动';
+      if (node === bodyEl) syncBodyEmpty();
       afterEdit();
     });
   });
@@ -2194,29 +2416,73 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
   });
 
-  /* 正文里的一下回车＝另起一段：补成「空一行」。这样 textarea 里当场就能看见
-     段间距，存进 Markdown 也是真段落，不会被 Goldmark 并回同一段。
-     只认最朴素的回车——带修饰键的（外接键盘上的换行）照旧给浏览器自己处理。 */
+  /* 正文里的一下回车＝另起一段。带修饰键的（外接键盘上的软换行）照旧交给浏览器。
+     keydown 和 beforeinput 只认一次，两个都是拦「物理回车」的路子。 */
+  var lastBreakAt = 0;
+
+  function breakParagraph() {
+    var now = Date.now();
+    // keydown 已经 preventDefault 过就不会再发 beforeinput；这条只挡同一帧里的重复上报，
+    // 窗口给大反而会吃掉用户快速连按的第二下回车
+    if (now - lastBreakAt < 30) return;
+    lastBreakAt = now;
+    var value = bodyEl.value;
+    var start = bodyEl.selectionStart;
+    var end = bodyEl.selectionEnd;
+    // 光标只可能落在某个 <p> 里，段落外没有位置可去，所以直接插一个段分隔就是新段
+    bodyEl.value = value.slice(0, start) + '\n\n' + value.slice(end);
+    var caret = start + 2;
+    bodyEl.setSelectionRange(caret, caret);
+    // 走同一套 input 流程：数字数、记快照、排队存草稿
+    bodyEl.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
   bodyEl.addEventListener('keydown', function (event) {
     if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
     if (event.shiftKey || event.altKey || event.metaKey || event.ctrlKey) return;
     event.preventDefault();
-    var value = bodyEl.value;
-    var start = bodyEl.selectionStart;
-    var end = bodyEl.selectionEnd;
-    // 光标两边已有的换行先吃掉，免得连按两下回车攒出一大片空白
-    var left = value.slice(0, start).replace(/\n+$/, '');
-    var right = value.slice(end).replace(/^\n+/, '');
-    bodyEl.value = left + '\n\n' + right;
-    var caret = left.length + 2;
-    bodyEl.setSelectionRange(caret, caret);
-    // 走同一套 input 流程：撑高、数字数、记快照、排队存草稿
-    bodyEl.dispatchEvent(new Event('input', { bubbles: true }));
+    breakParagraph();
   });
 
-  bodyEl.addEventListener('select', function () {
-    lastSel = { start: bodyEl.selectionStart, end: bodyEl.selectionEnd };
+  // 软键盘的「换行」在部分输入法里不走 keydown，只发 beforeinput，兜一手
+  bodyEl.addEventListener('beforeinput', function (event) {
+    if (event.isComposing || event.inputType !== 'insertParagraph') return;
+    event.preventDefault();
+    breakParagraph();
   });
+
+  /* contenteditable 没有 textarea 的 select 事件，光标位置只能自己盯。
+     打字时每一下都映射两次太浪费，压到一帧算一次。 */
+  var selTimer = 0;
+  document.addEventListener('selectionchange', function () {
+    if (selTimer) return;
+    selTimer = requestAnimationFrame(function () {
+      selTimer = 0;
+      var range = bodyRange();
+      if (!range) return;
+      lastSel = {
+        start: offsetAtPoint(range.startContainer, range.startOffset),
+        end: offsetAtPoint(range.endContainer, range.endOffset)
+      };
+    });
+  });
+
+  // 粘进来的富文本会带一堆 span，统一按纯文本收
+  bodyEl.addEventListener('paste', function (event) {
+    var data = event.clipboardData || window.clipboardData;
+    var text = data && data.getData('text/plain');
+    if (!text) return;
+    event.preventDefault();
+    flushHistory();
+    var range = caretRange();
+    var value = bodyEl.value;
+    var clean = String(text).replace(/\r\n?/g, '\n');
+    bodyEl.value = value.slice(0, range.start) + clean + value.slice(range.end);
+    afterEdit();
+    setCaret(range.start + clean.length);
+    commitEdit();
+  });
+
   bodyEl.addEventListener('blur', function () {
     lastSel = { start: bodyEl.selectionStart || 0, end: bodyEl.selectionEnd || 0 };
   });
