@@ -593,3 +593,35 @@ npx wrangler secret put GITHUB_TOKEN
 - 抽屉副标题改成「最新 N 楼 · 共 M 条」。
 
 **三个图标放大。** 25px → 32px，`stroke-width` 1.7 → 1.6（放大后线条不显粗），点按区 44 → 54，间距 16 → 20。
+
+## 16. iPhone 上「持续抖动」：视口同步与 iOS 抢滚动
+
+**现象**：评论里回完一条之后页面持续上下跳；不动评论、只用双指放大也会抖。
+
+**根因**（三处叠在一起，都出在 `syncViewport()` 那几行上）：
+
+1. **`visualViewport` 的 `scroll` 被当成滚动事件处理。** 这个事件在 iOS 上不是「用户滚了页面」，而是「可视视口挪了」——双指缩放、平移、键盘弹起时每一帧都在发。原来的处理函数每次都写 `--app-h` / `--vv-top`，也就是每一帧都改一次根容器的高度和位移，等于页面自己跟着手指再动一遍。
+2. **在 `scroll` 回调里调 `window.scrollTo(0, 0)`。** 文档本来是 `overflow:hidden`，这句唯一的作用是和 iOS 自己去滚可视视口的行为较劲：iOS 为了露出聚焦的输入框挪一点 → 我们把它扶回去 → iOS 再挪 → 再扶。评论回复框、标题输入框一聚焦就进入这个循环，所以「回完一条评论一直在跳」。
+3. **面板按布局视口铺满整屏。** `.sheet{position:fixed;inset:0}` 高度跟着**布局视口**走，键盘弹起时 `--app-h` 已经缩了，面板还铺到键盘底下；iOS 为了让输入框可见只能去滚整页，又回到第 2 条。
+
+再加上一个独立的放大器：顶栏自动隐藏会把 `.deck` 的 `margin-top` 改 60px，滚动容器的可滚范围跟着变，浏览器会夹一下 `scrollTop`，那一次 scroll 事件看起来就像「用户又滚回去了」，于是又展开顶栏、再夹一次——在内容底部附近能来回抖不停。
+
+**改法**（都在页面自身，没动 iPhone 的手势能力）：
+
+- `syncViewport()` 三条规矩：① `scale !== 1` 时直接返回，缩放期间不接管布局；② 不再调 `scrollTo`；③ 数值没变就不写 CSS 变量。
+- 视口事件用 `requestAnimationFrame` 合并，同一帧只算一次。
+- `window.scrollTo(0,0)` 只在 `focusout`（焦点和键盘都收干净）280ms 后扶正一次；缩放中不扶。
+- `.sheet` / `.preview` 从 `inset:0` 改成 `top:var(--vv-top); height:var(--app-h)`，跟着可视视口走；面板的 `max-height` 从 `86vh`/`80vh` 改成相对容器高度，键盘弹起时抽屉整体缩短、内部自己滚。
+- 顶栏收起/展开后 `rAF` 里重新锚定 `tbAnchor`，并在 340ms 内忽略自己造成的 scroll（`tbLockUntil`）。
+- `openSheet` / 回复框 / 标题聚焦统一走 `focusSoft()`（`focus({preventScroll:true})`），不让浏览器顺带滚整页；键盘弹出后的「把光标带进视野」改成只动 `.doc.scrollTop`（`revealInDoc`），不再 `scrollIntoView`。
+- `resize` 只在**宽度**变化时才 `growAll()`；键盘只改高度，不必重排整个正文。
+- `.doc` 加 `overscroll-behavior:contain`，滚动到边界不再传给整页。
+
+**验证**（无头 Chrome + 注入的 `visualViewport` 模拟缩放与键盘）：
+
+| 场景 | 结果 |
+| --- | --- |
+| 连续 60 次 scale 1→2.18、height/offsetTop 抖动 | `--app-h` 不变、style 写入 0 次、`scrollTo` 调用 0 次 |
+| 键盘把可视高度压到 480 | `--app-h` 480，`.sheet` 480，抽屉面板 480，落在可视区内 |
+| 点「回复」聚焦输入框 | 输入框获得焦点，`window.scrollY` 与文档 `scrollTop` 均为 0 |
+| 内容底部来回滚 20 次 | 顶栏只切换 1 次后稳定（改前会反复翻转） |

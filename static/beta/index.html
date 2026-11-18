@@ -302,7 +302,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .banner button:active{transform:scale(.95)}
 
 /* ── 正文区：整页是一篇文档，标题、元信息、正文都在同一滚动流里 ── */
-.doc{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.doc{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior:contain}
 .doc{scrollbar-color:rgba(122,102,88,.28) transparent}
 .doc::-webkit-scrollbar{width:10px}
 .doc::-webkit-scrollbar-track{background:transparent}
@@ -440,7 +440,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 }
 
 /* ── 面板 ── */
-.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;
+/* 面板也跟着可视视口走：键盘弹起时 --app-h 会缩，面板如果还按布局视口
+   铺满整屏，下半截就压到键盘底下，iOS 为了让输入框露出来会去滚整个页面，
+   和页面自己的视口同步互相拉扯，表现就是持续上下跳。 */
+.sheet{position:fixed;left:0;right:0;top:var(--vv-top);height:var(--app-h);z-index:20;
+  display:flex;align-items:flex-end;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .26s var(--ease)}
 .sheet.open{opacity:1;pointer-events:auto}
 .sheet-backdrop{position:absolute;inset:0;background:rgba(18,18,24,.24);-webkit-backdrop-filter:blur(10px) saturate(120%);backdrop-filter:blur(10px) saturate(120%)}
@@ -449,11 +453,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   padding:8px 20px calc(var(--sab) + 18px);transform:translateY(100%);transition:transform .32s var(--ease);
   box-shadow:inset 0 1px 0 var(--glass-line),0 -10px 50px rgba(0,0,0,.20);
   backdrop-filter:blur(34px) saturate(185%);-webkit-backdrop-filter:blur(34px) saturate(185%);
-  max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  max-height:86%;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sheet.open .sheet-panel{transform:translateY(0)}
 @media (min-width:620px){
   .sheet{align-items:center}
-  .sheet-panel{border-radius:22px;border-bottom:.5px solid var(--glass-edge);transform:translateY(12px) scale(.98);padding-bottom:22px;max-height:80vh}
+  .sheet-panel{border-radius:22px;border-bottom:.5px solid var(--glass-edge);transform:translateY(12px) scale(.98);padding-bottom:22px;max-height:80%}
   .sheet.open .sheet-panel{transform:translateY(0) scale(1)}
 }
 /* ── 抽屉：左右两侧的面板，横向推入而不是从下往上 ── */
@@ -587,7 +591,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .image-url{margin:0 0 14px;font:11px/1.45 ui-monospace,"SF Mono",Menlo,monospace;color:var(--muted);word-break:break-all}
 
 /* ── 预览 ── */
-.preview{position:fixed;inset:0;z-index:25;background:var(--app-grad);display:none;flex-direction:column}
+.preview{position:fixed;left:0;right:0;top:var(--vv-top);height:var(--app-h);z-index:25;background:var(--app-grad);display:none;flex-direction:column}
 .preview.open{display:flex}
 .preview-bar{flex:0 0 auto;display:flex;align-items:center;gap:10px;
   margin:calc(var(--sat) + 8px) 8px 0;padding:4px 8px;min-height:52px;border-radius:20px;
@@ -1155,6 +1159,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
   }
 
+  /** 聚焦但不让浏览器顺带滚动整页（iOS 上键盘 + 自动滚动叠在一起最容易抖）。 */
+  function focusSoft(node) {
+    if (!node || !node.focus) return;
+    try {
+      node.focus({ preventScroll: true });
+    } catch (error) {
+      node.focus();
+    }
+  }
+
   function openSheet(id) {
     var el = $(id);
     if (!el) return;
@@ -1163,7 +1177,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     // 抽屉里没有要马上打字的输入框，别抢焦点
     if (window.innerWidth > 620 && !el.classList.contains('drawer')) {
       var focusable = el.querySelector('input,button.btn-primary');
-      if (focusable) setTimeout(function () { focusable.focus(); }, 270);
+      if (focusable) setTimeout(function () { focusSoft(focusable); }, 270);
     }
   }
 
@@ -1488,7 +1502,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     metaToggle.setAttribute('aria-expanded', String(metaExpanded));
     metaFields.hidden = !metaExpanded;
     if (!metaExpanded) { tagInput.blur(); closeTagPicks(); }
-    if (metaExpanded && focusInput) setTimeout(function () { tagInput.focus(); }, 80);
+    if (metaExpanded && focusInput) setTimeout(function () { focusSoft(tagInput); }, 80);
     renderMetaSummary();
   }
 
@@ -1757,7 +1771,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     loadActive();
     closeSheet($('sheetDocs'));
     docEl.scrollTop = 0;
-    setTimeout(function () { titleEl.focus(); }, 320);
+    setTimeout(function () { focusSoft(titleEl); }, 320);
   }
 
   function removeDraft(id) {
@@ -2982,10 +2996,20 @@ input,textarea{-webkit-user-select:text;user-select:text}
   */
   var tbAway = false, tbAnchor = 0;
 
+  /**
+   * 顶栏收起/展开会让 .deck 让出或收回 60px，滚动容器的可滚范围跟着变，
+   * 浏览器会把 scrollTop 夹一下 —— 那一次 scroll 事件看起来就像「用户又滚回去了」，
+   * 于是又展开顶栏、再夹一次，在内容底部附近能来回抖个没完。
+   * 所以：改完先按新布局重新锚定，并在过渡这段时间里忽略自己造成的 scroll。
+   */
+  var tbLockUntil = 0;
+
   function setTopbarAway(away) {
     if (away === tbAway) return;
     tbAway = away;
     appEl.classList.toggle('tb-away', away);
+    tbLockUntil = Date.now() + 340;
+    requestAnimationFrame(function () { tbAnchor = docEl.scrollTop; });
   }
 
   /**
@@ -3000,6 +3024,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   docEl.addEventListener('scroll', function () {
     var top = docEl.scrollTop;
+    // 刚收起/展开过：这一次 scroll 是布局变化自己带出来的，只跟着走，不做判断
+    if (Date.now() < tbLockUntil) { tbAnchor = top; return; }
     tbAnchor = tbAnchor || 0;
     if (top <= 6) { tbAnchor = top; setTopbarAway(false); return; }
     if (top > tbAnchor + 6) {
@@ -3245,7 +3271,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     var existing = host.querySelector(':scope > .cm-form');
     if (existing) {
       var old = existing.querySelector('textarea');
-      if (old) old.focus();
+      if (old) focusSoft(old);
       return;
     }
     var form = el('div', 'cm-form');
@@ -3262,12 +3288,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
     form.appendChild(box);
     form.appendChild(acts);
     host.appendChild(form);
-    box.focus();
+    // preventScroll：抽屉本身已经是可滚容器，iOS 只要负责把键盘顶上来就够了；
+    // 让浏览器顺带「滚到输入框」，就会连整页一起动，键盘的视口变化再叠一层。
+    focusSoft(box);
 
     cancel.addEventListener('click', function () { form.remove(); });
     send.addEventListener('click', function () {
       var text = box.value.trim();
-      if (!text) { box.focus(); return; }
+      if (!text) { focusSoft(box); return; }
       send.disabled = true;
       cancel.disabled = true;
       send.textContent = '发送中…';
@@ -3908,40 +3936,104 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
   });
 
-  /* ------------------------------ 视口 ------------------------------ */
+  /* ------------------------------ 视口 ------------------------------
+     只做一件事：把根容器的高度对齐到「可视视口」，让键盘弹起时下半截
+     不被压到键盘底下。这里有三条硬规矩，都是为了不做成自激循环：
+
+     1. 双指缩放期间一律不接管。此时 visualViewport.height 是「布局高度 ÷
+        缩放比」，拿它去改根容器高度，等于缩放过程中每一帧都重排一次；
+        用户手指还在动，页面就先自己动了一遍。
+     2. 不在这里调 window.scrollTo。文档本来就是 overflow:hidden，
+        这句唯一的作用是和 iOS 自己滚动可视视口的行为较劲：滚一次触发
+        vv scroll → 又 scrollTo → 再触发，来回就是持续上下跳。
+     3. 只在数值真的变了才写 CSS 变量，并用 rAF 合并同一帧里的多次事件。
+  */
+  var vpHeight = 0;
+  var vpTop = 0;
+  var vpQueued = false;
+
+  function zoomed() {
+    var vv = window.visualViewport;
+    return Boolean(vv && Math.abs(vv.scale - 1) > 0.02);
+  }
 
   function syncViewport() {
     var vv = window.visualViewport;
-    var height = vv ? vv.height : window.innerHeight;
-    var top = vv ? vv.offsetTop : 0;
-    document.documentElement.style.setProperty('--app-h', Math.round(height) + 'px');
-    document.documentElement.style.setProperty('--vv-top', Math.round(top) + 'px');
-    if (document.documentElement.scrollTop) window.scrollTo(0, 0);
+    if (zoomed()) return;
+    var height = Math.round(vv ? vv.height : window.innerHeight);
+    var top = Math.round(vv ? vv.offsetTop : 0);
+    if (height !== vpHeight) {
+      vpHeight = height;
+      document.documentElement.style.setProperty('--app-h', height + 'px');
+    }
+    if (top !== vpTop) {
+      vpTop = top;
+      document.documentElement.style.setProperty('--vv-top', top + 'px');
+    }
+  }
+
+  function queueViewport() {
+    if (vpQueued) return;
+    vpQueued = true;
+    requestAnimationFrame(function () {
+      vpQueued = false;
+      syncViewport();
+    });
   }
 
   syncViewport();
-  // 断点切换（手机 ↔ 桌面）会改字号，textarea 高度得跟着重算，否则标题会被裁一半
-  window.addEventListener('resize', function () { syncViewport(); growAll(); });
+
+  // 断点切换（手机 ↔ 桌面）会改字号，textarea 高度得跟着重算，否则标题会被裁一半。
+  // 键盘弹出只改高度不改宽度，那种 resize 不用重排整个正文。
+  var lastWidth = window.innerWidth;
+  window.addEventListener('resize', function () {
+    queueViewport();
+    if (window.innerWidth !== lastWidth) {
+      lastWidth = window.innerWidth;
+      growAll();
+    }
+  });
   window.addEventListener('orientationchange', function () {
-    setTimeout(function () { syncViewport(); growAll(); }, 120);
+    setTimeout(function () {
+      lastWidth = window.innerWidth;
+      queueViewport();
+      growAll();
+    }, 120);
   });
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', syncViewport);
-    window.visualViewport.addEventListener('scroll', syncViewport);
+    window.visualViewport.addEventListener('resize', queueViewport);
+    window.visualViewport.addEventListener('scroll', queueViewport);
   }
 
-  // 键盘弹出后把光标滚进可视区（iOS 有时不会自己滚）
+  // iOS 偶尔会把整个文档顶走一点（聚焦靠下的输入框时）。等焦点和键盘都
+  // 收干净了再扶正一次，不要放在 scroll 里跟它抢。
+  document.addEventListener('focusout', function () {
+    setTimeout(function () {
+      if (zoomed()) return;
+      var root = document.scrollingElement || document.documentElement;
+      if (root.scrollTop) window.scrollTo(0, 0);
+    }, 280);
+  });
+
+  /* 键盘弹出后把光标带进视野（iOS 有时不会自己滚）。
+     只动 .doc 自己的 scrollTop，不用 scrollIntoView：后者会连整页一起滚，
+     键盘动画期间两级滚动各滚一次，看起来就是画面在抖。 */
+  function revealInDoc(node) {
+    if (!node || !docEl) return;
+    var vv = window.visualViewport;
+    var bottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 10;
+    var box = node.getBoundingClientRect();
+    if (box.bottom > bottom) docEl.scrollTop += box.bottom - bottom;
+    else if (box.top < 10) docEl.scrollTop -= 10 - box.top;
+  }
+
   [titleEl, bodyEl, tagInput].forEach(function (node) {
     node.addEventListener('focus', function () {
       setTimeout(function () {
-        if (node.scrollIntoView) node.scrollIntoView({ block: 'nearest' });
+        if (document.activeElement !== node || zoomed()) return;
+        revealInDoc(node);
         // 候选面板在文档流里，键盘占了半屏时它可能整个落在下面看不见
-        if (node === tagInput && tagPicks.classList.contains('open')) {
-          var box = tagPicks.getBoundingClientRect();
-          var vv = window.visualViewport;
-          var bottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
-          if (box.bottom > bottom - 8) tagPicks.scrollIntoView({ block: 'nearest' });
-        }
+        if (node === tagInput && tagPicks.classList.contains('open')) revealInDoc(tagPicks);
       }, 320);
     });
   });
