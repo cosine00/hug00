@@ -657,3 +657,15 @@ deleted_at   0
 顺带修掉一个会让删除丢掉的 bug：`runSync()` 开头是 `if (!authed || syncing) return`。上一趟请求还在路上时，这次调度就被**静默丢弃**，连队列都不留——而 `dropRemote()` 的墓碑只活在内存里，页面一关就没了，云端那篇永远删不掉、下次拉取又回来。现在 `syncing` 时只记 `syncPending = true` 并返回在途的 promise，落地后若有待办再补发一趟（失败则 5 秒后重试，不原地打转）。
 
 线上那条残留数据已用 `UPDATE write_drafts SET deleted_at = … WHERE id = 'dmwkujdw1qeo3'` 标记删除（`GET` 只返回 `deleted_at = 0`，所有设备立刻都看不到；`updated_at` 同步顶到最新，旧客户端即便推上来也会被判负）。
+
+## 19. 手机上的写作区：用满屏宽、回车即分段
+
+**宽度。** 手机上 `--gut` 是 30px（行号列 20px + 10px 缝），标题、元信息、工具栏、正文全都按它缩进，390 宽的机器正文只剩 328px。行号在手机上一行挤成两三个视觉行时反而添乱，索性在 `@media (max-width:899px)` 里把 `--gut` 归零、`.gutter{display:none}`：正文左右各 16px（`--padl`），390 宽拿到 358px。桌面（≥900px）照旧留着行号列。`renderGutter()` 开头加了一句 `offsetParent` 判断——隐藏时直接返回，不用再逐行量高度；跨断点时 `resize` 里补一次 `scheduleGutter()`。
+
+**回车即分段。** 以前正文里敲一下回车只是插一个 `\n`：textarea 里看不出间隔，发出去 Goldmark 又把上下两行并回同一段——正是用户说的「换了个寂寞」。
+
+- `keydown` 拦下最朴素的回车（不带 shift/alt/ctrl、不在输入法合成中、`keyCode !== 229`），插入 `\n\n`：textarea 当场空出一行，Markdown 里就是两个段落。光标左右已有的换行先吃掉，所以连按两下也不会攒出一大片空白，一段之间最多空一行。
+- 新增 `paragraphize()`：给「普通正文行」之间补空行，块级行不动——连续的列表项、连续引用、连续表格行不插（否则一张列表会被拆成好几段），标题/列表/引用/表格前后补上（否则 Goldmark 认不出块边界），围栏代码块内部整体跳过。函数幂等。
+- 落在四处：`loadActive()`（老稿子打开就补齐，看到的就是发布后的间隔）、`renderPreview()`（所见即所发）、发布 payload 的 `content`、导出 `.md` 的 `markdownOf()`。
+
+**没做的事。** `body` 仍是 textarea，没有换成 contenteditable——行号镜像、Markdown 工具栏的选区替换、撤销栈、自动撑高全都挂在 `.value` 和 `selectionStart` 上，换编辑器的回归面太大。现在这套用「空行」表达段间距，和最终 HTML 的 `<p>` 一一对应，视觉与结果都是对的。

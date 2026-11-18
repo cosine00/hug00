@@ -621,6 +621,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
   border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite;vertical-align:-1px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── 手机：正文用满屏宽 ──
+   行号在手机上帮不上忙，只白占一列：--gut 归零，标题、元信息、工具栏、正文
+   一起靠到 --padl 的边上，一行能多重两三个字。桌面端照旧留着行号。 */
+@media (max-width:899px){
+  :root{--gut:0}
+  .gutter{display:none}
+}
+
 /* ── 桌面端：不铺满整屏，做成一张居中的写稿台 ── */
 @media (min-width:900px){
   /* 写作区与页面同底：不是「白卡片浮在灰底上」，而是整页一块纸 */
@@ -1220,6 +1228,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
    */
   function renderGutter() {
     if (!gutterEl) return;
+    // 手机上这列是 display:none，别再花时间量每一行的高度
+    if (!gutterEl.offsetParent) return;
     var text = bodyEl.value;
     if (!text) {
       gutterEl.innerHTML = '';
@@ -1780,8 +1790,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function loadActive() {
     var draft = activeDraft();
     if (!draft) return;
+    // 老稿子里「一行一段」的地方先补成真段落，打开就看到发布后的间隔
+    var body = paragraphize(draft.body || '');
+    if (body !== draft.body) draft.body = body;
     titleEl.value = draft.title || '';
-    bodyEl.value = draft.body || '';
+    bodyEl.value = body;
     slugEl.value = draft.slug || '';
     slugEl.placeholder = slugify(draft.title) || '按标题自动';
     tagInput.value = '';
@@ -2179,6 +2192,26 @@ input,textarea{-webkit-user-select:text;user-select:text}
       bodyEl.focus();
       setCaret(bodyEl.value.length);
     }
+  });
+
+  /* 正文里的一下回车＝另起一段：补成「空一行」。这样 textarea 里当场就能看见
+     段间距，存进 Markdown 也是真段落，不会被 Goldmark 并回同一段。
+     只认最朴素的回车——带修饰键的（外接键盘上的换行）照旧给浏览器自己处理。 */
+  bodyEl.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
+    if (event.shiftKey || event.altKey || event.metaKey || event.ctrlKey) return;
+    event.preventDefault();
+    var value = bodyEl.value;
+    var start = bodyEl.selectionStart;
+    var end = bodyEl.selectionEnd;
+    // 光标两边已有的换行先吃掉，免得连按两下回车攒出一大片空白
+    var left = value.slice(0, start).replace(/\n+$/, '');
+    var right = value.slice(end).replace(/^\n+/, '');
+    bodyEl.value = left + '\n\n' + right;
+    var caret = left.length + 2;
+    bodyEl.setSelectionRange(caret, caret);
+    // 走同一套 input 流程：撑高、数字数、记快照、排队存草稿
+    bodyEl.dispatchEvent(new Event('input', { bubbles: true }));
   });
 
   bodyEl.addEventListener('select', function () {
@@ -2789,6 +2822,49 @@ input,textarea{-webkit-user-select:text;user-select:text}
       .replace(/~~([^~]+)~~/g, '<del>$1</del>');
   }
 
+  /* ------------------------------ 段落 ------------------------------
+     手机上敲一下回车就该另起一段，可 Markdown 里单个换行只是软换行：
+     Goldmark 会把上下两行并成同一段，发出去等于白换。这里给「普通正文行」
+     之间补一个空行（列表、引用、表格、标题、代码这些块级行之间不动），
+     让编辑区里看到的间隔和发出去的样子是同一回事。
+  */
+  function blockKind(line) {
+    var text = String(line == null ? '' : line).trim();
+    if (!text) return '';
+    if (/^(```|~~~)/.test(text)) return 'fence';
+    if (/^[-*+]\s/.test(text)) return 'ul';
+    if (/^\d+[.)]\s/.test(text)) return 'ol';
+    if (/^(&gt;|>)/.test(text)) return 'quote';
+    if (/^\|/.test(text)) return 'table';
+    if (/^#{1,6}\s/.test(text)) return 'head';
+    if (/^!\[/.test(text)) return 'img';
+    if (/^( {4,}|\t)/.test(line)) return 'code';
+    return 'p';
+  }
+
+  function paragraphize(source) {
+    var text = String(source == null ? '' : source).replace(/\r\n?/g, '\n');
+    if (text.indexOf('\n') < 0) return text;
+    var lines = text.split('\n');
+    var out = [];
+    var fence = false;
+    for (var i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      var kind = blockKind(line);
+      if (kind === 'fence') fence = !fence;
+      out.push(line);
+      if (fence) continue;
+      var next = lines[i + 1];
+      if (next == null || !next.trim()) continue;   // 后面已经是空行或文末
+      if (!line.trim()) continue;                    // 本行就是空行
+      // 同一块里的续行（连着写的列表项、连续引用、连续表格行）不插空行，
+      // 否则一张列表会被拆成好几段
+      if (kind !== 'p' && kind === blockKind(next)) continue;
+      out.push('');
+    }
+    return out.join('\n').replace(/\n{3,}/g, '\n\n');
+  }
+
   function markdown(source) {
     var escaped = escapeHtml(source.replace(/\r\n/g, '\n'));
     var blocks = escaped.split(/```/);
@@ -2908,7 +2984,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function renderPreview(post) {
     previewPost = post || null;
-    var text = String(post ? post.content : bodyEl.value).trim();
+    var text = paragraphize(post ? post.content : bodyEl.value).trim();
     var title = String(post ? (post.title || post.name || '') : titleEl.value).trim();
     var draft = post ? null : activeDraft();
     var tags = post ? (post.tags || []) : (draft ? draft.tags : []);
@@ -3702,7 +3778,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
     var payload = {
       title: String(draft.title).trim(),
-      content: draft.body,
+      content: paragraphize(draft.body),
       tags: draft.tags || [],
       slug: draft.slug || ''
     };
@@ -3836,7 +3912,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       lines.push('tags:');
       draft.tags.forEach(function (tag) { lines.push('  - ' + JSON.stringify(tag)); });
     }
-    lines.push('---', '', draft.body || '', '');
+    lines.push('---', '', paragraphize(draft.body || ''), '');
     return lines.join('\n');
   }
 
@@ -4102,6 +4178,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (window.innerWidth !== lastWidth) {
       lastWidth = window.innerWidth;
       growAll();
+      // 跨过 900 这条线时行号列会显隐，得重排一次；手机上是直接返回的
+      scheduleGutter();
     }
   });
   window.addEventListener('orientationchange', function () {
