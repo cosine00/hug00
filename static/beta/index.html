@@ -3705,6 +3705,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (aiState.busy) return;
     if (!aiState.source.trim()) { toast('没有要润色的内容', null, 2200); return; }
 
+    // 收起键盘再发请求：iOS 上键盘占着下半屏，结果出来还得先收才能看全
+    if (document.activeElement === aiHintEl && aiHintEl.blur) aiHintEl.blur();
+
     if (aiState.abort) {
       try { aiState.abort.abort(); } catch (error) {}
       aiState.abort = null;
@@ -3803,7 +3806,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
     commitEdit();
     closeAi();
-    toast('已采纳，草稿还是草稿，记得再读一遍', 'ok', 2800);
+    toast('已采纳，撤销可回退', 'ok', 2600);
   }
 
   /* ------------------------------ 绑定 ------------------------------ */
