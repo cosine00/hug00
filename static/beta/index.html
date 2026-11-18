@@ -612,6 +612,74 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 预览用 iframe 装真正的博客正文：样式表一毛一样，编辑器的 CSS 也漏不进去 */
 .preview-frame{flex:1;min-height:0;width:100%;display:block;border:0;background:var(--bg)}
 
+/* ── AI 润色 ──
+   和预览同一套骨架：整层跟着可视视口走，键盘弹起时一起收。里面只做纵向滚动，
+   不许把滚动传给文档——写作页根容器是 overflow:hidden，一旦漏出去 iOS 就会
+   一边缩视口一边滚整页，抖动就是这么来的。 */
+.ai{position:fixed;left:0;right:0;top:var(--vv-top);height:var(--app-h);z-index:26;
+  background:var(--app-grad);display:none;flex-direction:column}
+.ai.open{display:flex}
+.ai-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:16px 16px calc(var(--sab) + 26px)}
+.ai-wrap{width:100%;max-width:700px;margin:0 auto}
+.ai-scope{margin:0 0 13px;font-size:12.5px;line-height:1.6;color:var(--muted)}
+.ai-scope b{color:var(--fg);font-weight:600}
+.ai-seg{display:flex;gap:4px;padding:3px;border-radius:13px;background:var(--field);
+  border:.5px solid var(--line)}
+.ai-seg button{flex:1;height:34px;border-radius:10px;font-size:12.5px;font-weight:500;
+  color:var(--muted);background:transparent;border:0;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;transition:background .15s var(--ease),color .15s var(--ease)}
+.ai-seg button.on{background:var(--panel);color:var(--fg);box-shadow:0 1px 5px rgba(20,20,30,.10)}
+.ai-hint{display:block;width:100%;margin:12px 0 0;padding:11px 12px;border-radius:12px;
+  border:.5px solid var(--line);background:var(--field);font-size:15px;outline:none;
+  -webkit-user-select:text;user-select:text}
+.ai-hint::placeholder{color:var(--faint)}
+.ai-hint:focus{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.ai-note{margin:12px 0 0;padding:10px 12px;border-radius:12px;font-size:12.5px;line-height:1.6;
+  color:var(--muted);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.ai-note b{color:var(--fg);font-weight:600}
+.ai-note.warn{color:var(--fg);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.ai-result{margin-top:16px}
+.ai-switch{display:flex;gap:18px;margin:0 0 14px;border-bottom:.5px solid var(--line)}
+.ai-switch button{position:relative;padding:0 0 9px;font-size:13px;font-weight:500;color:var(--muted);
+  background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.ai-switch button.on{color:var(--fg)}
+.ai-switch button.on::after{content:"";position:absolute;left:0;right:0;bottom:-.5px;height:2px;
+  border-radius:2px;background:var(--accent)}
+.ai-diff{font-size:15px;line-height:1.85;word-break:break-word}
+.ai-diff p{margin:0 0 .95em}
+.ai-diff p:last-child{margin-bottom:0}
+.ai-diff .dl-same{color:var(--muted)}
+/* 整段被删 / 被新增：整块底色，一眼看出「这一段没了 / 这一段是新写的」 */
+.ai-diff .dl-del,.ai-diff .dl-ins{margin:0 0 .8em;padding:7px 10px;border-radius:9px;
+  font-size:14px;line-height:1.8}
+.ai-diff .dl-del{color:var(--muted);background:color-mix(in srgb,var(--danger) 7%,transparent);
+  box-shadow:inset 2px 0 0 color-mix(in srgb,var(--danger) 46%,transparent)}
+.ai-diff .dl-ins{background:color-mix(in srgb,var(--ok) 9%,transparent);
+  box-shadow:inset 2px 0 0 color-mix(in srgb,var(--ok) 50%,transparent)}
+/* 段内改动：字级高亮，改的和删的都标出来，不用一句句对着找 */
+.ai-diff del{text-decoration:line-through;text-decoration-thickness:1px;border-radius:3px;
+  color:var(--muted);background:color-mix(in srgb,var(--danger) 13%,transparent)}
+.ai-diff ins{text-decoration:none;border-radius:3px;color:var(--fg);
+  background:color-mix(in srgb,var(--ok) 17%,transparent)}
+.ai-render{font-size:16px;line-height:1.85}
+.ai-render p{margin:0 0 .95em}
+.ai-render h1,.ai-render h2{font-size:1.16em;margin:1.1em 0 .5em;line-height:1.4}
+.ai-render h3,.ai-render h4{font-size:1.04em;margin:1em 0 .45em}
+.ai-render ul,.ai-render ol{margin:0 0 .95em;padding-left:1.35em}
+.ai-render li{margin:0 0 .3em}
+.ai-render blockquote{margin:0 0 .95em;padding-left:12px;border-left:2px solid var(--line);color:var(--muted)}
+.ai-render pre{margin:0 0 .95em;padding:12px;border-radius:12px;background:var(--field);overflow:auto;font-size:13px;line-height:1.6}
+.ai-render code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.92em}
+.ai-render img{max-width:100%;height:auto;border-radius:12px}
+.ai-render hr{border:0;border-top:.5px solid var(--line);margin:1.4em 0}
+.ai-render a{color:var(--accent)}
+/* 入口：格式条上的第一颗 chip，用主色把人勾过去 */
+.chip.ai-chip{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 26%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 13%,white),color-mix(in srgb,var(--accent) 8%,transparent))}
+.chip.ai-chip svg{width:13px;height:13px;margin-right:5px;stroke:currentColor;fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
 /* ── 提示条 ── */
 .toast{position:fixed;left:50%;top:calc(var(--sat) + 76px);transform:translate(-50%,-140%);z-index:40;
   max-width:calc(100vw - 40px);padding:10px 16px;border-radius:999px;color:#fff;
@@ -694,6 +762,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .count{color:var(--muted)}
   .tagchip{background:rgba(230,160,139,.16);color:#f2c4b0}
   .meta-toggle{color:#f2c4b0;background:rgba(230,160,139,.10);border-color:rgba(230,160,139,.16)}
+  /* AI 入口与差异色：浅色那套混了白，暗底上会发灰，这里单独压一版 */
+  .chip.ai-chip{color:#f2c4b0;border-color:rgba(230,160,139,.28);background:rgba(230,160,139,.14)}
+  .ai-seg button.on{background:rgba(255,255,255,.09);box-shadow:none}
+  .ai-diff .dl-del{background:rgba(240,123,104,.09);box-shadow:inset 2px 0 0 rgba(240,123,104,.5)}
+  .ai-diff .dl-ins{background:rgba(108,201,154,.10);box-shadow:inset 2px 0 0 rgba(108,201,154,.52)}
+  .ai-diff del{background:rgba(240,123,104,.16)}
+  .ai-diff ins{background:rgba(108,201,154,.18)}
+  .ai-note{background:rgba(230,160,139,.10)}
+  .ai-note.warn{background:rgba(240,123,104,.12)}
   .tagpicks{box-shadow:0 10px 26px -22px rgba(0,0,0,.8)}
   .menu-list{background:rgba(255,255,255,.045)}
   .menu-row:active{background:rgba(255,255,255,.075)}
@@ -797,6 +874,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
         </button>
       </div>
       <div class="fmtbar" id="fmtbar">
+        <button class="chip ai-chip" data-fmt="ai"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.4 3.8l1.7 4.4 4.4 1.7-4.4 1.7-1.7 4.4-1.7-4.4L5.3 9.9l4.4-1.7z"/><path d="M17.4 15.6l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>AI 润色</button>
         <button class="chip" data-fmt="h1">大标题</button>
         <button class="chip" data-fmt="h2">小标题</button>
         <button class="chip" data-fmt="bold"><b>B</b>&nbsp;加粗</button>
@@ -1080,6 +1158,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <button class="row" id="rowAuth"><span class="k" id="rowAuthLabel">登录</span><span class="v" id="loginState">未登录</span></button>
       <button class="row" id="rowOpen" hidden><span class="k">查看已发布文章</span><span class="v">↗</span></button>
       <button class="row" id="rowDetach" hidden><span class="k">另存为新文章</span><span class="v">不动原文件</span></button>
+      <button class="row" id="rowPolish"><span class="k">AI 润色</span><span class="v">DeepSeek</span></button>
       <button class="row" id="rowImport"><span class="k">导入 Markdown</span><span class="v">从文件 / iCloud</span></button>
       <button class="row" id="rowExport"><span class="k">导出 Markdown</span><span class="v">存到文件 / iCloud</span></button>
       <button class="row danger" id="rowClear"><span class="k">删除这篇草稿</span><span class="v">不可撤销</span></button>
@@ -1101,6 +1180,44 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <button class="preview-action" id="previewEdit" hidden>编辑</button>
   </div>
   <iframe class="preview-frame" id="previewFrame" title="文章预览" referrerpolicy="no-referrer"></iframe>
+</div>
+
+<!-- AI 润色：全屏一层，结果只在面板里，采纳才回到正文 -->
+<div class="ai" id="aiPanel" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aiTitle">
+  <div class="preview-bar">
+    <button class="preview-close" id="aiClose">关闭</button>
+    <h2 id="aiTitle">AI 润色</h2>
+    <button class="preview-action" id="aiRun">生成</button>
+  </div>
+  <div class="ai-body" id="aiBody">
+    <div class="ai-wrap">
+      <p class="ai-scope" id="aiScope"></p>
+
+      <div class="ai-seg" id="aiModes" role="group" aria-label="润色模式">
+        <button type="button" data-mode="polish" class="on">自然润色</button>
+        <button type="button" data-mode="tighten">精简表达</button>
+        <button type="button" data-mode="proofread">仅纠错</button>
+      </div>
+
+      <input class="ai-hint" id="aiHint" type="text" maxlength="200" autocomplete="off"
+        autocapitalize="off" enterkeyhint="done" placeholder="再加点要求（可选），例如：别动引用里的原话">
+
+      <div class="ai-note" id="aiWarn" hidden></div>
+
+      <div class="ai-result" id="aiResult" hidden>
+        <div class="ai-switch" id="aiTabs">
+          <button type="button" data-view="diff" class="on">对比</button>
+          <button type="button" data-view="result">润色后</button>
+        </div>
+        <div class="ai-diff" id="aiDiff"></div>
+        <div class="ai-render" id="aiRender" hidden></div>
+        <div class="btns" style="margin-top:20px">
+          <button class="btn btn-ghost" id="aiCancel">取消</button>
+          <button class="btn btn-primary" id="aiAdopt">采纳</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 图片大图预览 -->
@@ -2383,6 +2500,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function applyFormat(fmt) {
+    if (fmt === 'ai') return openPolish();
     if (fmt === 'h1') return linePrefix('# ');
     if (fmt === 'h2') return linePrefix('## ');
     if (fmt === 'ul') return linePrefix('- ');
@@ -2616,6 +2734,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
     options = options || {};
     var headers = { Accept: 'application/json' };
     var init = { method: options.method || 'GET', credentials: 'include', headers: headers };
+    // 润色要能中途取消（换模式、关面板、超时），signal 从外面递进来
+    if (options.signal) init.signal = options.signal;
 
     if (options.raw) {
       headers['Content-Type'] = options.contentType || 'application/octet-stream';
@@ -3276,6 +3396,467 @@ input,textarea{-webkit-user-select:text;user-select:text}
     setTimeout(function () { editRecent(post); }, 100);
   });
 
+  /* ------------------------------ AI 润色 ------------------------------
+     只把「正文」送出去，front matter、图片地址、代码块全靠提示词守住，
+     服务端再体检一遍。这一层不做任何自动落盘：结果先进面板，作者点「采纳」
+     才写回编辑区，而且写回走的还是格式操作那套（flushHistory → 改值 →
+     afterEdit），撤销、字数、草稿防抖都跟手改一模一样。
+  */
+
+  var AI_MAX_INPUT = 12000;
+  var AI_TIMEOUT_MS = 75000;
+
+  var aiPanel = $('aiPanel'), aiBodyEl = $('aiBody'), aiScopeEl = $('aiScope');
+  var aiModesEl = $('aiModes'), aiHintEl = $('aiHint'), aiWarnEl = $('aiWarn');
+  var aiResultWrap = $('aiResult'), aiTabsEl = $('aiTabs');
+  var aiDiffEl = $('aiDiff'), aiRenderEl = $('aiRender');
+  var aiRunBtn = $('aiRun'), aiAdoptBtn = $('aiAdopt');
+
+  var aiState = {
+    open: false,
+    busy: false,
+    mode: 'polish',
+    scope: 'document',
+    source: '',
+    start: 0,
+    end: 0,
+    snapshot: '',
+    result: '',
+    view: 'diff',
+    abort: null
+  };
+
+  function setAiWarn(html, isWarn) {
+    if (!html) { aiWarnEl.hidden = true; aiWarnEl.innerHTML = ''; return; }
+    aiWarnEl.className = 'ai-note' + (isWarn ? ' warn' : '');
+    aiWarnEl.innerHTML = html;
+    aiWarnEl.hidden = false;
+  }
+
+  function setAiBusy(busy) {
+    aiState.busy = busy;
+    aiRunBtn.disabled = busy;
+    aiRunBtn.textContent = busy ? '生成中' : aiState.result ? '重新生成' : '生成';
+  }
+
+  /** 「润色哪一段」必须写清楚：用户选了半句就走，回来还得知道改的是哪儿。 */
+  function paintAiScope() {
+    var count = aiState.source.length;
+    aiScopeEl.innerHTML = aiState.scope === 'selection'
+      ? '正在润色<b>选中的 ' + count + ' 字</b>，只改这一段'
+      : '正在润色<b>整篇正文</b>（' + count + ' 字）';
+  }
+
+  function openPolish() {
+    if (!authed) { openSheet('sheetLogin'); toast('先登录，再用 AI 润色', null, 2400); return; }
+
+    if (fmtbar.classList.contains('open')) {
+      fmtbar.classList.remove('open');
+      fmtBtn.classList.remove('on');
+      fmtBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    var value = bodyEl.value;
+    var range = caretRange();
+    var raw = value.slice(range.start, range.end);
+    // 选区两头的空白不算内容：既不该送去润色，也不该在采纳时被吃掉
+    var lead = raw.length - raw.replace(/^[ \t\n]+/, '').length;
+    var trail = raw.length - raw.replace(/[ \t\n]+$/, '').length;
+    var start = range.start + lead;
+    var end = Math.max(start, range.end - trail);
+    var picked = value.slice(start, end);
+
+    if (!picked.trim()) {
+      // 没选中（或只选中空白）就整篇
+      start = 0;
+      end = value.length;
+      picked = value;
+    }
+    if (!picked.trim()) { toast('正文还是空的，先写两句再来', null, 2400); return; }
+    if (picked.length > AI_MAX_INPUT) {
+      toast('这段 ' + picked.length + ' 字，超过 ' + AI_MAX_INPUT + ' 字上限，选中一部分来润', 'err', 3800);
+      return;
+    }
+
+    aiState.scope = start === 0 && end === value.length ? 'document' : 'selection';
+    aiState.source = picked;
+    aiState.start = start;
+    aiState.end = end;
+    // 发起请求时的整篇快照：采纳前拿它比对，改过就不许覆盖
+    aiState.snapshot = value;
+    aiState.result = '';
+    aiState.view = 'diff';
+    aiState.open = true;
+
+    aiResultWrap.hidden = true;
+    aiRenderEl.hidden = true;
+    aiDiffEl.hidden = false;
+    aiDiffEl.innerHTML = '';
+    setAiWarn('');
+    setAiBusy(false);
+    paintAiScope();
+    aiBodyEl.scrollTop = 0;
+    aiPanel.classList.add('open');
+    aiPanel.setAttribute('aria-hidden', 'false');
+
+    var active = document.activeElement;
+    if (active && active !== document.body && active.blur) active.blur();
+  }
+
+  function closeAi() {
+    if (aiState.abort) {
+      try { aiState.abort.abort(); } catch (error) {}
+      aiState.abort = null;
+    }
+    aiState.busy = false;
+    aiState.open = false;
+    setAiBusy(false);
+    aiPanel.classList.remove('open');
+    aiPanel.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---------------------------- 差异对比 ----------------------------
+     不做全篇字符级 LCS：手机上一次几千万格会直接卡住。先按空行切段、
+     段与段对齐（整段相同的不进 diff），只有「同一位置但内容变了」的段落
+     才在段内做字级对比，并且带总额预算，超了就退化成整段替换。
+  */
+
+  function aiParagraphs(text) {
+    return String(text == null ? '' : text)
+      .replace(/\r\n?/g, '\n')
+      .split(/\n{2,}/)
+      .map(function (part) { return part.replace(/[ \t]+$/gm, '').replace(/\s+$/, ''); })
+      .filter(function (part) { return part.length > 0; });
+  }
+
+  /** 段落级对齐：相同的段落当锚点，两锚之间的一撮当成「改过的段落」。 */
+  function aiAlign(A, B) {
+    var n = A.length, m = B.length;
+    var ops = [];
+    var pairs = [];
+    var i, j;
+
+    if (n * m > 120000) {
+      // 段落多到这一步就放弃精细对齐，按下标配对，多的算增删
+      var common = Math.min(n, m);
+      for (i = 0; i < common; i += 1) pairs.push({ a: i, b: i });
+      for (; i < n; i += 1) ops.push({ t: 'del', a: i });
+      for (j = common; j < m; j += 1) ops.push({ t: 'ins', b: j });
+      return { pairs: pairs, tail: ops };
+    }
+
+    var dp = [];
+    for (i = 0; i <= n; i += 1) dp.push(new Array(m + 1).fill(0));
+    for (i = n - 1; i >= 0; i -= 1) {
+      for (j = m - 1; j >= 0; j -= 1) {
+        dp[i][j] = A[i] === B[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+
+    var walk = [];
+    i = 0; j = 0;
+    while (i < n && j < m) {
+      if (A[i] === B[j]) { walk.push({ t: 'same', a: i, b: j }); i += 1; j += 1; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { walk.push({ t: 'a', a: i }); i += 1; }
+      else { walk.push({ t: 'b', b: j }); j += 1; }
+    }
+    while (i < n) { walk.push({ t: 'a', a: i }); i += 1; }
+    while (j < m) { walk.push({ t: 'b', b: j }); j += 1; }
+
+    return { walk: walk, A: A, B: B };
+  }
+
+  /** 把对齐结果翻成可渲染的块：same / mod（段内改了）/ del / ins。 */
+  function aiDiffBlocks(oldText, newText) {
+    var A = aiParagraphs(oldText);
+    var B = aiParagraphs(newText);
+    var aligned = aiAlign(A, B);
+    var blocks = [];
+    var dels = [], inss = [];
+
+    function flush() {
+      if (!dels.length && !inss.length) return;
+      var k = Math.min(dels.length, inss.length);
+      for (var x = 0; x < k; x += 1) blocks.push({ t: 'mod', a: dels[x], b: inss[x] });
+      for (var y = k; y < dels.length; y += 1) blocks.push({ t: 'del', a: dels[y] });
+      for (var z = k; z < inss.length; z += 1) blocks.push({ t: 'ins', b: inss[z] });
+      dels = []; inss = [];
+    }
+
+    if (aligned.pairs) {
+      // 降级路径：按下标配对，长度不等时直接整段替换
+      aligned.pairs.forEach(function (pair) {
+        if (A[pair.a] === B[pair.b]) blocks.push({ t: 'same', a: A[pair.a] });
+        else blocks.push({ t: 'mod', a: A[pair.a], b: B[pair.b] });
+      });
+      aligned.tail.forEach(function (op) {
+        if (op.t === 'del') blocks.push({ t: 'del', a: A[op.a] });
+        else blocks.push({ t: 'ins', b: B[op.b] });
+      });
+      return blocks;
+    }
+
+    aligned.walk.forEach(function (op) {
+      if (op.t === 'same') { flush(); blocks.push({ t: 'same', a: A[op.a] }); return; }
+      if (op.t === 'a') dels.push(A[op.a]); else inss.push(B[op.b]);
+    });
+    flush();
+    return blocks;
+  }
+
+  /** 段内字级 diff。返回 [{t:'='|'-'|'+', s}]，超出预算就整段替换。 */
+  function aiCharDiff(a, b) {
+    if (a === b) return [{ t: '=', s: a }];
+    if (!a.length) return [{ t: '+', s: b }];
+    if (!b.length) return [{ t: '-', s: a }];
+
+    var n = a.length, m = b.length;
+    var dp = [];
+    for (var i = 0; i <= n; i += 1) dp.push(new Int32Array(m + 1));
+    for (var p = n - 1; p >= 0; p -= 1) {
+      for (var q = m - 1; q >= 0; q -= 1) {
+        dp[p][q] = a.charAt(p) === b.charAt(q)
+          ? dp[p + 1][q + 1] + 1
+          : Math.max(dp[p + 1][q], dp[p][q + 1]);
+      }
+    }
+
+    var out = [];
+    var cur = { t: '', s: '' };
+    function push(t, s) {
+      if (cur.t === t) { cur.s += s; return; }
+      if (cur.t) out.push(cur);
+      cur = { t: t, s: s };
+    }
+    var x = 0, y = 0;
+    while (x < n && y < m) {
+      if (a.charAt(x) === b.charAt(y)) { push('=', a.charAt(x)); x += 1; y += 1; }
+      else if (dp[x + 1][y] >= dp[x][y + 1]) { push('-', a.charAt(x)); x += 1; }
+      else { push('+', b.charAt(y)); y += 1; }
+    }
+    while (x < n) { push('-', a.charAt(x)); x += 1; }
+    while (y < m) { push('+', b.charAt(y)); y += 1; }
+    if (cur.t) out.push(cur);
+    return out;
+  }
+
+  /** 转义 + 保留段内软换行。 */
+  function aiText(text) {
+    return escapeHtml(String(text == null ? '' : text)).replace(/\n/g, '<br>');
+  }
+
+  function paintAiDiff() {
+    var blocks = aiDiffBlocks(aiState.source, aiState.result);
+    // 字级对比的总预算：一段一段扣，扣完后面的段直接整段标色，别把手机算死
+    var budget = 260000;
+    var html = '';
+
+    blocks.forEach(function (block) {
+      if (block.t === 'same') {
+        html += '<p class="dl-same">' + aiText(block.a) + '</p>';
+        return;
+      }
+      if (block.t === 'del') {
+        html += '<div class="dl-del"><del>' + aiText(block.a) + '</del></div>';
+        return;
+      }
+      if (block.t === 'ins') {
+        html += '<div class="dl-ins"><ins>' + aiText(block.b) + '</ins></div>';
+        return;
+      }
+
+      var a = block.a, b = block.b;
+      var parts;
+      if (a.length * b.length > budget) {
+        parts = [{ t: '-', s: a }, { t: '+', s: b }];
+      } else {
+        budget -= a.length * b.length;
+        parts = aiCharDiff(a, b);
+      }
+      var inner = parts.map(function (part) {
+        if (part.t === '=') return aiText(part.s);
+        if (part.t === '-') return '<del>' + aiText(part.s) + '</del>';
+        return '<ins>' + aiText(part.s) + '</ins>';
+      }).join('');
+      html += '<p>' + (inner || '&nbsp;') + '</p>';
+    });
+
+    aiDiffEl.innerHTML = html || '<p class="dl-same">没有差异</p>';
+  }
+
+  function paintAiResult() {
+    aiResultWrap.hidden = false;
+    var showDiff = aiState.view !== 'result';
+    aiDiffEl.hidden = !showDiff;
+    aiRenderEl.hidden = showDiff;
+    if (showDiff) {
+      paintAiDiff();
+    } else {
+      aiRenderEl.innerHTML = markdown(paragraphize(aiState.result));
+    }
+    Array.prototype.forEach.call(aiTabsEl.querySelectorAll('[data-view]'), function (button) {
+      button.classList.toggle('on', button.getAttribute('data-view') === (showDiff ? 'diff' : 'result'));
+    });
+  }
+
+  /* ------------------------------ 生成 ------------------------------ */
+
+  function runAi() {
+    if (aiState.busy) return;
+    if (!aiState.source.trim()) { toast('没有要润色的内容', null, 2200); return; }
+
+    if (aiState.abort) {
+      try { aiState.abort.abort(); } catch (error) {}
+      aiState.abort = null;
+    }
+    var controller = window.AbortController ? new AbortController() : null;
+    var timer = 0;
+    aiState.abort = controller;
+    setAiBusy(true);
+    setAiWarn('<b>正在润色…</b>整篇大概十几二十秒，别关页面。');
+
+    if (controller) {
+      timer = setTimeout(function () { try { controller.abort(); } catch (error) {} }, AI_TIMEOUT_MS);
+    }
+
+    var rid = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+    api('/api/write/polish', {
+      method: 'POST',
+      body: {
+        text: aiState.source,
+        mode: aiState.mode,
+        scope: aiState.scope,
+        instruction: aiHintEl.value.trim().slice(0, 200),
+        rid: rid
+      },
+      signal: controller ? controller.signal : null
+    }).then(function (data) {
+      if (timer) clearTimeout(timer);
+      aiState.abort = null;
+      aiState.result = String(data.text || '');
+      aiState.view = 'diff';
+      setAiBusy(false);
+
+      var warnings = Array.isArray(data.warnings) ? data.warnings : [];
+      if (warnings.length) {
+        setAiWarn('<b>结果里有些东西跟原文对不上：</b>' + escapeHtml(warnings.join('；')) + '。采纳前先看一眼。', true);
+      } else {
+        setAiWarn('');
+      }
+
+      paintAiResult();
+      // 结果出来把面板滚到「对比」开头，手机上不至于停在半截
+      var offset = aiResultWrap.getBoundingClientRect().top - aiBodyEl.getBoundingClientRect().top;
+      aiBodyEl.scrollTop = Math.max(0, aiBodyEl.scrollTop + offset - 8);
+    }).catch(function (error) {
+      if (timer) clearTimeout(timer);
+      aiState.abort = null;
+      setAiBusy(false);
+      var aborted = error && (error.name === 'AbortError' || /abort/i.test(String(error.message)));
+      var message = aborted
+        ? '等了 75 秒还没回音，网络或服务太慢，再试一次或者少选一点'
+        : (error && error.message) || '润色失败，稍后再试';
+      if (!aborted && error && error.status === 401) message = '登录过期了，刷新页面重新登录';
+      setAiWarn('<b>没生成出来：</b>' + escapeHtml(message), true);
+      toast(message, 'err', 3400);
+    });
+  }
+
+  /* ------------------------------ 采纳 ------------------------------ */
+
+  /**
+   * 采纳前先验证「原文没被动过」：
+   *   · 整篇 → 现在的正文必须还等于发起请求时的那份快照；
+   *   · 选区 → 那个区间里的文字必须还等于送去润色的那段。
+   * 对不上就拒收，绝不拿旧结果盖新内容。
+   */
+  function adoptAi() {
+    if (!aiState.result) return;
+    var value = bodyEl.value;
+    var current = aiState.scope === 'selection'
+      ? value.slice(aiState.start, aiState.end)
+      : value;
+    var expected = aiState.scope === 'selection' ? aiState.source : aiState.snapshot;
+
+    if (current !== expected) {
+      setAiWarn('<b>正文在生成过程中改过</b>，这份结果已经对不上了。点右上角「重新生成」按现在的稿子再来一次。', true);
+      toast('正文变了，这次结果不覆盖', 'err', 3200);
+      return;
+    }
+
+    if (aiState.scope === 'selection' && !current.length) {
+      toast('原来那段已经没了，没法替换', 'err', 3000);
+      return;
+    }
+
+    var replacement = aiState.result;
+    flushHistory();
+    if (aiState.scope === 'selection') {
+      bodyEl.value = value.slice(0, aiState.start) + replacement + value.slice(aiState.end);
+      afterEdit();
+      setCaret(aiState.start, aiState.start + replacement.length);
+    } else {
+      bodyEl.value = replacement;
+      afterEdit();
+      setCaret(replacement.length);
+    }
+    commitEdit();
+    closeAi();
+    toast('已采纳，草稿还是草稿，记得再读一遍', 'ok', 2800);
+  }
+
+  /* ------------------------------ 绑定 ------------------------------ */
+
+  aiRunBtn.addEventListener('click', function () {
+    // 有结果时这个按钮是「重新生成」，先把旧结果清掉，免得误以为还是那份
+    if (aiState.result && !aiState.busy) {
+      aiState.result = '';
+      aiResultWrap.hidden = true;
+      aiRunBtn.textContent = '生成';
+    }
+    runAi();
+  });
+  $('aiClose').addEventListener('click', closeAi);
+  $('aiCancel').addEventListener('click', closeAi);
+  aiAdoptBtn.addEventListener('click', adoptAi);
+
+  aiModesEl.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-mode]');
+    if (!button) return;
+    aiState.mode = button.getAttribute('data-mode');
+    Array.prototype.forEach.call(aiModesEl.querySelectorAll('[data-mode]'), function (item) {
+      item.classList.toggle('on', item === button);
+    });
+    // 换了模式，旧结果就没意义了
+    if (aiState.result) {
+      aiState.result = '';
+      aiResultWrap.hidden = true;
+      setAiBusy(false);
+      setAiWarn('');
+    }
+  });
+
+  aiTabsEl.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-view]');
+    if (!button || !aiState.result) return;
+    aiState.view = button.getAttribute('data-view');
+    paintAiResult();
+  });
+
+  aiHintEl.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && !event.isComposing) {
+      event.preventDefault();
+      aiHintEl.blur();
+      if (!aiState.busy) runAi();
+    }
+  });
+
+  $('rowPolish').addEventListener('click', function () {
+    closeSheet($('sheetActions'));
+    setTimeout(openPolish, 180);
+  });
+
   /* ------------------------------ 工作台抽屉 ------------------------------
      顶栏那条「已存 … · 云端 ✓」就是把手：点一下，或者按住往下拖，写作台整层滑走，
      露出运动与博友近况。拖动时只写 --fold-p，纯 transform，不碰布局。
@@ -3526,6 +4107,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   /** 落到入口页：没有任何「这篇」的信息，顶栏和纸脊都不该再报字数与同步。 */
   function enterHome() {
     // 先滚回顶上再藏：藏起来以后 .doc 没有布局，scrollTop 赋值就不作数了
+    if (aiState && aiState.open) closeAi();
     docEl.scrollTop = 0;
     paneClosed = true;
     appEl.classList.add('closed');
@@ -4377,6 +4959,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return;
     }
     if (event.key === 'Escape') {
+      // AI 面板在最上层（26），先关它，再轮到抽屉和预览
+      if (aiPanel.classList.contains('open')) { closeAi(); return; }
       var open = document.querySelector('.sheet.open');
       if (open) { closeSheet(open); return; }
       if (previewEl.classList.contains('open')) { previewEl.classList.remove('open'); previewPost = null; return; }

@@ -37,6 +37,11 @@ WRITE_SITE_ORIGIN = "https://hux.ink"
 # 图床公开域名。R2 自定义域已指向 img.hux.ink，这里只拼 URL 用
 R2_PUBLIC_URL = "https://img.hux.ink"
 
+# ── AI 润色（写作页的「AI 润色」，走 DeepSeek 官方 API）─────────────
+# 密钥同样不进这里：npx wrangler secret put DEEPSEEK_API_KEY
+# deepseek-flash 是 DeepSeek V4.1 Flash 的模型名，改写任务够用且便宜
+DEEPSEEK_MODEL = "deepseek-flash"
+
 # 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
 [[routes]]
 pattern = "comments.hux.ink/*"

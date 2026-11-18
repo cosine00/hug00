@@ -27,6 +27,7 @@
  *   POST /api/write/post                 新建文章；带 path 则原地更新那个文件
  *   GET  /api/write/drafts               云端草稿列表（?since=毫秒）
  *   POST /api/write/drafts               批量上行草稿，冲突按 updated_at 判
+ *   POST /api/write/polish               { text, mode, instruction, scope } → AI 润色稿
  */
 
 import {
@@ -51,6 +52,7 @@ import {
 } from './service.js';
 import { notifyNewComment, notifyReply } from './mail.js';
 import { handleWriteDraftsGet, handleWriteDraftsSave, handleWriteHealth, handleWriteImages, handleWritePost, handleWritePosts, handleWriteTags, handleWriteUpload } from './write.js';
+import { handlePolish } from './ai.js';
 import {
   buildSessionCookie,
   createSession,
@@ -298,6 +300,14 @@ async function route(request, env, url, ctx) {
     const gate = await adminGate(request, env);
     if (!gate.ok) return gate.response;
     return handleWritePost(request, env);
+  }
+
+  // AI 润色：密钥只在服务端，所以必须走这道闸门；它也只产出文本，不落库不发文
+  if (path === '/api/write/polish') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    if (request.method !== 'POST') return fail(405, 'method_not_allowed', '润色接口只接受 POST');
+    return handlePolish(request, env);
   }
 
   // 草稿同步：读走 GET，写走 POST（批量 upsert，同 id 按 updated_at 定胜负）
