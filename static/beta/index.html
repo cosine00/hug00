@@ -168,8 +168,20 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .app.closed .hp-inner>*:nth-child(2){animation-delay:.04s}
 .app.closed .hp-inner>*:nth-child(3){animation-delay:.08s}
 @keyframes hpIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.hp-head{padding:0 4px 16px}
-.hp-head h2{margin:0;font-size:19px;font-weight:680;letter-spacing:-.015em;color:var(--fg)}
+/* 入口页顶上那截空白：抽两句古诗填进去。
+   高度留死（min-height），换一联不至于把下面整块内容顶来顶去。 */
+.hp-poem{margin:0 0 4px;min-height:clamp(92px,15vh,168px);padding:0 4px;
+  display:flex;flex-direction:column;justify-content:center;gap:2px}
+.hp-poem p{margin:0;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",ui-serif,Georgia,serif;
+  font-size:16px;line-height:1.95;letter-spacing:.07em;
+  color:color-mix(in srgb,var(--fg) 64%,transparent)}
+.hp-poem .pp-from{margin-top:7px;font-family:inherit;font-size:10.5px;line-height:1.6;
+  letter-spacing:.09em;color:var(--faint)}
+/* 这颗要比 .app.closed .hp-inner>* 那条进场动画更具体，否则换诗时的重播会被它盖掉 */
+.hp-inner .hp-poem.pp-in{animation:ppIn .5s var(--ease) both}
+@keyframes ppIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hp-poem.pp-in{animation:none}}
+.hp-head{padding:0 4px 16px}.hp-head h2{margin:0;font-size:19px;font-weight:680;letter-spacing:-.015em;color:var(--fg)}
 .hp-head p{margin:6px 0 0;font-size:12.5px;line-height:1.6;color:var(--faint)}
 .hp-new{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:46px;
   border-radius:14px;border:0;color:var(--accent-fg);
@@ -951,6 +963,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <!-- 关掉这篇以后回到这里：写新的，或者翻旧的 -->
     <section class="homepane" id="homePane" aria-label="没有打开的稿件">
       <div class="hp-inner">
+        <figure class="hp-poem" id="hpPoem" aria-label="随手一联">
+          <p id="hpPoemA"></p>
+          <p id="hpPoemB"></p>
+          <figcaption class="pp-from" id="hpPoemFrom"></figcaption>
+        </figure>
         <div class="hp-head">
           <h2 id="hpTitle">写点什么</h2>
           <p id="hpSub">先落几个字，剩下的慢慢来。</p>
@@ -4095,6 +4112,136 @@ input,textarea{-webkit-user-select:text;user-select:text}
     scheduleGutter();
   }
 
+  /* ---------------------------- 入口页那两句 ----------------------------
+     每次落回这一屏（开机、关掉一篇、从别的 App 切回来）都重抽一联，
+     不连着给同一首；诗句写死在页面里，不发请求，断网也有。
+  */
+  var POEMS = [
+    ['落霞与孤鹜齐飞，', '秋水共长天一色。', '王勃《滕王阁序》'],
+    ['海内存知己，', '天涯若比邻。', '王勃《送杜少府之任蜀州》'],
+    ['海上生明月，', '天涯共此时。', '张九龄《望月怀远》'],
+    ['明月松间照，', '清泉石上流。', '王维《山居秋暝》'],
+    ['行到水穷处，', '坐看云起时。', '王维《终南别业》'],
+    ['空山不见人，', '但闻人语响。', '王维《鹿柴》'],
+    ['独坐幽篁里，', '弹琴复长啸。', '王维《竹里馆》'],
+    ['大漠孤烟直，', '长河落日圆。', '王维《使至塞上》'],
+    ['江流天地外，', '山色有无中。', '王维《汉江临泛》'],
+    ['山中一夜雨，', '树杪百重泉。', '王维《送梓州李使君》'],
+    ['春草明年绿，', '王孙归不归。', '王维《山中送别》'],
+    ['劝君更尽一杯酒，', '西出阳关无故人。', '王维《送元二使安西》'],
+    ['人生如逆旅，', '我亦是行人。', '苏轼《临江仙·送钱穆父》'],
+    ['人生到处知何似，', '应似飞鸿踏雪泥。', '苏轼《和子由渑池怀旧》'],
+    ['莫听穿林打叶声，', '何妨吟啸且徐行。', '苏轼《定风波》'],
+    ['但愿人长久，', '千里共婵娟。', '苏轼《水调歌头》'],
+    ['枝上柳绵吹又少，', '天涯何处无芳草。', '苏轼《蝶恋花·春景》'],
+    ['欲把西湖比西子，', '淡妆浓抹总相宜。', '苏轼《饮湖上初晴后雨》'],
+    ['竹外桃花三两枝，', '春江水暖鸭先知。', '苏轼《惠崇春江晚景》'],
+    ['一年好景君须记，', '最是橙黄橘绿时。', '苏轼《赠刘景文》'],
+    ['世事一场大梦，', '人生几度秋凉。', '苏轼《西江月》'],
+    ['会当凌绝顶，', '一览众山小。', '杜甫《望岳》'],
+    ['随风潜入夜，', '润物细无声。', '杜甫《春夜喜雨》'],
+    ['星垂平野阔，', '月涌大江流。', '杜甫《旅夜书怀》'],
+    ['无边落木萧萧下，', '不尽长江滚滚来。', '杜甫《登高》'],
+    ['露从今夜白，', '月是故乡明。', '杜甫《月夜忆舍弟》'],
+    ['天生我材必有用，', '千金散尽还复来。', '李白《将进酒》'],
+    ['举杯邀明月，', '对影成三人。', '李白《月下独酌》'],
+    ['长风破浪会有时，', '直挂云帆济沧海。', '李白《行路难》'],
+    ['相看两不厌，', '只有敬亭山。', '李白《独坐敬亭山》'],
+    ['山随平野尽，', '江入大荒流。', '李白《渡荆门送别》'],
+    ['明月出天山，', '苍茫云海间。', '李白《关山月》'],
+    ['春水碧于天，', '画船听雨眠。', '韦庄《菩萨蛮》'],
+    ['小楼一夜听春雨，', '深巷明朝卖杏花。', '陆游《临安春雨初霁》'],
+    ['山重水复疑无路，', '柳暗花明又一村。', '陆游《游山西村》'],
+    ['夜阑卧听风吹雨，', '铁马冰河入梦来。', '陆游《十一月四日风雨大作》'],
+    ['我见青山多妩媚，', '料青山见我应如是。', '辛弃疾《贺新郎》'],
+    ['稻花香里说丰年，', '听取蛙声一片。', '辛弃疾《西江月·夜行黄沙道中》'],
+    ['明月别枝惊鹊，', '清风半夜鸣蝉。', '辛弃疾《西江月·夜行黄沙道中》'],
+    ['醉里挑灯看剑，', '梦回吹角连营。', '辛弃疾《破阵子》'],
+    ['众里寻他千百度，', '蓦然回首，那人却在，灯火阑珊处。', '辛弃疾《青玉案·元夕》'],
+    ['无可奈何花落去，', '似曾相识燕归来。', '晏殊《浣溪沙》'],
+    ['昨夜西风凋碧树，', '独上高楼，望尽天涯路。', '晏殊《蝶恋花》'],
+    ['落花人独立，', '微雨燕双飞。', '晏几道《临江仙》'],
+    ['人生若只如初见，', '何事秋风悲画扇。', '纳兰性德《木兰花令》'],
+    ['一往情深深几许？', '深山夕照深秋雨。', '纳兰性德《蝶恋花》'],
+    ['山一程，水一程，', '身向榆关那畔行。', '纳兰性德《长相思》'],
+    ['知否，知否？', '应是绿肥红瘦。', '李清照《如梦令》'],
+    ['云中谁寄锦书来？', '雁字回时，月满西楼。', '李清照《一剪梅》'],
+    ['落日熔金，', '暮云合璧。', '李清照《永遇乐》'],
+    ['枕上诗书闲处好，', '门前风景雨来佳。', '李清照《摊破浣溪沙》'],
+    ['采菊东篱下，', '悠然见南山。', '陶渊明《饮酒·其五》'],
+    ['山气日夕佳，', '飞鸟相与还。', '陶渊明《饮酒·其五》'],
+    ['羁鸟恋旧林，', '池鱼思故渊。', '陶渊明《归园田居》'],
+    ['云无心以出岫，', '鸟倦飞而知还。', '陶渊明《归去来兮辞》'],
+    ['木欣欣以向荣，', '泉涓涓而始流。', '陶渊明《归去来兮辞》'],
+    ['昔我往矣，杨柳依依。', '今我来思，雨雪霏霏。', '《诗经·小雅·采薇》'],
+    ['蒹葭苍苍，白露为霜。', '所谓伊人，在水一方。', '《诗经·秦风·蒹葭》'],
+    ['桃之夭夭，', '灼灼其华。', '《诗经·周南·桃夭》'],
+    ['如切如磋，', '如琢如磨。', '《诗经·卫风·淇奥》'],
+    ['山有木兮木有枝，', '心悦君兮君不知。', '《越人歌》'],
+    ['人生天地间，', '忽如远行客。', '《古诗十九首》'],
+    ['河汉清且浅，', '相去复几许。', '《古诗十九首·迢迢牵牛星》'],
+    ['醉后不知天在水，', '满船清梦压星河。', '唐温如《题龙阳县青草湖》'],
+    ['山中何事？', '松花酿酒，春水煎茶。', '张可久《人月圆·山中书事》'],
+    ['空山松子落，', '幽人应未眠。', '韦应物《秋夜寄邱员外》'],
+    ['春潮带雨晚来急，', '野渡无人舟自横。', '韦应物《滁州西涧》'],
+    ['晚来天欲雪，', '能饮一杯无？', '白居易《问刘十九》'],
+    ['一道残阳铺水中，', '半江瑟瑟半江红。', '白居易《暮江吟》'],
+    ['同是天涯沦落人，', '相逢何必曾相识。', '白居易《琵琶行》'],
+    ['野火烧不尽，', '春风吹又生。', '白居易《赋得古原草送别》'],
+    ['野旷天低树，', '江清月近人。', '孟浩然《宿建德江》'],
+    ['开轩面场圃，', '把酒话桑麻。', '孟浩然《过故人庄》'],
+    ['千山鸟飞绝，', '万径人踪灭。', '柳宗元《江雪》'],
+    ['月落乌啼霜满天，', '江枫渔火对愁眠。', '张继《枫桥夜泊》'],
+    ['姑苏城外寒山寺，', '夜半钟声到客船。', '张继《枫桥夜泊》'],
+    ['夕阳无限好，', '只是近黄昏。', '李商隐《乐游原》'],
+    ['何当共剪西窗烛，', '却话巴山夜雨时。', '李商隐《夜雨寄北》'],
+    ['身无彩凤双飞翼，', '心有灵犀一点通。', '李商隐《无题》'],
+    ['此情可待成追忆，', '只是当时已惘然。', '李商隐《锦瑟》'],
+    ['天街小雨润如酥，', '草色遥看近却无。', '韩愈《早春呈水部张十八员外》'],
+    ['沉舟侧畔千帆过，', '病树前头万木春。', '刘禹锡《酬乐天扬州初逢席上见赠》'],
+    ['晴空一鹤排云上，', '便引诗情到碧霄。', '刘禹锡《秋词》'],
+    ['旧时王谢堂前燕，', '飞入寻常百姓家。', '刘禹锡《乌衣巷》'],
+    ['东边日出西边雨，', '道是无晴却有晴。', '刘禹锡《竹枝词》'],
+    ['春江潮水连海平，', '海上明月共潮生。', '张若虚《春江花月夜》'],
+    ['江畔何人初见月？', '江月何年初照人？', '张若虚《春江花月夜》'],
+    ['人生代代无穷已，', '江月年年望相似。', '张若虚《春江花月夜》'],
+    ['欲穷千里目，', '更上一层楼。', '王之涣《登鹳雀楼》'],
+    ['羌笛何须怨杨柳，', '春风不度玉门关。', '王之涣《凉州词》'],
+    ['落红不是无情物，', '化作春泥更护花。', '龚自珍《己亥杂诗》'],
+    ['洛阳亲友如相问，', '一片冰心在玉壶。', '王昌龄《芙蓉楼送辛渐》'],
+    ['忽如一夜春风来，', '千树万树梨花开。', '岑参《白雪歌送武判官归京》'],
+    ['西塞山前白鹭飞，', '桃花流水鳜鱼肥。', '张志和《渔歌子》'],
+    ['曲径通幽处，', '禅房花木深。', '常建《题破山寺后禅院》'],
+    ['落花无言，', '人淡如菊。', '司空图《二十四诗品》'],
+    ['溪云初起日沉阁，', '山雨欲来风满楼。', '许浑《咸阳城东楼》'],
+    ['春风得意马蹄疾，', '一日看尽长安花。', '孟郊《登科后》'],
+    ['谁言寸草心，', '报得三春晖。', '孟郊《游子吟》'],
+    ['曾经沧海难为水，', '除却巫山不是云。', '元稹《离思》'],
+    ['停车坐爱枫林晚，', '霜叶红于二月花。', '杜牧《山行》'],
+    ['二十四桥明月夜，', '玉人何处教吹箫。', '杜牧《寄扬州韩绰判官》'],
+    ['南朝四百八十寺，', '多少楼台烟雨中。', '杜牧《江南春》'],
+    ['银烛秋光冷画屏，', '轻罗小扇扑流萤。', '杜牧《秋夕》'],
+    ['花开堪折直须折，', '莫待无花空折枝。', '杜秋娘《金缕衣》']
+  ];
+  var poemPick = -1;
+
+  function rollPoem() {
+    if (!POEMS.length) return;
+    var i = poemPick;
+    while (i === poemPick && POEMS.length > 1) i = Math.floor(Math.random() * POEMS.length);
+    poemPick = i;
+    var poem = POEMS[i];
+    $('hpPoemA').textContent = poem[0];
+    $('hpPoemB').textContent = poem[1] || '';
+    $('hpPoemB').hidden = !poem[1];
+    $('hpPoemFrom').textContent = poem[2] || '';
+    var box = $('hpPoem');
+    // 去掉再加回来才重播动画：光换文字，CSS 动画是不会重跑的
+    box.classList.remove('pp-in');
+    void box.offsetWidth;
+    box.classList.add('pp-in');
+  }
+
   function renderHomePane() {
     var open = authed && store ? store.drafts.filter(function (draft) { return hasContent(draft); }) : [];
 
@@ -4126,6 +4273,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     setSaveState('就绪', '');
     renderHomePane();
+    rollPoem();
     renderDraftList();
     renderActionsSheet();
     paintFoldStrip();
@@ -5114,10 +5262,18 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   // 关页面/切后台前把没落盘的草稿写进去
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) return;
-    flushSave();
-    // 15 秒的云端节流在「写完就切走」时容易漏一拍：切后台的瞬间补推一次
-    if (authed) scheduleSync(0);
+    if (document.hidden) {
+      flushSave();
+      // 15 秒的云端节流在「写完就切走」时容易漏一拍：切后台的瞬间补推一次
+      if (authed) scheduleSync(0);
+      return;
+    }
+    // 从别的 App 切回来、还停在入口页：那两句换一联
+    if (appEl.classList.contains('closed')) rollPoem();
+  });
+  // 从 bfcache 里被捞回来的情况，visibilitychange 不一定会来
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted && appEl.classList.contains('closed')) rollPoem();
   });
   window.addEventListener('pagehide', flushSave);
   window.addEventListener('beforeunload', function () { flushSave(); });
