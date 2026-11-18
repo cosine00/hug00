@@ -718,7 +718,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <svg class="pk-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.2 6.4 8 10.2l3.8-3.8"/></svg>
     </button>
     <button class="tb-btn tb-btn-end" id="actionsBtn" aria-label="保存与发布">
-      <svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><path d="M14.4 4.6v14.8"/></svg>
+      <svg class="dots" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.4" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.6" cy="12" r="1.7"/></svg>
     </button>
   </header>
 
@@ -1122,7 +1122,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var saveStateEl = $('saveState'), fileEl = $('file'), mdFileEl = $('mdFile');
   var toastEl = $('toast'), previewEl = $('preview'), previewFrame = $('previewFrame');
   var appEl = $('app'), deckEl = $('deck'), stageEl = $('stage'), peekEl = $('peek');
-  var peekBtn = $('peekBtn'), foldTap = $('foldTap');
+  var peekBtn = $('peekBtn'), foldTap = $('foldTap'), homePane = $('homePane');
   var banner = $('loginBanner'), fmtbar = $('fmtbar'), fmtBtn = $('fmtBtn');
   var docEl = $('doc'), countEl = $('count'), gutterEl = $('gutter');
   var metaEl = $('meta'), metaToggle = $('metaToggle'), metaFields = $('metaFields'), metaSummary = $('metaSummary');
@@ -1386,6 +1386,29 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function sessionStore() {
     var draft = blankDraft();
     return { activeId: draft.id, drafts: [draft], syncAt: 0 };
+  }
+
+  /**
+   * 老版本发布完会把稿子留在草稿箱里，还标着「更新中」——那批条目其实已经是
+   * 上线文章，不是草稿。这里只清「有 edit 且发布之后一个字没再改过」的
+   * （updatedAt 不晚于 publishedAt）；真改过的仍然留着，那是待更新的草稿。
+   */
+  function prunePublished() {
+    var kept = [];
+    var dropped = 0;
+    store.drafts.forEach(function (draft) {
+      if (draft.edit && draft.publishedAt && draft.updatedAt && draft.updatedAt <= draft.publishedAt) {
+        dropped += 1;
+        dropRemote(draft.id);
+        return;
+      }
+      kept.push(draft);
+    });
+    if (!dropped) return 0;
+    store.drafts = kept.length ? kept : [blankDraft()];
+    if (!activeDraft()) store.activeId = store.drafts[0].id;
+    persist();
+    return dropped;
   }
 
   function persist() {
@@ -1685,6 +1708,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
       if (local.id === store.activeId) activeChanged = true;
     });
 
+    // 云端可能也带着老版本留下的「已发布草稿」，合并后一并清掉
+    if (prunePublished()) removedActive = true;
     if (!store.drafts.length) store.drafts.push(blankDraft());
     persist();
     if (removedActive || !activeDraft()) {
@@ -2984,6 +3009,60 @@ input,textarea{-webkit-user-select:text;user-select:text}
   bindPull(peekBtn);
   bindPull(foldTap);
 
+  /* 入口页整页往下拉 = 展开工作台。
+     顶上那条胶囊对拇指来说太高，一屏之内的东西宁可让手指直接拖。
+     只认单指、明显向下的拖动：双指（缩放）、横滑、往上滚都放过。
+     拖动时沿用纸脊那套 --fold-p 进度，松手过半就停在工作台。 */
+  (function () {
+    var from = null;
+    var pulling = false;
+
+    function release() {
+      var pulled = from ? from.pulled : 0;
+      from = null;
+      if (!pulling) return;
+      pulling = false;
+      appEl.classList.remove('dragging');
+      appEl.style.removeProperty('--fold-p');
+      // 拖完浏览器可能补一个 click，别让它顺手点开「写新的一篇」
+      suppressPeekClickUntil = Date.now() + 400;
+      // 这是「甩一下」不是「拖到底」：够 88px 就认，别让人在屏幕中间较劲
+      setPeek(pulled > Math.min(foldLimit() * 0.3, 88));
+    }
+
+    homePane.addEventListener('touchstart', function (event) {
+      if (!paneClosed || foldOpen || event.touches.length !== 1) { from = null; pulling = false; return; }
+      from = { x: event.touches[0].clientX, y: event.touches[0].clientY, pulled: 0 };
+    }, { passive: true });
+
+    homePane.addEventListener('touchmove', function (event) {
+      if (!from) return;
+      if (event.touches.length !== 1) {
+        // 中途来了第二根手指，多半是想缩放：立刻收手，别抢手势
+        appEl.classList.remove('dragging');
+        appEl.style.removeProperty('--fold-p');
+        pulling = false;
+        from = null;
+        return;
+      }
+      var touch = event.touches[0];
+      var dy = touch.clientY - from.y;
+      var dx = Math.abs(touch.clientX - from.x);
+      if (!pulling) {
+        // 入口页自己还滚在上面时才接管；已经往下滚过，这会儿的向下拖是在回滚内容
+        if (dy < 14 || dy < dx * 1.2 || homePane.scrollTop > 0) return;
+        pulling = true;
+        appEl.classList.add('dragging');
+      }
+      if (event.cancelable) event.preventDefault();
+      from.pulled = dy;
+      setFold(dy / foldLimit());
+    }, { passive: false });
+
+    homePane.addEventListener('touchend', release, { passive: true });
+    homePane.addEventListener('touchcancel', release, { passive: true });
+  })();
+
   // 顶栏两侧按钮之外的地方同样是把手
   document.querySelector('.topbar').addEventListener('click', function (event) {
     if (event.target.closest('.tb-btn') || event.target.closest('.tb-peek')) return;
@@ -3600,6 +3679,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     api('/api/write/post', { method: 'POST', body: payload }).then(function (result) {
       closeSheet($('sheetPublish'));
 
+      var wasUpdate = Boolean(payload.path);
       if (!draft.edit) {
         draft.edit = { path: result.path, name: result.name, url: result.liveUrl || '' };
       } else if (result.path) {
@@ -3608,22 +3688,21 @@ input,textarea{-webkit-user-select:text;user-select:text}
         draft.edit.url = result.liveUrl || draft.edit.url;
       }
       draft.publishedAt = Date.now();
-      persist();
-      markDirty(draft.id);
-      scheduleSync(400);
-      renderEditBar();
-      setSaveState(saveLine(draft), 'saved');
-      toast(result.updated || payload.path ? '已更新，约 1 分钟生效' : '已发布，约 1 分钟上线', 'ok', 3600);
 
-      var open = $('rowOpen');
-      open.dataset.url = draft.edit.url || '';
+      // 发出去了就不是草稿：从草稿箱里收走（连带云端那份，免得换设备又拉回来）。
+      // 以前留着它、还标成「更新中」，草稿列表就堆着一批早就上线的文章。
+      // 想再改就进「最近发布」，那边会重新装一篇草稿出来。
+      var publishedId = draft.id;
+      removeDraft(publishedId);
+      enterHome();
       recentPosts = null;
+      toast(wasUpdate ? '已更新，约 1 分钟生效' : '已发布，约 1 分钟上线', 'ok', 3600);
     }).catch(function (error) {
       toast(error.message || '发布失败', 'err', 3600);
     }).then(function () {
       busy = false;
       btn.disabled = false;
-      btn.textContent = draft.edit ? '更新' : '发布';
+      btn.textContent = '发布';
     });
   });
 
@@ -4055,6 +4134,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   /* 默认落点：入口页。未登录时 store 只是一份内存里的空稿，
      本机草稿要等 checkAuth 通过（unlockStore）才读出来。 */
   loadStore();
+  // 老版本发布后留下的「已发布草稿」在这里清一次，别让它们继续占着草稿箱
+  prunePublished();
   loadActive();
   enterHome();
 
