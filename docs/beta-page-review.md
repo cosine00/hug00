@@ -635,3 +635,25 @@ npx wrangler secret put GITHUB_TOKEN
 **入口页下滑展开工作台。** 顶部那条胶囊对拇指偏高，现在整页往下甩一下也能展开：单指、明显向下（`dy > 14` 且 `dy > dx * 1.2`）、且入口页本身还停在顶部才接管；双指（缩放）、横滑、往上回滚一概放过。拖动时沿用纸脊那套 `--fold-p` 进度实时跟手，松手超过 `min(deck*0.3, 88px)` 就停在工作台。`preventDefault` 只在判定为下拉之后才调，不会影响页面滚动。
 
 **右侧按钮换成三点。** 原来左右两个都是「两栏面板」的同一个图标，只是一个分割线在左、一个在右，认不出哪个是哪个。右边改为横向三点（`svg.dots`，`fill:currentColor`），左边保持面板图标。
+
+## 18. 「已发布还在草稿箱里」的真正原因：发布尾巴与时间戳判据
+
+第 17 节那套清理上线后，`带劲的小曲儿` 仍然赖在草稿箱里，云端 `write_drafts` 也还留着它：
+
+```
+published_at 1794931352216  (11-18 00:02:32)
+updated_at   1794931354679  (11-18 00:02:34)   ← 比发布晚 2463ms
+deleted_at   0
+```
+
+2463ms 正好是 2.5 秒的自动保存防抖。老版本点完「发布」后只给草稿打了 `publishedAt` 就把人留在编辑器里，那个还在跑的防抖定时器随后落了一次盘，把 `updatedAt` 顶到发布之后两秒多。于是第 17 节的判据 `updatedAt <= publishedAt` 一次都没命中——**几乎每一篇**都会差这么一两秒。它没被清掉，就只能一直挂在列表里标「更新中」，还会被云同步带到其它设备。
+
+改了三处：
+
+- **判据给宽限。** 抽 `isPublishedStale()`：有 `edit`、有 `publishedAt`，且 `updatedAt - publishedAt <= 60s` 就算「发布尾巴留下的壳」。一分钟足够覆盖自动保存的尾巴；真过了一分钟还在动笔，那才是待更新的草稿，留着。
+- **云端也别再拉回来。** `adoptRemote()` 的 `!local` 分支先过一遍 `isPublishedStale()`，命中的直接 `dropRemote()` 钉墓碑，不再 unshift 进本地列表（否则每次拉取都会先冒出来再被清掉，来回闪）。
+- **清理由「登录后」触发。** 原来在启动时调 `prunePublished()`，那时 `authed` 还是 false，`persist()` 直接返回 false、`scheduleSync()` 也返回，清了个寂寞还写不进盘。现在挪进 `unlockStore()`（`loadStore()` 之后），这会儿能落盘也能推墓碑。
+
+顺带修掉一个会让删除丢掉的 bug：`runSync()` 开头是 `if (!authed || syncing) return`。上一趟请求还在路上时，这次调度就被**静默丢弃**，连队列都不留——而 `dropRemote()` 的墓碑只活在内存里，页面一关就没了，云端那篇永远删不掉、下次拉取又回来。现在 `syncing` 时只记 `syncPending = true` 并返回在途的 promise，落地后若有待办再补发一趟（失败则 5 秒后重试，不原地打转）。
+
+线上那条残留数据已用 `UPDATE write_drafts SET deleted_at = … WHERE id = 'dmwkujdw1qeo3'` 标记删除（`GET` 只返回 `deleted_at = 0`，所有设备立刻都看不到；`updated_at` 同步顶到最新，旧客户端即便推上来也会被判负）。

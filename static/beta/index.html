@@ -1389,15 +1389,29 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   /**
+   * 发布成功之后那个 2.5 秒的自动保存尾巴，几乎一定会再落一次盘，把 updatedAt
+   * 顶到 publishedAt 之后一两秒。所以「发布后没改过」不能按「updatedAt 等于
+   * publishedAt」判，得给一分钟宽限；真过了一分钟还在动笔，那才是要更新的草稿。
+   */
+  var PUBLISH_TAIL_MS = 60 * 1000;
+
+  /** 已经是上线文章、只是被发布尾巴留在草稿箱里的那种「壳」。 */
+  function isPublishedStale(draft) {
+    if (!draft || !draft.edit || !draft.publishedAt) return false;
+    var at = Number(draft.updatedAt || 0);
+    if (!at) return true;
+    return at - draft.publishedAt <= PUBLISH_TAIL_MS;
+  }
+
+  /**
    * 老版本发布完会把稿子留在草稿箱里，还标着「更新中」——那批条目其实已经是
-   * 上线文章，不是草稿。这里只清「有 edit 且发布之后一个字没再改过」的
-   * （updatedAt 不晚于 publishedAt）；真改过的仍然留着，那是待更新的草稿。
+   * 上线文章，不是草稿。真改过的仍然留着，那是待更新的草稿。
    */
   function prunePublished() {
     var kept = [];
     var dropped = 0;
     store.drafts.forEach(function (draft) {
-      if (draft.edit && draft.publishedAt && draft.updatedAt && draft.updatedAt <= draft.publishedAt) {
+      if (isPublishedStale(draft)) {
         dropped += 1;
         dropRemote(draft.id);
         return;
@@ -1541,6 +1555,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var tombstones = [];
   var syncing = false;
   var syncTimer = 0;
+  var syncPending = false;
+  var syncRunning = null;
   var lastSyncAt = 0;
   var syncBroken = false;
 
@@ -1612,9 +1628,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function runSync() {
     clearTimeout(syncTimer);
-    if (!authed || syncing) return Promise.resolve();
+    if (!authed) return Promise.resolve();
+    // 上一趟还在路上时不能就这么把这次请求丢掉：被丢掉的可能正好是一块墓碑，
+    // 页面一关，云端那篇就永远删不掉、换台设备又拉回来。记一笔待办，等它落地再补发。
+    if (syncing) {
+      syncPending = true;
+      return syncRunning || Promise.resolve();
+    }
     var payload = pendingPayload();
-    if (!payload.length) { renderDraftList(); return Promise.resolve(); }
+    if (!payload.length) { syncPending = false; renderDraftList(); return Promise.resolve(); }
 
     syncing = true;
     renderDraftList();
@@ -1636,7 +1658,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       });
     });
 
-    return chain.then(function () {
+    syncRunning = chain.then(function () {
       syncing = false;
       syncBroken = false;
       lastSyncAt = Date.now();
@@ -1645,13 +1667,18 @@ input,textarea{-webkit-user-select:text;user-select:text}
       if (rejected.length) adoptRemote(rejected);
       renderDraftList();
       refreshSaveState();
+      // 这一趟飞在半路时又攒下了活（刚删的稿、刚敲的字），补发一趟
+      if (syncPending || pendingPayload().length) { syncPending = false; scheduleSync(300); }
     }).catch(function (error) {
       syncing = false;
       syncBroken = true;
       if (error && error.status === 401) { authed = false; applyAuthState(); }
       renderDraftList();
       refreshSaveState();
+      // 失败别原地重试打转，隔几秒再来一次；墓碑还留在内存里，没丢
+      if (syncPending) { syncPending = false; scheduleSync(5000); }
     });
+    return syncRunning;
   }
 
   /** 把云端的版本落到本地：被删的删掉、缺的补上、新的盖旧的。 */
@@ -1675,6 +1702,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
       if (!local) {
         if (!hasContent(remote)) return;
+        // 云端还存着老版本发布后留下的壳：别拉到本机，顺手把云端那块也钉死
+        if (isPublishedStale(remote)) { dropRemote(remote.id); return; }
         store.drafts.unshift({
           id: remote.id,
           title: remote.title || '',
@@ -2335,6 +2364,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (storeLoaded) return;
     storeLoaded = true;
     loadStore();
+    // 老版本发布后留下的「已发布草稿」在这里清一次：这会儿已经登录，
+    // 顺手能把云端那块一起钉死，免得下次拉取又把它带回来
+    prunePublished();
     loadActive();
     renderDraftList();
     renderHomePane();
@@ -4134,8 +4166,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
   /* 默认落点：入口页。未登录时 store 只是一份内存里的空稿，
      本机草稿要等 checkAuth 通过（unlockStore）才读出来。 */
   loadStore();
-  // 老版本发布后留下的「已发布草稿」在这里清一次，别让它们继续占着草稿箱
-  prunePublished();
   loadActive();
   enterHome();
 
