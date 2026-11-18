@@ -237,7 +237,7 @@ function upstreamError(status, upstreamMessage) {
 export async function handlePolish(request, env) {
   const apiKey = String(env.DEEPSEEK_API_KEY || '').trim();
   if (!apiKey) {
-    return fail(503, 'ai_not_configured', '还没配置密钥：npx wrangler secret put DEEPSEEK_API_KEY，再 deploy 一次');
+    return fail(503, 'ai_not_configured', '还没配密钥：npx wrangler secret put DEEPSEEK_API_KEY（配完立即生效，不用重新部署）');
   }
 
   const raw = await request.text();
