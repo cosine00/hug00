@@ -2,7 +2,9 @@ name: Fetch Friend Circle
 
 on:
   schedule:
-    - cron: "17 */4 * * *"
+    # GitHub 的 cron 走 UTC。*/6 落在 0/6/12/18 点的第 17 分，
+    # 换算北京时间是 08:17、14:17、20:17、02:17，一天四次
+    - cron: "17 */6 * * *"
   push:
     paths:
       - "static/friends.json"
