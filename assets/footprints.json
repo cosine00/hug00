@@ -577,6 +577,21 @@
         "旅行"
       ],
       "markerColor": "forest"
+    },
+    {
+      "name": "西宁",
+      "coordinates": "101.758249,36.676027",
+      "provinceAdcode": "630000",
+      "description": "青甘大环线",
+      "date": "2026-09-25",
+      "url": "/posts/qinggan-trip-02/",
+      "urlLabel": "青甘行·上｜祁连山色，张掖丹霞",
+      "photos": [],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "forest"
     }
   ]
 }
