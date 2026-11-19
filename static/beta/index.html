@@ -15,6 +15,27 @@
 <link rel="manifest" href="/beta/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/beta/icon-180.png">
 <link rel="icon" href="/beta/icon.svg" type="image/svg+xml">
+<!-- 登录态问的是另一个域（Worker）。先把 DNS 和 TLS 握上手，
+     等脚本要发请求时就不用再排这段队 -->
+<link rel="preconnect" href="https://comments.hux.ink" crossorigin>
+<script>
+/* 首屏最要紧的两件事：登录态、今天那袋旧哔哔。
+   趁 HTML 还在往下解析就先发出去，主脚本走到那儿时多半已经有结果了，
+   省掉两次「先渲染、再等、再翻一遍」的往返。 */
+(function () {
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var now = new Date();
+  var day = pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  window.__boot = {
+    day: day,
+    session: fetch('https://comments.hux.ink/api/comments/session', {
+      credentials: 'include', cache: 'no-store'
+    }).then(function (res) { return res.ok ? res.json() : null; }).catch(function () { return null; }),
+    onDate: fetch('/bb-ondate/' + day + '.json', { credentials: 'omit' })
+      .then(function (res) { return res.ok ? res.json() : null; }).catch(function () { return null; })
+  };
+})();
+</script>
 <style>
 :root{
   --bg:#ffffff; --desk:#f5f0ea; --panel:#ffffff; --raised:#ffffff;
@@ -149,8 +170,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
   width:100%;padding:8px var(--padl) calc(var(--sab) + 34px)}
 .app.closed .homepane{display:flex}
 .app.closed .doc,.app.closed .dock,.app.closed .editbar,.app.closed .banner{display:none}
-/* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉 */
-.hp-inner{width:100%;max-width:660px;margin:auto;padding:12px 0 clamp(38px,9vh,92px)}
+/* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉。
+   顶上给悬浮顶栏让出高度（sat + 52 够到它的下沿再加一点），整体贴上去，
+   别再垂直居中——那样屏一高，诗句和顶栏之间就空出一大块。 */
+.hp-inner{width:100%;max-width:660px;margin:0 auto;padding:calc(var(--sat) + 14px) 0 clamp(30px,7vh,72px)}
 
 /* 三个去处：跟下面那三行入口用同一套图标语言——裸描边、无容器、无文字，
    只是放大一号，别让人以为它们是另一种按钮 */
@@ -170,7 +193,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 @keyframes hpIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 /* 入口页顶上那截空白：抽两句古诗填进去。
    高度留死（min-height），换一联不至于把下面整块内容顶来顶去。 */
-.hp-poem{margin:0 0 4px;min-height:clamp(104px,16vh,176px);padding:0 4px;
+.hp-poem{margin:0 0 2px;min-height:clamp(88px,12vh,132px);padding:0 4px;
   display:flex;flex-direction:column;justify-content:center;gap:2px}
 .hp-poem p{margin:0;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",ui-serif,Georgia,serif;
   font-size:16.5px;line-height:2.02;letter-spacing:.085em;
@@ -583,6 +606,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .cm-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .cm-txt b{font-size:15px;font-weight:600;letter-spacing:.01em}
 .cm-card.primary .cm-txt b{color:var(--accent)}
+.cm-txt i{font-style:normal;font-size:12px;line-height:1.4;color:var(--faint)}
 .cm-go{flex:0 0 auto;width:14px;height:14px;stroke:var(--faint);fill:none;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round}
 
@@ -789,19 +813,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
   display:grid;place-items:center;border:0;border-radius:50%;
   background:rgba(18,18,24,.66);color:#fff;font-size:15px;line-height:1;
   -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-/* 最近三条：写完这一条之前，先看看上一条是什么时候写的 */
-.memo-recent{margin-top:24px;padding-top:13px;border-top:.5px solid var(--line)}
-.memo-recent[hidden]{display:none}
-.rc-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 2px 2px}
-.rc-head span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
-.rc-head a{font-size:11px;color:var(--faint);text-decoration:none}
-.rc-row{display:flex;align-items:flex-start;gap:10px;padding:11px 2px;border-bottom:.5px solid var(--line)}
-.rc-row:last-child{border-bottom:0;padding-bottom:2px}
-.rc-when{flex:0 0 3.2em;font-size:11px;line-height:1.75;color:var(--faint);
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-.rc-text{flex:1;min-width:0;margin:0;font-size:13px;line-height:1.7;color:var(--muted);word-break:break-word;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.rc-shot{flex:0 0 auto;margin:1px 0 0 2px;font-size:13px}
 .memo-count{margin-left:auto;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums;
   white-space:nowrap;flex:0 0 auto}
 /* 320 那档要再挤一点：否则「0 字」会被压成两行 */
@@ -819,16 +830,30 @@ input,textarea{-webkit-user-select:text;user-select:text}
   background:rgba(8,9,11,.965);color:#fff;
   padding:calc(env(safe-area-inset-top,0px) + 10px) 0 calc(env(safe-area-inset-bottom,0px) + 16px)}
 .shots.open{display:flex}
-.shots-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:0 16px 8px;font-size:12px;letter-spacing:.02em;color:rgba(255,255,255,.68);
+.shots-top{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:8px;
+  padding:0 14px 6px;font-size:12px;letter-spacing:.02em;color:rgba(255,255,255,.68);
   font-variant-numeric:tabular-nums}
+.shots-top #shotsCount{justify-self:center}
+.shots-nav{width:32px;height:32px;display:grid;place-items:center;padding:0;border-radius:50%;
+  border:.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none}
+.shots-nav svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.shots-nav:active{background:rgba(255,255,255,.2)}
+.shots-nav[disabled]{opacity:.26}
 .shots-close{height:32px;padding:0 15px;border-radius:16px;font-size:12.5px;
   border:.5px solid rgba(255,255,255,.26);background:rgba(255,255,255,.1);color:#fff}
 .shots-close:active{background:rgba(255,255,255,.2)}
-.shots-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
-  display:flex;flex-direction:column;gap:10px;padding:4px 12px}
-.shots-list img{display:block;width:100%;height:auto;border-radius:12px;
-  background:rgba(255,255,255,.05)}
+/* 横向一屏一张：snap 定位，划到哪张算哪张。图片本身按 data-src 惰性取，
+   九张原图不会再在点开那一下同时下载 */
+.shots-track{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  scrollbar-width:none;touch-action:pan-x}
+.shots-track::-webkit-scrollbar{display:none}
+.shots-item{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;
+  display:flex;align-items:center;justify-content:center;padding:0 12px}
+.shots-item img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;
+  border-radius:12px;background:rgba(255,255,255,.05)}
 
 /* 入口：顶栏上那颗星。同排其余都是纯描边，这里垫一层比按钮小一圈的主色胶囊，
    一眼能认出来，又不会整格填满看着像被按住 */
@@ -1287,14 +1312,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
         <span class="cm-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M7.4 3.9h6l4.2 4.2v11.9a1.4 1.4 0 01-1.4 1.4H7.4A1.4 1.4 0 016 20V5.3a1.4 1.4 0 011.4-1.4z"/><path d="M13.4 3.9v4.4h4.2M9 12.4h6M9 15.8h4.4"/></svg>
         </span>
-        <span class="cm-txt"><b>写文章</b></span>
+        <span class="cm-txt"><b>写文章</b><i>Markdown，有标题和标签</i></span>
         <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
       <button class="cm-card primary" id="composeMemo" type="button">
         <span class="cm-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M20 12.4c0 3.7-3.6 6.7-8 6.7-.9 0-1.8-.1-2.6-.35L5.2 20l.9-3.3A6.3 6.3 0 014 12.4C4 8.7 7.6 5.7 12 5.7s8 3 8 6.7z"/><path d="M9.2 12.4h.01M12 12.4h.01M14.8 12.4h.01"/></svg>
         </span>
-        <span class="cm-txt"><b>发哔哔</b></span>
+        <span class="cm-txt"><b>发哔哔</b><i>随手几句，可配图</i></span>
         <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
     </div>
@@ -1452,25 +1477,24 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <textarea class="memo-text" id="memoText" rows="8" placeholder="现在在想什么…"
         autocapitalize="sentences" enterkeyhint="enter" spellcheck="false" aria-label="哔哔正文"></textarea>
       <div class="memo-thumbs" id="memoThumbs" hidden></div>
-      <section class="memo-recent" id="memoRecent" hidden aria-label="最近的哔哔">
-        <div class="rc-head">
-          <span>最近</span>
-          <a href="https://hux.ink/bb/" target="_blank" rel="noopener">哔哔页</a>
-        </div>
-        <div id="memoRecentList"></div>
-      </section>
     </div>
   </div>
 </div>
 <input type="file" id="memoFile" accept="image/*" multiple hidden>
 
-<!-- 旧哔哔里的图：点开就看，跟文章预览不是一回事 -->
+<!-- 旧哔哔里的图：单张看，左右滑着翻，跟文章预览不是一回事 -->
 <div class="shots" id="shotsView" aria-hidden="true" role="dialog" aria-modal="true" aria-label="哔哔里的图片">
   <div class="shots-top">
+    <button class="shots-nav" id="shotsPrev" type="button" aria-label="上一张">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 5.6L8 12l6.6 6.4"/></svg>
+    </button>
     <span id="shotsCount">1 / 1</span>
+    <button class="shots-nav" id="shotsNext" type="button" aria-label="下一张">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 5.6L16 12l-6.6 6.4"/></svg>
+    </button>
     <button class="shots-close" id="shotsClose" type="button">关闭</button>
   </div>
-  <div class="shots-list" id="shotsList"></div>
+  <div class="shots-track" id="shotsTrack"></div>
 </div>
 
 <!-- 图片大图预览 -->
@@ -1515,7 +1539,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
   var editBar = $('editBar'), ebText = $('ebText');
 
   var csrf = '';
-  var authed = false;
+  /* 上次是登录状态就先按登录渲染：session 校验回来之前，草稿、按钮、文案
+     都不用先摆一副「未登录」的样子再翻过来。校验一回来就按真实结果覆盖。 */
+  var AUTH_KEY = 'hux-beta-auth';
+  var authed = (function () {
+    try { return localStorage.getItem(AUTH_KEY) === '1'; } catch (error) { return false; }
+  })();
+
+  function rememberAuth(flag) {
+    try { localStorage.setItem(AUTH_KEY, flag ? '1' : '0'); } catch (error) {}
+  }
   var health = null;
   var healthPromise = null;
   var busy = false;
@@ -3015,13 +3048,33 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   function checkAuth() {
+    // 页头抢跑的那一次：只搭一次便车，之后（登录、退出后重查）都走真实请求
+    var boot = window.__boot && window.__boot.session;
+    if (boot) window.__boot.session = null;
+    if (!boot) return refreshAuth();
+    return boot
+      .then(function (data) {
+        // 连不上就别把界面翻成未登录：本地那份草稿该显示还显示
+        if (!data) return authed;
+        authed = Boolean(data.admin);
+        csrf = data.csrf || '';
+        rememberAuth(authed);
+        applyAuthState();
+        return authed;
+      })
+      .catch(function () { return authed; });
+  }
+
+  function refreshAuth() {
     return api('/api/comments/session').then(function (data) {
       authed = Boolean(data.admin);
       csrf = data.csrf || '';
+      rememberAuth(authed);
       applyAuthState();
       return authed;
     }).catch(function () {
       authed = false;
+      rememberAuth(false);
       applyAuthState();
       return false;
     });
@@ -4485,12 +4538,21 @@ input,textarea{-webkit-user-select:text;user-select:text}
         return onDateTask;
       }
     } catch (error) { /* 隐私模式下 sessionStorage 会抛，忽略就好 */ }
-    onDateTask = fetch('/bb-ondate/' + key + '.json', { credentials: 'omit' })
-      .then(function (response) {
-        return response.ok ? response.json().then(function (list) { return { ok: true, list: list }; })
-          : { ok: false, list: [] };
-      })
-      .catch(function () { return { ok: false, list: [] }; })
+    onDateTask = (function () {
+      // 页头那一段已经先替我们发过请求，直接搭便车；没有再自己发
+      var boot = window.__boot;
+      if (boot && boot.day === key && boot.onDate) {
+        return boot.onDate.then(function (list) {
+          return list ? { ok: true, list: list } : { ok: false, list: [] };
+        });
+      }
+      return fetch('/bb-ondate/' + key + '.json', { credentials: 'omit' })
+        .then(function (response) {
+          return response.ok ? response.json().then(function (list) { return { ok: true, list: list }; })
+            : { ok: false, list: [] };
+        })
+        .catch(function () { return { ok: false, list: [] }; });
+    })()
       .then(function (result) {
         var year = new Date().getFullYear();
         // 只留往年的：今年的今天自己还记着，算不上「历史上的今天」
@@ -4593,38 +4655,56 @@ input,textarea{-webkit-user-select:text;user-select:text}
   // 开机就去取当天那个小文件：通常等落到入口页时已经在手里了
   ensureOnDate();
 
-  /* 旧哔哔里的图：这块位置太小，只报个数字，点开铺满屏看原图。
-     与文章预览那套无关，只是借了同一套「铺满可视视口」的写法。 */
-  function shotsProgress() {
-    var list = $('shotsList');
-    var imgs = list.querySelectorAll('img');
-    if (!imgs.length) return;
-    var base = list.getBoundingClientRect().top + 8;
-    var index = 1;
-    for (var i = 0; i < imgs.length; i++) {
-      if (imgs[i].getBoundingClientRect().top <= base) index = i + 1;
+  /* 旧哔哔里的图：一次只看一张，左右滑着翻。
+     地址先挂在 data-src 上，滑到跟前才赋给 src —— 九张原图不会再在点开
+     那一下同时下载，也不会同时占着解码内存。 */
+  var shotUrls = [];
+  var shotImgs = [];
+  var shotAt = 0;
+
+  function shotPaint(index, scroll) {
+    var last = shotUrls.length - 1;
+    shotAt = Math.max(0, Math.min(index, last));
+    // 当前这张，加上前后各一张；再远等滑到跟前再说
+    [shotAt - 1, shotAt, shotAt + 1].forEach(function (n) {
+      var img = shotImgs[n];
+      if (!img) return;
+      var src = img.getAttribute('data-src');
+      if (src) {
+        img.src = src;
+        img.removeAttribute('data-src');
+      }
+    });
+    $('shotsCount').textContent = (shotAt + 1) + ' / ' + shotUrls.length;
+    $('shotsPrev').disabled = shotAt <= 0;
+    $('shotsNext').disabled = shotAt >= last;
+    if (scroll) {
+      var track = $('shotsTrack');
+      track.scrollTo({ left: shotAt * track.clientWidth, behavior: 'smooth' });
     }
-    $('shotsCount').textContent = index + ' / ' + imgs.length;
   }
 
   function openShots(urls) {
     if (!urls || !urls.length) return;
-    var list = $('shotsList');
-    list.textContent = '';
-    urls.forEach(function (url, i) {
+    var track = $('shotsTrack');
+    track.textContent = '';
+    shotUrls = urls.slice(0, 9);
+    shotImgs = shotUrls.map(function (url, i) {
+      var box = document.createElement('div');
+      box.className = 'shots-item';
       var img = document.createElement('img');
-      img.src = url;
-      // 手机上九张原图一起加载太费，第二张之后等滑到跟前再说
-      img.loading = i ? 'lazy' : 'eager';
+      img.setAttribute('data-src', url);
       img.decoding = 'async';
       img.alt = '第 ' + (i + 1) + ' 张图片';
       img.addEventListener('error', function () { img.style.display = 'none'; });
-      list.appendChild(img);
+      box.appendChild(img);
+      track.appendChild(box);
+      return img;
     });
-    $('shotsCount').textContent = '1 / ' + urls.length;
-    list.scrollTop = 0;
+    track.scrollLeft = 0;
     $('shotsView').classList.add('open');
     $('shotsView').setAttribute('aria-hidden', 'false');
+    shotPaint(0, false);
   }
 
   function closeShots() {
@@ -4633,22 +4713,35 @@ input,textarea{-webkit-user-select:text;user-select:text}
     view.classList.remove('open');
     view.setAttribute('aria-hidden', 'true');
     // 图要撤掉：留着的话下次点开别的会先闪一眼上一次的
-    $('shotsList').textContent = '';
+    $('shotsTrack').textContent = '';
+    shotUrls = [];
+    shotImgs = [];
+    shotAt = 0;
   }
 
   $('hpPoemShots').addEventListener('click', function () { openShots(poemShots); });
   $('shotsClose').addEventListener('click', closeShots);
+  $('shotsPrev').addEventListener('click', function () { shotPaint(shotAt - 1, true); });
+  $('shotsNext').addEventListener('click', function () { shotPaint(shotAt + 1, true); });
   // 点图片本身的空白（两侧留边）也算关，点在图上是看，不关
   $('shotsView').addEventListener('click', function (event) {
     if (event.target === $('shotsView')) closeShots();
   });
   (function () {
-    var pending = false;
-    $('shotsList').addEventListener('scroll', function () {
-      if (pending) return;
-      pending = true;
-      requestAnimationFrame(function () { pending = false; shotsProgress(); });
+    var track = $('shotsTrack');
+    var frame = 0;
+    track.addEventListener('scroll', function () {
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = 0;
+        shotPaint(Math.round(track.scrollLeft / (track.clientWidth || 1)), false);
+      });
     }, { passive: true });
+    // 转屏后宽度变了，scrollLeft 得重新对齐到当前这张，否则会停在两张中间
+    window.addEventListener('resize', function () {
+      if (!$('shotsView').classList.contains('open')) return;
+      track.scrollLeft = shotAt * track.clientWidth;
+    });
   })();
 
   function renderHomePane() {
@@ -5082,6 +5175,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     api('/api/comments/session', { method: 'POST', body: { token: token } })
       .then(function (data) {
         authed = true;
+        rememberAuth(true);
         csrf = data.csrf || '';
         $('token').value = '';
         closeSheet($('sheetLogin'));
@@ -5110,6 +5204,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function logout() {
     api('/api/comments/session', { method: 'DELETE' }).catch(function () {}).then(function () {
       authed = false;
+      rememberAuth(false);
       csrf = '';
       allTags = [];
       recentPosts = null;
@@ -5516,6 +5611,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   document.addEventListener('keydown', function (event) {
     var command = event.metaKey || event.ctrlKey;
+    // 看图时左右方向键翻页：桌面上比去点那两个小箭头顺手
+    if ($('shotsView').classList.contains('open') && !command) {
+      if (event.key === 'ArrowRight') { event.preventDefault(); shotPaint(shotAt + 1, true); return; }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); shotPaint(shotAt - 1, true); return; }
+    }
     if (command && event.key.toLowerCase() === 's') {
       event.preventDefault();
       flushSave();
@@ -5534,8 +5634,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
     if (event.key === 'Escape') {
       // 全屏面板（26/27/30）在最上层，先关它们，再轮到抽屉和预览
-      if ($('shotsView').classList.contains('open')) { closeShots(); return; }
-      if (memoPane.classList.contains('open')) { closeMemo(); return; }
+      if ($('shotsView').classList.contains('open')) { closeShots(); return; }      if (memoPane.classList.contains('open')) { closeMemo(); return; }
       if (aiPanel.classList.contains('open')) { closeAi(); return; }
       var open = document.querySelector('.sheet.open');
       if (open) { closeSheet(open); return; }
@@ -5794,7 +5893,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
     memoPane.classList.add('open');
     memoPane.setAttribute('aria-hidden', 'false');
     memoRender();
-    loadRecent();
     // 手机上不主动弹键盘：一开页就把视口顶上去，反而要先收一次
     if (window.innerWidth > 620) setTimeout(function () { focusSoft(memoTextEl); }, 260);
   }
@@ -5910,57 +6008,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
   $('memoTools').addEventListener('mousedown', function (event) {
     if (event.target.closest('[data-md]')) event.preventDefault();
   });
-
-  /* 最近三条：构建期从 memos.json 抠出来的小文件（几十条也才一两百字节） */
-  var SHOT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"/></svg>';
-  var recentMemos = null;
-
-  function whenText(ts) {
-    var date = new Date(Number(ts) * 1000);
-    if (!Number.isFinite(date.getTime())) return '';
-    var dayOf = function (d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
-    var diff = Math.round((dayOf(new Date()) - dayOf(date)) / 86400000);
-    if (!(diff > 0)) return '今天';
-    if (diff === 1) return '昨天';
-    if (diff < 7) return diff + ' 天前';
-    return (date.getMonth() + 1) + '-' + pad2(date.getDate());
-  }
-
-  function renderRecent(list) {
-    var box = $('memoRecentList');
-    var items = (list || []).slice(0, 3);
-    $('memoRecent').hidden = !items.length;
-    box.textContent = '';
-    items.forEach(function (item) {
-      var row = el('div', 'rc-row');
-      row.appendChild(el('span', 'rc-when', whenText(item[0])));
-      row.appendChild(el('p', 'rc-text', String(item[1] || '')));
-      var pics = Array.isArray(item[2]) ? item[2] : [];
-      if (pics.length) {
-        var btn = el('button', 'pp-shot rc-shot');
-        btn.type = 'button';
-        btn.innerHTML = SHOT_SVG;
-        var num = el('span', 'pp-shot-n', '+' + Math.max(1, pics.length - 1));
-        num.hidden = pics.length < 2;
-        btn.appendChild(num);
-        btn.setAttribute('aria-label', '查看 ' + pics.length + ' 张图片');
-        btn.addEventListener('click', function () { openShots(pics); });
-        row.appendChild(btn);
-      }
-      box.appendChild(row);
-    });
-  }
-
-  function loadRecent() {
-    if (recentMemos) { renderRecent(recentMemos); return; }
-    fetch('/bb-recent.json', { credentials: 'omit' })
-      .then(function (res) { return res.ok ? res.json() : []; })
-      .catch(function () { return []; })
-      .then(function (list) {
-        recentMemos = Array.isArray(list) ? list : [];
-        renderRecent(recentMemos);
-      });
-  }
 
   memoTextEl.addEventListener('input', function () {
     memoRender();

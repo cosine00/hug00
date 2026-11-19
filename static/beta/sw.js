@@ -2,15 +2,17 @@
  * 撰写页的 Service Worker。
  *
  * 只做两件事：
- *   1. 壳缓存 —— 弱网（地铁、电梯里）打开也能立刻看到界面，草稿本来就在本地；
- *   2. 图标与静态资源走缓存优先。
+ *   1. 壳缓存 —— 从主屏冷启动时先甩出上一次的壳，不再干等一个网络往返；
+ *   2. 静态资源缓存优先，后台悄悄换新。
  *
- * 页面本身用「网络优先、失败回缓存」，避免改了前端却一直吃旧壳。
+ * 壳走「网络最多等 500ms，回不来就先给缓存」：网好的时候照样拿到当天的新版，
+ * 网差或刚被系统杀掉进程时立刻有画面。缓存永远在后台更新，不会一直停在旧版。
  * 注意 iOS 没有 Background Sync，发布失败只能靠前台重试 —— 页面里没做队列，
  * 因为草稿永远在 localStorage，重新点一次发布就够了。
  */
-const CACHE = 'hux-beta-v1';
+const CACHE = 'hux-beta-v2';
 const SHELL = ['/beta/', '/beta/manifest.webmanifest', '/beta/icon.svg', '/beta/icon-180.png'];
+const SHELL_WAIT = 500;
 
 // 预览借用博客自己的样式表，顺手存一份：断网也能看到真正的排版。
 // 版本号跟着 layouts/partials/header.html 走，改了主题记得一起换。
@@ -40,6 +42,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+/** 取一次网络，成功就顺手写进缓存；失败返回 null，不往外抛。 */
+function refresh(request, key) {
+  return fetch(request)
+    .then((response) => {
+      if (response && response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(key || request, copy));
+      }
+      return response;
+    })
+    .catch(() => null);
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -49,31 +64,35 @@ self.addEventListener('fetch', (event) => {
 
   const isShell = url.pathname === '/beta/' || url.pathname === '/beta/index.html';
   if (isShell) {
+    const network = refresh(request, '/beta/');
+    // 后台那次无论成不成都要跑完，不然冷启动刚出的壳会是旧的
+    event.waitUntil(network.then(() => {}));
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put('/beta/', copy));
-          return response;
-        })
-        .catch(() => caches.match('/beta/'))
+      (async () => {
+        const cached = await caches.match('/beta/');
+        if (!cached) return (await network) || Response.error();
+        // 有壳就先给壳，但最多等网络 SHELL_WAIT 毫秒：网好时仍然拿到新版
+        return Promise.race([
+          network.then((response) => response || cached),
+          new Promise((resolve) => setTimeout(() => resolve(cached), SHELL_WAIT))
+        ]);
+      })()
     );
     return;
   }
 
-  if (url.pathname.startsWith('/beta/')) {
+  // sw.js 交给浏览器自己管，别用缓存把它钉住
+  if (url.pathname === '/beta/sw.js') return;
+
+  // 图标、清单、按天切好的小 JSON：缓存先给，后台换新
+  if (url.pathname.startsWith('/beta/') || url.pathname.startsWith('/bb-ondate/')) {
+    const network = refresh(request);
+    event.waitUntil(network.then(() => {}));
     event.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((response) => {
-            if (response.ok) {
-              const copy = response.clone();
-              caches.open(CACHE).then((cache) => cache.put(request, copy));
-            }
-            return response;
-          })
-      )
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return network.then((response) => response || Response.error());
+      })
     );
     return;
   }

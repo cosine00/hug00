@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { excerpt, images, dayKey, groupByDay, recentIndex } from '../scripts/build-ondate.mjs';
+import { excerpt, images, dayKey, groupByDay } from '../scripts/build-ondate.mjs';
 
 test('excerpt：图片和链接不占字数，标签也不进正文', () => {
   assert.equal(excerpt('今天去了山里 ![](https://img.hux.ink/a.jpg) 很好'), '今天去了山里 很好');
@@ -80,24 +80,4 @@ test('groupByDay：输出按 MM-DD 排好，方便逐文件比对', () => {
   assert.deepEqual(Object.keys(days), ['01-02', '02-29', '12-31']);
   assert.equal(typeof groupByDay(undefined).constructor, 'function');
   assert.deepEqual(groupByDay(undefined), {});
-});
-
-test('recentIndex：按时间倒序，没字没图的跳过，带图的补第三位', () => {
-  const list = recentIndex(
-    [
-      { createdTs: 300, content: '第三' },
-      { createdTs: 500, content: '最新 ![a](https://img.hux.ink/a.jpg)' },
-      { createdTs: 100, content: '最早' },
-      { createdTs: 400, content: '![](https://img.hux.ink/b.jpg)' },
-      { createdTs: 450, content: '   ' },
-      { createdTs: 0, content: '没有时间' },
-      null,
-    ],
-    3
-  );
-  assert.deepEqual(list, [
-    [500, '最新', ['https://img.hux.ink/a.jpg']],
-    [400, '', ['https://img.hux.ink/b.jpg']],
-    [300, '第三'],
-  ]);
 });

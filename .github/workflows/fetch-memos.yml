@@ -87,7 +87,7 @@ jobs:
           set -euo pipefail
           branch="${GITHUB_REF_NAME}"
           for attempt in 1 2 3; do
-            git add static/memos.json static/bb-ondate static/bb-recent.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
+            git add static/memos.json static/bb-ondate static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
             if git diff --cached --quiet; then
               echo "没有需要提交的改动"
               exit 0
