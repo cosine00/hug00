@@ -4374,15 +4374,21 @@ input,textarea{-webkit-user-select:text;user-select:text}
       }
     } catch (error) { /* 隐私模式下 sessionStorage 会抛，忽略就好 */ }
     onDateTask = fetch('/bb-ondate/' + key + '.json', { credentials: 'omit' })
-      .then(function (response) { return response.ok ? response.json() : []; })
-      .catch(function () { return []; })
-      .then(function (list) {
+      .then(function (response) {
+        return response.ok ? response.json().then(function (list) { return { ok: true, list: list }; })
+          : { ok: false, list: [] };
+      })
+      .catch(function () { return { ok: false, list: [] }; })
+      .then(function (result) {
         var year = new Date().getFullYear();
         // 只留往年的：今年的今天自己还记着，算不上「历史上的今天」
-        onDate = (Array.isArray(list) ? list : []).filter(function (item) {
+        onDate = (Array.isArray(result.list) ? result.list : []).filter(function (item) {
           return Array.isArray(item) && Number(item[0]) < year && item[1];
         });
-        try { sessionStorage.setItem(cacheKey, JSON.stringify(onDate)); } catch (error) {}
+        // 断网/404 不写缓存，下次回首页还有机会补上
+        if (result.ok) {
+          try { sessionStorage.setItem(cacheKey, JSON.stringify(onDate)); } catch (error) {}
+        }
         return onDate;
       });
     return onDateTask;
