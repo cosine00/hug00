@@ -591,7 +591,60 @@
         "旅行",
         "游记"
       ],
-      "markerColor": "forest"
+      "markerColor": "violet"
+    },
+    {
+      "name": "七彩丹霞",
+      "coordinates": "100.07492,38.97516",
+      "provinceAdcode": "620000",
+      "description": "青甘大环线",
+      "date": "2026-09-27",
+      "url": "/posts/qinggan-trip-02/",
+      "urlLabel": "青甘行·上｜祁连山色，张掖丹霞",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261022140021-x895p-img-20260927-183120.webp",
+        "https://img.hux.ink/image/2026/10/20261022135747-x8qo0-dji-20260927180738-0596-d.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "嘉峪关",
+      "coordinates": "98.2882,39.77325",
+      "provinceAdcode": "620000",
+      "description": "青甘大环线",
+      "date": "2026-09-29",
+      "url": "/posts/qinggan-trip-03/",
+      "urlLabel": "青甘行·中｜河西走廊，千年敦煌",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023100637-a6yx2-img-20260929-083139.webp",
+        "https://img.hux.ink/image/2026/10/20261023100635-ops0f-dji-20260929093445-0876-d.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "敦煌莫高窟",
+      "coordinates": "94.809633,40.042855",
+      "provinceAdcode": "620000",
+      "description": "青甘大环线",
+      "date": "2026-09-30",
+      "url": "/posts/qinggan-trip-03/",
+      "urlLabel": "青甘行·中｜河西走廊，千年敦煌",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023145842-93gru-dji-20260930133907-0006-d.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
     }
   ]
 }
