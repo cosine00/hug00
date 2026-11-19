@@ -514,7 +514,7 @@ Beta 写作页
 博客 Worker（adminGate + CSRF）
   │  POST {FLAREMO_BASE}/api/v1/memos
   │    Authorization: Bearer {FLAREMO_PAT}
-  │    { content: 正文 + ![](图片地址) 逐行, visibility: "PUBLIC", source: "hux-beta" }
+  │    { content: 正文 + ![](图片地址) 逐行, visibility: "PUBLIC" }
   ▼
 FlareMo → 返回 { name: "memos/xxx" }
   │

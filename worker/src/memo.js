@@ -141,7 +141,6 @@ export async function handleWriteMemo(request, env) {
     response = await callFlaremo(env, '/api/v1/memos', {
       content,
       visibility: 'PUBLIC',
-      source: 'hux-beta',
     });
   } catch (error) {
     const aborted = error && (error.name === 'AbortError' || /abort/i.test(String(error.message || '')));
