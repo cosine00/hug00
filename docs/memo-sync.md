@@ -551,3 +551,9 @@ memos.json → 哔哔页 / 首页 / 相册
 - 图片：相册多选、粘贴板图片都走同一套 `compress()` → `/api/write/upload`
 - 草稿：写一半关掉会存进 `localStorage['hux-memo-v1']`，下次打开自动恢复并在说明里提示；发布成功后清掉
 - 防重复：发布中按钮禁用且改文案「发布中」，同时带 `rid` 由服务端去重
+
+### 首页的「历史上的今天」
+
+写作台首页那块空白除了抽一联诗，也会抽往年今天的哔哔。数据不是页面去拉 `memos.json`（400 多 KB），而是构建期按天切好的小文件：`scripts/build-ondate.mjs` 生成 `static/bb-ondate/MM-DD.json`，每天 500 字节上下，页面只取当天那一个。
+
+这个脚本挂在 `fetch-memos.yml` 里（`Rebuild on-this-day index`），跑在同步之后、提交之前，产物 `static/bb-ondate` 一起进那次 commit。规则改了或者想重建，本地 `node scripts/build-ondate.mjs` 即可；`--dry-run` 只报数不落盘。

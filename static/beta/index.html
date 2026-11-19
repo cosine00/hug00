@@ -177,6 +177,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
   color:color-mix(in srgb,var(--fg) 64%,transparent)}
 .hp-poem .pp-from{margin-top:7px;font-family:inherit;font-size:10.5px;line-height:1.6;
   letter-spacing:.09em;color:var(--faint)}
+/* 抽到的是一条旧哔哔时换成手写字感：衬线留给诗，日常话语用正文那套字。
+   最多三行，块高度不变，换个条目也不会把下面顶来顶去。 */
+.hp-poem.is-memo p{font-family:inherit;font-size:14px;line-height:1.72;letter-spacing:.004em;
+  color:color-mix(in srgb,var(--fg) 74%,transparent);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.hp-poem.is-memo .pp-from{letter-spacing:.05em}
 /* 这颗要比 .app.closed .hp-inner>* 那条进场动画更具体，否则换诗时的重播会被它盖掉 */
 .hp-inner .hp-poem.pp-in{animation:ppIn .5s var(--ease) both}
 @keyframes ppIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -534,6 +540,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .kv b{color:var(--fg);font-weight:500;text-align:right;word-break:break-all}
 .sect{font-size:11.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 4px}
 
+/* 创作菜单：两个去处要一眼分得开。原来两行竖排、副文案贴在右侧，行高才 46px，
+   拇指一按就压到隔壁——改成两张卡片：图标 + 标题 + 一句说明，中间留 10px 空档。 */
+.cm-pick{display:flex;flex-direction:column;gap:10px;margin:16px 0 2px}
+.cm-card{display:flex;align-items:center;gap:13px;width:100%;padding:13px 14px;
+  text-align:left;border-radius:16px;border:.5px solid var(--line);
+  background:color-mix(in srgb,var(--fg) 3.5%,transparent);
+  color:var(--fg);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:transform .16s var(--ease),background .16s var(--ease)}
+.cm-card:active{transform:scale(.985);background:color-mix(in srgb,var(--fg) 8%,transparent)}
+.cm-ico{flex:0 0 auto;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+  color:var(--muted);background:color-mix(in srgb,var(--fg) 6%,transparent)}
+.cm-ico svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.55;
+  stroke-linecap:round;stroke-linejoin:round}
+.cm-card.primary .cm-ico{color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.cm-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.cm-txt b{font-size:15px;font-weight:600;letter-spacing:.01em}
+.cm-card.primary .cm-txt b{color:var(--accent)}
+.cm-txt i{font-style:normal;font-size:12px;line-height:1.5;color:var(--faint)}
+.cm-go{flex:0 0 auto;width:14px;height:14px;stroke:var(--faint);fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+
 /* ── 文章列表入口：纵向菜单 ── */
 .menu-list{display:flex;flex-direction:column;margin:14px 0 0;border-radius:16px;overflow:hidden;
   background:rgba(120,120,128,.07);border:.5px solid var(--line)}
@@ -694,13 +721,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .memo-wrap{width:100%;max-width:700px;margin:0 auto}
 .memo-hint{margin:0 2px 12px;font-size:12.5px;line-height:1.6;color:var(--faint)}
 .memo-hint b{color:var(--accent);font-weight:600}
-.memo-text{display:block;width:100%;min-height:38vh;padding:14px;border-radius:16px;
-  border:.5px solid var(--line);background:var(--field);color:var(--fg);
-  font-family:inherit;font-size:16px;line-height:1.75;letter-spacing:.01em;
+/* 正文区跟文章编辑器一个路子：没有白盒子、没有边框，就是纸上的字。
+   框一撤，块高度也收一档（38vh → 31vh），手机上不至于顶满屏。 */
+.memo-text{display:block;width:100%;min-height:31vh;padding:0 2px;border:0;border-radius:0;
+  background:none;color:var(--fg);
+  font-family:inherit;font-size:16px;line-height:1.8;letter-spacing:.008em;
   resize:none;outline:none;-webkit-appearance:none;appearance:none;
-  transition:border-color .16s var(--ease)}
+  caret-color:var(--accent)}
 .memo-text::placeholder{color:var(--faint)}
-.memo-text:focus{border-color:color-mix(in srgb,var(--accent) 38%,transparent)}
+.memo-text:focus{border:0}
 .memo-thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
 .memo-thumb{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;
   background:var(--field);border:.5px solid var(--line)}
@@ -714,7 +743,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   display:grid;place-items:center;border:0;border-radius:50%;
   background:rgba(18,18,24,.66);color:#fff;font-size:15px;line-height:1;
   -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-.memo-bar{display:flex;align-items:center;gap:10px;margin-top:14px}
+.memo-bar{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;
+  border-top:.5px solid var(--line)}
 .memo-add{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:12px;
   font-size:13px;font-weight:500;color:var(--accent);
   background:color-mix(in srgb,var(--accent) 8%,transparent);
@@ -1012,7 +1042,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
         </div>
         <button class="hp-new" id="hpNew" type="button">
           <svg id="hpNewIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
-          <span id="hpNewLabel">现在的想法</span>
+          <span id="hpNewLabel">现在的想法是…</span>
         </button>
         <div class="menu-list" id="hpMenu">
           <button class="menu-row" data-go="drafts">
@@ -1177,14 +1207,22 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <div class="sheet-backdrop" data-close></div>
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="composeTitle">
     <div class="grabber"></div>
-    <h2 id="composeTitle">现在的想法</h2>
-    <p class="sub">写成文章，或者随手发一条哔哔。</p>
-    <div class="rows" style="border-top:0">
-      <button class="row" id="composeArticle" type="button">
-        <span class="k">写文章</span><span class="v">Markdown · 草稿能接着写</span>
+    <h2 id="composeTitle">现在的想法是…</h2>
+    <p class="sub">两个去处：一篇能反复改的文章，或者一条发完就上博客的哔哔。</p>
+    <div class="cm-pick">
+      <button class="cm-card" id="composeArticle" type="button">
+        <span class="cm-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7.4 3.9h6l4.2 4.2v11.9a1.4 1.4 0 01-1.4 1.4H7.4A1.4 1.4 0 016 20V5.3a1.4 1.4 0 011.4-1.4z"/><path d="M13.4 3.9v4.4h4.2M9 12.4h6M9 15.8h4.4"/></svg>
+        </span>
+        <span class="cm-txt"><b>写文章</b><i>Markdown 正文，有标题、标签和预览，草稿能接着改</i></span>
+        <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
-      <button class="row" id="composeMemo" type="button">
-        <span class="k">发哔哔</span><span class="v">随手记 · 可配图</span>
+      <button class="cm-card primary" id="composeMemo" type="button">
+        <span class="cm-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 12.4c0 3.7-3.6 6.7-8 6.7-.9 0-1.8-.1-2.6-.35L5.2 20l.9-3.3A6.3 6.3 0 014 12.4C4 8.7 7.6 5.7 12 5.7s8 3 8 6.7z"/><path d="M9.2 12.4h.01M12 12.4h.01M14.8 12.4h.01"/></svg>
+        </span>
+        <span class="cm-txt"><b>发哔哔</b><i>随手几句，可以配图，不用起标题，发出去就在哔哔页</i></span>
+        <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
     </div>
     <div class="btns" style="margin-top:16px">
@@ -4307,24 +4345,112 @@ input,textarea{-webkit-user-select:text;user-select:text}
     ['银烛秋光冷画屏，', '轻罗小扇扑流萤。', '杜牧《秋夕》'],
     ['花开堪折直须折，', '莫待无花空折枝。', '杜秋娘《金缕衣》']
   ];
-  var poemPick = -1;
+  var poemPick = '';
+  /* 「历史上的今天」：构建期把哔哔按 MM-DD 切开放在 /bb-ondate/ 下，
+     这里只取当天那一个几百字节的小文件，不去拉 400 多 KB 的 memos.json。 */
+  var onDate = null; // [[year, text], ...]；null 表示还没拿到
+  var onDateKey = '';
+  var onDateTask = null;
 
-  function rollPoem() {
-    if (!POEMS.length) return;
-    var i = poemPick;
-    while (i === poemPick && POEMS.length > 1) i = Math.floor(Math.random() * POEMS.length);
-    poemPick = i;
-    var poem = POEMS[i];
-    $('hpPoemA').textContent = poem[0];
-    $('hpPoemB').textContent = poem[1] || '';
-    $('hpPoemB').hidden = !poem[1];
-    $('hpPoemFrom').textContent = poem[2] || '';
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function todayKey() {
+    var now = new Date();
+    return pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  }
+
+  function ensureOnDate() {
+    var key = todayKey();
+    if (key === onDateKey) return onDateTask || Promise.resolve(onDate);
+    onDateKey = key;
+    onDate = null;
+    var cacheKey = 'hux.ondate.' + key;
+    try {
+      var cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        onDate = JSON.parse(cached) || [];
+        onDateTask = Promise.resolve(onDate);
+        return onDateTask;
+      }
+    } catch (error) { /* 隐私模式下 sessionStorage 会抛，忽略就好 */ }
+    onDateTask = fetch('/bb-ondate/' + key + '.json', { credentials: 'omit' })
+      .then(function (response) { return response.ok ? response.json() : []; })
+      .catch(function () { return []; })
+      .then(function (list) {
+        var year = new Date().getFullYear();
+        // 只留往年的：今年的今天自己还记着，算不上「历史上的今天」
+        onDate = (Array.isArray(list) ? list : []).filter(function (item) {
+          return Array.isArray(item) && Number(item[0]) < year && item[1];
+        });
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(onDate)); } catch (error) {}
+        return onDate;
+      });
+    return onDateTask;
+  }
+
+  /** 抽签池：一联诗，或者往年今天的某条哔哔。 */
+  function poemEntries() {
+    var list = POEMS.map(function (poem, i) {
+      return { key: 'p' + i, memo: false, a: poem[0], b: poem[1] || '', from: poem[2] || '' };
+    });
+    var now = new Date();
+    var label = (now.getMonth() + 1) + ' 月 ' + now.getDate() + ' 日';
+    (onDate || []).forEach(function (item, i) {
+      list.push({
+        key: 'm' + i + '-' + item[0],
+        memo: true,
+        a: String(item[1]),
+        b: '',
+        from: item[0] + ' 年 ' + label + ' · 哔哔'
+      });
+    });
+    return list;
+  }
+
+  function paintPoem(entry) {
     var box = $('hpPoem');
+    box.classList.toggle('is-memo', Boolean(entry.memo));
+    box.setAttribute('aria-label', entry.memo ? '历史上的今天' : '随手一联');
+    $('hpPoemA').textContent = entry.a;
+    $('hpPoemB').textContent = entry.b;
+    $('hpPoemB').hidden = !entry.b;
+    $('hpPoemFrom').textContent = entry.from;
     // 去掉再加回来才重播动画：光换文字，CSS 动画是不会重跑的
     box.classList.remove('pp-in');
     void box.offsetWidth;
     box.classList.add('pp-in');
   }
+
+  function rollPoem() {
+    var all = poemEntries();
+    if (!all.length) return;
+    var memos = all.filter(function (entry) { return entry.memo; });
+    var poems = all.filter(function (entry) { return !entry.memo; });
+    // 百来联诗里混进一两条哔哔，纯等概率的话几乎抽不到，
+    // 所以有旧哔哔时给它一半的机会；抽到的是同一条就往后挪一个。
+    var pool = memos.length && (Math.random() < 0.5 || !poems.length) ? memos : poems;
+    var i = Math.floor(Math.random() * pool.length);
+    if (pool[i].key === poemPick && pool.length > 1) i = (i + 1) % pool.length;
+    poemPick = pool[i].key;
+    paintPoem(pool[i]);
+  }
+
+  /* 那个小文件一般几十毫秒就回来，但慢了不能让首屏空着：最多等 520ms，
+     到点先摆一联诗，等数据落地后下一次回首页再把它算进池子。 */
+  var poemToken = 0;
+
+  function schedulePoem() {
+    var token = ++poemToken;
+    if (onDate !== null) { rollPoem(); return; }
+    var waited = new Promise(function (resolve) { setTimeout(resolve, 520); });
+    Promise.race([ensureOnDate(), waited]).then(function () {
+      if (token !== poemToken) return;
+      rollPoem();
+    });
+  }
+
+  // 开机就去取当天那个小文件：通常等落到入口页时已经在手里了
+  ensureOnDate();
 
   function renderHomePane() {
     var open = authed && store ? store.drafts.filter(function (draft) { return hasContent(draft); }) : [];
@@ -4335,7 +4461,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     $('hpSub').textContent = authed
       ? (open.length ? '手上有 ' + open.length + ' 篇没收尾，随时能接上。' : '先落几个字，剩下的慢慢来。')
       : '登录后才显示这台设备上的草稿，也才能写新的。';
-    $('hpNewLabel').textContent = authed ? '现在的想法' : '登录';
+    $('hpNewLabel').textContent = authed ? '现在的想法是…' : '登录';
     // 加号配「登录」太怪，未解锁时只留文字
     $('hpNewIco').style.display = authed ? '' : 'none';
 
@@ -4357,7 +4483,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     setSaveState('就绪', '');
     renderHomePane();
-    rollPoem();
+    schedulePoem();
     renderDraftList();
     renderActionsSheet();
     paintFoldStrip();
@@ -5611,12 +5737,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
       if (authed) scheduleSync(0);
       return;
     }
-    // 从别的 App 切回来、还停在入口页：那两句换一联
-    if (appEl.classList.contains('closed')) rollPoem();
+    // 从别的 App 切回来、还停在入口页：那句换一条
+    if (appEl.classList.contains('closed')) schedulePoem();
   });
   // 从 bfcache 里被捞回来的情况，visibilitychange 不一定会来
   window.addEventListener('pageshow', function (event) {
-    if (event.persisted && appEl.classList.contains('closed')) rollPoem();
+    if (event.persisted && appEl.classList.contains('closed')) schedulePoem();
   });
   window.addEventListener('pagehide', flushSave);
   window.addEventListener('beforeunload', function () { flushSave(); });

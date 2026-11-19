@@ -76,6 +76,10 @@ jobs:
       - name: Generate BB RSS feed
         run: node .github/scripts/generate-bb-rss.js
 
+      # 写作台首页的「历史上的今天」只取当天那个小文件，所以这里按 MM-DD 切开
+      - name: Rebuild on-this-day index
+        run: node scripts/build-ondate.mjs
+
       # 推送被拒说明有并发的同步刚写过，回到最新基线后重放本事件，
       # 而不是去合并两份 JSON —— 脚本本身幂等，重放最安全。
       - name: Commit and push changes
@@ -83,7 +87,7 @@ jobs:
           set -euo pipefail
           branch="${GITHUB_REF_NAME}"
           for attempt in 1 2 3; do
-            git add static/memos.json static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
+            git add static/memos.json static/bb-ondate static/bb/index.xml data/videos.json .github/scripts/memo-attachment-cache.json
             if git diff --cached --quiet; then
               echo "没有需要提交的改动"
               exit 0
