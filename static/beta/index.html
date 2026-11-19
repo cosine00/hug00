@@ -173,7 +173,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 小屏塞不下时靠 margin:auto 居中：溢出也不会把顶上那截裁掉。
    顶上给悬浮顶栏让出高度（sat + 52 够到它的下沿再加一点），整体贴上去，
    别再垂直居中——那样屏一高，诗句和顶栏之间就空出一大块。 */
-.hp-inner{width:100%;max-width:660px;margin:0 auto;padding:calc(var(--sat) + 14px) 0 clamp(30px,7vh,72px)}
+.hp-inner{width:100%;max-width:660px;margin:0 auto;padding:calc(var(--sat) + 14px) 0 clamp(30px,7vh,72px);
+  display:flex;flex-direction:column;min-height:100%}
 
 /* 三个去处：跟下面那三行入口用同一套图标语言——裸描边、无容器、无文字，
    只是放大一号，别让人以为它们是另一种按钮 */
@@ -191,9 +192,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .app.closed .hp-inner>*:nth-child(2){animation-delay:.04s}
 .app.closed .hp-inner>*:nth-child(3){animation-delay:.08s}
 @keyframes hpIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-/* 入口页顶上那截空白：抽两句古诗填进去。
-   高度留死（min-height），换一联不至于把下面整块内容顶来顶去。 */
-.hp-poem{margin:0 0 2px;min-height:clamp(88px,12vh,132px);padding:0 4px;
+/* 入口页顶上那半屏：抽两句古诗填进去，字本身在这一块里垂直居中。
+   用 flex 把剩下的高度全给它（上面留白少、屏幕高就多给），诗和哔哔都不至于贴着顶栏；
+   三个图标和下面那摞东西自然被顶到下半屏去。矮屏上它会自己缩，不会把按钮挤到屏幕外。 */
+.hp-poem{flex:1 1 auto;margin:0 0 2px;min-height:112px;max-height:clamp(180px,44vh,400px);padding:0 4px;
   display:flex;flex-direction:column;justify-content:center;gap:2px}
 .hp-poem p{margin:0;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",ui-serif,Georgia,serif;
   font-size:16.5px;line-height:2.02;letter-spacing:.085em;
