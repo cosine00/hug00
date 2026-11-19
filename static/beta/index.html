@@ -183,26 +183,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
   color:color-mix(in srgb,var(--fg) 76%,transparent);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .hp-poem.is-memo .pp-from{margin-top:12px;letter-spacing:.06em}
-/* 带图的哔哔不在这儿铺图，照博客哔哔那套来：正文尾巴上跟一颗小图钉，点开再看；
-   多图在图标右上角挂一枚 +N 角标，别占正文的行。 */
-.hp-poem .pp-shot{position:relative;display:inline-flex;align-items:center;justify-content:center;
+/* 带图的哔哔不铺图：照博客哔哔那套，正文尾巴上跟一颗小图钉，点开再看；
+   多图在图标右上角挂一枚 +N 角标，别占正文的行。
+   首页那句诗和哔哔编辑页的「最近三条」共用这一颗。 */
+.pp-shot{position:relative;display:inline-flex;align-items:center;justify-content:center;
   width:1.1em;height:1.1em;margin:0 0 0 .34em;padding:0;border:0;background:none;box-shadow:none;
   color:color-mix(in srgb,var(--fg) 50%,transparent);font:inherit;line-height:1;vertical-align:-.16em;
   cursor:zoom-in;isolation:isolate;opacity:.9;
   backdrop-filter:none;-webkit-backdrop-filter:none;
   transition:opacity .16s var(--ease),transform .16s var(--ease)}
-.hp-poem .pp-shot svg{display:block;width:1em;height:1em;stroke:currentColor;fill:none;
+.pp-shot svg{display:block;width:1em;height:1em;stroke:currentColor;fill:none;
   stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.hp-poem .pp-shot .pp-shot-n{position:absolute;left:.72em;top:-.52em;display:inline-flex;
+.pp-shot .pp-shot-n{position:absolute;left:.72em;top:-.52em;display:inline-flex;
   align-items:center;justify-content:center;min-width:1.32em;height:1.32em;padding:0 .22em;
   box-sizing:border-box;border-radius:999px;background:var(--accent);color:var(--accent-fg);
   font:600 .54em/1 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;
   box-shadow:0 1px 3px rgba(0,0,0,.16);pointer-events:none}
-.hp-poem .pp-shot .pp-shot-n[hidden]{display:none}
-.hp-poem .pp-shot[hidden]{display:none}
-.hp-poem .pp-shot:active{transform:scale(.92);opacity:1}
+.pp-shot .pp-shot-n[hidden]{display:none}
+.pp-shot[hidden]{display:none}
+.pp-shot:active{transform:scale(.92);opacity:1}
 /* 正文正好写满三行时，图标会被 line-clamp 一起裁掉：那就挪到正文外面单独挂一行 */
-.hp-poem .pp-shot.is-out{margin:7px 0 0}
+.pp-shot.is-out{margin:7px 0 0}
 /* 这颗要比 .app.closed .hp-inner>* 那条进场动画更具体，否则换诗时的重播会被它盖掉 */
 .hp-inner .hp-poem.pp-in{animation:ppIn .5s var(--ease) both}
 @keyframes ppIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -521,7 +522,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .sheet.open .sheet-panel.drawer-panel{transform:translateX(0)}
 .sheet-panel.drawer-panel .grabber{display:none}
 .sheet-panel.drawer-panel h2{font-size:16px}
-.grabber{width:36px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 14px}
+/* 顶上这条不是装饰，是关掉这张纸的把手：整条都能点，比 5px 的小横条好按 */
+.grabber{width:100%;height:26px;margin:0 0 6px;display:flex;align-items:center;justify-content:center;
+  background:none;cursor:pointer;touch-action:manipulation}
+.grabber::before{content:"";width:36px;height:5px;border-radius:3px;background:var(--line)}
+.grabber:active::before{background:color-mix(in srgb,var(--fg) 22%,var(--line))}
 @media (min-width:620px){ .grabber{display:none} }
 .sheet h2{margin:0 0 4px;font-size:17px;font-weight:600;letter-spacing:.005em}
 .sheet .sub{margin:0 0 16px;font-size:12.5px;color:var(--muted);line-height:1.55}
@@ -578,7 +583,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .cm-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .cm-txt b{font-size:15px;font-weight:600;letter-spacing:.01em}
 .cm-card.primary .cm-txt b{color:var(--accent)}
-.cm-txt i{font-style:normal;font-size:12px;line-height:1.5;color:var(--faint)}
 .cm-go{flex:0 0 auto;width:14px;height:14px;stroke:var(--faint);fill:none;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round}
 
@@ -740,8 +744,29 @@ input,textarea{-webkit-user-select:text;user-select:text}
    和 AI 面板同构：整块按可视视口铺，键盘弹起时一起收，内部自己滚。
    输入框 16px 是硬要求——再小 iOS 一聚焦就自动放大。 */
 .memo-wrap{width:100%;max-width:700px;margin:0 auto}
-.memo-hint{margin:0 2px 12px;font-size:12.5px;line-height:1.6;color:var(--faint)}
-.memo-hint b{color:var(--accent);font-weight:600}
+/* 哔哔的 Markdown 工具条：原来这行是句灰色说明，改成六颗小方键，
+   照片和字数也一并收进来——编辑页里就只剩「工具 + 正文 + 最近」三件事 */
+.mtb{display:flex;align-items:center;gap:1px;margin:0 0 10px;padding:0 0 9px;
+  border-bottom:.5px solid var(--line)}
+.mtb-btn{flex:0 0 auto;width:31px;height:31px;display:grid;place-items:center;padding:0;
+  border:0;border-radius:9px;background:none;color:var(--muted);box-shadow:none;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background .14s var(--ease),color .14s var(--ease)}
+.mtb-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.mtb-btn:active{background:color-mix(in srgb,var(--fg) 9%,transparent);color:var(--fg)}
+/* 引号用真字形：拉成 svg 反而像两个 6 */
+.mtb-glyph{font-family:Georgia,"Times New Roman",serif;font-size:22px;line-height:1;
+  transform:translateY(3px);letter-spacing:-.04em}
+.mtb-photo{flex:0 0 auto;display:flex;align-items:center;gap:5px;height:31px;margin-left:7px;
+  padding:0 11px 0 9px;border-radius:10px;font-size:12.5px;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 9%,transparent);
+  border:.5px solid color-mix(in srgb,var(--accent) 20%,transparent);
+  box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.mtb-photo svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.mtb-photo:active{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.mtb-photo[disabled]{opacity:.45}
 /* 正文区跟文章编辑器一个路子：没有白盒子、没有边框，就是纸上的字。
    框一撤，块高度也收一档（38vh → 31vh），手机上不至于顶满屏。 */
 .memo-text{display:block;width:100%;min-height:31vh;padding:0 2px;border:0;border-radius:0;
@@ -764,16 +789,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
   display:grid;place-items:center;border:0;border-radius:50%;
   background:rgba(18,18,24,.66);color:#fff;font-size:15px;line-height:1;
   -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-.memo-bar{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;
-  border-top:.5px solid var(--line)}
-.memo-add{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:12px;
-  font-size:13px;font-weight:500;color:var(--accent);
-  background:color-mix(in srgb,var(--accent) 8%,transparent);
-  border:.5px solid color-mix(in srgb,var(--accent) 22%,transparent)}
-.memo-add svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.memo-add:active{background:color-mix(in srgb,var(--accent) 15%,transparent)}
-.memo-add[disabled]{opacity:.45}
-.memo-count{margin-left:auto;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+/* 最近三条：写完这一条之前，先看看上一条是什么时候写的 */
+.memo-recent{margin-top:24px;padding-top:13px;border-top:.5px solid var(--line)}
+.memo-recent[hidden]{display:none}
+.rc-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 2px 2px}
+.rc-head span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.rc-head a{font-size:11px;color:var(--faint);text-decoration:none}
+.rc-row{display:flex;align-items:flex-start;gap:10px;padding:11px 2px;border-bottom:.5px solid var(--line)}
+.rc-row:last-child{border-bottom:0;padding-bottom:2px}
+.rc-when{flex:0 0 3.2em;font-size:11px;line-height:1.75;color:var(--faint);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.rc-text{flex:1;min-width:0;margin:0;font-size:13px;line-height:1.7;color:var(--muted);word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rc-shot{flex:0 0 auto;margin:1px 0 0 2px;font-size:13px}
+.memo-count{margin-left:auto;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums;
+  white-space:nowrap;flex:0 0 auto}
+/* 320 那档要再挤一点：否则「0 字」会被压成两行 */
+@media (max-width:360px){
+  .mtb-btn{width:29px;height:29px}
+  .mtb-photo{height:29px;padding:0 9px 0 7px;margin-left:4px;font-size:12px}
+  .mtb .memo-count{font-size:11px}
+}
 .preview-action[disabled]{opacity:.45}
 
 /* ── 旧哔哔的看图层 ──
@@ -1246,20 +1282,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="composeTitle">
     <div class="grabber"></div>
     <h2 id="composeTitle">现在的想法是…</h2>
-    <p class="sub">两个去处：一篇能反复改的文章，或者一条发完就上博客的哔哔。</p>
     <div class="cm-pick">
       <button class="cm-card" id="composeArticle" type="button">
         <span class="cm-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M7.4 3.9h6l4.2 4.2v11.9a1.4 1.4 0 01-1.4 1.4H7.4A1.4 1.4 0 016 20V5.3a1.4 1.4 0 011.4-1.4z"/><path d="M13.4 3.9v4.4h4.2M9 12.4h6M9 15.8h4.4"/></svg>
         </span>
-        <span class="cm-txt"><b>写文章</b><i>Markdown 正文，有标题、标签和预览，草稿能接着改</i></span>
+        <span class="cm-txt"><b>写文章</b></span>
         <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
       <button class="cm-card primary" id="composeMemo" type="button">
         <span class="cm-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M20 12.4c0 3.7-3.6 6.7-8 6.7-.9 0-1.8-.1-2.6-.35L5.2 20l.9-3.3A6.3 6.3 0 014 12.4C4 8.7 7.6 5.7 12 5.7s8 3 8 6.7z"/><path d="M9.2 12.4h.01M12 12.4h.01M14.8 12.4h.01"/></svg>
         </span>
-        <span class="cm-txt"><b>发哔哔</b><i>随手几句，可以配图，不用起标题，发出去就在哔哔页</i></span>
+        <span class="cm-txt"><b>发哔哔</b></span>
         <svg class="cm-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
       </button>
     </div>
@@ -1389,17 +1424,41 @@ input,textarea{-webkit-user-select:text;user-select:text}
   </div>
   <div class="ai-body">
     <div class="memo-wrap">
-      <p class="memo-hint" id="memoHint">发出去就出现在博客的<b>哔哔</b>页，不用起标题。没发完的内容会留在这里，下次接着写。</p>
-      <textarea class="memo-text" id="memoText" rows="8" placeholder="现在在想什么…"
-        autocapitalize="sentences" enterkeyhint="enter" spellcheck="false" aria-label="哔哔正文"></textarea>
-      <div class="memo-thumbs" id="memoThumbs" hidden></div>
-      <div class="memo-bar">
-        <button class="memo-add" id="memoPick" type="button">
+      <div class="mtb" id="memoTools" role="toolbar" aria-label="Markdown 工具">
+        <button class="mtb-btn" type="button" data-md="bold" aria-label="加粗">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.6 5.4h5a3.3 3.3 0 010 6.6h-5zM7.6 12h5.7a3.5 3.5 0 010 7H7.6z"/></svg>
+        </button>
+        <button class="mtb-btn" type="button" data-md="italic" aria-label="斜体">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.4 5.6h7.2M6.4 18.4h7.2M14.8 5.6l-4.6 12.8"/></svg>
+        </button>
+        <button class="mtb-btn" type="button" data-md="code" aria-label="行内代码">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 8.2L5.6 12l3.8 3.8M14.6 8.2L18.4 12l-3.8 3.8"/></svg>
+        </button>
+        <button class="mtb-btn" type="button" data-md="quote" aria-label="引用">
+          <span class="mtb-glyph" aria-hidden="true">”</span>
+        </button>
+        <button class="mtb-btn" type="button" data-md="list" aria-label="列表">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 7h9.4M9.4 12h9.4M9.4 17h9.4"/><circle cx="5.4" cy="7" r="1.05" fill="currentColor" stroke="none"/><circle cx="5.4" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="5.4" cy="17" r="1.05" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="mtb-btn" type="button" data-md="link" aria-label="链接">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 13.7a3.4 3.4 0 004.8 0l2.5-2.5a3.4 3.4 0 00-4.8-4.8l-1.2 1.2"/><path d="M13.7 10.3a3.4 3.4 0 00-4.8 0l-2.5 2.5a3.4 3.4 0 004.8 4.8l1.2-1.2"/></svg>
+        </button>
+        <button class="mtb-photo" id="memoPick" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><circle cx="8.8" cy="10" r="1.5"/><path d="M4.6 17.4l4.6-4.3a1.8 1.8 0 012.5 0l6.1 5.6"/></svg>
           <span>照片</span>
         </button>
         <span class="memo-count" id="memoCount">0 字</span>
       </div>
+      <textarea class="memo-text" id="memoText" rows="8" placeholder="现在在想什么…"
+        autocapitalize="sentences" enterkeyhint="enter" spellcheck="false" aria-label="哔哔正文"></textarea>
+      <div class="memo-thumbs" id="memoThumbs" hidden></div>
+      <section class="memo-recent" id="memoRecent" hidden aria-label="最近的哔哔">
+        <div class="rc-head">
+          <span>最近</span>
+          <a href="https://hux.ink/bb/" target="_blank" rel="noopener">哔哔页</a>
+        </div>
+        <div id="memoRecentList"></div>
+      </section>
     </div>
   </div>
 </div>
@@ -1514,6 +1573,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   }
 
   document.addEventListener('click', function (event) {
+    // 顶上那条小横杠就是「把纸收回去」的把手，整条都能点
+    if (event.target.closest('.grabber')) {
+      closeSheet(event.target.closest('.sheet'));
+      return;
+    }
     var closer = event.target.closest('[data-close]');
     if (!closer) return;
     var sheet = closer.closest('.sheet');
@@ -5721,23 +5785,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
     });
   }
 
-  var MEMO_HINT =
-    '发出去就出现在博客的<b>哔哔</b>页，不用起标题。没发完的内容会留在这里，下次接着写。';
-  var MEMO_HINT_BACK =
-    '上次没发出去的内容还在，接着写就行；发出去就出现在博客的<b>哔哔</b>页。';
-
   function openMemo() {
     if (!authed) { openSheet('sheetLogin'); return; }
-    var back = false;
     if (!memoLoaded) {
       memoLoaded = true;
-      back = memoRestoreDraft();
+      memoRestoreDraft();
     }
-    // 恢复提示写在说明里，不用 toast——那个半透明条会盖住正文上沿
-    $('memoHint').innerHTML = back ? MEMO_HINT_BACK : MEMO_HINT;
     memoPane.classList.add('open');
     memoPane.setAttribute('aria-hidden', 'false');
     memoRender();
+    loadRecent();
     // 手机上不主动弹键盘：一开页就把视口顶上去，反而要先收一次
     if (window.innerWidth > 620) setTimeout(function () { focusSoft(memoTextEl); }, 260);
   }
@@ -5791,6 +5848,117 @@ input,textarea{-webkit-user-select:text;user-select:text}
         memoSendEl.textContent = '发布';
         memoSendEl.disabled = false;
         toast(error.message || '没发出去，再试一次', 'err', 3800);
+      });
+  }
+
+  /* Markdown 工具条：textarea 里就是纯文本，包一对记号、或者给整行加个前缀，
+     改完把光标放回原处，计数和存草稿仍交给 input 事件。 */
+  var MD_PAIRS = {
+    bold: ['**', '**', '粗体'],
+    italic: ['_', '_', '斜体'],
+    code: ['`', '`', '代码'],
+    link: ['[', '](https://)', '链接文字']
+  };
+
+  function memoMark(kind) {
+    var value = memoTextEl.value;
+    var start = memoTextEl.selectionStart;
+    var end = memoTextEl.selectionEnd;
+    if (typeof start !== 'number' || start < 0) { start = end = value.length; }
+    var picked = value.slice(start, end);
+    var next = value;
+    var caret = start;
+    var caretEnd = end;
+
+    if (kind === 'quote' || kind === 'list') {
+      // 整行/整段加记号；选中几行就加几行，已经有记号的再点一次是取消
+      var mark = kind === 'quote' ? '> ' : '- ';
+      var from = value.lastIndexOf('\n', start - 1) + 1;
+      var to = picked ? end : -1;
+      if (to < 0) {
+        var nl = value.indexOf('\n', start);
+        to = nl === -1 ? value.length : nl;
+      }
+      var lines = value.slice(from, to).split('\n');
+      var off = lines.every(function (line) { return line.slice(0, mark.length) === mark; });
+      var block = lines.map(function (line) {
+        return off ? line.slice(mark.length) : mark + line;
+      }).join('\n');
+      next = value.slice(0, from) + block + value.slice(to);
+      caret = from + block.length;
+      caretEnd = caret;
+    } else {
+      var pair = MD_PAIRS[kind] || MD_PAIRS.bold;
+      var body = picked || pair[2];
+      next = value.slice(0, start) + pair[0] + body + pair[1] + value.slice(end);
+      caret = start + pair[0].length;
+      caretEnd = caret + body.length;
+    }
+
+    memoTextEl.value = next;
+    memoTextEl.focus();
+    // 刚写进去的那几个字顺手选中，接着敲就是替换
+    try { memoTextEl.setSelectionRange(caret, caretEnd); } catch (error) {}
+    memoTextEl.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  $('memoTools').addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-md]');
+    if (btn) memoMark(btn.getAttribute('data-md'));
+  });
+  // 按钮在 iOS 上会把焦点抢走、键盘跟着收，按下去的那一下拦掉
+  $('memoTools').addEventListener('mousedown', function (event) {
+    if (event.target.closest('[data-md]')) event.preventDefault();
+  });
+
+  /* 最近三条：构建期从 memos.json 抠出来的小文件（几十条也才一两百字节） */
+  var SHOT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 4.5-4.5 3.5 3 2.5-2.5 5.5 5"/></svg>';
+  var recentMemos = null;
+
+  function whenText(ts) {
+    var date = new Date(Number(ts) * 1000);
+    if (!Number.isFinite(date.getTime())) return '';
+    var dayOf = function (d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
+    var diff = Math.round((dayOf(new Date()) - dayOf(date)) / 86400000);
+    if (!(diff > 0)) return '今天';
+    if (diff === 1) return '昨天';
+    if (diff < 7) return diff + ' 天前';
+    return (date.getMonth() + 1) + '-' + pad2(date.getDate());
+  }
+
+  function renderRecent(list) {
+    var box = $('memoRecentList');
+    var items = (list || []).slice(0, 3);
+    $('memoRecent').hidden = !items.length;
+    box.textContent = '';
+    items.forEach(function (item) {
+      var row = el('div', 'rc-row');
+      row.appendChild(el('span', 'rc-when', whenText(item[0])));
+      row.appendChild(el('p', 'rc-text', String(item[1] || '')));
+      var pics = Array.isArray(item[2]) ? item[2] : [];
+      if (pics.length) {
+        var btn = el('button', 'pp-shot rc-shot');
+        btn.type = 'button';
+        btn.innerHTML = SHOT_SVG;
+        var num = el('span', 'pp-shot-n', '+' + Math.max(1, pics.length - 1));
+        num.hidden = pics.length < 2;
+        btn.appendChild(num);
+        btn.setAttribute('aria-label', '查看 ' + pics.length + ' 张图片');
+        btn.addEventListener('click', function () { openShots(pics); });
+        row.appendChild(btn);
+      }
+      box.appendChild(row);
+    });
+  }
+
+  function loadRecent() {
+    if (recentMemos) { renderRecent(recentMemos); return; }
+    fetch('/bb-recent.json', { credentials: 'omit' })
+      .then(function (res) { return res.ok ? res.json() : []; })
+      .catch(function () { return []; })
+      .then(function (list) {
+        recentMemos = Array.isArray(list) ? list : [];
+        renderRecent(recentMemos);
       });
   }
 

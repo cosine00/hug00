@@ -19,6 +19,8 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'static/memos.json');
 const OUT_DIR = path.join(ROOT, 'static/bb-ondate');
+const RECENT_OUT = path.join(ROOT, 'static/bb-recent.json');
+const RECENT_MAX = 6;
 
 const BEIJING_OFFSET = 8 * 3600; // 秒
 const MAX_CHARS = 150;
@@ -78,6 +80,21 @@ export function groupByDay(memos) {
   return Object.fromEntries([...days.entries()].sort((a, b) => a[0].localeCompare(b[0])));
 }
 
+/** 最新的几条：哔哔编辑页下面要摆「最近」，同样不该为此拉 400 多 KB 的全量。 */
+export function recentIndex(memos, limit) {
+  const max = Number(limit) || RECENT_MAX;
+  return (Array.isArray(memos) ? memos : [])
+    .map((memo) => ({
+      ts: Number(memo && memo.createdTs),
+      text: excerpt(memo && memo.content),
+      pics: images(memo && memo.content),
+    }))
+    .filter((one) => Number.isFinite(one.ts) && one.ts > 0 && (one.text || one.pics.length))
+    .sort((a, b) => b.ts - a.ts)
+    .slice(0, max)
+    .map((one) => [one.ts, one.text].concat(one.pics.length ? [one.pics] : []));
+}
+
 function main() {
   const dryRun = process.argv.includes('--dry-run');
   if (!fs.existsSync(SRC)) {
@@ -114,12 +131,21 @@ function main() {
     }
   }
 
+  // 「最近几条」也顺手写一份，哔哔编辑页拿它摆三条，不用拉全量
+  const recent = recentIndex(memos);
+  const recentBody = JSON.stringify(recent);
+  const recentOld = fs.existsSync(RECENT_OUT) ? fs.readFileSync(RECENT_OUT, 'utf8') : null;
+  const recentChanged = recentOld !== recentBody;
+  if (recentChanged && !dryRun) fs.writeFileSync(RECENT_OUT, recentBody);
+
   const entries = Object.values(days).reduce((sum, list) => sum + list.length, 0);
   const biggest = Object.entries(days).sort((a, b) => JSON.stringify(b[1]).length - JSON.stringify(a[1]).length)[0];
   console.log(
     `bb-ondate：${Object.keys(days).length} 天 / ${entries} 条（memos ${memos.length} 条），` +
       `写入 ${written} 个文件，删除 ${removed} 个，合计 ${(bytes / 1024).toFixed(1)} KB` +
       (biggest ? `；最大一天 ${biggest[0]} 有 ${biggest[1].length} 条` : '') +
+      `；bb-recent ${recent.length} 条 ${(Buffer.byteLength(recentBody) / 1024).toFixed(1)} KB` +
+      (recentChanged ? '（已更新）' : '（未变）') +
       (dryRun ? '（dry-run，未落盘）' : '')
   );
 }
