@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { excerpt, dayKey, groupByDay } from '../scripts/build-ondate.mjs';
+import { excerpt, images, dayKey, groupByDay } from '../scripts/build-ondate.mjs';
 
 test('excerpt：图片和链接不占字数，标签也不进正文', () => {
   assert.equal(excerpt('今天去了山里 ![](https://img.hux.ink/a.jpg) 很好'), '今天去了山里 很好');
@@ -36,11 +36,26 @@ test('dayKey：按北京时间切日，不是 UTC', () => {
   assert.deepEqual(dayKey(Date.UTC(2025, 11, 31, 16, 30) / 1000), { year: 2026, key: '01-01' });
 });
 
-test('groupByDay：同一天按年份排序，坏数据与纯图哔哔跳过', () => {
+test('images：抓正文里内联的图片地址，去重且最多 9 张', () => {
+  assert.deepEqual(
+    images('去了山里 ![a](https://img.hux.ink/a.jpg) 和 ![b](https://img.hux.ink/b.png)'),
+    ['https://img.hux.ink/a.jpg', 'https://img.hux.ink/b.png']
+  );
+  assert.deepEqual(images('重复 ![a](https://img.hux.ink/a.jpg) ![a](https://img.hux.ink/a.jpg)'), [
+    'https://img.hux.ink/a.jpg',
+  ]);
+  assert.deepEqual(images('相对路径 ![a](/x.jpg) 不算'), []);
+  assert.deepEqual(images('没有图'), []);
+  const many = Array.from({ length: 12 }, (_, i) => `![x](https://img.hux.ink/${i}.jpg)`).join(' ');
+  assert.equal(images(many).length, 9);
+});
+
+test('groupByDay：同一天按年份排序，坏数据跳过', () => {
   const days = groupByDay([
     { createdTs: Date.UTC(2025, 10, 19, 2, 0) / 1000, content: '去年的' },
     { createdTs: Date.UTC(2023, 10, 19, 2, 0) / 1000, content: '前年的' },
     { createdTs: Date.UTC(2024, 10, 19, 2, 0) / 1000, content: '![](https://img.hux.ink/x.jpg)' },
+    { createdTs: Date.UTC(2022, 10, 19, 2, 0) / 1000, content: '有字又有图 ![a](https://img.hux.ink/y.jpg)' },
     { createdTs: 0, content: '没有时间' },
     { createdTs: 'abc', content: '时间不对' },
     { content: '缺字段' },
@@ -49,7 +64,9 @@ test('groupByDay：同一天按年份排序，坏数据与纯图哔哔跳过', (
 
   assert.deepEqual(Object.keys(days), ['11-19']);
   assert.deepEqual(days['11-19'], [
+    [2022, '有字又有图', ['https://img.hux.ink/y.jpg']],
     [2023, '前年的'],
+    [2024, '', ['https://img.hux.ink/x.jpg']],
     [2025, '去年的'],
   ]);
 });

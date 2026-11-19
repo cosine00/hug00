@@ -183,6 +183,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
   color:color-mix(in srgb,var(--fg) 74%,transparent);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .hp-poem.is-memo .pp-from{letter-spacing:.05em}
+/* 带图的哔哔不在这儿铺图，只给一颗「N 张图」的小药丸，点开再看 */
+.hp-poem .pp-shots{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;margin-top:9px;
+  height:25px;padding:0 10px 0 8px;border-radius:13px;
+  border:.5px solid color-mix(in srgb,var(--fg) 12%,transparent);
+  background:color-mix(in srgb,var(--fg) 5%,transparent);
+  color:var(--muted);font-size:11px;line-height:1;letter-spacing:.02em;
+  transition:background .16s var(--ease),transform .16s var(--ease)}
+.hp-poem .pp-shots svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.hp-poem .pp-shots:active{background:color-mix(in srgb,var(--fg) 11%,transparent);transform:scale(.97)}
+.hp-poem .pp-shots[hidden]{display:none}
+/* 有图时正文只留两行，加上药丸正好和两行诗一样高，换条目时下面不跳 */
+.hp-poem.has-shots p{-webkit-line-clamp:2}
 /* 这颗要比 .app.closed .hp-inner>* 那条进场动画更具体，否则换诗时的重播会被它盖掉 */
 .hp-inner .hp-poem.pp-in{animation:ppIn .5s var(--ease) both}
 @keyframes ppIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -755,6 +768,24 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .memo-count{margin-left:auto;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
 .preview-action[disabled]{opacity:.45}
 
+/* ── 旧哔哔的看图层 ──
+   首页那颗「N 张图」点开后铺满整屏：深底、单列、可以一直往下滑，
+   点空白或按「关闭」都收。层级压在抽屉(20)和 AI 面板(26)之上，但低于 toast(40)。 */
+.shots{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;
+  background:rgba(8,9,11,.965);color:#fff;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 0 calc(env(safe-area-inset-bottom,0px) + 16px)}
+.shots.open{display:flex}
+.shots-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 16px 8px;font-size:12px;letter-spacing:.02em;color:rgba(255,255,255,.68);
+  font-variant-numeric:tabular-nums}
+.shots-close{height:32px;padding:0 15px;border-radius:16px;font-size:12.5px;
+  border:.5px solid rgba(255,255,255,.26);background:rgba(255,255,255,.1);color:#fff}
+.shots-close:active{background:rgba(255,255,255,.2)}
+.shots-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;gap:10px;padding:4px 12px}
+.shots-list img{display:block;width:100%;height:auto;border-radius:12px;
+  background:rgba(255,255,255,.05)}
+
 /* 入口：顶栏上那颗星。同排其余都是纯描边，这里垫一层比按钮小一圈的主色胶囊，
    一眼能认出来，又不会整格填满看着像被按住 */
 .tool.tool-ai{position:relative;color:var(--accent)}
@@ -1034,6 +1065,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
         <figure class="hp-poem" id="hpPoem" aria-label="随手一联">
           <p id="hpPoemA"></p>
           <p id="hpPoemB"></p>
+          <button class="pp-shots" id="hpPoemShots" type="button" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.4" y="4.8" width="17.2" height="14.4" rx="3.2"/><circle cx="8.9" cy="10.2" r="1.4"/><path d="M4.8 17.2l4.4-4.1a1.7 1.7 0 012.4 0l5.8 5.3"/></svg>
+            <span id="hpPoemShotsNum">张图</span>
+          </button>
           <figcaption class="pp-from" id="hpPoemFrom"></figcaption>
         </figure>
         <div class="hp-head">
@@ -1366,6 +1401,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
   </div>
 </div>
 <input type="file" id="memoFile" accept="image/*" multiple hidden>
+
+<!-- 旧哔哔里的图：点开就看，跟文章预览不是一回事 -->
+<div class="shots" id="shotsView" aria-hidden="true" role="dialog" aria-modal="true" aria-label="哔哔里的图片">
+  <div class="shots-top">
+    <span id="shotsCount">1 / 1</span>
+    <button class="shots-close" id="shotsClose" type="button">关闭</button>
+  </div>
+  <div class="shots-list" id="shotsList"></div>
+</div>
 
 <!-- 图片大图预览 -->
 <div class="sheet" id="sheetImage" aria-hidden="true">
@@ -4346,6 +4390,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     ['花开堪折直须折，', '莫待无花空折枝。', '杜秋娘《金缕衣》']
   ];
   var poemPick = '';
+  var poemShots = []; // 当前那条哔哔带的图，点「N 张图」时用
   /* 「历史上的今天」：构建期把哔哔按 MM-DD 切开放在 /bb-ondate/ 下，
      这里只取当天那一个几百字节的小文件，不去拉 400 多 KB 的 memos.json。 */
   var onDate = null; // [[year, text], ...]；null 表示还没拿到
@@ -4405,9 +4450,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
       list.push({
         key: 'm' + i + '-' + item[0],
         memo: true,
-        a: String(item[1]),
+        a: String(item[1] || ''),
         b: '',
-        from: item[0] + ' 年 ' + label + ' · 哔哔'
+        from: item[0] + ' 年 ' + label + ' · 哔哔',
+        shots: Array.isArray(item[2]) ? item[2] : []
       });
     });
     return list;
@@ -4415,11 +4461,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function paintPoem(entry) {
     var box = $('hpPoem');
+    var shots = entry.shots || [];
+    poemShots = shots;
     box.classList.toggle('is-memo', Boolean(entry.memo));
+    box.classList.toggle('has-shots', shots.length > 0);
     box.setAttribute('aria-label', entry.memo ? '历史上的今天' : '随手一联');
     $('hpPoemA').textContent = entry.a;
     $('hpPoemB').textContent = entry.b;
     $('hpPoemB').hidden = !entry.b;
+    $('hpPoemShots').hidden = !shots.length;
+    if (shots.length) {
+      $('hpPoemShotsNum').textContent = shots.length + ' 张图';
+      $('hpPoemShots').setAttribute('aria-label', '查看 ' + shots.length + ' 张图片');
+    }
     $('hpPoemFrom').textContent = entry.from;
     // 去掉再加回来才重播动画：光换文字，CSS 动画是不会重跑的
     box.classList.remove('pp-in');
@@ -4457,6 +4511,64 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   // 开机就去取当天那个小文件：通常等落到入口页时已经在手里了
   ensureOnDate();
+
+  /* 旧哔哔里的图：这块位置太小，只报个数字，点开铺满屏看原图。
+     与文章预览那套无关，只是借了同一套「铺满可视视口」的写法。 */
+  function shotsProgress() {
+    var list = $('shotsList');
+    var imgs = list.querySelectorAll('img');
+    if (!imgs.length) return;
+    var base = list.getBoundingClientRect().top + 8;
+    var index = 1;
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].getBoundingClientRect().top <= base) index = i + 1;
+    }
+    $('shotsCount').textContent = index + ' / ' + imgs.length;
+  }
+
+  function openShots(urls) {
+    if (!urls || !urls.length) return;
+    var list = $('shotsList');
+    list.textContent = '';
+    urls.forEach(function (url, i) {
+      var img = document.createElement('img');
+      img.src = url;
+      // 手机上九张原图一起加载太费，第二张之后等滑到跟前再说
+      img.loading = i ? 'lazy' : 'eager';
+      img.decoding = 'async';
+      img.alt = '第 ' + (i + 1) + ' 张图片';
+      img.addEventListener('error', function () { img.style.display = 'none'; });
+      list.appendChild(img);
+    });
+    $('shotsCount').textContent = '1 / ' + urls.length;
+    list.scrollTop = 0;
+    $('shotsView').classList.add('open');
+    $('shotsView').setAttribute('aria-hidden', 'false');
+  }
+
+  function closeShots() {
+    var view = $('shotsView');
+    if (!view.classList.contains('open')) return;
+    view.classList.remove('open');
+    view.setAttribute('aria-hidden', 'true');
+    // 图要撤掉：留着的话下次点开别的会先闪一眼上一次的
+    $('shotsList').textContent = '';
+  }
+
+  $('hpPoemShots').addEventListener('click', function () { openShots(poemShots); });
+  $('shotsClose').addEventListener('click', closeShots);
+  // 点图片本身的空白（两侧留边）也算关，点在图上是看，不关
+  $('shotsView').addEventListener('click', function (event) {
+    if (event.target === $('shotsView')) closeShots();
+  });
+  (function () {
+    var pending = false;
+    $('shotsList').addEventListener('scroll', function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; shotsProgress(); });
+    }, { passive: true });
+  })();
 
   function renderHomePane() {
     var open = authed && store ? store.drafts.filter(function (draft) { return hasContent(draft); }) : [];
@@ -5345,7 +5457,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return;
     }
     if (event.key === 'Escape') {
-      // 全屏面板（26/27）在最上层，先关它们，再轮到抽屉和预览
+      // 全屏面板（26/27/30）在最上层，先关它们，再轮到抽屉和预览
+      if ($('shotsView').classList.contains('open')) { closeShots(); return; }
       if (memoPane.classList.contains('open')) { closeMemo(); return; }
       if (aiPanel.classList.contains('open')) { closeAi(); return; }
       var open = document.querySelector('.sheet.open');

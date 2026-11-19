@@ -40,6 +40,16 @@ export function excerpt(content) {
   return text;
 }
 
+/** 哔哔里的图都是正文内联的 ![](url)（附件表目前是空的），这里只挑 http(s) 地址。 */
+export function images(content) {
+  const found = String(content || '').match(/!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g) || [];
+  const urls = found.map((one) =>
+    one.replace(/^!\[[^\]]*\]\(/, '').replace(/\)$/, '').trim()
+  );
+  // 同一条里贴重复地址只留一张；FlareMo 那边单条上限就是 9 张
+  return urls.filter((url, i) => urls.indexOf(url) === i).slice(0, 9);
+}
+
 /** createdTs（秒）→ 北京时间的「MM-DD」与年份。 */
 export function dayKey(ts) {
   const d = new Date((Number(ts) + BEIJING_OFFSET) * 1000);
@@ -49,20 +59,21 @@ export function dayKey(ts) {
   };
 }
 
-/** memos → { 'MM-DD': [[year, text], ...] }，同一天按年份从早到晚。 */
+/** memos → { 'MM-DD': [[year, text, [图片…]?], ...] }，同一天按年份从早到晚。 */
 export function groupByDay(memos) {
   const days = new Map();
   for (const memo of Array.isArray(memos) ? memos : []) {
     const ts = Number(memo && memo.createdTs);
     if (!Number.isFinite(ts) || ts <= 0) continue;
     const text = excerpt(memo.content);
-    if (!text) continue; // 只有图的哔哔在一句话的位置上没内容可放
+    const pics = images(memo.content);
+    if (!text && !pics.length) continue; // 既没字也没图，这条在首页放不下
     const { year, key } = dayKey(ts);
-    if (!days.has(key)) days.set(key, []);
-    days.get(key).push([year, text]);
+    // 只有带图的条目才补第三位，绝大多数天还是 [年份, 摘要] 两个字段
+    days.set(key, (days.get(key) || []).concat([[year, text].concat(pics.length ? [pics] : [])]));
   }
   for (const list of days.values()) {
-    list.sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1]));
+    list.sort((a, b) => a[0] - b[0] || String(a[1]).localeCompare(String(b[1])));
   }
   return Object.fromEntries([...days.entries()].sort((a, b) => a[0].localeCompare(b[0])));
 }
