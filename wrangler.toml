@@ -42,6 +42,11 @@ R2_PUBLIC_URL = "https://img.hux.ink"
 # deepseek-flash 是 DeepSeek V4.1 Flash 的模型名，改写任务够用且便宜
 DEEPSEEK_MODEL = "deepseek-flash"
 
+# ── 发哔哔（写作页的「现在的想法 → 发哔哔」）────────────────────────
+# 走 FlareMo 自己的创建接口，再由本站 Worker 触发 fetch-memos 的单条同步。
+# 令牌不进这里：npx wrangler secret put FLAREMO_PAT（memos_pat_ 开头，需能写 memo）
+FLAREMO_BASE = "https://drafts.hux.ink"
+
 # 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
 [[routes]]
 pattern = "comments.hux.ink/*"

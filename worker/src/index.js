@@ -28,6 +28,7 @@
  *   GET  /api/write/drafts               云端草稿列表（?since=毫秒）
  *   POST /api/write/drafts               批量上行草稿，冲突按 updated_at 判
  *   POST /api/write/polish               { text, mode, instruction, scope } → AI 润色稿
+ *   POST /api/write/memo                 { content, images[], rid } → 发一条哔哔到 FlareMo
  */
 
 import {
@@ -52,6 +53,7 @@ import {
 } from './service.js';
 import { notifyNewComment, notifyReply } from './mail.js';
 import { handleWriteDraftsGet, handleWriteDraftsSave, handleWriteHealth, handleWriteImages, handleWritePost, handleWritePosts, handleWriteTags, handleWriteUpload } from './write.js';
+import { handleWriteMemo } from './memo.js';
 import { handlePolish } from './ai.js';
 import {
   buildSessionCookie,
@@ -300,6 +302,15 @@ async function route(request, env, url, ctx) {
     const gate = await adminGate(request, env);
     if (!gate.ok) return gate.response;
     return handleWritePost(request, env);
+  }
+
+  // 发哔哔：走 FlareMo 自己的创建接口，再由它触发博客的单条同步。
+  // 图片不经过这里——前端先用 /api/write/upload 传进图床，地址拼进正文。
+  if (path === '/api/write/memo') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    if (request.method !== 'POST') return fail(405, 'method_not_allowed', '哔哔接口只接受 POST');
+    return handleWriteMemo(request, env);
   }
 
   // AI 润色：密钥只在服务端，所以必须走这道闸门；它也只产出文本，不落库不发文

@@ -493,3 +493,61 @@ npm run comments:deploy     # wrangler deploy，需先 npx wrangler login
 - 720P 是游客天花板，1080P / 4K 需要登录态；页面不放「原片」入口。
 - 封面清晰度受限于 B 站源图；源图小于 1280 宽时无解，只能重传。
 - 改 `static/js/*.js` 后必须同步改引用处的 `?v=`，否则 5 天强缓存会让改动看起来没生效。
+
+## 从 Beta 后台发哔哔（2026-11-19 起）
+
+入口在写作台首页那颗按钮：**现在的想法** → 底部菜单选「发哔哔」。不再需要跳到 FlareMo 再发。
+
+### 为什么不是直接写 D1
+
+`POST /api/v1/memos` 背后是 FlareMo 自己的创建流程——正文规范化、`#标签` 解析、修订记录、以及把 `memo_id` 推给 GitHub Actions 的单条同步。绕过去写库，这几件事都会漏，博客只能等次日 03:17 的全量。所以 Beta 这边只做**代理**，创建仍然发生在 FlareMo。
+
+### 数据流
+
+```
+Beta 写作页
+  │  ① 图片：POST /api/write/upload（原始字节）→ R2 → https://img.hux.ink/…
+  │        （就是文章编辑器用的同一个接口，没有第二套存储）
+  ▼
+  │  ② 发布：POST /api/write/memo { content, images[], rid }
+  ▼
+博客 Worker（adminGate + CSRF）
+  │  POST {FLAREMO_BASE}/api/v1/memos
+  │    Authorization: Bearer {FLAREMO_PAT}
+  │    { content: 正文 + ![](图片地址) 逐行, visibility: "PUBLIC", source: "hux-beta" }
+  ▼
+FlareMo → 返回 { name: "memos/xxx" }
+  │
+  ├─ Worker 立刻 workflow_dispatch(fetch-memos.yml, memo_id=xxx, action=upsert)
+  │     失败不影响发布结果，只是慢一拍（每日全量兜底）
+  ▼
+memos.json → 哔哔页 / 首页 / 相册
+```
+
+图片走**正文内联**（`![](url)`）而不是 FlareMo 附件：地址已经是自己的图床，FlareMo 和博客两头都直接能显示，也不用把同一张图在两边各存一份。同步脚本里「两种图片来源」的第二种正是这条路，前端渲染不用改。
+
+### 接口
+
+`POST /api/write/memo`，过 `adminGate`，写操作要 CSRF。
+
+| 字段 | 说明 |
+| --- | --- |
+| `content` | 正文，上限 10000 字 |
+| `images` | 图床地址数组，最多 9 张；只接受 `R2_PUBLIC_URL` 开头的地址 |
+| `rid` | 客户端一次性 id，120 秒内同一 id 只发一条 |
+
+返回 `{ ok, id, sync, chars, images }`，`sync` 取 `queued / failed / no_token / duplicate`。
+
+保护：正文与图片都空不创建；同 IP 3 秒冷却；日志只记 id、字数、图片数、同步结果，正文不落日志。
+
+### 密钥
+
+`npx wrangler secret put FLAREMO_PAT`（`memos_pat_` 开头，需能写 memo）。`FLAREMO_BASE` 在 `wrangler.toml` 的 `[vars]` 里，默认 `https://drafts.hux.ink`。没配时接口返回 503 并附上那句命令。
+
+### 前端
+
+编辑页是一层全屏面板，与 AI 润色同构（`top:var(--vv-top)` + `height:var(--app-h)`，内部滚动、`overscroll-behavior:contain`），键盘弹起时跟着收。没有标题/Slug/摘要，只有正文、图片缩略图（上传中/失败可删）、字数。
+
+- 图片：相册多选、粘贴板图片都走同一套 `compress()` → `/api/write/upload`
+- 草稿：写一半关掉会存进 `localStorage['hux-memo-v1']`，下次打开自动恢复并在说明里提示；发布成功后清掉
+- 防重复：发布中按钮禁用且改文案「发布中」，同时带 `rid` 由服务端去重

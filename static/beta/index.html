@@ -687,6 +687,44 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .ai-render img{max-width:100%;height:auto;border-radius:12px}
 .ai-render hr{border:0;border-top:.5px solid var(--line);margin:1.4em 0}
 .ai-render a{color:var(--accent)}
+
+/* ── 发哔哔 ──
+   和 AI 面板同构：整块按可视视口铺，键盘弹起时一起收，内部自己滚。
+   输入框 16px 是硬要求——再小 iOS 一聚焦就自动放大。 */
+.memo-wrap{width:100%;max-width:700px;margin:0 auto}
+.memo-hint{margin:0 2px 12px;font-size:12.5px;line-height:1.6;color:var(--faint)}
+.memo-hint b{color:var(--accent);font-weight:600}
+.memo-text{display:block;width:100%;min-height:38vh;padding:14px;border-radius:16px;
+  border:.5px solid var(--line);background:var(--field);color:var(--fg);
+  font-family:inherit;font-size:16px;line-height:1.75;letter-spacing:.01em;
+  resize:none;outline:none;-webkit-appearance:none;appearance:none;
+  transition:border-color .16s var(--ease)}
+.memo-text::placeholder{color:var(--faint)}
+.memo-text:focus{border-color:color-mix(in srgb,var(--accent) 38%,transparent)}
+.memo-thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.memo-thumb{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;
+  background:var(--field);border:.5px solid var(--line)}
+.memo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.memo-thumb .mp-state{position:absolute;inset:0;display:grid;place-items:center;
+  font-size:11px;line-height:1.4;text-align:center;padding:6px;color:var(--muted);
+  background:color-mix(in srgb,var(--bg) 62%,transparent);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.memo-thumb.err{border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+.memo-thumb.err .mp-state{color:var(--danger);background:color-mix(in srgb,var(--bg) 76%,transparent)}
+.memo-thumb .mp-del{position:absolute;top:4px;right:4px;width:24px;height:24px;padding:0;
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:rgba(18,18,24,.66);color:#fff;font-size:15px;line-height:1;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.memo-bar{display:flex;align-items:center;gap:10px;margin-top:14px}
+.memo-add{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:12px;
+  font-size:13px;font-weight:500;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent);
+  border:.5px solid color-mix(in srgb,var(--accent) 22%,transparent)}
+.memo-add svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.memo-add:active{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.memo-add[disabled]{opacity:.45}
+.memo-count{margin-left:auto;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.preview-action[disabled]{opacity:.45}
+
 /* 入口：顶栏上那颗星。同排其余都是纯描边，这里垫一层比按钮小一圈的主色胶囊，
    一眼能认出来，又不会整格填满看着像被按住 */
 .tool.tool-ai{position:relative;color:var(--accent)}
@@ -974,7 +1012,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
         </div>
         <button class="hp-new" id="hpNew" type="button">
           <svg id="hpNewIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
-          <span id="hpNewLabel">写新的一篇</span>
+          <span id="hpNewLabel">现在的想法</span>
         </button>
         <div class="menu-list" id="hpMenu">
           <button class="menu-row" data-go="drafts">
@@ -1134,6 +1172,27 @@ input,textarea{-webkit-user-select:text;user-select:text}
 </div>
 
 <!-- 发布确认 -->
+<!-- 一个按钮两件事：写成文章，还是随手发条哔哔 -->
+<div class="sheet" id="sheetCompose" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="composeTitle">
+    <div class="grabber"></div>
+    <h2 id="composeTitle">现在的想法</h2>
+    <p class="sub">写成文章，或者随手发一条哔哔。</p>
+    <div class="rows" style="border-top:0">
+      <button class="row" id="composeArticle" type="button">
+        <span class="k">写文章</span><span class="v">Markdown · 草稿能接着写</span>
+      </button>
+      <button class="row" id="composeMemo" type="button">
+        <span class="k">发哔哔</span><span class="v">随手记 · 可配图</span>
+      </button>
+    </div>
+    <div class="btns" style="margin-top:16px">
+      <button class="btn btn-ghost" data-close>取消</button>
+    </div>
+  </div>
+</div>
+
 <div class="sheet" id="sheetPublish" aria-hidden="true">
   <div class="sheet-backdrop" data-close></div>
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="pubTitle">
@@ -1244,6 +1303,31 @@ input,textarea{-webkit-user-select:text;user-select:text}
     </div>
   </div>
 </div>
+
+<!-- 发哔哔：一层轻量编辑页，没有标题、Slug、摘要，写完直接发 -->
+<div class="ai" id="memoPane" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="memoTitle">
+  <div class="preview-bar">
+    <button class="preview-close" id="memoClose">取消</button>
+    <h2 id="memoTitle">发哔哔</h2>
+    <button class="preview-action" id="memoSend">发布</button>
+  </div>
+  <div class="ai-body">
+    <div class="memo-wrap">
+      <p class="memo-hint" id="memoHint">发出去就出现在博客的<b>哔哔</b>页，不用起标题。没发完的内容会留在这里，下次接着写。</p>
+      <textarea class="memo-text" id="memoText" rows="8" placeholder="现在在想什么…"
+        autocapitalize="sentences" enterkeyhint="enter" spellcheck="false" aria-label="哔哔正文"></textarea>
+      <div class="memo-thumbs" id="memoThumbs" hidden></div>
+      <div class="memo-bar">
+        <button class="memo-add" id="memoPick" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="3.4"/><circle cx="8.8" cy="10" r="1.5"/><path d="M4.6 17.4l4.6-4.3a1.8 1.8 0 012.5 0l6.1 5.6"/></svg>
+          <span>照片</span>
+        </button>
+        <span class="memo-count" id="memoCount">0 字</span>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="file" id="memoFile" accept="image/*" multiple hidden>
 
 <!-- 图片大图预览 -->
 <div class="sheet" id="sheetImage" aria-hidden="true">
@@ -4251,7 +4335,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     $('hpSub').textContent = authed
       ? (open.length ? '手上有 ' + open.length + ' 篇没收尾，随时能接上。' : '先落几个字，剩下的慢慢来。')
       : '登录后才显示这台设备上的草稿，也才能写新的。';
-    $('hpNewLabel').textContent = authed ? '写新的一篇' : '登录';
+    $('hpNewLabel').textContent = authed ? '现在的想法' : '登录';
     // 加号配「登录」太怪，未解锁时只留文字
     $('hpNewIco').style.display = authed ? '' : 'none';
 
@@ -4294,7 +4378,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
     enterHome();
   }
 
-  $('hpNew').addEventListener('click', function () { startNewDraft(); });
+  // 一个入口两个去向：先问「文章还是哔哔」，别在首页摆两行按钮
+  $('hpNew').addEventListener('click', function () {
+    if (!authed) { openSheet('sheetLogin'); return; }
+    openSheet('sheetCompose');
+  });
+  $('composeArticle').addEventListener('click', function () {
+    closeSheet($('sheetCompose'));
+    startNewDraft();
+  });
+  $('composeMemo').addEventListener('click', function () {
+    closeSheet($('sheetCompose'));
+    setTimeout(openMemo, 180);
+  });
 
   $('hpMenu').addEventListener('click', function (event) {
     var row = event.target.closest('[data-go]');
@@ -5117,7 +5213,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return;
     }
     if (event.key === 'Escape') {
-      // AI 面板在最上层（26），先关它，再轮到抽屉和预览
+      // 全屏面板（26/27）在最上层，先关它们，再轮到抽屉和预览
+      if (memoPane.classList.contains('open')) { closeMemo(); return; }
       if (aiPanel.classList.contains('open')) { closeAi(); return; }
       var open = document.querySelector('.sheet.open');
       if (open) { closeSheet(open); return; }
@@ -5235,6 +5332,250 @@ input,textarea{-webkit-user-select:text;user-select:text}
     });
   });
 
+  /* ------------------------------ 发哔哔 ------------------------------
+     轻量一条：没有标题、Slug、摘要、分类。写完直接发到 FlareMo，
+     图片先走既有的 /api/write/upload 进图床，地址拼进正文。
+     没发出去的内容落在 localStorage，关掉再开还在。
+  */
+
+  var MEMO_KEY = 'hux-memo-v1';
+  var MEMO_MAX_IMAGES = 9;
+  var memoPane = $('memoPane');
+  var memoTextEl = $('memoText');
+  var memoThumbsEl = $('memoThumbs');
+  var memoCountEl = $('memoCount');
+  var memoSendEl = $('memoSend');
+  var memoPickEl = $('memoPick');
+  var memoFileEl = $('memoFile');
+  var memoItems = [];
+  var memoBusy = false;
+  var memoLoaded = false;
+  var memoTimer = 0;
+  var memoSeq = 0;
+
+  function memoRender() {
+    memoCountEl.textContent = memoTextEl.value.length + ' 字';
+    memoThumbsEl.hidden = memoItems.length === 0;
+    memoThumbsEl.innerHTML = '';
+    memoItems.forEach(function (item) {
+      var box = el('div', 'memo-thumb' + (item.state === 'error' ? ' err' : ''));
+      var img = el('img');
+      img.src = item.local || item.url;
+      img.alt = '';
+      box.appendChild(img);
+      if (item.state !== 'done') {
+        box.appendChild(el('div', 'mp-state', item.state === 'error' ? (item.error || '上传失败') : '上传中…'));
+      }
+      var del = el('button', 'mp-del', '×');
+      del.type = 'button';
+      del.setAttribute('aria-label', '删掉这张图');
+      del.addEventListener('click', function () { memoRemove(item.id); });
+      box.appendChild(del);
+      memoThumbsEl.appendChild(box);
+    });
+    memoSendEl.disabled = memoBusy;
+    memoPickEl.disabled = memoBusy || memoItems.length >= MEMO_MAX_IMAGES;
+  }
+
+  function memoSaveDraft() {
+    clearTimeout(memoTimer);
+    memoTimer = 0;
+    try {
+      var images = memoItems
+        .filter(function (item) { return item.state === 'done' && item.url; })
+        .map(function (item) { return item.url; });
+      var text = memoTextEl.value;
+      if (!text.trim() && !images.length) {
+        localStorage.removeItem(MEMO_KEY);
+        return;
+      }
+      localStorage.setItem(MEMO_KEY, JSON.stringify({ text: text, images: images, at: Date.now() }));
+    } catch (error) {}
+  }
+
+  function memoScheduleSave() {
+    clearTimeout(memoTimer);
+    memoTimer = setTimeout(memoSaveDraft, 500);
+  }
+
+  function memoRestoreDraft() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(MEMO_KEY) || 'null'); } catch (error) { saved = null; }
+    if (!saved) return false;
+    memoTextEl.value = String(saved.text || '');
+    memoItems = (Array.isArray(saved.images) ? saved.images : []).map(function (url) {
+      return { id: 'm' + (++memoSeq), url: String(url), local: String(url), state: 'done', error: '' };
+    });
+    return Boolean(memoTextEl.value.trim() || memoItems.length);
+  }
+
+  function memoRemove(id) {
+    for (var i = 0; i < memoItems.length; i += 1) {
+      if (memoItems[i].id !== id) continue;
+      var item = memoItems[i];
+      if (item.local && item.local.indexOf('blob:') === 0) {
+        try { URL.revokeObjectURL(item.local); } catch (error) {}
+      }
+      memoItems.splice(i, 1);
+      break;
+    }
+    memoRender();
+    memoScheduleSave();
+  }
+
+  function memoUpload(item, file) {
+    compress(file).then(function (blob) {
+      return api('/api/write/upload', {
+        method: 'POST',
+        raw: blob,
+        contentType: blob.type || 'image/jpeg'
+      });
+    }).then(function (result) {
+      item.url = result.url;
+      item.state = 'done';
+      memoRender();
+      memoScheduleSave();
+    }).catch(function (error) {
+      item.state = 'error';
+      item.error = '重试';
+      memoRender();
+      toast(error.message || '图片没传上去', 'err', 3200);
+    });
+  }
+
+  function memoAddFiles(files) {
+    if (!authed) { openSheet('sheetLogin'); return; }
+    var list = Array.prototype.slice.call(files || []).filter(function (file) {
+      return /^image\//.test(file.type);
+    });
+    if (!list.length) { toast('只认图片', null, 2000); return; }
+    var room = MEMO_MAX_IMAGES - memoItems.length;
+    if (room <= 0) { toast('一次最多 ' + MEMO_MAX_IMAGES + ' 张图', null, 2200); return; }
+    if (list.length > room) {
+      toast('最多还能加 ' + room + ' 张，多的先不传', null, 2600);
+      list = list.slice(0, room);
+    }
+    list.forEach(function (file) {
+      var item = { id: 'm' + (++memoSeq), url: '', local: '', state: 'uploading', error: '' };
+      try { item.local = URL.createObjectURL(file); } catch (error) {}
+      memoItems.push(item);
+      memoRender();
+      memoUpload(item, file);
+    });
+  }
+
+  var MEMO_HINT =
+    '发出去就出现在博客的<b>哔哔</b>页，不用起标题。没发完的内容会留在这里，下次接着写。';
+  var MEMO_HINT_BACK =
+    '上次没发出去的内容还在，接着写就行；发出去就出现在博客的<b>哔哔</b>页。';
+
+  function openMemo() {
+    if (!authed) { openSheet('sheetLogin'); return; }
+    var back = false;
+    if (!memoLoaded) {
+      memoLoaded = true;
+      back = memoRestoreDraft();
+    }
+    // 恢复提示写在说明里，不用 toast——那个半透明条会盖住正文上沿
+    $('memoHint').innerHTML = back ? MEMO_HINT_BACK : MEMO_HINT;
+    memoPane.classList.add('open');
+    memoPane.setAttribute('aria-hidden', 'false');
+    memoRender();
+    // 手机上不主动弹键盘：一开页就把视口顶上去，反而要先收一次
+    if (window.innerWidth > 620) setTimeout(function () { focusSoft(memoTextEl); }, 260);
+  }
+
+  function closeMemo(force) {
+    if (memoBusy && !force) return;
+    memoSaveDraft();
+    memoPane.classList.remove('open');
+    memoPane.setAttribute('aria-hidden', 'true');
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+
+  function memoPublish() {
+    if (memoBusy) return;
+    var text = memoTextEl.value.trim();
+    var uploading = memoItems.filter(function (item) { return item.state === 'uploading'; });
+    if (uploading.length) { toast('图片还在传，等它一下', null, 2200); return; }
+
+    var images = memoItems
+      .filter(function (item) { return item.state === 'done' && item.url; })
+      .map(function (item) { return item.url; });
+    if (!text && !images.length) { toast('写两句再发', null, 2000); return; }
+
+    memoBusy = true;
+    memoSendEl.disabled = true;
+    memoSendEl.textContent = '发布中';
+    var rid = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+    api('/api/write/memo', { method: 'POST', body: { content: text, images: images, rid: rid } })
+      .then(function (result) {
+        memoBusy = false;
+        memoSendEl.textContent = '发布';
+        memoSendEl.disabled = false;
+        memoItems.forEach(function (item) {
+          if (item.local && item.local.indexOf('blob:') === 0) {
+            try { URL.revokeObjectURL(item.local); } catch (error) {}
+          }
+        });
+        memoItems = [];
+        memoTextEl.value = '';
+        memoRender();
+        try { localStorage.removeItem(MEMO_KEY); } catch (error) {}
+        memoPane.classList.remove('open');
+        memoPane.setAttribute('aria-hidden', 'true');
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+        enterHome();
+        toast(result && result.sync === 'queued' ? '发出去了，博客一分钟内同步' : '发出去了，博客稍后同步', 'ok', 3000);
+      })
+      .catch(function (error) {
+        memoBusy = false;
+        memoSendEl.textContent = '发布';
+        memoSendEl.disabled = false;
+        toast(error.message || '没发出去，再试一次', 'err', 3800);
+      });
+  }
+
+  memoTextEl.addEventListener('input', function () {
+    memoRender();
+    memoScheduleSave();
+  });
+
+  // 粘贴图片：截图、网页里复制的图都走这条路
+  memoTextEl.addEventListener('paste', function (event) {
+    var data = event.clipboardData;
+    if (!data) return;
+    var files = [];
+    for (var i = 0; i < data.items.length; i += 1) {
+      var item = data.items[i];
+      if (item.kind !== 'file') continue;
+      var file = item.getAsFile();
+      if (file && /^image\//.test(file.type)) files.push(file);
+    }
+    if (!files.length) return;
+    event.preventDefault();
+    memoAddFiles(files);
+  });
+
+  memoFileEl.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(memoFileEl.files || []);
+    memoFileEl.value = '';
+    if (files.length) memoAddFiles(files);
+  });
+
+  memoPickEl.addEventListener('click', function () { memoFileEl.click(); });
+  memoSendEl.addEventListener('click', memoPublish);
+  $('memoClose').addEventListener('click', function () {
+    if (!memoHasContent()) { closeMemo(); return; }
+    closeMemo();
+    toast('存着了，下次接着写', null, 1800);
+  });
+
+  function memoHasContent() {
+    return Boolean(memoTextEl.value.trim()) || memoItems.length > 0;
+  }
+
   /* ------------------------------ 启动 ------------------------------ */
 
   var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -5264,6 +5605,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) {
       flushSave();
+      // 哔哔写到一半切走：也存一下，别指望 500ms 的防抖一定等到
+      if (memoLoaded) memoSaveDraft();
       // 15 秒的云端节流在「写完就切走」时容易漏一拍：切后台的瞬间补推一次
       if (authed) scheduleSync(0);
       return;
