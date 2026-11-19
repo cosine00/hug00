@@ -170,19 +170,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
 @keyframes hpIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 /* 入口页顶上那截空白：抽两句古诗填进去。
    高度留死（min-height），换一联不至于把下面整块内容顶来顶去。 */
-.hp-poem{margin:0 0 4px;min-height:clamp(92px,15vh,168px);padding:0 4px;
+.hp-poem{margin:0 0 4px;min-height:clamp(104px,16vh,176px);padding:0 4px;
   display:flex;flex-direction:column;justify-content:center;gap:2px}
 .hp-poem p{margin:0;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",ui-serif,Georgia,serif;
-  font-size:16px;line-height:1.95;letter-spacing:.07em;
+  font-size:16.5px;line-height:2.02;letter-spacing:.085em;
   color:color-mix(in srgb,var(--fg) 64%,transparent)}
-.hp-poem .pp-from{margin-top:7px;font-family:inherit;font-size:10.5px;line-height:1.6;
-  letter-spacing:.09em;color:var(--faint)}
+.hp-poem .pp-from{margin-top:11px;font-family:inherit;font-size:10.5px;line-height:1.6;
+  letter-spacing:.1em;color:var(--faint)}
 /* 抽到的是一条旧哔哔时换成手写字感：衬线留给诗，日常话语用正文那套字。
    最多三行，块高度不变，换个条目也不会把下面顶来顶去。 */
-.hp-poem.is-memo p{font-family:inherit;font-size:14px;line-height:1.72;letter-spacing:.004em;
-  color:color-mix(in srgb,var(--fg) 74%,transparent);
+.hp-poem.is-memo p{font-family:inherit;font-size:14.5px;line-height:1.92;letter-spacing:.014em;
+  color:color-mix(in srgb,var(--fg) 76%,transparent);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.hp-poem.is-memo .pp-from{letter-spacing:.05em}
+.hp-poem.is-memo .pp-from{margin-top:12px;letter-spacing:.06em}
 /* 带图的哔哔不在这儿铺图，照博客哔哔那套来：正文尾巴上跟一颗小图钉，点开再看；
    多图在图标右上角挂一枚 +N 角标，别占正文的行。 */
 .hp-poem .pp-shot{position:relative;display:inline-flex;align-items:center;justify-content:center;
@@ -232,6 +232,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .cm-top{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
 .cm-nick{font-size:12.5px;font-weight:590;color:var(--fg)}
 .cm-nick.me{color:var(--accent)}
+/* 楼里的「回复 @某人」是给眼睛指路的，不该跟昵称抢同一档：小一号、灰一档、单行省略 */
+.cm-re{flex:0 1 auto;min-width:0;font-size:11px;line-height:1.5;color:var(--faint);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-re b{font-weight:500;color:color-mix(in srgb,var(--fg) 66%,transparent)}
 .cm-time{margin-left:auto;font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
 .cm-text{font-size:13px;line-height:1.62;color:var(--muted);word-break:break-word;
   display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -4740,7 +4744,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
     top.appendChild(el('span', 'cm-nick' + (Number(row.is_admin) === 1 ? ' me' : ''),
       row.nick || '匿名'));
     if (opts.sub && opts.parentNick) {
-      top.appendChild(el('span', 'cm-re', '回复 @' + opts.parentNick));
+      // 「回复」两个字退灰，@ 的那位稍微压重一点——一行里先认人，再认动作
+      var re = el('span', 'cm-re', '回复 ');
+      re.appendChild(el('b', '', '@' + opts.parentNick));
+      top.appendChild(re);
     }
     top.appendChild(el('span', 'cm-time', stampAgo(row.created_at)));
     body.appendChild(top);
