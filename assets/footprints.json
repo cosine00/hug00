@@ -645,6 +645,121 @@
         "游记"
       ],
       "markerColor": "violet"
+    },
+    {
+      "name": "鸣沙山月牙泉",
+      "coordinates": "94.675416,40.093882",
+      "provinceAdcode": "620000",
+      "description": "",
+      "date": "2026-10-01",
+      "url": "/posts/qinggan-trip-03/",
+      "urlLabel": "青甘行·中｜河西走廊，千年敦煌",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023150454-ol3yg-img-20260930-175446.webp",
+        "https://img.hux.ink/image/2026/10/20261023150455-738w2-img-20260930-182832.webp",
+        "https://img.hux.ink/image/2026/10/20261023150456-r12qn-img-20260930-185648.webp",
+        "https://img.hux.ink/image/2026/10/20261023150457-q8izh-img-20260930-185704.webp",
+        "https://img.hux.ink/image/2026/10/20261023150504-zjb56-img-20261001-184420.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "大柴旦翡翠湖",
+      "coordinates": "95.265945,37.868162",
+      "provinceAdcode": "630000",
+      "description": "青甘大环线",
+      "date": "2026-10-02",
+      "url": "/posts/qinggan-trip-04/",
+      "urlLabel": "青甘行·下｜盐湖映翠，初见黄河",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023170402-izar0-dji-20261002170531-0332-d.webp",
+        "https://img.hux.ink/image/2026/10/20261023170405-p8png-dji-20261002170700-0335-d.webp",
+        "https://img.hux.ink/image/2026/10/20261023170410-kcywv-dji-20261002181937-0372-d.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "察尔汗盐湖",
+      "coordinates": "95.935614,36.755462",
+      "provinceAdcode": "630000",
+      "description": "青甘大环线",
+      "date": "2025-10-03",
+      "url": "/posts/qinggan-trip-04/",
+      "urlLabel": "青甘行·下｜盐湖映翠，初见黄河",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023173514-lsfl5-img-20261003-115403.webp",
+        "https://img.hux.ink/image/2026/10/20261023173231-tpt0l-img-20261003-124307.webp",
+        "https://img.hux.ink/image/2026/10/20261023173235-lzfbd-img-20261003-130521.webp",
+        "https://img.hux.ink/image/2026/10/20261023173238-vpfva-img-20261003-142308.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "小柴旦湖",
+      "coordinates": "95.46778,37.495106",
+      "provinceAdcode": "630000",
+      "description": "青甘大环线",
+      "date": "2026-10-03",
+      "url": "/posts/qinggan-trip-04/",
+      "urlLabel": "青甘行·下｜盐湖映翠，初见黄河",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023173512-xhqnx-dji-20261003172557-0491-d.webp",
+        "https://img.hux.ink/image/2026/10/20261023173518-g6qow-img-20261003-171344.webp",
+        "https://img.hux.ink/image/2026/10/20261023173524-6claj-img-20261003-172737.webp"
+      ],
+      "categories": [
+        "旅行，游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "青海湖",
+      "coordinates": "99.664697,36.922449",
+      "provinceAdcode": "650000",
+      "description": "青甘大环线",
+      "date": "2026-10-04",
+      "url": "/posts/qinggan-trip-04/",
+      "urlLabel": "青甘行·下｜盐湖映翠，初见黄河",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023173534-lduav-img-20261004-125424.webp",
+        "https://img.hux.ink/image/2026/10/20261023173529-1kgkv-img-20261004-120239.webp",
+        "https://img.hux.ink/image/2026/10/20261023173527-lwvou-img-20261004-064334.webp",
+        "https://img.hux.ink/image/2026/10/20261023173545-nnxvc-img-20261007-144612.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "violet"
+    },
+    {
+      "name": "兰州",
+      "coordinates": "103.834228,36.060798",
+      "provinceAdcode": "620000",
+      "description": "青甘大环线",
+      "date": "2026-10-06",
+      "url": "/posts/qinggan-trip-04/",
+      "urlLabel": "青甘行·下｜盐湖映翠，初见黄河",
+      "photos": [
+        "https://img.hux.ink/image/2026/10/20261023173543-0rx3c-img-20261006-113501.webp"
+      ],
+      "categories": [
+        "旅行",
+        "游记"
+      ],
+      "markerColor": "forest"
     }
   ]
 }
