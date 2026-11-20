@@ -162,6 +162,9 @@ Drafts Action 那一侧另外做了两件小事（在手机上、发请求之前
 
 ## 二、部署（Worker 端）
 
+> 状态：2026-11-20 已部署到生产（Version `4376828f`），`DRAFTS_INTEGRATION_TOKEN` 已写入 Secret，
+> 线上联调通过（明细见第八节第 1 条）。下面是操作记录，换机器或重装时照做即可。
+
 ### 1. 生成令牌并写进 Secret
 
 ```bash
@@ -458,14 +461,24 @@ node --test tests/*.test.mjs
 
 ## 八、尚未解决的风险
 
-1. **没有在真实 Cloudflare D1 上跑过。** 测试用的是 `node:sqlite`（SQLite 3.4x），
-   与 D1 的 SQL 方言基本一致，但下面几处属于「本地过、线上未实测」：
-   - `ON CONFLICT ... DO NOTHING` / `DO UPDATE ... excluded.x`（Beta 原有代码已在用，风险低）
-   - `WHERE ... AND source_hash IS ?` 这种带参数的条件更新（`IS` 在非 NULL 时等价于 `=`）
-   - `DELETE ... WHERE bucket < ?` 的清理语句
-   - `.run()` 返回的 `meta.changes` 语义（CAS 判断完全依赖它）
-   部署后建议先跑第二节的 curl，连发两次确认 `created` / `unchanged`，再在 Beta 里删掉。
-   就绪的判断标准很简单：两次都写不进两行。
+1. **真实 D1 已实测（2026-11-20，生产，Version `4376828f`）。** 原本列为「本地过、线上未知」
+   的几处 —— `ON CONFLICT ... DO NOTHING`、`WHERE ... AND source_hash IS ?` 条件更新、
+   `.run()` 的 `meta.changes` —— 都在生产上跑过了：
+
+   | 请求 | 结果 |
+   |---|---|
+   | 首次创建 | `201 created` |
+   | 原样重发 | `200 unchanged` |
+   | 改正文再发（Beta 未动） | `200 updated` —— **条件写命中，CAS 可用** |
+   | 再改第三次 | `200 updated` |
+   | 直接改 D1 里的正文后重发 | `409 draft_conflict`，`reason: beta_modified` |
+   | 打上墓碑后重发 | `409 draft_deleted` |
+   | 错令牌 | `401` |
+
+   表结构也确认过：`write_drafts` 补出 `source / source_id / source_hash / source_at` 四列，
+   `integration_rates` 建出来了，`schema:version` = `7`。当时造的两条测试草稿已硬删
+   （`SELECT COUNT(*) FROM write_drafts WHERE id LIKE 'dr-%'` = 0）。
+   仍未覆盖的只有限流清理那条 `DELETE ... WHERE bucket < ?` —— 它失败也只是多留几行空账。
 2. **并发只在单进程里验证过。** Node 的单线程 + 事件循环能把「两个请求都读到旧状态」这条
    路径逼出来（用 barrier 强行制造），但 D1 的真实并发（多 isolate、多区域）没法在本地复现。
    CAS 的写法对这种场景天然安全 —— 条件更新由数据库判定，不依赖进程内状态 —— 但这是推理，
