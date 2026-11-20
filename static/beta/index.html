@@ -1401,7 +1401,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <h2>预览</h2>
     <button class="preview-action" id="previewEdit" hidden>编辑</button>
   </div>
-  <iframe class="preview-frame" id="previewFrame" title="文章预览" referrerpolicy="no-referrer"></iframe>
+  <!-- sandbox：预览是一段 srcdoc，跑的就是本站的源。不给 allow-scripts，
+       正文里万一混进带事件的标签也执行不了；保留 allow-same-origin 只为让
+       外链字体按原来的源去取，和改之前的表现一致（两者同时给才危险）。 -->
+  <iframe class="preview-frame" id="previewFrame" title="文章预览" referrerpolicy="no-referrer" sandbox="allow-same-origin"></iframe>
 </div>
 
 <!-- AI 润色：全屏一层，结果只在面板里，采纳才回到正文 -->
@@ -3563,14 +3566,44 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   /* ------------------------------ 预览 ------------------------------ */
 
+  /* 正文最后会拼进 HTML：既当文字，也当 alt / src / href 的属性值。
+     引号必须一起转义 —— 少了这一步，`![a"onerror="alert(1)](x)` 就能在
+     img 标签里长出一个真属性来。 */
   function escapeHtml(text) {
-    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
+  /* 链接只放行明确的协议。javascript: / data: 这些即使整体转义过，也能用
+     `javascript&#58;` 这种实体写法规避，所以按白名单判，不按黑名单判。
+     图片比链接更严：不给锚点和 mailto。 */
+  function safeUrl(raw, forImage) {
+    var url = String(raw == null ? '' : raw).trim();
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) return url;
+    if (/^\/\//.test(url)) return url;              // 协议相对，跟着站点走
+    if (/^\/(?!\/)/.test(url)) return url;          // 站内绝对路径
+    if (!forImage && /^#/.test(url)) return url;    // 页内锚点
+    if (!forImage && /^mailto:/i.test(url)) return url;
+    return '';
+  }
+
+  /* 进来的 text 一定已经过 escapeHtml，捕获组可以直接拼进属性；
+     被拒的 URL 只留文字，不留半个标签。 */
   function inline(text) {
     return text
-      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img alt="$1" src="$2" loading="lazy">')
-      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (match, alt, src) {
+        var url = safeUrl(src, true);
+        return url ? '<img alt="' + alt + '" src="' + url + '" loading="lazy">' : alt;
+      })
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (match, label, href) {
+        var url = safeUrl(href, false);
+        return url ? '<a href="' + url + '" target="_blank" rel="noopener">' + label + '</a>' : label;
+      })
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
@@ -3692,6 +3725,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
     'html{background:var(--page-bg)}',
     'body{width:auto;margin:0;padding:0}',
     '.main{width:auto;max-width:none;margin:0;border-left:0;padding:20px 22px 72px}',
+    // 预览里的链接不该把人带走。以前靠一段内联脚本拦点击，现在 iframe 不给
+    // allow-scripts，脚本跑不了，改用 CSS 关掉命中 —— 效果一样，还少一段能执行的东西
+    '.post-content a{pointer-events:none}',
     '.post-content>.pv-empty{padding:56px 0;text-align:center;color:var(--faint);font-size:14px}',
     '@media (min-width:700px){.main{max-width:720px;margin:0 auto;padding:34px 40px 96px}}'
   ].join('');
@@ -3711,7 +3747,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   function previewShell(title, date, tags, html) {
     var look = blogLook();
-    var stamp = String(date || '').slice(0, 10) || todayDate();
+    var stamp = escapeHtml(String(date || '').slice(0, 10) || todayDate());
     var tagLine = '';
     if (tags && tags.length) {
       tagLine = '<div class="post-tags">' + tags.map(function (tag) {
@@ -3733,8 +3769,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
       '<div class="post-content">' + html + '</div>' +
       '<div class="post-footer-meta">' + tagLine +
       '<div class="post-footer-date"><time datetime="' + stamp + '">' + stamp + '</time></div></div>' +
-      '</article><script>document.addEventListener("click",function(e){' +
-      'if(e.target.closest("a"))e.preventDefault()},true)<\/script></body></html>';
+      '</article></body></html>';
   }
 
   function renderPreview(post) {

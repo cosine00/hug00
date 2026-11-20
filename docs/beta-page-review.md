@@ -908,3 +908,61 @@ if (box.bottom > bottom) docEl.scrollTop += box.bottom - bottom;   // box.bottom
 
 已知边界：**已经存在于云端的空白草稿不会被自动清理**（`adoptRemote` 本来就跳过无内容远端稿，只是不显示）。
 要清掉得在 Beta 里手动删，或者等下次 `prunePublished` 扫到发布残留。
+
+## 33. 预览的 XSS 入口：属性值没转义引号
+
+**从哪进来的**：`markdown()` 先把正文整体 `escapeHtml`，再让 `inline()` 把 Markdown 图片和链接拼成
+`<img alt="…" src="…">`。旧 `escapeHtml` 只转义 `& < >`，**引号原样穿过**，于是 alt 里的一个 `"`
+就能把属性闭掉、再长出一个新的：
+
+```
+![a"onerror="alert(1)](https://img.hux.ink/x.png)
+  ↓ 旧实现
+<img alt="a"onerror="alert(1)" src="https://img.hux.ink/x.png" loading="lazy">
+  ↓ 浏览器
+onerror 被当成真属性，图片加载失败即执行
+```
+
+两个出口都吃这段 HTML：`previewFrame.srcdoc`（预览）和 `aiRenderEl.innerHTML`（AI 结果）。
+iframe 当时也没有 `sandbox`，`srcdoc` 继承本站源，脚本能读 `localStorage` 里的全部草稿、
+能带着 `cm_admin` Cookie 调发布和删图接口 —— CSRF 也拦不住，因为 `GET /api/comments/session`
+会把 csrf token 一起交给同源页面。
+
+**实测对照**（同一段载荷，交给 Chrome 解析后看 `<title>`）：
+
+| 版本 | 渲染出的属性 | 结果 |
+|---|---|---|
+| 改之前 | `onerror="document.title='PWNED'"` 成了独立属性 | `<title>PWNED</title>` |
+| 改之后 | 整段留在 `alt="a&quot;onerror=&quot;…"` 里当文字 | `<title>clean</title>` |
+
+**改了四处**
+
+| 位置 | 改法 |
+|---|---|
+| `escapeHtml()` | 补上 `"` → `&quot;`、`'` → `&#39;`。它是正文进 HTML 前唯一的一道转义 |
+| `inline()` | 图片/链接不再直接用捕获组拼属性，改走 `safeUrl()` 判过再拼；被拒的只留文字，不留半个标签 |
+| `safeUrl()`（新增） | 白名单：`http(s)://`、`//`、`/`、链接另加 `#` 和 `mailto:`。图片不给后两个 |
+| `previewFrame` | 加 `sandbox="allow-same-origin"`，去掉外壳里那段内联 `<script>`，链接改由 `.post-content a{pointer-events:none}` 拦住 |
+
+**为什么按白名单判 URL**：`escapeHtml` 之后 `javascript:` 仍然是 `javascript:`，而
+`javascript&#58;` 这种实体写法浏览器解属性值时会先还原成冒号再执行 —— 黑名单永远漏一个。
+白名单只认几个明确的前缀，漏不出去。
+
+**为什么 sandbox 只给 `allow-same-origin`**：预览要按站点的源去取外链字体，去掉它字体行为就变了。
+`allow-scripts` 绝对不能给 —— 和 `allow-same-origin` 一起给等于没设沙箱（子文档能改自己的 sandbox）。
+代价是那段拦点击的内联脚本不再执行，正好借这次把它换成 CSS，预览里少一段可执行代码。
+
+**验证**
+
+- `tests/beta-preview-xss.test.mjs` 19 条：引号转义、alt 属性注入、地址里的引号、链接文字注入、
+  `javascript:` / 实体绕过 / 大小写混写 / `data:` / `vbscript:` / `file:`、正常链接与图片、
+  站内路径、协议相对地址、锚点、mailto、整条 `markdown()` 链、iframe 沙箱属性、外壳无内联脚本。
+- 真实浏览器对照：改之前 `title` 变成 `PWNED`，改之后保持 `clean`（见上表）。
+- 沙箱前后各截一张 390px 宽的图，标题、日期、段落、粗体、链接、图片、标签的位置完全一致，
+  说明 `sandbox` 没有影响渲染。
+- 拿三篇普通文档跑新旧管线对比：两篇逐字节相同，一篇只差 `'` `"` 的实体写法，浏览器显示一致。
+- 全量 183 条通过，`hugo --quiet` 通过。
+
+**没做的**：`aiRenderEl` 在页面主文档里，没有 iframe 那层沙箱，现在靠的就是这次修的转义。
+要再上一道，得给它独立容器或加 CSP；公开评论那条链（`static/js/comments.js`）本来就是对的
+（引号全转义、URL 只认 `https?://`），这次没有动它。
