@@ -102,8 +102,16 @@ async function runAction({ content, token = TOKEN, network = true, db, reply = n
     if (reply) {
       canned = { statusCode: reply.status, responseText: JSON.stringify(reply.body), responseData: reply.body };
     } else {
+      // 严格照 Drafts 的语义发：请求体只来自 data + encoding。
+      // 脚本要是改回用 `body` 传字符串，这里就发不出任何东西，服务端回 400 —— 当场红。
       const res = await worker.fetch(
-        new Request(last.url, { method: last.method || 'GET', headers: last.headers || {}, body: last.body }),
+        new Request(last.url, {
+          method: last.method || 'GET',
+          headers: last.headers || {},
+          body: last.data !== undefined
+            ? (last.encoding === 'json' ? JSON.stringify(last.data) : String(last.data))
+            : '',
+        }),
         envFor(db),
         {}
       );
@@ -169,8 +177,8 @@ test('正常发送：第一行当标题，正文原样，弹「已发送到 Beta
   const sent = state.requests[0];
   assert.equal(sent.method, 'POST');
   assert.equal(sent.headers.Authorization, `Bearer ${TOKEN}`);
-  assert.equal(JSON.parse(sent.body).sourceId, UUID, '上行仍然发 Drafts 原样的 UUID，服务端自己归一');
-  assert.ok(!String(sent.body).includes(TOKEN), '令牌不能进请求体');
+  assert.equal(sent.data.sourceId, UUID, '上行仍然发 Drafts 原样的 UUID，服务端自己归一');
+  assert.ok(!JSON.stringify(sent.data).includes(TOKEN), '令牌不能进请求体');
 });
 
 test('`# 标题` 去掉井号；`#标签` 不动', async () => {
@@ -315,4 +323,18 @@ test('能被当成普通脚本编译：Drafts 的 Script 步骤不包函数，�
     () => new vm.Script(SOURCE, { filename: 'send-to-beta.js' }),
     '脚本必须能作为顶层脚本执行；分支里的 return 要包在 IIFE 或函数里'
   );
+});
+
+test('请求体走 data + encoding:"json"：Drafts 的 http.request 没有 body 选项', async () => {
+  const db = await freshDb();
+  const { state } = await runAction({ content: '标题\n\n正文。', db });
+
+  assert.equal(state.requests.length, 1, '应该只发一次');
+  const sent = state.requests[0];
+  assert.equal(sent.encoding, 'json', 'encoding 必须是 json，否则 Drafts 不序列化 data');
+  assert.equal(typeof sent.data, 'object', 'data 要给对象，不要自己 JSON.stringify');
+  assert.equal(sent.data.title, '标题');
+  assert.equal(sent.data.source, 'drafts');
+  assert.equal(sent.data.body, '正文。');
+  assert.equal(sent.body, undefined, '不能再用 body：这个键会被 Drafts 整个忽略，body 会空');
 });

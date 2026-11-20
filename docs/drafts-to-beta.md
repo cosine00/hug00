@@ -384,7 +384,7 @@ var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(d
 | `docs/drafts/send-to-beta.js` | 新增。Drafts Action 脚本（含 429 分支） |
 | `docs/drafts-to-beta.md` | 新增。本文 |
 | `tests/drafts-integration.test.mjs` | 24 条：接口、冲突顺序、指纹、并发、限流、迁移 |
-| `tests/drafts-action-script.test.mjs` | 13 条：Action 脚本逻辑 + 顶层脚本可编译 |
+| `tests/drafts-action-script.test.mjs` | 14 条：Action 脚本逻辑 + 顶层可编译 + 请求体字段 |
 | `tests/beta-draft-source.test.mjs` | 3 条：前端「打开即重排」的回归 |
 
 没动：Hugo 发布流程、`static/admin/*`、FlareMo / 哔哔发布、GitHub 与 R2 相关代码。
@@ -395,8 +395,8 @@ var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(d
 
 ```
 node --test tests/*.test.mjs
-# tests 157
-# pass 157
+# tests 158
+# pass 158
 # fail 0
 ```
 
@@ -432,7 +432,7 @@ node --test tests/*.test.mjs
 23. Beta 改过之后 Drafts 再发：判得出冲突
 24. 老库（旧表结构 + version=5）升级：补四列 + 建限流表，已有草稿一条不少
 
-### Action 脚本（`tests/drafts-action-script.test.mjs`，13 条）
+### Action 脚本（`tests/drafts-action-script.test.mjs`，14 条）
 
 搭了一个最小的 Drafts 运行时（`Credential` / `HTTP` / `app` / `context`），`http.request`
 直接接到真实 Worker 上，所以「脚本发的字段名」与「Worker 认的字段名」对不上会当场红。
@@ -451,12 +451,13 @@ node --test tests/*.test.mjs
 36. **Beta 改过但 Drafts 没变 → 提示「不用重发」，不覆盖**
 37. **脚本能被当成普通脚本编译**：Drafts 的 Script 步骤不包函数，顶层 `return` 会直接
     语法错（2026-11-20 真机踩到），`vm.Script` 这条挡回归
+38. **请求体走 `data` + `encoding: "json"`**：断言没有 `body` 键（Drafts 会整个忽略它）
 
 ### 前端（`tests/beta-draft-source.test.mjs`，3 条）
 
-38. `paragraphize` 确实会把 `第一行\n第二行` 改成两段（列表/代码/表格/引用不动）
-39. `loadActive` 里那行 `source === 'drafts'` 判断还在
-40. 来源标记在新建、合并、上行三处的取舍都对（上行不带 `source`）
+39. `paragraphize` 确实会把 `第一行\n第二行` 改成两段（列表/代码/表格/引用不动）
+40. `loadActive` 里那行 `source === 'drafts'` 判断还在
+41. 来源标记在新建、合并、上行三处的取舍都对（上行不带 `source`）
 
 ### 没有自动化的部分
 
@@ -507,6 +508,12 @@ node --test tests/*.test.mjs
    `SyntaxError: Return statements are only valid inside functions`，一次都没发出去。
    现已整段包成 IIFE，并加了一条 `vm.Script` 编译测试 —— 语义与 Drafts 一致，顶层 `return`
    会当场失败，这类错误不会再流到真机。
+9. **`http.request()` 没有 `body` 选项**（同日第二次踩到，紧接上一条）。官方 `request(settings)`
+   只认 `data` + `encoding: "json" | "form"`，`timeout` 是 `HTTP` 对象上的属性而不是 request 的键。
+   用 `body` 传字符串会被**整段忽略**，服务端收到空请求体，回 `400 请求体是空的` —— 表现是
+   Action Log 里 `HTTP.request Failed: 400`，很像鉴权或网络问题，其实是没发出去东西。
+   已改成 `data: {...}` + `encoding: "json"`、`http.timeout = 30`；测试里的假 HTTP 也改成
+   只按这个语义序列化，脚本若退回 `body`，所有成功用例当场红。
 
 ---
 

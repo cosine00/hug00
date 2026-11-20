@@ -69,7 +69,11 @@
 
   /* -------------------------------- 发送 -------------------------------- */
 
+  // Drafts 的 http.request() 没有 body 选项：请求体只认 data + encoding。
+  // 用 body 传字符串会被整段忽略，服务端收到空请求体，回 400「请求体是空的」。
+  // data 给对象、encoding 给 "json"，由 Drafts 自己序列化（中文照原样编码）。
   const http = HTTP.create();
+  http.timeout = 30; // 秒；超时上限由 HTTP 对象持有，不是 request 的选项
   let response = null;
   try {
     response = http.request({
@@ -79,14 +83,13 @@
         "Content-Type": "application/json; charset=utf-8",
         "Authorization": "Bearer " + token
       },
-      body: JSON.stringify({
+      data: {
         source: "drafts",
         sourceId: draft.uuid,
         title: title,
         body: body
-      }),
-      timeout: 30,
-      responseType: "json"
+      },
+      encoding: "json"
     });
   } catch (error) {
     // 断网、DNS、超时都会走到这里；草稿没动，重试是安全的
