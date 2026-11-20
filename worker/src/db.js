@@ -94,6 +94,8 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires ON admin_sessions (expires_at)`,
   // 撰写页草稿：本机仍然是工作副本，这张表只负责把草稿搬到另一台设备。
   // 时间戳统一用毫秒（前端 Date.now() 直传），排序和「谁新谁胜」都靠它。
+  // source* 四列只给 Drafts 导入用，普通草稿留空（'' / NULL / 0），
+  // 前面那个批量 upsert 压根不写它们，所以 Beta 端自己的同步动不到来源信息。
   `CREATE TABLE IF NOT EXISTS write_drafts (
      id           TEXT PRIMARY KEY,
      title        TEXT    NOT NULL DEFAULT '',
@@ -106,7 +108,11 @@ const SCHEMA = [
      published_at INTEGER NOT NULL DEFAULT 0,
      created_at   INTEGER NOT NULL,
      updated_at   INTEGER NOT NULL,
-     deleted_at   INTEGER NOT NULL DEFAULT 0
+     deleted_at   INTEGER NOT NULL DEFAULT 0,
+     source       TEXT    NOT NULL DEFAULT '',
+     source_id    TEXT,
+     source_hash  TEXT,
+     source_at    INTEGER NOT NULL DEFAULT 0
    )`,
   `CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at)`,
 ];
@@ -127,6 +133,13 @@ const MIGRATIONS = [
   `ALTER TABLE comments ADD COLUMN is_top INTEGER NOT NULL DEFAULT 0`,
   `ALTER TABLE comments ADD COLUMN updated_at INTEGER`,
   `CREATE INDEX IF NOT EXISTS idx_comments_ip_time ON comments (ip_hash, created_at)`,
+  // Drafts 导入要记住「这篇草稿是从哪份 Drafts 文稿来的、上次导进来的是什么内容」。
+  // source_hash 是上次导入时的内容指纹，用来判断 Beta 端有没有被独立修改过 ——
+  // 不依赖任何一端的时间，两端时钟对不上也不会误判。
+  `ALTER TABLE write_drafts ADD COLUMN source TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE write_drafts ADD COLUMN source_id TEXT`,
+  `ALTER TABLE write_drafts ADD COLUMN source_hash TEXT`,
+  `ALTER TABLE write_drafts ADD COLUMN source_at INTEGER NOT NULL DEFAULT 0`,
 ];
 
 // 每个 isolate 只跑一次建表；失败则重置，下一请求重试
@@ -138,7 +151,8 @@ const NO_REVIEW_FLAG = 'migrate:no-review';
 const SCHEMA_VERSION_KEY = 'schema:version';
 // 加表/加列都要升版本号，否则老库会走「版本一致就跳过建表」的捷径，
 // 新表永远建不出来（首次请求直接 no such table）。
-const SCHEMA_VERSION = '5';
+// v6：write_drafts 多了 source / source_id / source_hash / source_at 四列（Drafts 导入用）
+const SCHEMA_VERSION = '6';
 
 function normalizeArgs(args) {
   return args.map((v) => {

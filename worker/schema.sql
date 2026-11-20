@@ -89,6 +89,9 @@ CREATE INDEX IF NOT EXISTS idx_comment_rate_actor_time
 
 -- 撰写页草稿：本机仍是工作副本，这张表只用来在设备之间搬运。
 -- 删除用软删（deleted_at），否则另一端丢掉草稿后，这边又会把它推回去。
+-- source / source_id / source_hash / source_at 只给 Drafts 导入用：
+--   记下「这份草稿来自哪份 Drafts 文稿」和「上次导进来时正文长什么样」，
+--   后者是判断 Beta 端有没有被改过的依据（不靠任何一端的时间）。
 CREATE TABLE IF NOT EXISTS write_drafts (
   id           TEXT PRIMARY KEY,
   title        TEXT    NOT NULL DEFAULT '',
@@ -101,7 +104,17 @@ CREATE TABLE IF NOT EXISTS write_drafts (
   published_at INTEGER NOT NULL DEFAULT 0,
   created_at   INTEGER NOT NULL,
   updated_at   INTEGER NOT NULL,
-  deleted_at   INTEGER NOT NULL DEFAULT 0
+  deleted_at   INTEGER NOT NULL DEFAULT 0,
+  source       TEXT    NOT NULL DEFAULT '',
+  source_id    TEXT,
+  source_hash  TEXT,
+  source_at    INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at);
+
+-- 老库补列（新库跑上面那段就够，这几条会报 duplicate column，忽略即可）：
+-- ALTER TABLE write_drafts ADD COLUMN source TEXT NOT NULL DEFAULT '';
+-- ALTER TABLE write_drafts ADD COLUMN source_id TEXT;
+-- ALTER TABLE write_drafts ADD COLUMN source_hash TEXT;
+-- ALTER TABLE write_drafts ADD COLUMN source_at INTEGER NOT NULL DEFAULT 0;

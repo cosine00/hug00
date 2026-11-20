@@ -29,6 +29,8 @@
  *   POST /api/write/drafts               批量上行草稿，冲突按 updated_at 判
  *   POST /api/write/polish               { text, mode, instruction, scope } → AI 润色稿
  *   POST /api/write/memo                 { content, images[], rid } → 发一条哔哔到 FlareMo
+ *
+ *   POST /api/integrations/drafts        Drafts 文稿 → Beta 草稿（单独令牌，只此一个动作）
  */
 
 import {
@@ -54,6 +56,7 @@ import {
 import { notifyNewComment, notifyReply } from './mail.js';
 import { handleWriteDraftsGet, handleWriteDraftsSave, handleWriteHealth, handleWriteImages, handleWritePost, handleWritePosts, handleWriteTags, handleWriteUpload } from './write.js';
 import { handleWriteMemo } from './memo.js';
+import { handleDraftsImport } from './drafts.js';
 import { handlePolish } from './ai.js';
 import {
   buildSessionCookie,
@@ -328,6 +331,13 @@ async function route(request, env, url, ctx) {
     if (request.method === 'GET') return handleWriteDraftsGet(env, url);
     if (request.method === 'POST') return handleWriteDraftsSave(request, env);
     return fail(405, 'method_not_allowed', '草稿接口只接受 GET 和 POST');
+  }
+
+  // Drafts 导入：不走 adminGate，只认 DRAFTS_INTEGRATION_TOKEN（在 drafts.js 里校验）。
+  // 这个令牌换不到会话 Cookie，也进不了上面任何一条 /api/write/* 或 /api/comments/*。
+  if (path === '/api/integrations/drafts') {
+    if (request.method !== 'POST') return fail(405, 'method_not_allowed', '这个接口只接受 POST');
+    return handleDraftsImport(request, env);
   }
 
   return fail(404, 'not_found', '接口不存在');

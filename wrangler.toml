@@ -47,6 +47,11 @@ DEEPSEEK_MODEL = "deepseek-flash"
 # 令牌不进这里：npx wrangler secret put FLAREMO_PAT（memos_pat_ 开头，需能写 memo）
 FLAREMO_BASE = "https://drafts.hux.ink"
 
+# ── Drafts 导入（POST /api/integrations/drafts）─────────────────────
+# iOS Drafts 的「发送到 Beta」Action 用独立令牌调这个接口，只能建/更新草稿，
+# 拿不到评论管理、图片删除、正式发文的权限。令牌同样不进这里：
+#   npx wrangler secret put DRAFTS_INTEGRATION_TOKEN
+
 # 自定义域：deploy 时 Cloudflare 会自动在 hux.ink 下建 DNS 记录（需该域在 CF 托管）
 [[routes]]
 pattern = "comments.hux.ink/*"
