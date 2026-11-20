@@ -115,6 +115,16 @@ const SCHEMA = [
      source_at    INTEGER NOT NULL DEFAULT 0
    )`,
   `CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at)`,
+  // 外部集成（目前只有 Drafts）的调用记账：按「令牌指纹 + 分钟桶」累加次数与字符数，
+  // 用来做限流。只存指纹，存不下令牌；老窗口由 drafts.js 顺手删掉，表里只有几行。
+  `CREATE TABLE IF NOT EXISTS integration_rates (
+     token_fp TEXT    NOT NULL,
+     bucket   INTEGER NOT NULL,
+     hits     INTEGER NOT NULL DEFAULT 0,
+     units    INTEGER NOT NULL DEFAULT 0,
+     PRIMARY KEY (token_fp, bucket)
+   )`,
+  `CREATE INDEX IF NOT EXISTS idx_integration_rates_bucket ON integration_rates (bucket)`,
 ];
 
 // 已有库（CREATE TABLE 不会补列）需要单独加字段，报「重复列」时忽略即可
@@ -152,7 +162,8 @@ const SCHEMA_VERSION_KEY = 'schema:version';
 // 加表/加列都要升版本号，否则老库会走「版本一致就跳过建表」的捷径，
 // 新表永远建不出来（首次请求直接 no such table）。
 // v6：write_drafts 多了 source / source_id / source_hash / source_at 四列（Drafts 导入用）
-const SCHEMA_VERSION = '6';
+// v7：新增 integration_rates（Drafts 令牌的分钟级限流记账）
+const SCHEMA_VERSION = '7';
 
 function normalizeArgs(args) {
   return args.map((v) => {

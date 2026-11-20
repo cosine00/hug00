@@ -141,6 +141,12 @@ if (status === 413) {
   return;
 }
 
+if (status === 429) {
+  const wait = payload && payload.retryAfter ? " 约 " + payload.retryAfter + " 秒后再试。" : "";
+  context.fail(serverText || ("发得太勤了（429）。" + wait));
+  return;
+}
+
 if (status === 400) {
   context.fail(serverText || "Beta 说这份内容不合要求（400）。");
   return;

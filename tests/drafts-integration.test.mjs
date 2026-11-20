@@ -4,9 +4,10 @@
  * 这块的关键不是「能不能存进去」，而是「什么时候坚决不存」：
  *   · 同一篇重复发送 → 一行，不重复建；
  *   · Drafts 改了、Beta 没动 → 跟着改；
- *   · Beta 改过 → 409，两边都留着；
- *   · Beta 删了 / 发布了 → 409，不复活、不覆盖线上文章。
- * 判断全靠内容指纹，所以这里刻意把 updated_at 设成各种不合理的值，
+ *   · Beta 改过 → 409，不管 Drafts 变没变（这条顺序错了会静默漏报）；
+ *   · Beta 删了 / 发布了 → 409，不复活、不覆盖线上文章；
+ *   · 两个请求同时到 → 不互相覆盖、不重复建、不 500。
+ * 判断全靠内容指纹，所以有些用例刻意把 updated_at 设成不合理的值，
  * 确认结果只跟内容有关，跟时间无关。
  *
  * 用真实的 node:sqlite 当 D1（tests/helpers/d1.mjs），SQL 的写法与线上一致。
@@ -68,7 +69,93 @@ function rowOf(db, id) {
   return db._db.prepare('SELECT * FROM write_drafts WHERE id = ?').get(id);
 }
 
+const countRows = (db) => db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n;
+
 const ROW_ID = `dr-${UUID.toLowerCase()}`;
+
+const saveRequest = (drafts) =>
+  new Request('https://x/api/write/drafts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ drafts }),
+  });
+
+const tombstone = (updatedAt) => ({
+  id: ROW_ID,
+  title: '',
+  body: '',
+  tags: [],
+  createdAt: 1,
+  updatedAt,
+  deletedAt: updatedAt,
+});
+
+/**
+ * 把「第一次读这篇草稿」拦下来，等 n 个请求都读到同一份旧状态再一起放行。
+ * Node 是单线程的，不做这一步两个请求会天然错开，测不到 CAS 分支。
+ */
+function barrierDb(db, n) {
+  let arrived = 0;
+  let pending = n;
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+
+  return {
+    prepare(sql) {
+      const stmt = db.prepare(sql);
+      return {
+        bind(...args) {
+          const bound = stmt.bind(...args);
+          return {
+            async first(...rest) {
+              if (pending > 0 && /FROM write_drafts WHERE id = \?/.test(sql)) {
+                pending -= 1;
+                arrived += 1;
+                if (arrived >= n) release();
+                await gate;
+              }
+              return bound.first(...rest);
+            },
+            all: (...rest) => bound.all(...rest),
+            run: (...rest) => bound.run(...rest),
+          };
+        },
+      };
+    },
+    batch: (statements) => db.batch(statements),
+  };
+}
+
+/**
+ * 读到这一行之后、handler 继续往下走之前，插一件别的事（比如在 Beta 里删掉它）。
+ * 用来确定性地测「读与写之间被别人改了」，比靠时间差更可靠。
+ */
+function afterReadDb(db, sideEffect) {
+  let fired = false;
+  return {
+    prepare(sql) {
+      const stmt = db.prepare(sql);
+      return {
+        bind(...args) {
+          const bound = stmt.bind(...args);
+          return {
+            async first(...rest) {
+              const row = await bound.first(...rest);
+              if (!fired && /FROM write_drafts WHERE id = \?/.test(sql)) {
+                fired = true;
+                await sideEffect();
+              }
+              return row;
+            },
+            all: (...rest) => bound.all(...rest),
+            run: (...rest) => bound.run(...rest),
+          };
+        },
+      };
+    },
+    batch: (statements) => db.batch(statements),
+  };
+}
 
 /* ---------------------------------- 建 ---------------------------------- */
 
@@ -91,16 +178,17 @@ test('首次发送：建出一篇草稿，标题正文原样落库，Beta 列表
   assert.equal(row.published_at, 0);
   assert.equal(row.deleted_at, 0);
   assert.equal(row.source, 'drafts');
-  assert.equal(row.source_id, UUID);
+  assert.equal(row.source_id, UUID.toLowerCase(), 'UUID 统一成小写标准形式再落库');
   assert.ok(row.source_hash, '要落下内容指纹，后面判断冲突全靠它');
 
-  // Beta 端走的是同一条 GET，Drafts 来的草稿必须出现在里面
+  // Beta 端走的是同一条 GET，Drafts 来的草稿必须出现在里面（还带上来源标记）
   const listed = await (await handleWriteDraftsGet(envWith(db), new URL('https://x/api/write/drafts'))).json();
   assert.equal(listed.drafts.length, 1);
   assert.equal(listed.drafts[0].id, ROW_ID);
   assert.equal(listed.drafts[0].title, '在雨里走了一段路');
   assert.deepEqual(listed.drafts[0].tags, []);
   assert.equal(listed.drafts[0].edit, null);
+  assert.equal(listed.drafts[0].source, 'drafts', '前端要靠它跳过自动排版');
 });
 
 test('重复发送相同内容：不新建、不改动，返回 unchanged', async () => {
@@ -120,9 +208,7 @@ test('重复发送相同内容：不新建、不改动，返回 unchanged', asyn
   assert.equal(after.body, before.body);
   assert.equal(after.updated_at, before.updated_at);
   assert.equal(first.status, 'created');
-
-  const count = db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n;
-  assert.equal(count, 1, '永远只有一行');
+  assert.equal(countRows(db), 1, '永远只有一行');
 });
 
 test('Drafts 改了正文、Beta 没动：跟着更新，标签与 slug 不丢', async () => {
@@ -148,11 +234,30 @@ test('Drafts 改了正文、Beta 没动：跟着更新，标签与 slug 不丢',
   assert.equal(row.slug, 'rain');
 });
 
-test('Beta 端改过正文：409 冲突，不覆盖，两边内容都在', async () => {
+/* ------------------------------ 冲突判断顺序 ------------------------------ */
+
+test('Beta 改过、Drafts 没变：409，不能返回 unchanged（顺序回归）', async () => {
   const db = await freshDb();
   await handleDraftsImport(importRequest(payload()), envWith(db));
 
-  // 模拟在 Beta 编辑器里改了一个字（内容指纹随之对不上）
+  // Beta 编辑过（内容指纹变了），Drafts 那边一个字都没有改
+  db.exec(`UPDATE write_drafts SET body = body || '\n\nBeta 里补的一段。' WHERE id = '${ROW_ID}'`);
+  const betaBody = rowOf(db, ROW_ID).body;
+
+  const res = await handleDraftsImport(importRequest(payload()), envWith(db));
+  const data = await res.json();
+
+  assert.equal(res.status, 409, 'Drafts 没变也必须报冲突，不能因为「内容一样」就说成功');
+  assert.equal(data.error.code, 'draft_conflict');
+  assert.equal(data.conflict.reason, 'beta_modified');
+  assert.match(data.error.message, /什么都没写/);
+  assert.match(data.conflict.hint, /不用重发/);
+  assert.equal(rowOf(db, ROW_ID).body, betaBody, 'Beta 的内容一个字符都不能动');
+});
+
+test('Beta 改过、Drafts 也改过：409，两边都留着', async () => {
+  const db = await freshDb();
+  await handleDraftsImport(importRequest(payload()), envWith(db));
   db.exec(`UPDATE write_drafts SET body = body || '\n\nBeta 里补的一段。' WHERE id = '${ROW_ID}'`);
   const betaBody = rowOf(db, ROW_ID).body;
 
@@ -160,14 +265,11 @@ test('Beta 端改过正文：409 冲突，不覆盖，两边内容都在', async
   const data = await res.json();
 
   assert.equal(res.status, 409);
-  assert.equal(data.ok, false);
   assert.equal(data.error.code, 'draft_conflict');
-  assert.match(data.error.message, /改过/);
-  assert.ok(data.conflict, '要把冲突信息带回去，Action 才能说清原因');
+  assert.equal(data.conflict.reason, 'both_modified');
   assert.equal(data.conflict.beta.title, '在雨里走了一段路');
   assert.ok(data.conflict.beta.excerpt.includes('Beta 里补的一段'));
-
-  assert.equal(rowOf(db, ROW_ID).body, betaBody, 'Beta 的内容一个字符都不能动');
+  assert.equal(rowOf(db, ROW_ID).body, betaBody);
 });
 
 test('冲突判断只看内容：时间戳怎么乱都不影响', async () => {
@@ -195,16 +297,7 @@ test('Beta 删除过：409，不复活、不重建', async () => {
   db.exec(`UPDATE write_drafts SET updated_at = 1000 WHERE id = '${ROW_ID}'`);
 
   // 走 Beta 自己的删除通道（软删墓碑），别手写 SQL，确保形状一致
-  await handleWriteDraftsSave(
-    new Request('https://x/api/write/drafts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        drafts: [{ id: ROW_ID, title: '', body: '', tags: [], createdAt: 1, updatedAt: Date.now(), deletedAt: Date.now() }],
-      }),
-    }),
-    envWith(db)
-  );
+  await handleWriteDraftsSave(saveRequest([tombstone(Date.now())]), envWith(db));
   assert.ok(rowOf(db, ROW_ID).deleted_at > 0);
 
   const res = await handleDraftsImport(importRequest(payload()), envWith(db));
@@ -232,7 +325,139 @@ test('已经发布过：409，不动原稿也不新建', async () => {
   assert.equal(res.status, 409);
   assert.equal(data.error.code, 'draft_published');
   assert.equal(rowOf(db, ROW_ID).body, payload().body);
-  assert.equal(db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n, 1);
+  assert.equal(countRows(db), 1);
+});
+
+/* --------------------------------- 指纹 ---------------------------------- */
+
+test('内容指纹用 JSON 数组编码：标题带换行也不会和正文串味', async () => {
+  const db = await freshDb();
+  await handleDraftsImport(importRequest(payload({ title: 'a', body: 'b\nc' })), envWith(db));
+
+  // Beta 侧把这篇改成 title="a\nb"、body="c"。
+  // 若指纹是简单的「标题 + \n + 正文」拼接，两者都哈希 "a\nb\nc"，这里会误判成 unchanged。
+  db.exec(`UPDATE write_drafts SET title = 'a' || char(10) || 'b', body = 'c' WHERE id = '${ROW_ID}'`);
+
+  const res = await handleDraftsImport(importRequest(payload({ title: 'a', body: 'b\nc' })), envWith(db));
+  assert.equal(res.status, 409, '拼接式指纹会在这里漏判，必须报冲突');
+  assert.equal((await res.json()).error.code, 'draft_conflict');
+});
+
+test('换行符归一：CRLF 与 LF 视为同一份内容', async () => {
+  const db = await freshDb();
+  await handleDraftsImport(importRequest(payload({ body: '第一行\r\n\r\n第二行' })), envWith(db));
+  assert.equal(rowOf(db, ROW_ID).body, '第一行\n\n第二行', '正文只统一换行符');
+
+  const again = await handleDraftsImport(importRequest(payload({ body: '第一行\n\n第二行' })), envWith(db));
+  assert.equal(again.status, 200);
+  assert.equal((await again.json()).status, 'unchanged');
+});
+
+test('正文不做任何排版：缩进、空行、尾部空白都留着', async () => {
+  const db = await freshDb();
+  const body = '  缩进的一行\n\n\n\n多个空行\n\n```\ncode\n```   ';
+  await handleDraftsImport(importRequest(payload({ body })), envWith(db));
+  assert.equal(rowOf(db, ROW_ID).body, body);
+});
+
+/* --------------------------------- 并发 ---------------------------------- */
+
+test('并发首次创建：只建一篇，没有 500', async () => {
+  const db = await freshDb();
+  const gated = barrierDb(db, 2);
+
+  const [a, b] = await Promise.all([
+    handleDraftsImport(importRequest(payload()), envWith(gated)),
+    handleDraftsImport(importRequest(payload()), envWith(gated)),
+  ]);
+
+  assert.deepEqual([a.status, b.status].sort(), [200, 201], '一个建、一个落成 unchanged');
+  assert.equal(countRows(db), 1, '不能出现两行');
+
+  const bodies = await Promise.all([a.json(), b.json()]);
+  assert.ok(bodies.every((row) => row.ok));
+});
+
+test('并发发送两个不同版本：只有先到的写进去，后到的不覆盖', async () => {
+  const db = await freshDb();
+  await handleDraftsImport(importRequest(payload({ body: 'v1' })), envWith(db));
+
+  const gated = barrierDb(db, 2);
+  const [a, b] = await Promise.all([
+    handleDraftsImport(importRequest(payload({ body: 'v2' })), envWith(gated)),
+    handleDraftsImport(importRequest(payload({ body: 'v3' })), envWith(gated)),
+  ]);
+
+  // 两个都读到 v1；只有一个的条件写能命中，另一个重读之后如实报「刚被写入，请重发」
+  assert.deepEqual([a.status, b.status].sort(), [200, 409]);
+  assert.equal(countRows(db), 1);
+
+  const row = rowOf(db, ROW_ID);
+  const winner = a.status === 200 ? 'v2' : 'v3';
+  assert.equal(row.body, winner, '落库的必须正好是写成功的那一份，不能混');
+  assert.ok(['v2', 'v3'].includes(row.body), '最终内容必须是两次提交之一，不能是半截');
+
+  const loser = a.status === 409 ? await a.json() : await b.json();
+  assert.equal(loser.error.code, 'concurrent_update');
+
+  // 自洽：把最终内容原样再发一次，应该 unchanged（说明 source_hash 与内容对得上）
+  const settle = await handleDraftsImport(importRequest(payload({ body: row.body })), envWith(db));
+  assert.equal(settle.status, 200);
+  assert.equal((await settle.json()).status, 'unchanged');
+});
+
+test('读到之后有人在 Beta 删了：不写回去，返回 draft_deleted', async () => {
+  const db = await freshDb();
+  await handleDraftsImport(importRequest(payload()), envWith(db));
+  db.exec(`UPDATE write_drafts SET updated_at = 1000 WHERE id = '${ROW_ID}'`);
+
+  // 导入读到「未删除」的旧状态之后，Beta 这边把草稿删了 —— 最典型的读写间隙
+  const racing = afterReadDb(db, async () => {
+    await handleWriteDraftsSave(saveRequest([tombstone(Date.now())]), envWith(db));
+  });
+
+  const res = await handleDraftsImport(importRequest(payload({ body: 'Drafts 的新版本' })), envWith(racing));
+
+  assert.equal(res.status, 409);
+  assert.equal((await res.json()).error.code, 'draft_deleted');
+
+  const row = rowOf(db, ROW_ID);
+  assert.ok(row.deleted_at > 0, '墓碑不能被导入冲掉');
+  assert.equal(row.body, '', '墓碑写回时正文已被清空，导入的内容没落地');
+});
+
+/* --------------------------------- 限流 ---------------------------------- */
+
+test('限流：一分钟内超过 30 次 → 429，带 Retry-After', async () => {
+  const db = await freshDb();
+  const env = envWith(db);
+
+  for (let i = 0; i < 30; i += 1) {
+    const res = await handleDraftsImport(importRequest(payload({ body: `第 ${i} 版` })), env);
+    assert.notEqual(res.status, 429, `第 ${i + 1} 次不该被限流`);
+  }
+
+  const blocked = await handleDraftsImport(importRequest(payload({ body: '第 31 版' })), env);
+  const data = await blocked.json();
+  assert.equal(blocked.status, 429);
+  assert.equal(data.error.code, 'rate_limited');
+  assert.ok(Number(blocked.headers.get('Retry-After')) > 0);
+  assert.equal(rowOf(db, ROW_ID).body, '第 29 版', '被限流的那次不能写库');
+});
+
+test('限流：短时间写入量超 100 万字符 → 429', async () => {
+  const db = await freshDb();
+  const env = envWith(db);
+  const big = 'x'.repeat(100000);
+
+  let blocked = null;
+  for (let i = 0; i < 12 && !blocked; i += 1) {
+    const res = await handleDraftsImport(importRequest(payload({ body: big })), env);
+    if (res.status === 429) blocked = res;
+  }
+
+  assert.ok(blocked, '写到 100 万字符之后要拦住');
+  assert.equal((await blocked.json()).error.code, 'rate_limited');
 });
 
 /* ---------------------------------- 校验 --------------------------------- */
@@ -252,7 +477,7 @@ test('鉴权：令牌缺失、写错、没配置都不放行', async () => {
   assert.equal(noSecret.status, 503);
   assert.equal((await noSecret.json()).error.code, 'integration_not_configured');
 
-  assert.equal(db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n, 0, '鉴权失败不能落库');
+  assert.equal(countRows(db), 0, '鉴权失败不能落库');
 });
 
 test('参数校验：source / sourceId / 标题 / JSON 各自给出明确的错误码', async () => {
@@ -265,6 +490,12 @@ test('参数校验：source / sourceId / 标题 / JSON 各自给出明确的错�
   const badId = await (await handleDraftsImport(importRequest(payload({ sourceId: '../../etc' })), env)).json();
   assert.equal(badId.error.code, 'bad_source_id');
 
+  // 严格 UUID：少一段、含非十六进制、随便一串，都要拒
+  for (const id of ['F3A1B2C3-4D5E-6F70-8192-A3B4C5D6E7F', 'G3A1B2C3-4D5E-6F70-8192-A3B4C5D6E7F8', 'dr-abc', '']) {
+    const got = await (await handleDraftsImport(importRequest(payload({ sourceId: id })), env)).json();
+    assert.equal(got.error.code, 'bad_source_id', `应当拒绝 sourceId="${id}"`);
+  }
+
   const noTitle = await (await handleDraftsImport(importRequest(payload({ title: '   ' })), env)).json();
   assert.equal(noTitle.error.code, 'title_required');
 
@@ -274,7 +505,20 @@ test('参数校验：source / sourceId / 标题 / JSON 各自给出明确的错�
   const broken = await (await handleDraftsImport(importRequest('{not json'), env)).json();
   assert.equal(broken.error.code, 'bad_json');
 
-  assert.equal(db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n, 0);
+  assert.equal(countRows(db), 0);
+});
+
+test('UUID 两种写法落到同一篇：带连字符与不带连字符是同一个人', async () => {
+  const db = await freshDb();
+  const plain = UUID.replace(/-/g, '');
+
+  const first = await (await handleDraftsImport(importRequest(payload({ sourceId: UUID, body: '一版' })), envWith(db))).json();
+  const second = await handleDraftsImport(importRequest(payload({ sourceId: plain, body: '一版' })), envWith(db));
+
+  assert.equal(first.status, 'created');
+  assert.equal(second.status, 200);
+  assert.equal((await second.json()).status, 'unchanged');
+  assert.equal(countRows(db), 1);
 });
 
 test('超长正文：413，别拿半篇去凑数', async () => {
@@ -284,7 +528,7 @@ test('超长正文：413，别拿半篇去凑数', async () => {
 
   assert.equal(res.status, 413);
   assert.equal(data.error.code, 'body_too_large');
-  assert.equal(db._db.prepare('SELECT COUNT(*) AS n FROM write_drafts').get().n, 0);
+  assert.equal(countRows(db), 0);
 });
 
 /* --------------------------------- 兼容性 -------------------------------- */
@@ -320,52 +564,42 @@ test('Beta 自己的同步不会抹掉来源标记，也不会把导入的草稿
 
   // Beta 端把这篇原样推回来（拉取后发现本地更新时间更晚时会这样），带上新时间戳
   const save = await handleWriteDraftsSave(
-    new Request('https://x/api/write/drafts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        drafts: [
-          {
-            id: ROW_ID,
-            title: imported.title,
-            body: imported.body,
-            tags: [],
-            slug: '',
-            edit: null,
-            createdAt: imported.created_at,
-            updatedAt: imported.updated_at + 1000,
-          },
-        ],
-      }),
-    }),
+    saveRequest([
+      {
+        id: ROW_ID,
+        title: imported.title,
+        body: imported.body,
+        tags: [],
+        slug: '',
+        edit: null,
+        createdAt: imported.created_at,
+        updatedAt: imported.updated_at + 1000,
+      },
+    ]),
     envWith(db)
   );
   assert.equal((await save.json()).saved, 1);
 
   const after = rowOf(db, ROW_ID);
   assert.equal(after.source, 'drafts', 'source 不能被普通草稿上行冲成空');
-  assert.equal(after.source_id, UUID);
+  assert.equal(after.source_id, UUID.toLowerCase());
   assert.equal(after.source_hash, imported.source_hash);
 
-  // 内容没变 → 依然是 unchanged（这条专门防止「Beta 推回来一次就再也认不出原文」）
+  // 内容没变 → 依然是 unchanged
   const again = await (await handleDraftsImport(importRequest(payload()), envWith(db))).json();
   assert.equal(again.status, 'unchanged');
 });
 
-test('Beta 里改过之后再让 Drafts 发：仍然认得出改过（来源标记跟着一起走）', async () => {
+test('Beta 里改过之后再让 Drafts 发：判得出冲突', async () => {
   const db = await freshDb();
   await handleDraftsImport(importRequest(payload()), envWith(db));
-  // 同上：把导入时间往回拨，Beta 这次的修改才一定被判为更新
+  // 把导入时间往回拨，Beta 这次的修改才一定被判为更新
   db.exec(`UPDATE write_drafts SET updated_at = 1000 WHERE id = '${ROW_ID}'`);
 
   await handleWriteDraftsSave(
-    new Request('https://x/api/write/drafts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        drafts: [{ id: ROW_ID, title: 'Beta 改的标题', body: 'Beta 改的正文', tags: [], createdAt: 1, updatedAt: Date.now() }],
-      }),
-    }),
+    saveRequest([
+      { id: ROW_ID, title: 'Beta 改的标题', body: 'Beta 改的正文', tags: [], createdAt: 1, updatedAt: Date.now() },
+    ]),
     envWith(db)
   );
 
@@ -382,7 +616,7 @@ test('Beta 里改过之后再让 Drafts 发：仍然认得出改过（来源标�
  * 所以必须走 MIGRATIONS 的 ALTER，且不能把老草稿弄丢。
  * 这里手工造一个「旧形状」的库（version=5），再让 ensureSchema 去升。
  */
-test('老库升级：旧表结构补上 source 四列，已有草稿一条不少', async () => {
+test('老库升级：补齐 source 四列与限流表，已有草稿一条不少', async () => {
   const db = createD1();
   db.exec(`CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT)`);
   db.exec(`CREATE TABLE write_drafts (
@@ -420,6 +654,11 @@ test('老库升级：旧表结构补上 source 四列，已有草稿一条不少
   assert.equal(row.source, '', '老草稿默认没有来源');
   assert.equal(row.source_at, 0);
 
+  const rateTable = db._db
+    .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'integration_rates'")
+    .get();
+  assert.ok(rateTable, '限流表要一并建出来');
+
   const version = db._db.prepare("SELECT value FROM settings WHERE key = 'schema:version'").get();
-  assert.equal(version.value, '6');
+  assert.equal(version.value, '7');
 });

@@ -118,3 +118,15 @@ CREATE INDEX IF NOT EXISTS idx_write_drafts_updated ON write_drafts (updated_at)
 -- ALTER TABLE write_drafts ADD COLUMN source_id TEXT;
 -- ALTER TABLE write_drafts ADD COLUMN source_hash TEXT;
 -- ALTER TABLE write_drafts ADD COLUMN source_at INTEGER NOT NULL DEFAULT 0;
+
+-- 外部集成的调用记账（目前只有 Drafts 的 /api/integrations/drafts）。
+-- 按「令牌指纹 + 分钟桶」累加次数与字符数做限流；只存指纹，存不下令牌。
+CREATE TABLE IF NOT EXISTS integration_rates (
+  token_fp TEXT    NOT NULL,
+  bucket   INTEGER NOT NULL,
+  hits     INTEGER NOT NULL DEFAULT 0,
+  units    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (token_fp, bucket)
+);
+
+CREATE INDEX IF NOT EXISTS idx_integration_rates_bucket ON integration_rates (bucket);

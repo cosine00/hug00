@@ -33,13 +33,14 @@ const UUID = '0F1E2D3C-4B5A-6978-8796-A5B4C3D2E1F0';
  *   token    Credential 里存的令牌（null 表示用户取消了授权）
  *   network  设为 false 模拟断网（HTTP.request 抛错）
  *   db       真实 D1 假库
+ *   reply    不给 Worker 发请求，直接喂一个 { status, body }（用来测限流之类的分支）
  *
  * Drafts 的 `http.request()` 是同步的，而 worker.fetch 是异步的。所以这里跑两遍：
  * 第一遍只把「脚本想发什么」接住（拿到 url/headers/body），真正请求一次，
  * 第二遍把拿到的响应原样喂回去，脚本的业务分支才真正执行。
  * 脚本除了 HTTP / app / context 没有别的副作用，跑两遍是安全的。
  */
-async function runAction({ content, token = TOKEN, network = true, db }) {
+async function runAction({ content, token = TOKEN, network = true, db, reply = null }) {
   const state = { success: [], failure: [], requests: [], draftWrites: 0 };
   let canned = null;
 
@@ -97,19 +98,23 @@ async function runAction({ content, token = TOKEN, network = true, db }) {
 
   const last = state.requests[state.requests.length - 1];
   if (network && last) {
-    const res = await worker.fetch(
-      new Request(last.url, { method: last.method || 'GET', headers: last.headers || {}, body: last.body }),
-      envFor(db),
-      {}
-    );
-    const text = await res.text();
-    let data = null;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = null;
+    if (reply) {
+      canned = { statusCode: reply.status, responseText: JSON.stringify(reply.body), responseData: reply.body };
+    } else {
+      const res = await worker.fetch(
+        new Request(last.url, { method: last.method || 'GET', headers: last.headers || {}, body: last.body }),
+        envFor(db),
+        {}
+      );
+      const text = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = null;
+      }
+      canned = { statusCode: res.status, responseText: text, responseData: data };
     }
-    canned = { statusCode: res.status, responseText: text, responseData: data };
 
     state.requests.length = 0;
     state.success.length = 0;
@@ -157,13 +162,13 @@ test('正常发送：第一行当标题，正文原样，弹「已发送到 Beta
   const row = rowOf(db);
   assert.equal(row.title, '在雨里走了一段路');
   assert.equal(row.body, '路灯把雨点照得很亮。\n\n## 小标题\n\n- 一条\n- 两条');
-  assert.equal(row.source_id, UUID);
+  assert.equal(row.source_id, UUID.toLowerCase(), '落库时统一成小写标准 UUID');
 
   // 请求本身也要看一眼：字段名必须和 Worker 认的一致，令牌只能在头里
   const sent = state.requests[0];
   assert.equal(sent.method, 'POST');
   assert.equal(sent.headers.Authorization, `Bearer ${TOKEN}`);
-  assert.equal(JSON.parse(sent.body).sourceId, UUID);
+  assert.equal(JSON.parse(sent.body).sourceId, UUID, '上行仍然发 Drafts 原样的 UUID，服务端自己归一');
   assert.ok(!String(sent.body).includes(TOKEN), '令牌不能进请求体');
 });
 
@@ -266,4 +271,38 @@ test('空文稿 / 超长标题：本地就拦下来，不浪费一次请求', as
   const long = await runAction({ content: '标'.repeat(301) + '\n\n正文。', db });
   assert.equal(long.state.requests.length, 0);
   assert.match(long.state.failure[0], /300/);
+});
+
+test('服务端限流（429）：报失败并说清楚多久后重试，不误报成功', async () => {
+  const db = await freshDb();
+  const { state } = await runAction({
+    content: '标题\n\n正文。',
+    db,
+    reply: {
+      status: 429,
+      body: {
+        ok: false,
+        error: { code: 'rate_limited', message: '一分钟内发得太勤了（31/30 次），42 秒后再试' },
+        retryAfter: 42,
+      },
+    },
+  });
+
+  assert.deepEqual(state.success, []);
+  assert.equal(state.failure.length, 1);
+  assert.match(state.failure[0], /发得太勤/);
+  assert.match(state.failure[0], /42 秒/);
+});
+
+test('Beta 改过但 Drafts 没变（beta_modified）：提示「不用重发」，不覆盖', async () => {
+  const db = await freshDb();
+  await runAction({ content: '标题\n\n正文。', db });
+  db.exec("UPDATE write_drafts SET body = 'Beta 里补的。'");
+
+  const { state } = await runAction({ content: '标题\n\n正文。', db });
+
+  assert.deepEqual(state.success, []);
+  assert.match(state.failure[0], /和上次一样/);
+  assert.match(state.failure[0], /不用重发/);
+  assert.equal(db._db.prepare('SELECT body FROM write_drafts').get().body, 'Beta 里补的。');
 });

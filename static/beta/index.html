@@ -1770,7 +1770,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
       title: '', tags: [], slug: '', body: '',
       createdAt: now, updatedAt: now,
       edit: null,
-      publishedAt: 0
+      publishedAt: 0,
+      // '' 是本机手写的草稿；'drafts' 是 Drafts Action 发过来的，正文不能被自动排版
+      source: ''
     };
   }
 
@@ -2148,7 +2150,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
           createdAt: remote.createdAt || remote.updatedAt,
           updatedAt: remote.updatedAt,
           edit: remote.edit || null,
-          publishedAt: remote.publishedAt || 0
+          publishedAt: remote.publishedAt || 0,
+          source: remote.source || ''
         });
         if (store.drafts.length > MAX_DRAFTS) {
           // 别把正在写的这篇截掉，其余按原有顺序保留（persist 里也是同一套规矩）
@@ -2169,6 +2172,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
       local.edit = remote.edit || null;
       local.publishedAt = remote.publishedAt || 0;
       local.updatedAt = remote.updatedAt;
+      // 来源标记跟着云端走；老库/旧版接口没有这个字段时别把它抹成空
+      if (remote.source) local.source = remote.source;
       if (local.id === store.activeId) activeChanged = true;
     });
 
@@ -2215,8 +2220,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function loadActive() {
     var draft = activeDraft();
     if (!draft) return;
-    // 老稿子里「一行一段」的地方先补成真段落，打开就看到发布后的间隔
-    var body = paragraphize(draft.body || '');
+    // 老稿子里「一行一段」的地方先补成真段落，打开就看到发布后的间隔。
+    // Drafts 发来的稿子是正牌 Markdown：补空行会把软换行改成硬段落，等于替人改文章，
+    // 而且会让服务端的内容指纹对不上、下次发送误报冲突，所以这类稿子原样装载。
+    var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(draft.body || '');
     if (body !== draft.body) draft.body = body;
     titleEl.value = draft.title || '';
     bodyEl.value = body;

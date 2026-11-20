@@ -591,6 +591,11 @@ const DRAFT_BODY_LIMIT = 200000;
 const DRAFT_COLUMNS =
   'id, title, body, tags, slug, edit_path, edit_name, edit_url, published_at, created_at, updated_at, deleted_at';
 
+// 读的时候多带一个 source：Beta 前端要靠它认出「这篇是 Drafts 发来的」，
+// 从而跳过打开时那段自动补段落（那会把 Markdown 里的软换行改成硬段落）。
+// 写的时候不带它 —— 来源只有导入接口能写，客户端改不了，也就不会被同步冲掉。
+const DRAFT_READ_COLUMNS = `${DRAFT_COLUMNS}, source`;
+
 function draftFromRow(row) {
   let tags = [];
   try {
@@ -612,6 +617,8 @@ function draftFromRow(row) {
     createdAt: Number(row.created_at || 0),
     updatedAt: Number(row.updated_at || 0),
     deletedAt: Number(row.deleted_at || 0),
+    // '' 就是普通草稿；'drafts' 表示这篇是 Drafts 发来的
+    source: row.source || '',
   };
 }
 
@@ -659,7 +666,7 @@ export async function handleWriteDraftsGet(env, url) {
   const since = Number.isFinite(sinceParam) && sinceParam > 0 ? sinceParam : 0;
   const rows = await all(
     env,
-    `SELECT ${DRAFT_COLUMNS} FROM write_drafts
+    `SELECT ${DRAFT_READ_COLUMNS} FROM write_drafts
        WHERE updated_at > ? AND deleted_at = 0
        ORDER BY updated_at DESC LIMIT ${DRAFT_MAX_ROWS}`,
     [since]
@@ -728,7 +735,7 @@ export async function handleWriteDraftsSave(request, env) {
   let conflicts = [];
   if (lost.length) {
     const marks = lost.map(() => '?').join(',');
-    const rows = await all(env, `SELECT ${DRAFT_COLUMNS} FROM write_drafts WHERE id IN (${marks})`, lost.map((d) => d.id));
+    const rows = await all(env, `SELECT ${DRAFT_READ_COLUMNS} FROM write_drafts WHERE id IN (${marks})`, lost.map((d) => d.id));
     conflicts = rows.map(draftFromRow);
   }
 

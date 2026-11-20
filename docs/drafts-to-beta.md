@@ -5,8 +5,28 @@
 
 ```
 Drafts ──POST /api/integrations/drafts──▶ D1 write_drafts ──GET /api/write/drafts──▶ Beta 草稿箱
-        (独立令牌，只能建/改草稿)
+        (独立令牌，只能建/改草稿，带限流)
 ```
+
+---
+
+## 〇、第二轮审计：发现了什么、改了什么
+
+第一版能跑，但按「并发 + 冲突判定 + 安全」的标准复查，有六处要修。结论都写在下面各节，
+这里先列清单：
+
+| # | 问题 | 严重度 | 处理 |
+|---|---|---|---|
+| 1 | **判断顺序反了**：先比「Drafts 指纹 == source_hash」就返回 `unchanged`。Beta 已改过、Drafts 没改时，会静默报成功，两端分叉却没人知道 | 高 | 顺序改为「先看 Beta 再比 Drafts」，Beta 变过一律 409 |
+| 2 | **读-判断-写不是原子操作**：两个并发请求都读到旧状态时，后写的会盖掉先写的；并发首次创建靠 catch 异常兜底，可能冒 500 | 高 | 写回改成内容条件更新（CAS），失败就重读，只判 unchanged / 冲突，**不再重写**；创建用 `ON CONFLICT DO NOTHING` |
+| 3 | 没有频率限制，令牌泄露后可以无限写 | 中 | 新增 `integration_rates` 表，按「令牌指纹 + 分钟桶」限 30 次 / 100 万字每分钟 |
+| 4 | `sourceId` 只要求 `[\w-]{8,64}`，不像 UUID | 中 | 严格 UUID 校验，两种写法（带/不带连字符）归一成同一篇 |
+| 5 | 指纹用 `标题 + "\n" + 正文` 拼接，标题带换行时会有歧义 | 中 | 改成 `JSON.stringify([标题, 正文])` 再哈希 |
+| 6 | **打开草稿就会被重排**：`loadActive()` 里 `paragraphize()` 会把软换行改成硬段落并写回 `draft.body`，切一次后台（`pagehide` → `flushSave`）就落盘，下次发送必然误报冲突 | 高 | 给来源是 `drafts` 的稿子跳过自动排版（前端只动了这几行） |
+
+第 6 条是这轮最值得说的一处：它不是接口的问题，是「打开即修改」的副作用。
+`paragraphize()` 本身没错（它救的是早年「一行一段」的手写稿），但用在正牌 Markdown 上
+等于替人改文章 —— `第一行\n第二行` 会被撑成两段，渲染结果都不一样了。
 
 ---
 
@@ -18,36 +38,125 @@ Drafts ──POST /api/integrations/drafts──▶ D1 write_drafts ──GET /a
 | 列 | 存什么 | 谁写 |
 |---|---|---|
 | `source` | 固定 `drafts` | 只有导入接口 |
-| `source_id` | Drafts 文稿的 UUID | 只有导入接口 |
-| `source_hash` | 上次导入时 `(标题+正文)` 的 SHA-256 | 只有导入接口 |
+| `source_id` | Drafts 文稿的 UUID（统一小写标准形式） | 只有导入接口 |
+| `source_hash` | 上次导入时标题+正文的 SHA-256 | 只有导入接口 |
 | `source_at` | 上次导入的时间（仅供排查，不参与判断） | 只有导入接口 |
 
 原来的批量上行（`POST /api/write/drafts`）在 `ON CONFLICT DO UPDATE` 里既不读也不写这四列，
 所以 Beta 端自己的同步**动不到**来源信息，老草稿也自然是空的。
 
-**id 就是幂等键。** 草稿 id 是 `dr-` + 文稿 UUID 的小写形式（39 字符，还在原来的
+**id 就是幂等键。** 草稿 id 是 `dr-` + 文稿 UUID 的标准小写形式（39 字符，还在原来的
 `^[\w-]{2,64}$` 之内）。同一份 Drafts 文稿永远算出同一个 id —— 网络超时重试、手抖连点两次，
 库里也只会有一行。不需要额外的去重表。
 
-**冲突只看内容，不看时钟。** 手机和 Worker 的时间对不上是常态：拿 `updated_at` 比大小，
-就会出现「明明没人改却报冲突」，或者更糟的「改过却被悄悄覆盖」。这里的判据是
-`source_hash`（上次导入的内容指纹）与行里当前内容的指纹是否一致：
+### 判断顺序（顺序不能换）
+
+```
+1. 没有这一行            → 建草稿                    201 created
+2. deleted_at > 0        → 409 draft_deleted         不复活
+3. published_at / edit   → 409 draft_published       不动线上内容
+4. Beta 指纹 ≠ source_hash → 409 draft_conflict      不管 Drafts 变没变
+5. Drafts 指纹 == source_hash → 200 unchanged        两边都没变
+6. 其余                  → 更新                      200 updated
+```
+
+第 4 步在第 5 步之前，是这轮修的核心。反过来写（先比 Drafts）会出现这样一条静默路径：
+
+> Beta 里改过正文 → Drafts 里什么都没动 → 再点一次 → 「已发送到 Beta」→ 其实什么都没写。
+
+功能上没丢数据，但用户以为同步成功了，两端的分叉从此没人发现。现在这种情况会明确报
+`409 draft_conflict`，`conflict.reason = 'beta_modified'`，Action 会提示「Beta 里的修改保留着，
+不用重发」。
 
 | 情况 | 判定 | 结果 |
 |---|---|---|
-| 没有这一行 | 新文稿 | `201 created`，建草稿 |
-| 指纹相同 | 和上次发的一模一样 | `200 unchanged`，一个字段都不写 |
-| 指纹不同，行内容 == `source_hash` | Beta 端没动过 | `200 updated`，跟着 Drafts 更新标题正文 |
-| 指纹不同，行内容 != `source_hash` | Beta 端改过 | `409 draft_conflict`，两边都留着 |
-| `deleted_at > 0` | 用户在 Beta 删了 | `409 draft_deleted`，不复活 |
-| `published_at > 0` 或 `edit_path` 非空 | 已经发成正式文章 | `409 draft_published`，不动线上内容 |
+| 没有这一行 | 新文稿 | `201 created` |
+| 墓碑 | 用户在 Beta 删了 | `409 draft_deleted` |
+| 已发布 | 已是线上文章 | `409 draft_published` |
+| Beta 改过 + Drafts 没改 | 两端分叉 | `409 draft_conflict`（`reason: beta_modified`） |
+| Beta 改过 + Drafts 也改 | 两端都动了 | `409 draft_conflict`（`reason: both_modified`） |
+| 两边都没变 | 重试 / 连点 | `200 unchanged`，一个字段都不写 |
+| 只有 Drafts 变 | 正常同步 | `200 updated`，跟着 Drafts 改标题正文 |
 
 更新时只写 `title` / `body` / `updated_at` / 指纹，**标签、slug、发布时间一律不碰** ——
 这些是进 Beta 之后才配的，Drafts 不知道也不该知道。
 
-**令牌是单独一把。** `DRAFTS_INTEGRATION_TOKEN` 只在这一个 handler 里比对：
-它换不到会话 Cookie，进不了 `/api/write/*`（发布、传图、删图），也进不了 `/api/comments/*`。
-手机上即使是明文被抓，损失上限也只是「能往草稿箱里塞一篇草稿」。
+### 为什么不用时间判断
+
+手机和 Worker 的时钟对不上是常态。拿 `updated_at` 比大小，会同时制造两种错误：明明没人
+改动却报冲突，或者改过却被悄悄覆盖。这里的判据只有内容指纹，跟任何一端的时钟无关 ——
+把行时间设成 1970 或 2030，结论都一样（有测试盯着）。
+
+### 并发：条件更新（CAS）
+
+「先查、再判断、再写」天生不是原子的：两个请求同时读到同一份旧状态，都认为「Beta 没动过」，
+后写的那个就把先写的盖掉。所以写回时带上读到的内容做条件：
+
+```sql
+UPDATE write_drafts
+   SET title = ?, body = ?, updated_at = ?, source_hash = ?, source_at = ?
+ WHERE id = ? AND deleted_at = 0
+   AND source_hash IS ? AND title IS ? AND body IS ?     -- ← 这三个是乐观锁
+```
+
+`changes = 0` 说明这一瞬间被别人改过了。这时候**不重写**，只重读一次，按新状态给结论：
+
+| 重读之后看到 | 返回 |
+|---|---|
+| 已经被删 | `409 draft_deleted` |
+| Beta 指纹对不上（真人编辑） | `409 draft_conflict` |
+| 写进去的正是我们这份内容 | `200 unchanged`（重试撞上自己，收敛） |
+| 别人写了另一份内容 | `409 concurrent_update`，让客户端重发 |
+
+**一次请求只写一次**，绝不「重试到成功」——否则手里那份旧快照就有机会盖掉刚落库的新内容，
+也就是「旧请求覆盖新请求」。宁可让客户端多发一次，也不猜。
+
+首次创建同理：`INSERT ... ON CONFLICT(id) DO NOTHING` 撞车不抛异常（不会变 500），
+`changes = 0` 就重读一遍，内容一样 → `unchanged`，不一样 → `concurrent_update`。
+
+### 内容指纹
+
+```js
+sha256(JSON.stringify([title, body]))
+```
+
+为什么不是 `title + "\n" + body`：那样 `("a", "b\nc")` 和 `("a\nb", "c")` 都会哈希成 `a\nb\nc`，
+标题里带换行时两边会撞成同一个指纹，冲突检测直接失效。JSON 序列化会把引号、反斜杠、换行
+都转义掉，数组边界没有歧义。有一条测试专门构造这组输入。
+
+### 文本处理规则（写清楚了，别猜）
+
+| 处理 | 标题 | 正文 |
+|---|---|---|
+| 换行符 `\r\n`、`\r` → `\n` | ✅ | ✅ |
+| 去掉 `\u0000`（NUL，D1 写入会出问题） | ✅ | ✅ |
+| 首尾空白 `trim()` | ✅ | ❌ 不 trim |
+| 空行、缩进、Markdown 标记 | 不涉及 | ❌ 一律不动 |
+| 补空行 / 重排段落 | ❌ | ❌ 服务端从不排版 |
+
+也就是说：**正文除了换行符归一和去 NUL，一个字符都不改**。连续空行、行尾空格、缩进、
+代码块、引用、列表全都原样进库。标题会去掉首尾空白（不然 `# 标题 ` 会带个尾巴）。
+
+Drafts Action 那一侧另外做了两件小事（在手机上、发请求之前）：跳过标题前的空行、
+去掉标题后紧跟的空行和整段末尾的空白。这两步不影响 Markdown 语义，但也确实改了字面 ——
+所以旧版文档里「一个字符都不改写」的说法是不准确的，这里更正。
+
+### 令牌与限流
+
+`DRAFTS_INTEGRATION_TOKEN` 只在这一个 handler 里比对：换不到会话 Cookie，进不了
+`/api/write/*`（发布、传图、删图），也进不了 `/api/comments/*`。手机上即使明文被抓，
+损失上限是「往草稿箱塞草稿，且每分钟最多 30 次 / 100 万字」。
+
+限流按「令牌指纹 + 60 秒时间桶」记账（`integration_rates` 表），只存指纹不存令牌：
+
+| 维度 | 上限 | 超了 |
+|---|---|---|
+| 次数 | 30 次 / 分钟 | `429 rate_limited`，带 `Retry-After` |
+| 写入量 | 100 万字符 / 分钟（按请求体算） | 同上 |
+
+老时间桶每次请求顺手删掉，表里永远只有十几行。计数用的是「自增 + 读取」两条语句：
+自增是原子的，读到的值可能慢一两个请求 —— 对限流来说这点误差没关系，换来的是不依赖
+`RETURNING`（D1 上的行为本文没有实测，见第九节）。
 
 ---
 
@@ -69,15 +178,18 @@ npx wrangler secret put DRAFTS_INTEGRATION_TOKEN
 npx wrangler deploy
 ```
 
-数据库不用手动动：`worker/src/db.js` 里 `SCHEMA_VERSION` 升到了 `6`，Worker 收到第一个
-请求时会自己跑 `ALTER TABLE write_drafts ADD COLUMN ...` 补上四列。已存在的草稿不受影响
-（有一条测试专门盯着这件事：`老库升级：旧表结构补上 source 四列，已有草稿一条不少`）。
+数据库不用手动动：`worker/src/db.js` 里 `SCHEMA_VERSION` 升到了 `7`，Worker 收到第一个
+请求时会自己跑 `ALTER TABLE write_drafts ADD COLUMN ...` 补上四列，并建出 `integration_rates`。
+已存在的草稿不受影响（有一条测试专门盯着这件事）。
 
-想手动确认列加上了：
+想手动确认：
 
 ```bash
 npx wrangler d1 execute blog-comment --remote \
   --command "PRAGMA table_info(write_drafts)"
+
+npx wrangler d1 execute blog-comment --remote \
+  --command "SELECT name FROM sqlite_master WHERE name='integration_rates'"
 ```
 
 ### 3. 联调（发一篇假的，再删掉）
@@ -94,7 +206,31 @@ curl -sS -X POST https://comments.hux.ink/api/integrations/drafts \
 预期 `201` + `{"ok":true,"status":"created",...}`。再发一次同样的内容，应返回
 `{"status":"unchanged"}`，草稿列表里仍然只有一篇。最后在 Beta 里把它删掉即可。
 
-令牌不对时是 `401 unauthorized`，没配 Secret 时是 `503 integration_not_configured`。
+令牌不对 `401`，没配 Secret `503`，发太快 `429`。
+
+### 4. 令牌轮换与撤销
+
+**轮换**（旧令牌在新令牌生效前仍然可用，不会断服）：
+
+```bash
+npx wrangler secret put DRAFTS_INTEGRATION_TOKEN   # 填新值，Worker 立刻换成新的
+# 然后到 Drafts → 那个 Action → 第一次运行时重新输入令牌
+```
+
+Drafts 的 Credential 存在本机钥匙串里，改 Secret **不会**自动更新手机上的那一份 ——
+必须手动让 Action 重新授权一次：Drafts 设置里删掉这条 Credential（`Beta 草稿箱`），
+再跑一次 Action 就会重新弹输入框。
+
+**撤销**（立刻失效，不需要改代码）：
+
+```bash
+npx wrangler secret delete DRAFTS_INTEGRATION_TOKEN
+# 或者换成一个谁也猜不到的随机值
+```
+
+删除后接口立刻返回 `503 integration_not_configured`，已有的草稿和 Beta 一切功能都不受影响
+（这条通道从来只写草稿表）。轮换后建议顺手把 `integration_rates` 里的老指纹行清掉，
+不清也无所谓，最多留十几个空转的行。
 
 ---
 
@@ -137,10 +273,21 @@ Action 编辑器的 **After Success** 选 **Nothing**（脚本自己会弹「已
 | 第一行 `#标签 开头的一段` | `#标签 开头的一段`（不动，那不是标题） | 第二行起 |
 | 开头有空行 | 跳过空行取第一个非空行 | 标题之后 |
 
-正文一个字符都不改写：Markdown 标记、空行、列表、代码块、引用、emoji 全部原样。
-只做两件无关紧要的清理：去掉标题后紧跟着的空行、去掉结尾的空白。
+正文的 Markdown 标记、空行、列表、代码块、引用、emoji 全部原样。上限：标题 300 字、
+正文 20 万字（和 Beta 草稿同步同一条线）。超了会明确提示，不会截断。
 
-上限：标题 300 字、正文 20 万字（和 Beta 草稿同步同一条线）。超了会明确提示，不会截断。
+### 6. 报错都长什么样
+
+| 情况 | 提示 |
+|---|---|
+| 断网 / 超时 | 「连不上 Beta（…）。草稿原文没动，网络好了再点一次。」 |
+| 401 | 「令牌不对（401）。…检查 Drafts 里存的令牌是否和 Worker Secret 一致。」 |
+| 409 | 服务端原话 + 「Beta 里的版本：《标题》」+ 下一步该怎么做（重发无用 / 要先删旧稿） |
+| 413 | 「这篇太长了（413）」 |
+| 429 | 「发得太勤了（429）。约 N 秒后再试。」 |
+| 5xx | 「Beta 服务端出问题了（500）…草稿原文没动。」 |
+
+任何情况下都不会误报成功，也不会 `draft.update()` 动原文。
 
 ---
 
@@ -157,11 +304,10 @@ Content-Type: application/json
 成功（`ok: true`）：
 
 ```json
-{ "ok": true, "status": "created", "id": "dr-f3a1...", "title": "在雨里走了一段路", "updatedAt": 1763600000000, "serverTime": 1763600000000 }
+{ "ok": true, "status": "created", "id": "dr-f3a1…", "title": "…", "updatedAt": 1763600000000, "serverTime": 1763600000000 }
 ```
 
-`status` 三种：`created`（新建，HTTP 201）、`updated`（跟着 Drafts 更新）、
-`unchanged`（内容和上次一样，没写库）。**只有这三种才该报成功。**
+`status` 三种：`created`（新建，HTTP 201）、`updated`、`unchanged`。**只有这三种才该报成功。**
 
 失败（`ok: false`）：
 
@@ -169,33 +315,50 @@ Content-Type: application/json
 |---|---|---|
 | 400 | `bad_json` / `bad_source` / `bad_source_id` / `title_required` / `title_too_long` | 请求本身有问题 |
 | 401 | `unauthorized` | 令牌不对 |
-| 409 | `draft_conflict` | Beta 里改过，带 `conflict.beta.excerpt` 和 `hint` |
+| 409 | `draft_conflict` | Beta 改过。带 `conflict.reason`（`beta_modified` / `both_modified`）、`conflict.beta.excerpt`、`hint` |
 | 409 | `draft_deleted` | 这篇在 Beta 被删了，不复活 |
 | 409 | `draft_published` | 已经发成正式文章，不覆盖 |
+| 409 | `id_conflict` | id 被别的草稿占用（理论上不会发生） |
+| 409 | `concurrent_update` | 三轮都没抢到写锁，稍后重试 |
 | 413 | `body_too_large` | 正文超 20 万字 |
+| 429 | `rate_limited` | 超过 30 次/分钟或 100 万字/分钟，带 `Retry-After` |
 | 500 | `draft_save_failed` | 云库写入失败，可重试 |
 | 503 | `integration_not_configured` | 没配 Secret |
 
 ---
 
-## 五、Beta 端要检查的那几件事（结论：不用改前端）
+## 五、Beta 端要检查的那几件事
 
 | 关注点 | 结论 |
 |---|---|
 | Drafts 草稿能否被下一次同步拉到 | 能。`GET /api/write/drafts` 不区分来源，`adoptRemote()` 见到本地没有、`hasContent()` 为真的行就 `unshift` 进来 |
-| id 与 Beta 本地生成的 id 是否兼容 | 兼容。都是字符串主键，`dr-…` 满足 `^[\w-]{2,64}$`；前端的 `if (!draft.id) draft.id = blankDraft().id` 也不会覆盖它 |
-| 新草稿会不会被本地旧数据盖掉 | 不会。云端行的 `updated_at` 是服务端 `Date.now()`，`adoptRemote` 只在 `remote.updatedAt > local.updatedAt` 时才覆盖，新 id 本地压根没有 |
+| id 与 Beta 本地生成的 id 是否兼容 | 兼容。都是字符串主键，`dr-…` 满足 `^[\w-]{2,64}$`；`if (!draft.id) draft.id = blankDraft().id` 也不会覆盖它 |
+| 新草稿会不会被本地旧数据盖掉 | 不会。云端行的 `updated_at` 是服务端 `Date.now()`，`adoptRemote` 只在 `remote.updatedAt > local.updatedAt` 时覆盖，新 id 本地压根没有 |
 | 已打开的编辑器会不会被同步意外覆盖 | 不会。正在编辑的那篇有 `dirty[id] \|\| isEditingNow()` 保护 |
-| 删除后会不会被重复导入 | 不会。墓碑行（`deleted_at`）留在库里，导入接口见到就 409 |
+| 删除后会不会被重复导入 | 不会。墓碑行留在库里，导入接口见到就 409 |
 | 已发布状态会不会和来源标识打架 | 不会。`published_at > 0 \|\| edit_path` 直接 409，且导入只写草稿表，从不写 GitHub |
-| Beta 自己的上行会不会冲掉来源列 | 不会。批量 upsert 的列清单里没有 `source*`，还有一条测试专门盯着这件事 |
+| Beta 自己的上行会不会冲掉来源列 | 不会。批量 upsert 的列清单里没有 `source*`，且有测试盯着 |
+| **仅打开一篇 Drafts 草稿会不会改动正文** | **这轮修了**。`loadActive()` 原本无条件 `paragraphize()` 并写回 `draft.body`；`pagehide` / `visibilitychange` 都会 `flushSave()`，于是「打开→切后台」就会把重排后的正文落盘、顶掉 `updatedAt`，下次发送误报冲突。现在 `source === 'drafts'` 的稿子走原样装载 |
+| 真正编辑过之后还要不要冲突保护 | 要，而且还在。用户改过 → 内容变了 → 指纹变了 → 下次发送 409 |
 
-也就是说：**前端一行没改**。Drafts 来的草稿和手写草稿在列表里完全一样，多出来的
-只有服务端那四列账。
+### 前端只动了这几行
 
-一个符合预期的行为：草稿在 Beta 里打开后，`paragraphize()` 会把「一行一段」补成真段落，
-如果这时用户又敲了字，`capture()` 会把补过空行的正文存下来 —— 内容指纹从此对不上，
-下一次 Drafts 发送就是 `409 冲突`。这是保守策略：**Beta 里动过就不覆盖**。
+```js
+// blankDraft()：新草稿没有来源
+source: ''
+
+// adoptRemote()：云端拉下来时带上来源
+source: remote.source || ''
+if (remote.source) local.source = remote.source;
+
+// loadActive()：Drafts 来的稿子原样装载，别替人排版
+var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(draft.body || '');
+```
+
+服务端 `GET /api/write/drafts` 多回一个 `source: '' | 'drafts'`，普通草稿拿到空串，
+行为与以前完全一样。上行（`wireDraft`）**不带** `source`：来源只有导入接口能写。
+另有 3 条测试盯着这段（`tests/beta-draft-source.test.mjs`），包括「`paragraphize` 确实会
+把软换行改成硬段落」这个前提本身。
 
 ---
 
@@ -203,18 +366,20 @@ Content-Type: application/json
 
 | 文件 | 改动 |
 |---|---|
-| `worker/src/drafts.js` | 新增。导入 handler：鉴权、校验、来源关联、内容指纹冲突判断、幂等插入 |
-| `worker/src/index.js` | 加一行 import、一个 `POST /api/integrations/drafts` 路由（不走 `adminGate`）、文件头注释补一行 |
-| `worker/src/db.js` | `write_drafts` 建表语句加 4 列；`MIGRATIONS` 加 4 条 `ALTER`；`SCHEMA_VERSION` 5 → 6 |
-| `worker/schema.sql` | 同步建表语句（含老库补列的注释版 SQL） |
+| `worker/src/drafts.js` | 新增。鉴权、限流、严格 UUID、JSON 指纹、判断顺序、CAS 循环、幂等创建 |
+| `worker/src/index.js` | 一行 import + 一条 `POST /api/integrations/drafts` 路由（不走 `adminGate`） |
+| `worker/src/db.js` | `write_drafts` 加 4 列；新增 `integration_rates` 表；`SCHEMA_VERSION` 6 → 7 |
+| `worker/src/write.js` | `GET /api/write/drafts` 多回一个 `source`（读写列清单分开，避免影响上行） |
+| `worker/schema.sql` | 同步建表与限流表 |
+| `static/beta/index.html` | 4 行：`blankDraft` 带 `source`、`adoptRemote` 保留 `source`、`loadActive` 跳过自动排版 |
 | `wrangler.toml` | 只加注释：说明这个 Secret 怎么设、能干什么 |
-| `docs/drafts/send-to-beta.js` | 新增。Drafts Action 脚本 |
+| `docs/drafts/send-to-beta.js` | 新增。Drafts Action 脚本（含 429 分支） |
 | `docs/drafts-to-beta.md` | 新增。本文 |
-| `tests/drafts-integration.test.mjs` | 新增 14 条回归测试（接口 + 迁移） |
-| `tests/drafts-action-script.test.mjs` | 新增 10 条回归测试（Action 脚本本身） |
+| `tests/drafts-integration.test.mjs` | 24 条：接口、冲突顺序、指纹、并发、限流、迁移 |
+| `tests/drafts-action-script.test.mjs` | 12 条：Action 脚本逻辑 |
+| `tests/beta-draft-source.test.mjs` | 3 条：前端「打开即重排」的回归 |
 
-没动：`static/beta/index.html`、`static/admin/*`、发布流程、FlareMo / 哔哔 Action、
-GitHub 相关代码、R2 相关代码。
+没动：Hugo 发布流程、`static/admin/*`、FlareMo / 哔哔发布、GitHub 与 R2 相关代码。
 
 ---
 
@@ -222,61 +387,110 @@ GitHub 相关代码、R2 相关代码。
 
 ```
 node --test tests/*.test.mjs
-# tests 141
-# pass 141
+# tests 156
+# pass 156
 # fail 0
 ```
 
-新增 24 条，分两个文件。
+`hugo --quiet` 与 `wrangler deploy --dry-run` 也都通过。
 
-**`tests/drafts-integration.test.mjs`（14 条，用真 SQLite 当 D1，走真实 SQL）**
+### 接口与并发（`tests/drafts-integration.test.mjs`，24 条）
 
-1. 首次发送建草稿，标题正文原样落库，Beta 列表拉得到
-2. 重复发送相同内容 → `unchanged`，不新建不改进度时间
-3. Drafts 改正文、Beta 没动 → 跟着更新，标签与 slug 不丢
-4. Beta 改过 → 409，Beta 内容一个字符不动，回执带 excerpt
-5. 冲突判断只看内容：把 `updated_at` 设成 1970 或未来，结论都不变
-6. Beta 删除过 → 409，墓碑还在，列表里不复活
-7. 已发布 → 409，不覆盖不新建
-8. 令牌缺失/写错/未配置 → 401 / 401 / 503，且不落库
-9. source / sourceId / 标题 / JSON 各自返回明确错误码
-10. 20 万字以上 → 413
-11. 中文、Markdown、emoji、代码块、特殊字符原样往返
-12. Beta 把草稿原样推回来，不会抹掉来源列，也不会变成「认不出的新稿」
-13. Beta 改过之后 Drafts 再发，仍然判得出冲突
-14. 老库（旧表结构 + version=5）升级后补齐四列，已有草稿一条不少
+用真 SQLite（`node:sqlite`）当 D1，SQL 与线上同一份。
 
-**`tests/drafts-action-script.test.mjs`（10 条，把 `docs/drafts/send-to-beta.js` 真跑一遍）**
+1. 首次发送建草稿，标题正文原样落库，Beta 列表拉得到（并带上 `source`）
+2. 重复发送相同内容 → `unchanged`，不新建、不改进度时间
+3. Drafts 改正文、Beta 没动 → `updated`，标签与 slug 不丢
+4. **Beta 改过、Drafts 没变 → 409 `beta_modified`（第一轮会误报 unchanged）**
+5. Beta 改过、Drafts 也改 → 409 `both_modified`，两边都留着
+6. 时间戳设成 1970 / 未来，结论不变（只认内容）
+7. Beta 删除过 → 409，墓碑还在，列表里不复活
+8. 已发布 → 409，不覆盖不新建
+9. **指纹边界：`("a","b\\nc")` 与 `("a\\nb","c")` 不撞**（拼接式指纹会在这里漏判）
+10. 换行符归一：CRLF 与 LF 视为同一份内容
+11. 正文不排版：缩进、连续空行、行尾空白都留着
+12. **并发首次创建：一个 201、一个 200，只有一行，没有 500**
+13. **并发两个不同版本：只有先到的写进去（一个 200、一个 409 `concurrent_update`），
+    落库内容正好是写成功的那一份，再发一次是 unchanged**
+14. **读完之后 Beta 删了：409 `draft_deleted`，正文没被写回去**
+15. **限流：第 31 次 → 429，带 Retry-After，且不写库**
+16. **限流：写入量超 100 万字符 → 429**
+17. 令牌缺失/写错/未配置 → 401 / 401 / 503，且不落库
+18. source / sourceId / 标题 / JSON 各自返回明确错误码（含 4 组非法 UUID）
+19. UUID 带/不带连字符 → 同一篇，第二次是 `unchanged`
+20. 20 万字以上 → 413
+21. 中文、Markdown、emoji、代码块、特殊字符原样往返
+22. Beta 原样推回来：不抹掉来源列，不变「认不出的新稿」
+23. Beta 改过之后 Drafts 再发：判得出冲突
+24. 老库（旧表结构 + version=5）升级：补四列 + 建限流表，已有草稿一条不少
 
-搭了一个最小的 Drafts 运行时（`Credential` / `HTTP` / `app` / `context`），HTTP 直接接到
-真实 Worker 上，所以「脚本发的字段名」和「Worker 认的字段名」对不上会当场红：
+### Action 脚本（`tests/drafts-action-script.test.mjs`，12 条）
 
-15. 第一行当标题、正文原样、弹「已发送到 Beta」，且 `draft.update()` 一次都没调
-16. `# 标题` 去掉井号，`#标签` 原样保留
-17. 开头空行、结尾空白不影响结果
-18. 连点两次第二次报「已是最新」，库里仍只有一篇
-19. Drafts 改正文后报「已更新」，草稿跟着变
-20. Beta 改过 → 报失败，提示里带 Beta 侧标题与下一步，绝不误报成功
-21. 令牌不对（401）→ 报失败并指明令牌
-22. 断网 → 报「连不上」，不报成功，原文不动
-23. 用户取消授权 → 一个请求都不发
-24. 空文稿 / 301 字标题 → 本地就拦住，不浪费请求
+搭了一个最小的 Drafts 运行时（`Credential` / `HTTP` / `app` / `context`），`http.request`
+直接接到真实 Worker 上，所以「脚本发的字段名」与「Worker 认的字段名」对不上会当场红。
 
-### 还没做的验证
+25. 首行当标题、正文原样、弹「已发送到 Beta」，且 `draft.update()` 一次没调
+26. `# 标题` 去井号，`#标签` 原样保留
+27. 开头空行、结尾空白不影响结果
+28. 连点两次第二次报「已是最新」，库里仍只有一篇
+29. Drafts 改正文后报「已更新」，草稿跟着变
+30. Beta 改过 → 报失败，带 Beta 侧标题与下一步，绝不误报成功
+31. 令牌不对（401）→ 报失败并指明令牌
+32. 断网 → 报「连不上」，不报成功，原文不动
+33. 用户取消授权 → 一个请求都不发
+34. 空文稿 / 301 字标题 → 本地就拦住
+35. **429 → 报失败并说明多久后重试**
+36. **Beta 改过但 Drafts 没变 → 提示「不用重发」，不覆盖**
 
-- **真机**：本机没有 iOS / Drafts，Action 的交互（首次弹令牌框、顶部提示、After Success）
-  只按 Drafts 官方 Scripting API 写，没有实机跑过。第一次用请先拿一篇测试文稿，
-  在 Beta 里确认出现后再删掉。
-- **线上部署**：代码没推、`wrangler deploy` 也没跑。上面的 curl 是你部署后自己验的步骤。
+### 前端（`tests/beta-draft-source.test.mjs`，3 条）
+
+37. `paragraphize` 确实会把 `第一行\n第二行` 改成两段（列表/代码/表格/引用不动）
+38. `loadActive` 里那行 `source === 'drafts'` 判断还在
+39. 来源标记在新建、合并、上行三处的取舍都对（上行不带 `source`）
+
+### 没有自动化的部分
+
+- 真实浏览器里的「打开一篇 Drafts 草稿 → 切到别的 App → 回来 → 再发送」：需要手工过一遍，
+  但代码路径已经确定（`loadActive` 不重排 → `capture()` 写回的是同一份内容 → 指纹不变）。
+- Drafts App 本身（令牌输入框、成功提示的位置、After Success 行为）：只能真机看。
 
 ---
 
-## 八、边界
+## 八、尚未解决的风险
+
+1. **没有在真实 Cloudflare D1 上跑过。** 测试用的是 `node:sqlite`（SQLite 3.4x），
+   与 D1 的 SQL 方言基本一致，但下面几处属于「本地过、线上未实测」：
+   - `ON CONFLICT ... DO NOTHING` / `DO UPDATE ... excluded.x`（Beta 原有代码已在用，风险低）
+   - `WHERE ... AND source_hash IS ?` 这种带参数的条件更新（`IS` 在非 NULL 时等价于 `=`）
+   - `DELETE ... WHERE bucket < ?` 的清理语句
+   - `.run()` 返回的 `meta.changes` 语义（CAS 判断完全依赖它）
+   部署后建议先跑第二节的 curl，连发两次确认 `created` / `unchanged`，再在 Beta 里删掉。
+   就绪的判断标准很简单：两次都写不进两行。
+2. **并发只在单进程里验证过。** Node 的单线程 + 事件循环能把「两个请求都读到旧状态」这条
+   路径逼出来（用 barrier 强行制造），但 D1 的真实并发（多 isolate、多区域）没法在本地复现。
+   CAS 的写法对这种场景天然安全 —— 条件更新由数据库判定，不依赖进程内状态 —— 但这是推理，
+   不是实测。
+3. **同一文稿的并发发送，只有先到的写进去。** 两次内容不同的请求同时到，后到的那次会拿到
+   `409 concurrent_update`，需要重发一次。没有可靠的客户端序号（也不该信手机时间），所以
+   判断不了「哪一份更新」—— 与其猜，不如让用户再点一下。正常使用里同一篇不会同时发两次。
+4. **限流是按令牌整体计的**，不是按文稿。一次连发 30 篇以上会被拦，需要等一个窗口。
+   真遇到可以调 `worker/src/drafts.js` 里的 `RATE_MAX_HITS`。
+5. **rate 计数读到的值可能慢一两个请求**（自增与读取是两条语句），极端情况下同一瞬间的
+   两个请求能一起越过上限。限流是防护，不是精确计费。
+6. **`/api/write/drafts` 的 `since` 语义没变**：它按 `updated_at` 过滤，而导入写的就是
+   `updated_at`。如果 Beta 客户端正在编辑同一篇（`dirty` 标记），上行可能被判「更旧」而丢一次，
+   这属于原有行为，本次没有改动。
+7. **iOS 真机未验证**（本机没有 Drafts）。脚本按官方 Scripting API 写，逻辑层有 12 条测试，
+   但「第一次弹令牌框」「顶部提示的样式」只能真机确认。
+
+---
+
+## 九、边界
 
 - 一次只发一篇；不做批量、不做双向同步、不回读 Beta 的修改到 Drafts。
 - 图片：`[[image-…]]` 这类 Drafts 附件占位符会当成普通文字发过去，第一阶段不传图。
   正文里自己写 `![](https://img.hux.ink/...)` 是可以的，Beta 会照常渲染。
-- 单设备本机最多留 30 篇草稿（`MAX_DRAFTS`，原有限制）。云端不受此限，
-  换设备/清缓存后还能拉回来。
-- 删掉的行永远占着那个 id。要让同一篇文稿重新进 Beta，在 Drafts 里「Duplicate」
-  成新文稿（新 UUID）再发。
+- 单设备本机最多留 30 篇草稿（`MAX_DRAFTS`，原有限制）。云端不受此限。
+- 删掉的行永远占着那个 id。要让同一篇文稿重新进 Beta，在 Drafts 里「Duplicate」成新文稿
+  （新 UUID）再发。
+- 发布流程没有变：导入只写 `write_drafts`，不碰 GitHub。
