@@ -873,3 +873,38 @@ if (box.bottom > bottom) docEl.scrollTop += box.bottom - bottom;   // box.bottom
 **验证**：新增 `tests/beta-caret-reveal.test.mjs`（6 条，切片进 vm 跑）：长文中间聚焦只滚到光标、可见时不动、光标在顶上往回滚、键盘缩小后补正、空段落退化到块、标题用元素框。用无头 Chrome 造了一篇 24 段（3939px）的长文，把光标放第 3 段、`#doc` 滚到 2600 再调 `revealCaret`：滚动量 2163 → 光标落在 118（顶部对齐，正好是 `.doc` 顶 + 12），不是 3341（文章末尾）。模拟 `--app-h` 从 844 压到 400：光标底 425 超出 388，一拍之后 `scrollTop` +37，光标底精确停在 388；第二拍无动作。
 
 这台机器上没有 Safari，iOS 真机没法在这里跑。实机复测按这几步走：主屏 PWA 首次聚焦 → 键盘弹出 → 在长文中间点一下 → 连续输入到屏底 → 标题与正文来回切 → 键盘收起再弹出。
+
+## 32. 空白草稿：进一次写作页就多一篇
+
+**现象**：草稿列表里攒出一堆「无标题草稿」，桌面端和手机上都一样，云端也有。
+
+**根因不在保存频率，在「新建即算数」**。`startNewDraft()` 一进来就 `blankDraft()` + `unshift` + `persist()`，
+`flushSave()` 也不看内容，`capture()` 之后无条件 `markDirty()` + `scheduleSync()`。于是这条链是通的：
+
+```
+点新建 → 白纸进 store → 写进 localStorage → 随便切一次后台（pagehide → flushSave）
+      → 标脏 → 上行 → 云端多一篇空草稿
+```
+
+真正写字之前，`hasContent()` 已经为 false，但没有任何一处拿它做闸门。
+
+**改动**：给新开的稿子一个 `pristine: true` 标记，四个出口一起挡：
+
+| 出口 | 处理 |
+|---|---|
+| `capture()` | 有标题/正文/slug/标签 → `pristine = false`（写过就再也不是白纸） |
+| `flushSave()` | `isPristineBlank()` 为真 → 不 `persist`、不 `markDirty`，顶栏显示「新草稿」 |
+| `persist()` | 写盘前 `filter` 掉 pristine 空稿；活动稿被滤掉时 `activeId` 写空，下次重新开一张 |
+| `pendingPayload()` | 就算被别处标了脏也跳过，云端不会多出空行 |
+| `renderDraftList()` | 列表不显示空稿，并在空列表时给一句「还没有草稿」 |
+| `startNewDraft()` | 已经有一张白纸就接着用，不重复 `unshift` |
+
+**为什么用标记而不是「看内容是否为空」**：`isPristineBlank` 只认 `pristine === true`。用户写了又全删时
+`pristine` 早已为 false，那份空内容是他自己的选择，照常保存 —— 否则清空一篇稿子的动作会被悄悄回滚成旧内容。
+老数据没有 `pristine` 字段（`undefined`），一律当成动过，不能替人删稿。
+
+**验证**：`tests/beta-blank-draft.test.mjs` 6 条 —— 新稿算 pristine；写了标题/正文/slug 任一就不算；
+写了又全删仍不算（会保存）；老数据不算；四处出口的正则都还在；新建时复用白纸。全量 164 条通过。
+
+已知边界：**已经存在于云端的空白草稿不会被自动清理**（`adoptRemote` 本来就跳过无内容远端稿，只是不显示）。
+要清掉得在 Beta 里手动删，或者等下次 `prunePublished` 扫到发布残留。

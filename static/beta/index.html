@@ -1772,8 +1772,23 @@ input,textarea{-webkit-user-select:text;user-select:text}
       edit: null,
       publishedAt: 0,
       // '' 是本机手写的草稿；'drafts' 是 Drafts Action 发过来的，正文不能被自动排版
-      source: ''
+      source: '',
+      // 刚开、一个字都没写过。这种稿子不落盘也不上行，否则每进一次写作页就多一篇空白
+      pristine: true
     };
+  }
+
+  /**
+   * 「还没动过的空白稿」：只要用户敲过一个字（哪怕后来删掉），pristine 就变 false，
+   * 那之后空内容也是用户的选择，照常保存。
+   * 老数据没有 pristine 字段（undefined），一律当成已经动过 —— 不能替人删稿。
+   */
+  function isPristineBlank(draft) {
+    if (!draft || draft.pristine !== true) return false;
+    if (hasContent(draft)) return false;
+    if (String(draft.slug || '').trim()) return false;
+    if (Array.isArray(draft.tags) ? draft.tags.length : String(draft.tags || '').trim()) return false;
+    return true;
   }
 
   /** 老版本只存了一篇（hux-write-draft-v2），第一次打开时搬过来，别让人白写。 */
@@ -1866,16 +1881,28 @@ input,textarea{-webkit-user-select:text;user-select:text}
     // 没解锁时绝不能写盘——store 里是空稿，一写就把本机真正的草稿盖掉了
     if (!authed) return false;
     try {
+      // 刚开的白纸不写盘：留在内存里让人接着写，但别变成一篇空白草稿
+      var kept = store.drafts.filter(function (draft) { return !isPristineBlank(draft); });
       // 只留最近 30 篇，避免 localStorage 无限膨胀；当前编辑的那篇永远保留
-      if (store.drafts.length > MAX_DRAFTS) {
+      if (kept.length > MAX_DRAFTS) {
         var current = activeDraft();
-        var rest = store.drafts
+        var hasCurrent = Boolean(current) && kept.indexOf(current) >= 0;
+        var rest = kept
           .filter(function (draft) { return draft !== current; })
           .sort(function (a, b) { return b.updatedAt - a.updatedAt; })
           .slice(0, MAX_DRAFTS - 1);
-        store.drafts = [current].concat(rest);
+        kept = hasCurrent ? [current].concat(rest) : rest;
       }
-      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      // 活动稿被滤掉时（刚开的白纸）就不记 activeId，下次进来重新开一张
+      var activeId = '';
+      for (var i = 0; i < kept.length; i += 1) {
+        if (kept[i].id === store.activeId) { activeId = store.activeId; break; }
+      }
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        activeId: activeId,
+        drafts: kept,
+        syncAt: store.syncAt
+      }));
       return true;
     } catch (e) {
       return false;
@@ -1902,6 +1929,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
     draft.body = bodyEl.value;
     draft.slug = slugEl.value.trim().replace(/^\/+|\/+$/g, '');
     draft.updatedAt = Date.now();
+    // 写过东西就不再是「刚开的白纸」：之后即使清空，也按用户的意思保存
+    if (hasContent(draft) || draft.slug || (Array.isArray(draft.tags) && draft.tags.length)) {
+      draft.pristine = false;
+    }
     return draft;
   }
 
@@ -1953,6 +1984,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (paneClosed || !authed) return;
     var draft = capture();
     if (!draft) return;
+    // 一个字都没写过的新稿：不落盘、不标脏、不上行。不然每进一次写作页就多一篇空白草稿
+    if (isPristineBlank(draft)) { setSaveState('新草稿', ''); return; }
     if (!persist()) { setSaveState('存不下（空间满）'); return; }
     setSaveState(saveLine(draft), 'saved');
     markDirty(draft.id);
@@ -2038,7 +2071,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
     var out = [];
     Object.keys(dirty).forEach(function (id) {
       for (var i = 0; i < store.drafts.length; i += 1) {
-        if (store.drafts[i].id === id) { out.push(wireDraft(store.drafts[i])); return; }
+        if (store.drafts[i].id === id) {
+          // 刚开的白纸别推上去，否则云端也会多一篇空的
+          if (isPristineBlank(store.drafts[i])) { delete dirty[id]; return; }
+          out.push(wireDraft(store.drafts[i]));
+          return;
+        }
       }
     });
     return out.concat(tombstones);
@@ -2262,8 +2300,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
   function startNewDraft() {
     if (!authed) { openSheet('sheetLogin'); return; }
     flushSave();
-    var draft = blankDraft();
-    store.drafts.unshift(draft);
+    // 已经有一张没动过的白纸就接着用它，别在列表里再堆一篇空白
+    var draft = null;
+    for (var i = 0; i < store.drafts.length; i += 1) {
+      if (isPristineBlank(store.drafts[i])) { draft = store.drafts[i]; break; }
+    }
+    if (!draft) {
+      draft = blankDraft();
+      store.drafts.unshift(draft);
+    }
     store.activeId = draft.id;
     persist();
     reopenPane();
@@ -3207,7 +3252,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
       return;
     }
 
-    var drafts = store.drafts.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    // 刚开的白纸不进列表：没内容可切换，列出来只是多一条「无标题草稿」
+    var drafts = store.drafts
+      .filter(function (draft) { return !isPristineBlank(draft); })
+      .sort(function (a, b) { return b.updatedAt - a.updatedAt; });
     $('newDraft').hidden = false;
     $('draftNum').textContent = drafts.length > 1 ? String(drafts.length) : '';
 
@@ -3218,6 +3266,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
     $('menuDraftSub').textContent = (current && hasContent(current)
       ? (current.edit ? '更新中 · ' : '正在写 · ') + (currentTitle || '无标题')
       : '自动保存，最多 30 篇') + ' · ' + syncLabel();
+
+    if (!drafts.length) {
+      list.appendChild(el('div', 'empty', '还没有草稿，点上面的按钮开一篇'));
+    }
 
     drafts.forEach(function (draft) {
       // 用 div 而不是 button：里面还要放一个删除按钮，button 不能嵌 button
@@ -3458,6 +3510,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     }
 
     var draft = blankDraft();
+    draft.pristine = false; // 这是已发布文章的工作副本，不是白纸
     draft.title = post.title || '';
     draft.body = post.content || '';
     draft.slug = post.slug || '';
@@ -5569,6 +5622,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
           var parsed = parseMarkdown(text, file.name);
           if (!parsed.title && !parsed.body.trim()) return;
           var draft = blankDraft();
+          draft.pristine = false; // 导入的就是有主的稿子，别按「刚开的白纸」对待
           draft.title = parsed.title;
           draft.body = parsed.body;
           draft.tags = parsed.tags;
