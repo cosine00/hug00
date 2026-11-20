@@ -5677,8 +5677,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
     var height = Math.round(vv ? vv.height : window.innerHeight);
     var top = Math.round(vv ? vv.offsetTop : 0);
     if (height !== vpHeight) {
+      // 第一次是开机定型，不是键盘，不用补焦点
+      var first = !vpHeight;
       vpHeight = height;
       document.documentElement.style.setProperty('--app-h', height + 'px');
+      // 键盘弹起/收起：正文区跟着矮了一截，光标可能正好落在被盖住的地方
+      if (!first) scheduleReveal();
     }
     if (top !== vpTop) {
       vpTop = top;
@@ -5733,24 +5737,97 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   /* 键盘弹出后把光标带进视野（iOS 有时不会自己滚）。
      只动 .doc 自己的 scrollTop，不用 scrollIntoView：后者会连整页一起滚，
-     键盘动画期间两级滚动各滚一次，看起来就是画面在抖。 */
-  function revealInDoc(node) {
-    if (!node || !docEl) return;
+     键盘动画期间两级滚动各滚一次，看起来就是画面在抖。
+
+     量的是「光标」不是「元素」：正文是 contenteditable，它的
+     getBoundingClientRect() 高度等于整篇文章的高度。拿它去和可视区比，
+     box.bottom 永远远在天边，等于每次都把正文滚到文章最末尾——在长文中间
+     点一下，画面直接跳到结尾，光标自然就不在屏幕上了。 */
+  var typingTimer = 0;
+
+  /** 当前光标的矩形。正文走选区，标题/标签这类小输入框用元素自身的框。 */
+  function caretBox(node) {
+    if (node !== bodyEl) return node ? node.getBoundingClientRect() : null;
+    var sel = window.getSelection ? window.getSelection() : null;
+    if (!sel || !sel.rangeCount) return null;
+    var range = sel.getRangeAt(0);
+    if (!node.contains(range.startContainer)) return null;
+    var rects = range.getClientRects();
+    var rect = rects.length ? rects[rects.length - 1] : range.getBoundingClientRect();
+    if (rect && (rect.height || rect.width)) return rect;
+    // 空段落里光标量不出高度：退到它所在的那个块上，至少别让它贴着键盘
+    var holder = range.startContainer.nodeType === 1
+      ? range.startContainer : range.startContainer.parentElement;
+    return holder ? holder.getBoundingClientRect() : null;
+  }
+
+  /** 看不见才动，看得见就一点都不动——这是不抖的前提。 */
+  function revealBox(box, pad) {
+    if (!box || !docEl) return;
+    /* 可视区不是整个屏幕：顶上有悬浮顶栏，正文从它下面才开始；底下可能被
+       键盘切掉一截。所以拿 .doc 自己的框和可视视口取交集，而不是拿 0 当顶。 */
+    var win = docEl.getBoundingClientRect();
     var vv = window.visualViewport;
-    var bottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 10;
-    var box = node.getBoundingClientRect();
+    var vTop = vv ? vv.offsetTop : 0;
+    var top = Math.max(win.top, vTop) + pad;
+    var bottom = Math.min(win.bottom, vTop + (vv ? vv.height : window.innerHeight)) - pad;
+    if (bottom <= top) return;
+    var before = docEl.scrollTop;
     if (box.bottom > bottom) docEl.scrollTop += box.bottom - bottom;
-    else if (box.top < 10) docEl.scrollTop -= 10 - box.top;
+    else if (box.top < top) docEl.scrollTop -= top - box.top;
+    if (docEl.scrollTop !== before) {
+      // 这一下是我们自己滚的：别让它把顶栏判成「用户在往下读」而收起 60px，
+      // 那 60px 的位移会正好把刚对准的光标再挪一次。
+      tbLockUntil = Date.now() + 400;
+    }
+  }
+
+  function revealCaret(node) {
+    if (!node || !docEl || zoomed()) return;
+    revealBox(caretBox(node), 12);
+  }
+
+  /* 键盘弹出/收起会让 --app-h 变，.doc 跟着变高变矮；矮掉的那一截正好在
+     键盘底下。只靠 focus 后 320ms 量一次是不够的——那时键盘动画常常还没
+     走完，量完再缩，光标就又掉到下面去了。
+     所以分两拍补：动画刚开始一拍，动画落定（约 340ms）再补一拍。两拍都是
+     「看不见才动」，看得见就什么都不做，不会和 iOS 自己的滚动抢。 */
+  var revealTimers = [];
+
+  function scheduleReveal() {
+    revealTimers = revealTimers || [];
+    revealTimers.forEach(clearTimeout);
+    revealTimers = [90, 340].map(function (delay) {
+      return setTimeout(function () {
+        var active = document.activeElement;
+        if (active === bodyEl || active === titleEl) revealCaret(active);
+      }, delay);
+    });
   }
 
   [titleEl, bodyEl, tagInput].forEach(function (node) {
     node.addEventListener('focus', function () {
       setTimeout(function () {
-        if (document.activeElement !== node || zoomed()) return;
-        revealInDoc(node);
+        if (document.activeElement !== node) return;
+        revealCaret(node);
         // 候选面板在文档流里，键盘占了半屏时它可能整个落在下面看不见
-        if (node === tagInput && tagPicks.classList.contains('open')) revealInDoc(tagPicks);
+        if (node === tagInput && tagPicks.classList.contains('open')) {
+          revealBox(tagPicks.getBoundingClientRect(), 12);
+        }
       }, 320);
+    });
+  });
+
+  /* 连续打字：iOS 一般会自己跟着滚，少数情况滚不动（长文、空行、换行后
+     光标落到键盘下面）。这里只在停手 220ms 后量一次，而且测得在视野里就
+     什么都不做——不是每次按键都硬滚一下。 */
+  [titleEl, bodyEl].forEach(function (node) {
+    node.addEventListener('input', function () {
+      if (document.activeElement !== node) return;
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(function () {
+        if (document.activeElement === node) revealCaret(node);
+      }, 220);
     });
   });
 
