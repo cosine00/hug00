@@ -893,11 +893,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
 }
 
 /* ── 手机入口页：把底部那一摞往上抬一点 ──
-   诗句那块是 flex:1，会把「三个图标 + 三行入口 + 新稿按钮」一直顶到下沿；
-   给按钮底下垫一档，诗句自己收缩让位，整摞一起上移。
+   诗句那块是 flex:1，富余高度全被它吃掉，整摞就被顶到下沿。这里两头一起收：
+   诗句最多长到 22vh（矮屏收到 150 就能停），按钮底下再垫一档 —— 富余高度落到最下面，
+   「三个图标 + 三行入口 + 新稿按钮」整体上移。
    只在高一点的屏上加——矮屏（SE 那档）本来就没富余，垫了就轮到三行入口被压扁。 */
 @media (max-width:899px) and (min-height:680px){
-  .hp-new{margin-bottom:clamp(16px,2.8vh,26px)}
+  .hp-poem{max-height:clamp(150px,22vh,240px)}
+  .hp-new{margin-bottom:clamp(10px,1.6vh,16px)}
 }
 
 /* ── 桌面端：不铺满整屏，做成一张居中的写稿台 ── */
