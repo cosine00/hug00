@@ -252,6 +252,11 @@ npx wrangler secret delete DRAFTS_INTEGRATION_TOKEN
 2. 把 `docs/drafts/send-to-beta.js` 的全部内容粘进去；
 3. 返回，点 **Save**。
 
+> 脚本整段是一个 IIFE。Drafts 的 Script 步骤把代码当**脚本**直接跑，不会包进函数，
+> 所以分支里的 `return` 必须待在自己包的函数里 —— 否则第一次运行就报
+> `SyntaxError: Return statements are only valid inside functions`（2026-11-20 真机上踩过一次）。
+> 粘贴时保留开头的 `(function () {` 和结尾的 `})();`，别只复制中间部分。
+
 > 手机上粘代码：把这个文件 AirDrop 到「文件」App，用 Drafts 打开，全选复制；
 > 或者先在电脑上把它发到自己的备忘录里再复制。
 
@@ -379,7 +384,7 @@ var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(d
 | `docs/drafts/send-to-beta.js` | 新增。Drafts Action 脚本（含 429 分支） |
 | `docs/drafts-to-beta.md` | 新增。本文 |
 | `tests/drafts-integration.test.mjs` | 24 条：接口、冲突顺序、指纹、并发、限流、迁移 |
-| `tests/drafts-action-script.test.mjs` | 12 条：Action 脚本逻辑 |
+| `tests/drafts-action-script.test.mjs` | 13 条：Action 脚本逻辑 + 顶层脚本可编译 |
 | `tests/beta-draft-source.test.mjs` | 3 条：前端「打开即重排」的回归 |
 
 没动：Hugo 发布流程、`static/admin/*`、FlareMo / 哔哔发布、GitHub 与 R2 相关代码。
@@ -390,8 +395,8 @@ var body = draft.source === 'drafts' ? String(draft.body || '') : paragraphize(d
 
 ```
 node --test tests/*.test.mjs
-# tests 156
-# pass 156
+# tests 157
+# pass 157
 # fail 0
 ```
 
@@ -427,7 +432,7 @@ node --test tests/*.test.mjs
 23. Beta 改过之后 Drafts 再发：判得出冲突
 24. 老库（旧表结构 + version=5）升级：补四列 + 建限流表，已有草稿一条不少
 
-### Action 脚本（`tests/drafts-action-script.test.mjs`，12 条）
+### Action 脚本（`tests/drafts-action-script.test.mjs`，13 条）
 
 搭了一个最小的 Drafts 运行时（`Credential` / `HTTP` / `app` / `context`），`http.request`
 直接接到真实 Worker 上，所以「脚本发的字段名」与「Worker 认的字段名」对不上会当场红。
@@ -444,12 +449,14 @@ node --test tests/*.test.mjs
 34. 空文稿 / 301 字标题 → 本地就拦住
 35. **429 → 报失败并说明多久后重试**
 36. **Beta 改过但 Drafts 没变 → 提示「不用重发」，不覆盖**
+37. **脚本能被当成普通脚本编译**：Drafts 的 Script 步骤不包函数，顶层 `return` 会直接
+    语法错（2026-11-20 真机踩到），`vm.Script` 这条挡回归
 
 ### 前端（`tests/beta-draft-source.test.mjs`，3 条）
 
-37. `paragraphize` 确实会把 `第一行\n第二行` 改成两段（列表/代码/表格/引用不动）
-38. `loadActive` 里那行 `source === 'drafts'` 判断还在
-39. 来源标记在新建、合并、上行三处的取舍都对（上行不带 `source`）
+38. `paragraphize` 确实会把 `第一行\n第二行` 改成两段（列表/代码/表格/引用不动）
+39. `loadActive` 里那行 `source === 'drafts'` 判断还在
+40. 来源标记在新建、合并、上行三处的取舍都对（上行不带 `source`）
 
 ### 没有自动化的部分
 
@@ -493,8 +500,13 @@ node --test tests/*.test.mjs
 6. **`/api/write/drafts` 的 `since` 语义没变**：它按 `updated_at` 过滤，而导入写的就是
    `updated_at`。如果 Beta 客户端正在编辑同一篇（`dirty` 标记），上行可能被判「更旧」而丢一次，
    这属于原有行为，本次没有改动。
-7. **iOS 真机未验证**（本机没有 Drafts）。脚本按官方 Scripting API 写，逻辑层有 12 条测试，
+7. **iOS 真机未验证**（本机没有 Drafts）。脚本按官方 Scripting API 写，逻辑层有 13 条测试，
    但「第一次弹令牌框」「顶部提示的样式」只能真机确认。
+8. **Drafts 的 Script 步骤不包函数**（2026-11-20 真机踩到）。第一版脚本按「脚本被包在函数里」
+   写，用了顶层 `return`，iOS 上直接
+   `SyntaxError: Return statements are only valid inside functions`，一次都没发出去。
+   现已整段包成 IIFE，并加了一条 `vm.Script` 编译测试 —— 语义与 Drafts 一致，顶层 `return`
+   会当场失败，这类错误不会再流到真机。
 
 ---
 

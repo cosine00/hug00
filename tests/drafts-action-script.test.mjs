@@ -13,6 +13,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 import worker from '../worker/src/index.js';
@@ -305,4 +306,13 @@ test('Beta 改过但 Drafts 没变（beta_modified）：提示「不用重发」
   assert.match(state.failure[0], /和上次一样/);
   assert.match(state.failure[0], /不用重发/);
   assert.equal(db._db.prepare('SELECT body FROM write_drafts').get().body, 'Beta 里补的。');
+});
+
+test('能被当成普通脚本编译：Drafts 的 Script 步骤不包函数，顶层 return 会直接报语法错', () => {
+  // 真机那次报的就是这个：`SyntaxError: Return statements are only valid inside functions`。
+  // vm.Script 的语义和 Drafts 一样（顶层 return 非法），所以这一条能把它挡在提交之前。
+  assert.doesNotThrow(
+    () => new vm.Script(SOURCE, { filename: 'send-to-beta.js' }),
+    '脚本必须能作为顶层脚本执行；分支里的 return 要包在 IIFE 或函数里'
+  );
 });
