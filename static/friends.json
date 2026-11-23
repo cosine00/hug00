@@ -316,6 +316,30 @@
             "Sheep5的博客",
             "https://sheep5.net/",
             "https://icon.horse/icon/sheep5.net"
+        ],
+        [
+            "竹炉山房",
+            "https://synyan.cn/t/",
+            "https://icon.horse/icon/synyan.cn",
+            "https://synyan.cn/t/feed"
+        ],
+        [
+            "频率",
+            "https://pinlyu.com/",
+            "https://icon.horse/icon/pinlyu.com",
+            "https://pinlyu.com/feed"
+        ],
+        [
+            "魏文超's Blog",
+            "https://www.weiwenchao.com/",
+            "https://icon.horse/icon/www.weiwenchao.com",
+            "https://www.weiwenchao.com/rss.xml"
+        ],
+        [
+            "梁三川",
+            "https://liangmouyin.com/",
+            "https://icon.horse/icon/liangmouyin.com",
+            "https://liangmouyin.com/index.xml"
         ]
     ]
 }
