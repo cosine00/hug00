@@ -1,63 +1,5 @@
 {{ partial "header.html" . }}
 
-<div class="bibi-switch" role="tablist" aria-label="哔哔浏览方式">
-  <button id="bibi-tab-recent" class="bibi-switch-button selected" type="button" role="tab" aria-selected="true" aria-controls="bber" data-bibi-mode="recent">最近</button>
-  <button id="bibi-tab-random" class="bibi-switch-button" type="button" role="tab" aria-selected="false" aria-controls="bber" data-bibi-mode="random">好运</button>
-</div>
-
-<div class="bb-feed-link">
-  <a href="{{ "bb/index.xml" | relURL }}"
-     data-tip="订阅哔哔RSS"
-     aria-label="订阅哔哔RSS">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/>
-      <path d="M4 10a10 10 0 0 1 10 10M4 4a16 16 0 0 1 16 16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"/>
-    </svg>
-    
-  </a>
-</div>
-<div id="bber"></div>
-
-<script>
-  var bbFocus = {
-    dataUrl: '{{ "memos.json" | relURL }}',
-    recentLimit: 60,
-    pageSize: 12,
-    randomBatchSize: 12,
-    domId: '#bber'
-  }
-</script>
-<script src="/js/marked.min.js"></script>
-<script src="/js/lately.min.js"></script>
-<script type="module" src="/js/emaction.js?v=20261027-16"></script>
-<script src="/js/bb-quote.js?v=20261110-01"></script>
-<script src="{{ "js/bb-focus.js" | relURL }}?v=20261109-01"></script>
-
-{{- $useNewComments := partial "comments/enabled.html" . -}}
-{{- if $useNewComments -}}
-{{- $newApi := partial "comments/api.html" . -}}
-{{- $adminHash := partial "comments/admin-hash.html" . -}}
-{{- $avatar := partial "comments/avatar.html" . -}}
-{{- $turnstile := partial "comments/turnstile.html" . -}}
-<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261114-03">
-<script>
-  window.bbComments = {
-    api: '{{ $newApi }}',
-    memosUrl: '{{ "memos.json" | relURL }}',
-    listIndex: '/bb/',
-    adminHash: '{{ $adminHash }}',
-    avatar: '{{ $avatar }}',
-    turnstileSiteKey: '{{ $turnstile }}'
-  };
-</script>
-<script src="{{ "js/comments.js" | relURL }}?v=20261114-03"></script>
-<script src="{{ "js/bb-comments.js" | relURL }}?v=20261111-01"></script>
-{{- end -}}
-
 <style>
   .bibi-switch {
     display: flex;
@@ -136,5 +78,63 @@
 }
 
 </style>
+
+<div class="bibi-switch" role="tablist" aria-label="哔哔浏览方式">
+  <button id="bibi-tab-recent" class="bibi-switch-button selected" type="button" role="tab" aria-selected="true" aria-controls="bber" data-bibi-mode="recent">最近</button>
+  <button id="bibi-tab-random" class="bibi-switch-button" type="button" role="tab" aria-selected="false" aria-controls="bber" data-bibi-mode="random">好运</button>
+</div>
+
+<div class="bb-feed-link">
+  <a href="{{ "bb/index.xml" | relURL }}"
+     data-tip="订阅哔哔RSS"
+     aria-label="订阅哔哔RSS">
+    <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+      <path d="M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/>
+      <path d="M4 10a10 10 0 0 1 10 10M4 4a16 16 0 0 1 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"/>
+    </svg>
+    
+  </a>
+</div>
+<div id="bber"></div>
+
+<script>
+  var bbFocus = {
+    dataUrl: '{{ "memos.json" | relURL }}',
+    recentLimit: 60,
+    pageSize: 12,
+    randomBatchSize: 12,
+    domId: '#bber'
+  }
+</script>
+<script src="/js/marked.min.js"></script>
+<script src="/js/lately.min.js"></script>
+<script type="module" src="/js/emaction.js?v=20261027-16"></script>
+<script src="/js/bb-quote.js?v=20261110-01"></script>
+<script src="{{ "js/bb-focus.js" | relURL }}?v=20261109-01"></script>
+
+{{- $useNewComments := partial "comments/enabled.html" . -}}
+{{- if $useNewComments -}}
+{{- $newApi := partial "comments/api.html" . -}}
+{{- $adminHash := partial "comments/admin-hash.html" . -}}
+{{- $avatar := partial "comments/avatar.html" . -}}
+{{- $turnstile := partial "comments/turnstile.html" . -}}
+<link rel="stylesheet" href="{{ "css/comments.css" | relURL }}?v=20261114-03">
+<script>
+  window.bbComments = {
+    api: '{{ $newApi }}',
+    memosUrl: '{{ "memos.json" | relURL }}',
+    listIndex: '/bb/',
+    adminHash: '{{ $adminHash }}',
+    avatar: '{{ $avatar }}',
+    turnstileSiteKey: '{{ $turnstile }}'
+  };
+</script>
+<script src="{{ "js/comments.js" | relURL }}?v=20261114-03"></script>
+<script src="{{ "js/bb-comments.js" | relURL }}?v=20261111-01"></script>
+{{- end -}}
 
 {{ partial "footer-empty.html" . }}

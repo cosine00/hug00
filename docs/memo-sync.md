@@ -423,6 +423,7 @@ https://www.bilibili.com/blackboard/html5mobileplayer.html
 | 15 | `git push` 报 `RPC failed / curl 18` | 本机网络与 GitHub 的老毛病 | 别急着重推，先 `git ls-remote origin master` 确认——通常已经推上去了 |
 | 16 | 批量改 commit message 时静默失败 | `git cherry-pick` 没有 `-q` 参数 | 去掉 `-q`；改完用 `git diff <旧 tip> HEAD` 验证树完全一致 |
 | 17 | R2 前缀两个写法 | workflow 变量是 `image/{yyyy}/{mm}`，`fetch-memos.js` 默认 `images/{yyyy}/{mm}` | 影彩脚本跟随 workflow 变量；将来统一目录前先确认用哪个 |
+| 18 | 打开哔哔页先闪一个占满屏幕的 RSS 图标 | 订阅图标的 `<svg>` 没有 `width`/`height`，尺寸只由后面 60 行的内联 `<style>` 决定；解析到 svg 时规则尚未生效，按无尺寸替换元素撑满父容器（390 视口实测 518×518，1200 视口 1156×1156） | `<style>` 整块挪到 body 第一行（`header.html` 之后），并给 svg 补 `width="15" height="15"` 双保险 |
 
 ## 五、事故复盘：`data/videos.json` 被写成 `[]`
 
@@ -566,3 +567,37 @@ memos.json → 哔哔页 / 首页 / 相册
 写作台首页那块空白除了抽一联诗，也会抽往年今天的哔哔。数据不是页面去拉 `memos.json`（400 多 KB），而是构建期按天切好的小文件：`scripts/build-ondate.mjs` 生成 `static/bb-ondate/MM-DD.json`，每天 500 字节上下，页面只取当天那一个。
 
 这个脚本挂在 `fetch-memos.yml` 里（`Rebuild on-this-day index`），跑在同步之后、提交之前，产物 `static/bb-ondate` 一起进那次 commit。规则改了或者想重建，本地 `node scripts/build-ondate.mjs` 即可；`--dry-run` 只报数不落盘。
+
+## 哔哔页订阅图标的闪烁（2026-11-23）
+
+现象：从站内点进 `/bb/`，先闪过一个占满屏宽的 RSS 图标，然后才是正常页面。
+
+原因不是网络也不是缓存，是**解析顺序**：那枚图标是内联 `<svg viewBox="0 0 24 24">`，自己没有尺寸，
+真正的 `15px` 写在页面中部一段内联 `<style>` 里（`.bb-feed-link svg`）。而 svg 在文件里排第 8 行，
+style 排到第 61 行，中间还隔着 `marked.min.js`、`lately.min.js`、`emaction.js`、`bb-quote.js`、
+`bb-focus.js` 五个同步脚本 —— 解析器每遇到一个都要停一下等网络。
+
+这段「元素已在、样式未到」的窗口里，svg 按无尺寸替换元素计算，宽度撑满父容器：
+
+| 视口宽 | 无样式时的 svg | 样式生效后 |
+|---|---|---|
+| 390 | 518 × 518 | 15 × 15 |
+| 1200 | 1156 × 1156 | 15 × 15 |
+
+只要这个窗口里出了一帧，用户看到的就是满屏大图标。桌面 Chrome 靠 paint holding 常常遮住了
+（本机无头 Chrome 测下来首帧恰好落在样式生效之后，所以不复现），iOS Safari、弱网、冷启动更容易露出来。
+
+修法两条，都不依赖浏览器行为：
+
+1. 把整块 `<style>` 挪到 `{{ partial "header.html" . }}` 之后，也就是 body 第一行 —— 解析到 svg 时规则已生效。
+2. 给 svg 补 `width="15" height="15"` —— 万一样式表全挂了也不会再炸。
+
+顺带解决同一位置的「最近 / 好运」切换按钮：它们的样式也在同一块 style 里，原先会先以两个原生按钮的样子闪一下。
+
+验证（无头 Chrome + 本地 http，探针读 `getBoundingClientRect` + rAF 逐帧）：
+
+- 改前：svg 插入 DOM 时 `518x518`，解析停在脚本处仍是 `518x518`；
+- 改后：插入瞬间即 `15x15`，rAF 帧序列里只有 `15x15`，没有中间态。
+
+回归测试 `tests/bb-feed-icon.test.mjs`：钉住 `<style>` 必须排在 `.bb-feed-link` 之前、svg 必须自带尺寸、
+CSS 规则仍在且数值一致。
