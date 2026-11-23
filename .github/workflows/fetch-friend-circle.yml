@@ -33,7 +33,30 @@ jobs:
         run: python .github/scripts/fetch-friend-circle.py
 
       - name: Commit generated feed
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update friend circle feed"
-          file_pattern: "assets/rss.json"
+        # 这一步原本用 stefanzweifel/git-auto-commit-action@v5，但它只会 add/commit/push 一把梭：
+        # 抓取要跑两分半，这期间 master 上很可能又进了新提交（你手动推 friends.json 就会撞上），
+        # 于是 push 被拒（non-fast-forward）、整个 job 判失败，但产物其实早就生成好了。
+        # 改成 push 前先 rebase 到最新，失败重试三次。
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- assets/rss.json; then
+            echo "assets/rss.json 没有变化，跳过提交"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/rss.json
+          git commit -m "chore: update friend circle feed"
+          for attempt in 1 2 3; do
+            git fetch --quiet origin master
+            # checkout 在 push/schedule 事件下是本地分支，但用 HEAD:master 推 + 对 origin/master
+            # rebase，两种 HEAD 状态（含 detached）都能跑
+            if git rebase --autostash --quiet origin/master && git push --quiet origin HEAD:master; then
+              echo "已推送（第 ${attempt} 次尝试）"
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep 5
+          done
+          echo "三次尝试都没能推上去，请检查分支保护或并发写入" >&2
+          exit 1
