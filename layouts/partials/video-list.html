@@ -2,7 +2,8 @@
   光影 · 影彩（视频）列表
   数据来源：data/videos.json —— 由 scripts/sync-videos.mjs 从 static/memos.json 的 #影彩 条目生成。
   版式：一条一行（缩略图占一半宽 + 标题 / 元信息 / 评论入口），点开就在该行下方展开播放器。
-  右上角的大号斜体编号沿用「发生」页 card-sequence 的样子，数字取自 vlogNN，正文里不再重复。
+  右上角的大号斜体编号沿用「发生」页 card-sequence 的样子。编号按「由旧到新」自动排：
+  最新的一条是总数、最早的一条是 01，正文里不再重复写。
   封面走图床（img.hux.ink），仓库里不存图；未配置图床凭据时暂时直连 B 站图床。
   评论：每条视频挂到它对应那条哔哔的 memo:<id> 线程上，两边共用同一串评论。
 */ -}}
@@ -33,10 +34,10 @@
       {{- range $i, $v := $videos }}
         {{- $aspect := "landscape" -}}
         {{- if eq (printf "%v" ($v.aspect | default "")) "portrait" }}{{ $aspect = "portrait" }}{{ end -}}
-        {{- /* 右上角的大号编号：取 label 里的数字（VLOG 03 → 03），没有就退回序号 */ -}}
-        {{- $num := "" -}}
-        {{- with (findRE `\d+` (printf "%v" ($v.label | default "")) 1) }}{{ $num = index . 0 }}{{ end -}}
-        {{- if not $num }}{{ $num = printf "%02d" (add $i 1) }}{{ end -}}
+        {{- /* 右上角的大号编号：按「由旧到新」的序号，最早那条是 01、最新那条是总数。
+               以前取备忘录里的 vlogNN，没写的退回列表下标 —— 两套编号混在一起就会撞车
+               （01 02 03 02 01）。改成只认位置：永不重复，而且新片插到最前面时旧编号不动。 */ -}}
+        {{- $num := printf "%02d" (sub (len $videos) $i) -}}
 
         <article class="video-item" data-index="{{ $i }}" data-aspect="{{ $aspect }}" style="--i: {{ $i }}">
           <div class="video-row">
