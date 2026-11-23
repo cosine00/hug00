@@ -416,6 +416,7 @@ https://www.bilibili.com/blackboard/html5mobileplayer.html
 | 9 | **线上影彩页突然空白约 20 分钟** | 三条都 412 时脚本仍写了 `[]` 并自动提交 | 见下一节「事故复盘」，已加两道硬保护 |
 | 10 | `<button>` 里塞评论按钮，HTML 被截断 | button 不能嵌套 button | `.video-row` 从 `<button>` 改成 `<div>`，键盘可达性交给内部 `.video-poster` 按钮 |
 | 11 | 日期/评论一出现就把标题顶走 | foot 在文档流里 | foot 脱流 `bottom:0` + body `align-self: stretch` |
+| 12 | 卡面标题显示 `image` 而不是条目正文 | Memos 贴图给的 `alt` 就是 `image`：没有扩展名、后面也没有数字，`looksLikeFilename()` 的 `IMG_`/`DSC` 前缀规则抓不到；而「有空格取后半段」那条规则还会把 `image 1` 削成 `1` | 新增 `looksLikeBareMediaName()`（`image`/`photo`/`picture`/`未命名` 整段命中），`photoCaption()` 里先判整段再决定要不要按空格拆，命中就退回正文 |
 | 12 | 编号跟着文字跑到行中间 | `.video-seq` 的定位基准是 `.video-body` | 挪到 `.video-row` 下，row 加 `position: relative` |
 | 13 | 图标一悬停就变紫灰 | 站点全局 `a:hover` 无差别染色 | 显式 `.video-head-link:hover { color:#1296db }` |
 | 14 | 主页过滤写了却不生效 | `/js/*` 是 `max-age=432000`（5 天），而引用还是旧 `?v=20261109-01` | 改脚本必须同步升 `?v=`（现在是 `20261112-02`） |

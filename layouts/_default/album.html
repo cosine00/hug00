@@ -151,6 +151,29 @@
       return false
     }
 
+    /**
+     * 「image」「image 1」「photo」这类：贴图工具自动起的名字，整段就是一个词，
+     * 没有扩展名也没有编号，上面那条正则抓不到（img 后面还得有数字）。
+     * 这类 alt 一个字的标题信息都没有，必须认出来，否则卡面标题就变成 image。
+     */
+    function looksLikeBareMediaName(text) {
+      return /^(image|photo|picture|pic|screenshot|untitled|未命名|图片)\s*[-_]?\s*\d*$/i.test(String(text || "").trim())
+    }
+
+    /**
+     * 一张照片卡面的标题。alt 只是文件名时退回条目正文（#相册 后面那截）。
+     * 顺序有讲究：整段是 image/photo 时不拆空格（拆完剩下「1」更像标题了）；
+     * 「IMG_2026 深圳湾」这种「文件名 + 真标题」的，才取空格后半段。
+     */
+    function photoCaption(altText, galleryTitle) {
+      var alt = String(altText || "").trim()
+      if (!looksLikeBareMediaName(alt) && /\s/.test(alt)) {
+        alt = alt.slice(alt.search(/\s/)).trim()
+      }
+      if (looksLikeBareMediaName(alt)) alt = ""
+      return looksLikeFilename(alt) ? galleryTitle : (alt || galleryTitle)
+    }
+
     function formatPhotoDate(timestamp) {
       if (!timestamp) return ""
       var date = new Date(Number(timestamp) * 1000)
@@ -199,14 +222,10 @@
         while ((match = imagePattern.exec(content)) !== null) {
           var altText = String(match[1] || "").trim()
           var imageUrl = String(match[2] || "").trim()
-          var altTitle = altText
 
-          // Memos 写出的 alt 常是「IMG_2026….jpg」这类文件名：有空格时取后半段，
-          // 整段就是文件名时直接丢掉，改用条目正文（和以前一样显示条目文字）。
-          if (/\s/.test(altText)) {
-            altTitle = altText.slice(altText.search(/\s/)).trim()
-          }
-          var title = looksLikeFilename(altTitle) ? galleryTitle : altTitle || galleryTitle
+          // Memos 写出的 alt 常是「IMG_2026….jpg」甚至是「image」：判定放在 photoCaption 里，
+          // 认出来就退回条目正文（#相册 后面那截），不再把文件名当标题挂到卡面上。
+          var title = photoCaption(altText, galleryTitle)
 
           if (imageUrl) {
             photos.push({
