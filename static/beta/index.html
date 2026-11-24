@@ -320,6 +320,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pk-h a{flex:0 0 auto;font-size:11.5px;color:var(--accent);text-decoration:none;padding:2px 0 2px 10px;
   letter-spacing:.01em}
+/* 卡头那个小动作：和右边的链接同一档，但按下去有反馈 */
+.pk-act{flex:0 0 auto;font-size:11.5px;color:var(--accent);background:none;border:0;box-shadow:none;
+  padding:2px 0 2px 10px;letter-spacing:.01em;backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:opacity .16s var(--ease)}
+.pk-act:active{opacity:.5}
+.pk-act[disabled]{opacity:.4}
 .pk-stat{display:flex;align-items:flex-end;gap:14px}
 .pk-big{display:flex;align-items:baseline;font-size:26px;font-weight:700;line-height:1;
   letter-spacing:-.025em;color:var(--fg);font-variant-numeric:tabular-nums}
@@ -335,7 +341,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   color-mix(in srgb,var(--accent) 46%,transparent))}
 .pk-runs{list-style:none;margin:6px 0 0;padding:0}
 .pk-run{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:.5px solid var(--line);
-  font-size:12.5px;color:var(--muted)}
+  font-size:12.5px;color:var(--muted);cursor:pointer}
+.pk-run:active{opacity:.6}
 .pk-run:last-child{border-bottom:0}
 .pk-run .pr-dot{flex:0 0 auto;width:5px;height:5px;border-radius:50%;
   background:color-mix(in srgb,var(--accent) 62%,transparent)}
@@ -588,6 +595,25 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;letter-spacing:.02em}
 .field input{width:100%;border:0;background:var(--field);border-radius:11px;padding:12px 13px;font-size:16px;outline:none}
 .field input::placeholder{color:var(--faint)}
+/* ── 运动表单 ── */
+.field-row{display:flex;gap:10px}
+.field-row .field{flex:1;min-width:0}
+.field select{width:100%;border:0;background:var(--field);border-radius:11px;padding:12px 13px;
+  font-size:16px;color:var(--fg);outline:none;-webkit-appearance:none;appearance:none}
+.field input[disabled],.field select[disabled]{opacity:.55}
+.sp-recent{margin-top:16px;padding-top:12px;border-top:.5px solid var(--line)}
+.sp-recent-h{display:flex;align-items:baseline;gap:8px;font-size:12px;color:var(--muted)}
+.sp-recent-h span{flex:1}
+.sp-list{list-style:none;margin:6px 0 0;padding:0;max-height:36vh;overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch}
+.sp-item{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:.5px solid var(--line);
+  font-size:13px;cursor:pointer;transition:background .14s var(--ease)}
+.sp-item:last-child{border-bottom:0}
+.sp-item.on{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:8px}
+.sp-item .sp-when{flex:0 0 auto;min-width:70px;color:var(--faint);font-size:11px;font-variant-numeric:tabular-nums}
+.sp-item .sp-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)}
+.sp-item .sp-val{flex:0 0 auto;color:var(--muted);font-size:11.5px;font-variant-numeric:tabular-nums}
+.sp-empty{padding:14px 0;text-align:center;font-size:12px;color:var(--faint);list-style:none}
 .btns{display:flex;gap:10px;margin-top:6px}
 .btn{flex:1;height:44px;border-radius:12px;font-size:14px;font-weight:500;letter-spacing:.014em;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(180deg,var(--glass-top),var(--glass));border:.5px solid var(--glass-edge);
@@ -1068,7 +1094,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
           <header class="pk-h">
             <h3>悦动</h3>
             <span class="pk-sub" id="pkSportSub"></span>
-            <a href="/admin/?page=sports">管理</a>
+            <button class="pk-act" id="pkSportAdd" type="button">记一笔</button>
           </header>
           <div class="pk-stat">
             <div class="pk-big"><span id="pkWeek">—</span><small>km</small></div>
@@ -1082,6 +1108,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
           <header class="pk-h">
             <h3>博友在写</h3>
             <span class="pk-sub" id="pkFeedSub"></span>
+            <button class="pk-act" id="pkFeedFetch" type="button">抓取</button>
             <a href="/recent/">全部</a>
           </header>
           <ul class="pk-feed" id="pkFeed"></ul>
@@ -1353,6 +1380,52 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
 </div>
 
 <!-- 发布确认 -->
+<!-- 运动记录：补记没有轨迹的那种，或者给已有记录改个名字 -->
+<div class="sheet" id="sheetSport" aria-hidden="true">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="spTitle">
+    <div class="grabber"></div>
+    <h2 id="spTitle">记一笔</h2>
+    <p class="sub" id="spSub">补记没有轨迹的运动，爬楼、跳绳、健身房都行。</p>
+    <form id="spForm" autocomplete="off">
+      <div class="field">
+        <label for="spWhen">时间</label>
+        <input id="spWhen" type="datetime-local" step="60" required>
+      </div>
+      <div class="field">
+        <label for="spName">名称</label>
+        <input id="spName" type="text" maxlength="40" enterkeyhint="done" placeholder="爬楼梯 / 跳绳 / 力量训练" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="spType">类型</label>
+          <select id="spType">
+            <option value="Stair">爬楼</option>
+            <option value="RopeSkipping">跳绳</option>
+            <option value="Workout">健身</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="spMin">时长（分钟）</label>
+          <input id="spMin" type="number" inputmode="numeric" min="1" max="1440" step="1" required>
+        </div>
+      </div>
+      <div class="btns">
+        <button type="button" class="btn btn-ghost" id="spDelete" hidden>删除</button>
+        <button type="button" class="btn btn-ghost" data-close>取消</button>
+        <button type="submit" class="btn btn-primary" id="spSave">保存</button>
+      </div>
+    </form>
+    <div class="sp-recent">
+      <div class="sp-recent-h">
+        <span>最近记录</span>
+        <button type="button" class="pk-act" id="spReset">新的一条</button>
+      </div>
+      <ul class="sp-list" id="spList"><li class="sp-empty">正在读…</li></ul>
+    </div>
+  </div>
+</div>
+
 <!-- 一个按钮两件事：写成文章，还是随手发条哔哔 -->
 <div class="sheet" id="sheetCompose" aria-hidden="true">
   <div class="sheet-backdrop" data-close></div>
@@ -1620,6 +1693,8 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
   var lastSel = { start: 0, end: 0 };
   var pendingPublish = false;
   var pendingUpload = null;
+  var pendingSport = false;
+  var pendingFetch = false;
   var allTags = [];
   var recentPosts = null;
   var recentLoading = false;
@@ -4438,6 +4513,15 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
   }
 
   $('pkStamp').addEventListener('click', function () { loadDesk(true); });
+  $('pkSportAdd').addEventListener('click', function () { openSportSheet(); });
+  $('pkFeedFetch').addEventListener('click', function () { fetchFriends(this); });
+  $('pkRuns').addEventListener('click', function (event) {
+    var row = event.target.closest('.pk-run');
+    if (row && row.dataset.when) openSportSheet(row.dataset.when);
+  });
+  $('spForm').addEventListener('submit', function (event) { event.preventDefault(); saveSport(); });
+  $('spDelete').addEventListener('click', deleteSport);
+  $('spReset').addEventListener('click', function () { fillSportForm(null); $('spName').focus(); });
   $('hpComments').addEventListener('click', openComments);
   peekBtn.addEventListener('click', function () { toggleFrom(); });
   foldTap.addEventListener('click', function () { toggleFrom(false); });
@@ -5264,6 +5348,8 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
 
       (sport.recent || []).slice(0, 4).forEach(function (run) {
         var row = el('li', 'pk-run');
+        // 点一行直接进那条的编辑，省掉「记一笔 → 在列表里找它」这一步
+        row.dataset.when = String(run.when || '');
         row.appendChild(el('span', 'pr-dot'));
         row.appendChild(el('span', 'pr-name', run.name || '运动'));
         row.appendChild(el('span', 'pr-val',
@@ -5289,6 +5375,185 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     }
     $('pkFeedSub').textContent = (friends.friends || 0) + ' 位订阅';
     appendFeed(FEED_PAGE);
+  }
+
+  /* ---------------------------- 运动记录 ----------------------------
+     抽屉里只有一张表单：新建时清空，点「最近记录」里某条就切成编辑那一条。
+     跟老后台最大的区别是没有本地草稿和 dirty 标记 —— 保存就是一次请求，
+     服务端读-改-写并带 sha 兜冲突，前端不必知道中间过程。 */
+
+  var sportItems = [], sportEdit = null, sportBusy = false;
+
+  function localStamp() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
+      'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function sportWhen(when) {
+    return String(when || '').slice(5, 16).replace('-', '/');
+  }
+
+  function sportValue(item) {
+    if (Number(item.km) > 0) return Number(item.km).toFixed(1) + ' km';
+    return (item.minutes || 0) + ' 分';
+  }
+
+  function paintSportList() {
+    var box = $('spList');
+    box.innerHTML = '';
+    if (!sportItems.length) {
+      box.appendChild(el('li', 'sp-empty', '还没有记录'));
+      return;
+    }
+    sportItems.forEach(function (item) {
+      var li = el('li', 'sp-item' + (sportEdit && sportEdit.id === item.id ? ' on' : ''));
+      li.appendChild(el('span', 'sp-when', sportWhen(item.when)));
+      li.appendChild(el('span', 'sp-nm', item.name));
+      li.appendChild(el('span', 'sp-val', sportValue(item)));
+      li.addEventListener('click', function () {
+        fillSportForm(item);
+        if (!$('spName').disabled) $('spName').focus();
+      });
+      box.appendChild(li);
+    });
+  }
+
+  function fillSportForm(item) {
+    sportEdit = item || null;
+    var when = item ? String(item.when || '') : '';
+    $('spWhen').value = when ? when.slice(0, 16).replace(' ', 'T') : localStamp();
+    $('spName').value = item ? item.name : '';
+    $('spType').value = item && item.type ? item.type : 'Stair';
+    $('spMin').value = item && item.minutes ? item.minutes : 30;
+
+    var synced = Boolean(item && item.kind === 'synced');
+    $('spTitle').textContent = item ? '改这一条' : '记一笔';
+    $('spSub').textContent = synced
+      ? '这条是自动同步来的，只改显示名称，距离和轨迹保持原样。'
+      : item
+        ? '手工记录，改完直接写进仓库。'
+        : '补记没有轨迹的运动，爬楼、跳绳、健身房都行。';
+    // 同步记录的其它字段来自 Keep，改了没处放，索性锁住
+    ['spWhen', 'spType', 'spMin'].forEach(function (id) { $(id).disabled = synced; });
+    $('spDelete').hidden = !(item && item.kind === 'manual');
+    $('spSave').textContent = item ? '保存修改' : '保存';
+    paintSportList();
+  }
+
+  function loadSportItems() {
+    return api('/api/write/sports').then(function (data) {
+      sportItems = (data.items || []).slice();
+      paintSportList();
+      return sportItems;
+    }).catch(function (error) {
+      sportItems = [];
+      var box = $('spList');
+      box.innerHTML = '';
+      box.appendChild(el('li', 'sp-empty', error.message || '读不到记录'));
+      throw error;
+    });
+  }
+
+  /** pick 是从悦动卡片点进来的那条，滚到列表里找到它并把表单填上 */
+  function openSportSheet(pick) {
+    if (!authed) { pendingSport = true; openSheet('sheetLogin'); return; }
+    sportItems = [];
+    fillSportForm(null);
+    var box = $('spList');
+    box.innerHTML = '';
+    box.appendChild(el('li', 'sp-empty', '正在读…'));
+    openSheet('sheetSport');
+    loadSportItems().then(function (items) {
+      if (!pick) return;
+      var head = String(pick).slice(0, 16);
+      var hit = null;
+      for (var i = 0; i < items.length; i += 1) {
+        if (String(items[i].when).indexOf(head) === 0) { hit = items[i]; break; }
+      }
+      if (hit) fillSportForm(hit);
+    }).catch(function () { /* 已经画过错误行了 */ });
+  }
+
+  function saveSport() {
+    if (sportBusy) return;
+    var when = String($('spWhen').value || '').replace('T', ' ');
+    var name = String($('spName').value || '').trim();
+    var minutes = Math.round(Number($('spMin').value) || 0);
+    var type = $('spType').value;
+
+    if (!when) { toast('先选个时间', 'err'); return; }
+    if (!name) { toast('给这次运动起个名字', 'err'); $('spName').focus(); return; }
+    if (minutes < 1) { toast('时长至少一分钟', 'err'); $('spMin').focus(); return; }
+
+    var payload;
+    if (sportEdit && sportEdit.kind === 'synced') {
+      payload = { action: 'update', kind: 'synced', key: sportEdit.key, name: name };
+    } else if (sportEdit) {
+      payload = { action: 'update', kind: 'manual', key: sportEdit.key, name: name, type: type, minutes: minutes, when: when };
+    } else {
+      payload = { action: 'add', kind: 'manual', name: name, type: type, minutes: minutes, when: when };
+    }
+
+    sportBusy = true;
+    var btn = $('spSave');
+    btn.disabled = true;
+    btn.textContent = '保存中…';
+    api('/api/write/sports', { method: 'POST', body: payload })
+      .then(function () {
+        toast(payload.action === 'add' ? '记上了' : '改好了', 'ok', 1900);
+        closeSheet($('sheetSport'));
+        loadSportItems();
+        // 卡片上的周统计来自构建产物，这会儿还是旧的；先拉一次，等构建完再刷
+        loadDesk(true);
+      })
+      .catch(function (error) { toast(error.message || '保存失败', 'err', 3400); })
+      .then(function () {
+        sportBusy = false;
+        btn.disabled = false;
+        btn.textContent = sportEdit ? '保存修改' : '保存';
+      });
+  }
+
+  function deleteSport() {
+    if (sportBusy || !sportEdit || sportEdit.kind !== 'manual') return;
+    if (!window.confirm('删掉「' + sportEdit.name + '」这条记录？')) return;
+    sportBusy = true;
+    api('/api/write/sports', { method: 'POST', body: { action: 'delete', kind: 'manual', key: sportEdit.key } })
+      .then(function () {
+        toast('已删除', 'ok', 1900);
+        closeSheet($('sheetSport'));
+        loadSportItems();
+        loadDesk(true);
+      })
+      .catch(function (error) { toast(error.message || '删除失败', 'err', 3400); })
+      .then(function () { sportBusy = false; });
+  }
+
+  /* 手工补抓：只负责派发，跑完还得等 Action 提交 + 站点构建，所以别催 */
+  var feedFetching = false;
+
+  function fetchFriends(btn) {
+    if (feedFetching) return;
+    if (!authed) { pendingFetch = true; openSheet('sheetLogin'); return; }
+    feedFetching = true;
+    btn.disabled = true;
+    btn.textContent = '派发中…';
+    api('/api/write/refresh', { method: 'POST', body: { task: 'friends' } })
+      .then(function () {
+        toast('已提交，1–3 分钟后生效', 'ok', 3600);
+        btn.textContent = '已提交';
+        setTimeout(function () { loadDesk(true); }, 150000);
+      })
+      .catch(function (error) {
+        toast(error.message || '触发失败', 'err', 3600);
+        btn.textContent = '抓取';
+      })
+      .then(function () {
+        feedFetching = false;
+        btn.disabled = false;
+        setTimeout(function () { btn.textContent = '抓取'; }, 4000);
+      });
   }
 
   /* 博友列表分页：先给五条，滚到底再添五条。整份数据早就在手里（构建时算好的静态 JSON），
@@ -5357,6 +5622,14 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
           var files = pendingUpload;
           pendingUpload = null;
           setTimeout(function () { uploadAll(files); }, 240);
+        }
+        if (pendingSport) {
+          pendingSport = false;
+          setTimeout(function () { openSportSheet(); }, 220);
+        }
+        if (pendingFetch) {
+          pendingFetch = false;
+          setTimeout(function () { fetchFriends($('pkFeedFetch')); }, 260);
         }
       })
       .catch(function (error) {

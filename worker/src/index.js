@@ -29,6 +29,9 @@
  *   POST /api/write/drafts               批量上行草稿，冲突按 updated_at 判
  *   POST /api/write/polish               { text, mode, instruction, scope } → AI 润色稿
  *   POST /api/write/memo                 { content, images[], rid } → 发一条哔哔到 FlareMo
+ *   GET  /api/write/sports               手工运动 + 最近同步记录，合成一张扁平表
+ *   POST /api/write/sports               { action, kind, key, name, when, minutes, type, hr }
+ *   POST /api/write/refresh              { task: 'friends' } 手工补抓博友 RSS
  *
  *   POST /api/integrations/drafts        Drafts 文稿 → Beta 草稿（单独令牌，只此一个动作）
  */
@@ -56,6 +59,7 @@ import {
 import { notifyNewComment, notifyReply } from './mail.js';
 import { handleWriteDraftsGet, handleWriteDraftsSave, handleWriteHealth, handleWriteImages, handleWritePost, handleWritePosts, handleWriteTags, handleWriteUpload } from './write.js';
 import { handleWriteMemo } from './memo.js';
+import { handleSportsGet, handleSportsSave, handleRefresh } from './sports.js';
 import { handleDraftsImport } from './drafts.js';
 import { handlePolish } from './ai.js';
 import {
@@ -314,6 +318,24 @@ async function route(request, env, url, ctx) {
     if (!gate.ok) return gate.response;
     if (request.method !== 'POST') return fail(405, 'method_not_allowed', '哔哔接口只接受 POST');
     return handleWriteMemo(request, env);
+  }
+
+  // 工作台的运动记录：读一张扁平表，写只动一条。
+  // 手工记录进 act.json，同步记录改名进 overrides，原始 activities.json 不碰。
+  if (path === '/api/write/sports') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    if (request.method === 'GET') return handleSportsGet(env);
+    if (request.method === 'POST') return handleSportsSave(request, env);
+    return fail(405, 'method_not_allowed', '运动记录接口只接受 GET 和 POST');
+  }
+
+  // RSS 抓取不及时时手工踢一脚：只负责派发，不等运行结果
+  if (path === '/api/write/refresh') {
+    const gate = await adminGate(request, env);
+    if (!gate.ok) return gate.response;
+    if (request.method !== 'POST') return fail(405, 'method_not_allowed', '抓取接口只接受 POST');
+    return handleRefresh(request, env);
   }
 
   // AI 润色：密钥只在服务端，所以必须走这道闸门；它也只产出文本，不落库不发文

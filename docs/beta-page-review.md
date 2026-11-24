@@ -1069,3 +1069,81 @@ FangSong / KaiTi / 系统黑体，写作不受影响；system 本来就不下载
 system 无 CDN 地址、五种字体栈与 `palettes.css` 一致（逗号空格已归一）、`body` 接上
 `--write-font`、三处输入区仍显式声明、head 预设脚本在、切字体只改 href、切 system 摘 link、
 预览不拼空 href、落点是 `blog-font`、切字体时预览重渲染。
+
+---
+
+## 36. 工作台上补了三个高频动作：记一笔、改一条、手工抓取
+
+老 admin 里每天都用得到的三件事，在 beta 里一直是空白：补记没有轨迹的运动（爬楼、跳绳、
+健身房）、给已有记录改个名字、RSS 抓晚了手动踢一脚。这次不再新增页面，全挂在已有的下拉
+工作台上。
+
+### 为什么不是把 admin 的代码搬过来
+
+admin 是**浏览器直连 GitHub**：PAT 在 `localStorage`，写完自己拼 `blob → tree → commit`，
+因此被迫维护整套保护 —— `sportsManualDirty` / `sportsOverridesDirty` / `sportsDraft` 恢复 /
+提交前 sha 比对 / 冲突提示。三百多行里有一大半是在替「浏览器可能没网、可能多端并发」打补丁。
+
+beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样），token 只在 secret 里，
+前端只拿一个 admin 会话；`worker/src/memo.js` 里连 `workflow_dispatch` 的写法都是现成的。
+所以这次只补服务端，前端不加状态机。
+
+### 服务端
+
+新增 `worker/src/sports.js`，三个端点都过 `adminGate`：
+
+| 端点 | 作用 |
+| --- | --- |
+| `GET /api/write/sports` | 手工记录（`assets/act.json`）+ 最近 40 条同步记录（`activities.json`）+ 名称覆盖表，合成一张扁平表，按时间倒序截前 60 条 |
+| `POST /api/write/sports` | `{action, kind, key, name, when, minutes, type}`，服务端读-改-写单条 |
+| `POST /api/write/refresh` | `{task:'friends'}` → dispatch `fetch-friend-circle.yml` |
+
+`write.js` 里原本私有的 `base64Utf8` / `repoOf` / `branchOf` / `githubReady` / `githubTrouble` /
+`githubRequest` / `contentEndpoint` / `readPostFile` / `textFromBase64` 加了 `export`，复用它那套
+认证头和错误话术，没有再写一份。
+
+**单个写入的冲突处理**：`mutateJson()` 读 → 改 → 带 sha PUT，409/422 说明这期间有人刚提交过
+（`Notion-sports-to-Hugo.yml` 也在写 `act.json`），重读一次重新改；连续两次撞车就返回
+「刚有自动同步在改这份文件，等两秒再点一次」，不硬试也不静默覆盖。
+
+**run_id**：`YYYYMMDD` + 三位序号，取同日**已有最大序号 + 1**（不是条目数 + 1）——删过记录
+也不会撞号。改时间不换 run_id：这条记录的身份跟着自己走。
+
+**同步记录改名只碰覆盖表**：`assets/activity-name-overrides.json` 是 `{start_date_local: 名称}`
+的映射，`activities.json` 一个字节都不动 —— Keep 那边再同步也不会把这个名字冲掉。名称清空
+等于删掉这条覆盖，回到同步名称。
+
+**一个大坑**：`activities.json` 有 1.3MB，超过 GitHub contents API 的 1MB 上限，那边只会回
+空字符串 + sha。不处理的话同步记录会静默变成空列表 —— 改名功能看着没坏，其实没数据。
+`readActivities()` 因此先试 inline content，为空再走 `/git/blobs/{sha}`。
+
+### 前端
+
+三处改动，都长在已有卡片上：
+
+1. 「悦动」卡头的 `管理` 链接（跳去 `/admin/?page=sports`）换成 `记一笔`；
+2. 悦动里那四行带上 `data-when`，点一行直接进那条的编辑，省掉「进抽屉 → 在列表里找它」；
+3. 「博友在写」卡头加 `抓取`，点了派发 `fetch-friend-circle.yml`，150 秒后自动重拉一次
+   `desk-index.json`。
+
+抽屉 `#sheetSport` 只有四项：时间、名称、类型（爬楼 / 跳绳 / 健身）、时长 —— 心率不进手机屏。
+新增和编辑共用同一张表单：`fillSportForm(item)` 传 `null` 就是新建，传一条就是编辑；同步记录
+（`kind:'synced'`）只解锁名称，时间 / 类型 / 时长 `disabled`，因为那些字段来自 Keep，改了没处放。
+
+**没有第二套本地草稿**：保存就是一次请求，成功关抽屉、失败 toast。这是刻意和 admin 拉开距离的
+地方 —— 复杂度一旦搬进 beta，就再也搬不出去了。
+
+### 实测
+
+- `node --test tests/*.test.mjs`：207 → **229** 条全过（新增 `sports-api.test.mjs` 15 条、
+  `beta-sport-sheet.test.mjs` 7 条）。
+- 无头 Chrome（把 `#app` 钉到 390 宽模拟移动屏）：工作台两张卡片的标题行分别是
+  `悦动 … 记一笔`、`博友在写 … 抓取 全部`，无重叠；抽屉新增态四个字段完整，编辑态
+  `删除 / 取消 / 保存修改` 三个按钮文字不截断；同步记录编辑时时间 / 类型 / 时长变灰。
+
+### 还没覆盖的
+
+- `activities.json` 每次读都要走一趟 1.3MB 的 blob（约 1.7MB 出站），打开抽屉偶有半秒延迟。
+  加 Cache API 能省，但先看实际频率再决定 —— 一天十几次不值得多一层缓存失效逻辑。
+- 抓取只派发不等待，按钮说「已提交，1–3 分钟后生效」而不是「已更新」。Action 跑完还要等
+  Vercel 重建，这时候说「已更新」就是在骗人。

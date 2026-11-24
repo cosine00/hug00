@@ -71,7 +71,7 @@ function randomTail(len = 6) {
 }
 
 /** Worker 里没有 Buffer，btoa 只能吃 latin1，先转字节再分段拼接。 */
-function base64Utf8(text) {
+export function base64Utf8(text) {
   const bytes = new TextEncoder().encode(text);
   let binary = '';
   const step = 0x8000;
@@ -82,18 +82,18 @@ function base64Utf8(text) {
 }
 
 /** GitHub Contents API 的 content 是带换行的 base64，先剥掉空白再解码成 UTF-8。 */
-function textFromBase64(data) {
+export function textFromBase64(data) {
   const binary = atob(String(data || '').replace(/[\r\n\s]/g, ''));
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
   return new TextDecoder('utf-8').decode(bytes);
 }
 
-function repoOf(env) {
+export function repoOf(env) {
   return String(env.WRITE_GITHUB_REPO || '').trim();
 }
 
-function branchOf(env) {
+export function branchOf(env) {
   return String(env.WRITE_GITHUB_BRANCH || 'master').trim() || 'master';
 }
 
@@ -102,12 +102,12 @@ function publicBase(env) {
   return raw || 'https://img.hux.ink';
 }
 
-function githubReady(env) {
+export function githubReady(env) {
   return Boolean(String(env.GITHUB_TOKEN || '').trim()) && Boolean(repoOf(env));
 }
 
 /** 401/403 是最常见也最难自查的故障，单独给一句人话。 */
-function githubTrouble(status, message) {
+export function githubTrouble(status, message) {
   if (status === 401) {
     return fail(502, 'token_invalid', 'GitHub 令牌失效或已过期：重新生成 PAT 后 npx wrangler secret put GITHUB_TOKEN');
   }
@@ -280,7 +280,7 @@ export function handleWriteHealth(env) {
 
 /* ------------------------------- GitHub ------------------------------- */
 
-async function githubRequest(env, path, init = {}) {
+export async function githubRequest(env, path, init = {}) {
   const token = String(env.GITHUB_TOKEN || '').trim();
   const response = await fetch(`${GITHUB_API}${path}`, {
     ...init,
@@ -303,12 +303,12 @@ async function githubRequest(env, path, init = {}) {
   return { response, body };
 }
 
-function contentEndpoint(env, path) {
+export function contentEndpoint(env, path) {
   const encoded = String(path).split('/').map(encodeURIComponent).join('/');
   return `/repos/${repoOf(env)}/contents/${encoded}`;
 }
 
-async function readPostFile(env, path) {
+export async function readPostFile(env, path) {
   const endpoint = `${contentEndpoint(env, path)}?ref=${encodeURIComponent(branchOf(env))}`;
   const { response, body } = await githubRequest(env, endpoint);
   if (!response.ok || !body || typeof body.content !== 'string') {
