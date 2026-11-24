@@ -36,6 +36,20 @@
   };
 })();
 </script>
+<script>
+/* 正文字体跟博客共用同一个偏好（blog-font）。这里只在解析阶段先把 data 属性挂上，
+   让字体栈当场就是「目标字体 + 同类回退」，不至于先按系统字体排一遍再跳字。
+   字体文件本身在正文脚本里按需加载，四份不叠着下。 */
+(function () {
+  var ids = ['zhuque', 'xixihei', 'wenkai', 'zhisong'];
+  var id = 'zhuque';
+  try {
+    var saved = localStorage.getItem('blog-font');
+    if (ids.indexOf(saved) > -1) id = saved;
+  } catch (_) {}
+  document.documentElement.dataset.writeFont = id;
+})();
+</script>
 <style>
 :root{
   --bg:#ffffff; --desk:#f5f0ea; --panel:#ffffff; --raised:#ffffff;
@@ -53,6 +67,9 @@
   --ease:cubic-bezier(.32,.72,0,1);
   /* 行号列：--gut 是「行号宽 + 间距」，标题、元信息、工具栏都按它缩进，左缘才对得齐 */
   --padl:16px; --gut:30px; --read:1;
+  /* 正文字体：四种与博客站同名、同回退栈。默认朱雀仿宋，head 里那段小脚本
+     会在解析阶段就把 data-write-font 定下来，避免先按系统字体排一遍再跳字。 */
+  --write-font:"Zhuque Fangsong", FangSong, "STFangsong", serif;
 }
 @media (prefers-color-scheme:dark){
   /* 深色不铺纯黑：一层带冷调的近黑，中间稍亮，玻璃才托得起来 */
@@ -376,6 +393,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .sheet-panel,.tagpicks{scrollbar-width:thin;scrollbar-color:rgba(120,120,128,.3) transparent}
 .doc-inner{max-width:660px;margin:0 auto;padding:6px var(--padl) calc(var(--sab) + 40px)}
 #title{display:block;width:100%;border:0;background:none;outline:none;resize:none;overflow:hidden;
+  font-family:var(--write-font);
   font-size:29px;font-weight:720;line-height:1.22;letter-spacing:-.022em;
   padding:18px 0 4px var(--gut);min-height:48px;
   caret-color:var(--accent)}
@@ -383,8 +401,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 正文与行号并排：行号在左、随文档一起滚，不单独滚动 */
 .bodywrap{display:flex;align-items:flex-start;gap:10px}
 .bodywrap>#body{flex:1;min-width:0}
+/* 四种字体只换正文字形，界面控件（工具栏、菜单、按钮）仍是系统无衬线——
+   那里要的是清晰，衬线小字反而糊。字体栈与博客站 palettes.css 一致。 */
+html[data-write-font="zhuque"]{--write-font:"Zhuque Fangsong", FangSong, "STFangsong", serif}
+html[data-write-font="xixihei"]{--write-font:"LXGW Neo XiHei", "Microsoft YaHei", sans-serif}
+html[data-write-font="wenkai"]{--write-font:"LXGW WenKai Screen", "KaiTi", serif}
+html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", SimSun, serif}
 #body{display:block;width:100%;border:0;background:none;outline:none;overflow:hidden;
-  position:relative;word-break:break-word;
+  position:relative;word-break:break-word;font-family:var(--write-font);
   font-size:calc(17px * var(--read));line-height:1.74;padding:18px 0 0;min-height:44vh;
   letter-spacing:.002em;caret-color:var(--accent);--para-gap:.95em}
 /* 段落是真段落：间距由 margin 控制，比 textarea 里塞一个空行紧得多。
@@ -590,6 +614,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .kv{display:flex;justify-content:space-between;gap:14px;font-size:12.5px;color:var(--muted);padding:4px 2px}
 .kv b{color:var(--fg);font-weight:500;text-align:right;word-break:break-all}
 .sect{font-size:11.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 4px}
+/* 正文字体：两列等宽（2×2）。用 flex-wrap 会排成 3+1，最后一行只剩一个孤零零的 */
+.fontpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:2px 0 4px}
+.fontbtn{padding:8px 10px;border-radius:999px;border:.5px solid var(--line);
+  background:transparent;color:var(--muted);font-size:13px;line-height:1.25;letter-spacing:.01em;
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.fontbtn:active{opacity:.6}
+.fontbtn.on{border-color:color-mix(in srgb,var(--accent) 52%,transparent);
+  background:color-mix(in srgb,var(--accent) 13%,transparent);
+  color:var(--accent);font-weight:500}
 
 /* 创作菜单：两个去处要一眼分得开。原来两行竖排、副文案贴在右侧，行高才 46px，
    拇指一按就压到隔壁——改成两张卡片：图标 + 标题 + 一句说明，中间留 10px 空档。 */
@@ -797,7 +831,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
    框一撤，块高度也收一档（38vh → 31vh），手机上不至于顶满屏。 */
 .memo-text{display:block;width:100%;min-height:31vh;padding:0 2px;border:0;border-radius:0;
   background:none;color:var(--fg);
-  font-family:inherit;font-size:16px;line-height:1.8;letter-spacing:.008em;
+  font-family:var(--write-font);font-size:16px;line-height:1.8;letter-spacing:.008em;
   resize:none;outline:none;-webkit-appearance:none;appearance:none;
   caret-color:var(--accent)}
 .memo-text::placeholder{color:var(--faint)}
@@ -1395,6 +1429,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <button class="row" id="rowExport"><span class="k">导出 Markdown</span><span class="v">存到文件 / iCloud</span></button>
       <button class="row danger" id="rowClear"><span class="k">删除这篇草稿</span><span class="v">不可撤销</span></button>
     </div>
+    <div class="sect">正文字体</div>
+    <div class="fontpick" id="fontPick" role="group" aria-label="正文字体">
+      <button class="fontbtn" type="button" data-font="zhuque">朱雀仿宋</button>
+      <button class="fontbtn" type="button" data-font="xixihei">霞鹜新晰黑</button>
+      <button class="fontbtn" type="button" data-font="wenkai">霞鹜文楷</button>
+      <button class="fontbtn" type="button" data-font="zhisong">新致宋</button>
+    </div>
+    <p class="sub" style="margin:8px 2px 0">跟博客站共用同一个选择，两边一起变；正文、标题和哔哔都按它排。</p>
     <div class="sect">服务状态</div>
     <div class="kv"><span>接口</span><b id="apiState">—</b></div>
     <div class="kv"><span>仓库写入</span><b id="ghState">登录后可见</b></div>
@@ -5493,6 +5535,55 @@ input,textarea{-webkit-user-select:text;user-select:text}
   });
 
   $('menuBackBtn').addEventListener('click', function () { showPane(null); });
+
+  /* ── 正文字体 ──
+     跟博客站共用 localStorage['blog-font']：那边点诗句切的字体，这里接着用；
+     在这儿换了，回去也一样。四份字体样式表都在 CDN 上，只挂载当前选中那份，
+     换字体时改同一个 link 的 href，不叠着下。 */
+  var fontLink = null;
+
+  function currentFont() {
+    try {
+      var saved = localStorage.getItem('blog-font');
+      if (BLOG_FONT_CSS[saved]) return saved;
+    } catch (e) {}
+    return 'zhuque';
+  }
+
+  function applyWriteFont(id, remember) {
+    if (!BLOG_FONT_CSS[id]) id = 'zhuque';
+    document.documentElement.dataset.writeFont = id;
+    if (!fontLink) {
+      fontLink = document.createElement('link');
+      fontLink.rel = 'stylesheet';
+      fontLink.setAttribute('data-blog-font', '');
+      document.head.appendChild(fontLink);
+    }
+    if (fontLink.getAttribute('data-font') !== id) {
+      fontLink.href = BLOG_FONT_CSS[id];
+      fontLink.setAttribute('data-font', id);
+    }
+    if (remember) {
+      try { localStorage.setItem('blog-font', id); } catch (e) {}
+    }
+    var pick = $('fontPick');
+    if (pick) {
+      Array.prototype.forEach.call(pick.querySelectorAll('[data-font]'), function (btn) {
+        var on = btn.getAttribute('data-font') === id;
+        btn.classList.toggle('on', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    // 预览开着就按新字体重出一版，免得「字变了、预览还是旧字形」
+    if (previewEl.classList.contains('open')) renderPreview(previewPost);
+  }
+
+  $('fontPick').addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-font]');
+    if (btn) applyWriteFont(btn.getAttribute('data-font'), true);
+  });
+
+  applyWriteFont(currentFont(), false);
 
   $('actionsBtn').addEventListener('click', function () {
     flushSave();
