@@ -1007,3 +1007,51 @@ iframe 当时也没有 `sandbox`，`srcdoc` 继承本站源，脚本能读 `loca
 
 **没动的**：安全区那层留白仍在 `.homepane{padding-bottom:calc(var(--sab) + 34px)}`，
 按钮不会压到 home indicator；桌面端（≥900px）一条规则都没碰。全量 183 条通过，`hugo --quiet` 通过。
+
+## 35. 写作页也能切字体了：与博客站共用一套
+
+博客站那边点诗句能在四种字体间轮换（朱雀仿宋 / 霞鹜新晰黑 / 霞鹜文楷 / 新致宋），
+写稿页却一直是系统黑体 —— 写字时看到的字形跟发出去的不一样，调行距、看断句全靠想象。
+现在设置抽屉里多了「正文字体」一块，四个药丸 2×2 排开。
+
+**共用哪份偏好**：`localStorage['blog-font']`，就是博客站 `js/svg` 那套脚本写的键。
+在博客切了，进写作页接着用；在写作页换了，回博客也变。没有另起 `beta-font`，
+不然两边会各说各话。
+
+**只换字形，不换界面**：`--write-font` 只喂给 `#body`、`#title`、`.memo-text` 三处。
+工具栏、抽屉、按钮仍是系统无衬线 —— 13px 的小字用衬线会糊，图标旁边也不该变字形。
+
+**四份样式表不叠着下**：`BLOG_FONT_CSS` 是四个 CDN 地址，页面只挂一个 `<link data-blog-font>`，
+换字体时改 `href`，不新增节点。实测切三次之后 `document.querySelectorAll('link[data-blog-font]').length`
+仍是 1。
+
+**首屏不跳字**：`<head>` 里一小段脚本在解析阶段就把 `data-write-font` 挂上（读 `blog-font`，
+默认 zhuque），所以首帧就是「目标字体 + 同类回退」（朱雀仿宋未到时回落 FangSong），
+不会先按系统黑体排一遍再整页跳一次。
+
+**预览跟着走**：`blogLook()` 本来就读 `blog-font`，切字体后若预览开着，会 `renderPreview(previewPost)`
+重出一版 —— 否则会出现「字变了、预览还是旧字形」。
+
+**实测**（无头 Chrome + 本地 http）：
+
+| 操作 | `data-write-font` | `#body` 计算字体 | `blog-font` | link 数 |
+|---|---|---|---|---|
+| 初始 | zhuque | "Zhuque Fangsong" | — | 1 |
+| 点「霞鹜文楷」 | wenkai | "LXGW WenKai Screen" | wenkai | 1 |
+| 点「霞鹜新晰黑」 | xixihei | "LXGW Neo XiHei" | xixihei | 1 |
+
+预览侧读到的 `srcdoc` 里 `data-font="wenkai"`，与编辑区一致。
+
+**布局**：抽屉内容宽 283px 时，两列各 138px，行距 42px。flex-wrap 会排成 3+1（最后一个孤零零），
+所以用 grid 两列。
+
+**一个已知差异**：霞鹜文楷那份 CSS 是 `@import` 两层子表（`lxgwwenkaiscreen.css` /
+`lxgwwenkaiscreenr.css`），首字节到字形可用比另外三种多两跳，弱网下切换有延迟感 —— 这是
+字体源本身的结构，博客站一样。其余三种都是单文件 `@font-face` 清单。
+
+**离线**：字体走 CDN，Service Worker 只管同源（`/css/`、`/beta/`），断网时字体回落
+FangSong / KaiTi / 系统黑体，写作不受影响。
+
+回归测试 `tests/beta-font-picker.test.mjs` 7 条：按钮 id 与 `BLOG_FONT_CSS` 一一对应、
+四种字体栈与 `palettes.css` 逐字相同、三处用上 `--write-font`、head 预设脚本在、
+只挂一个 link、落点是 `blog-font`、切字体时预览重渲染。
