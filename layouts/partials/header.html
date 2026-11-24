@@ -19,6 +19,7 @@
     <script>
       (function () {
         var fonts = {
+          system: '',
           zhuque: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',
           xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css',
           wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
@@ -27,10 +28,17 @@
         var selected = 'zhuque';
         try {
           var saved = localStorage.getItem('blog-font');
-          if (fonts[saved]) selected = saved;
+          if (Object.prototype.hasOwnProperty.call(fonts, saved)) selected = saved;
         } catch (_) {}
         document.documentElement.dataset.font = selected;
-        document.getElementById('blog-font-stylesheet').href = fonts[selected];
+        var sheet = document.getElementById('blog-font-stylesheet');
+        // 「系统」不下载字体：把默认那份 zhuque 的样式表停用，而不是留个空 href
+        if (fonts[selected]) {
+          sheet.disabled = false;
+          sheet.href = fonts[selected];
+        } else {
+          sheet.disabled = true;
+        }
       })();
     </script>
     <script type="text/javascript" src="{{ "js/view-image.min.js" | relURL }}?v=20261028-05"></script>
@@ -80,7 +88,7 @@
     {{ partial "head_highlightjs" . }}
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}?v=20261111-01" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
-    <link rel="stylesheet" href="{{ "/css/palettes.css?v=20260924-2" | relURL }}" />
+    <link rel="stylesheet" href="{{ "/css/palettes.css?v=20261124-1" | relURL }}" />
     <script>
       (function () {
         var allowed = ['paper', 'night', 'sepia', 'mist'];
@@ -120,7 +128,7 @@
       });
     </script>
     <script defer src="{{ "/js/palette-switcher.js" | relURL }}"></script>
-    <script defer src="{{ "/js/font-switcher.js?v=20261110-01" | relURL }}"></script>
+    <script defer src="{{ "/js/font-switcher.js?v=20261124-01" | relURL }}"></script>
   </head>
 
   {{ $.Scratch.Set "section" (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) }}

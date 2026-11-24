@@ -1008,50 +1008,64 @@ iframe 当时也没有 `sandbox`，`srcdoc` 继承本站源，脚本能读 `loca
 **没动的**：安全区那层留白仍在 `.homepane{padding-bottom:calc(var(--sab) + 34px)}`，
 按钮不会压到 home indicator；桌面端（≥900px）一条规则都没碰。全量 183 条通过，`hugo --quiet` 通过。
 
-## 35. 写作页也能切字体了：与博客站共用一套
+## 35. 写作页也能切字体了：五种，且全局生效
 
-博客站那边点诗句能在四种字体间轮换（朱雀仿宋 / 霞鹜新晰黑 / 霞鹜文楷 / 新致宋），
+博客站那边点诗句能在几种中文字体间轮换（朱雀仿宋 / 霞鹜新晰黑 / 霞鹜文楷 / 新致宋），
 写稿页却一直是系统黑体 —— 写字时看到的字形跟发出去的不一样，调行距、看断句全靠想象。
-现在设置抽屉里多了「正文字体」一块，四个药丸 2×2 排开。
+现在设置抽屉里有「界面与正文字体」一块，五个选项：四种中文字体 + **系统字体**，
+最后一格横跨整行。
 
-**共用哪份偏好**：`localStorage['blog-font']`，就是博客站 `js/svg` 那套脚本写的键。
+**共用哪份偏好**：`localStorage['blog-font']`，就是博客站 `font-switcher.js` 写的键。
 在博客切了，进写作页接着用；在写作页换了，回博客也变。没有另起 `beta-font`，
 不然两边会各说各话。
 
-**只换字形，不换界面**：`--write-font` 只喂给 `#body`、`#title`、`.memo-text` 三处。
-工具栏、抽屉、按钮仍是系统无衬线 —— 13px 的小字用衬线会糊，图标旁边也不该变字形。
+**全局生效，不是只换正文**：`--write-font` 落在 `body` 的 `font` 简写上，工具栏、抽屉、
+菜单、按钮、入口页诗句、三行入口全部继承；`#body`、`#title`、`.memo-text` 那三条
+显式声明保留，作为语义标记。只有三类地方另指字体：代码块与 URL（`ui-monospace`）、
+Markdown 工具栏的 `</>` 图标字（Georgia）。行号列原本就有 `font-variant-numeric:tabular-nums`，
+换衬线后数字仍是等宽。
 
-**四份样式表不叠着下**：`BLOG_FONT_CSS` 是四个 CDN 地址，页面只挂一个 `<link data-blog-font>`，
-换字体时改 `href`，不新增节点。实测切三次之后 `document.querySelectorAll('link[data-blog-font]').length`
-仍是 1。
+**「系统字体」是什么**：`BLOG_FONT_CSS.system` 是空串，选中它不给页面挂任何 `<link>`
+（若把已有那个摘掉）。这样不下载字体文件，直接用平台无衬线——等于随时能回到原生观感，
+也方便判断「某个观感问题是字体带来的还是布局带来的」。
+
+**几份样式表不叠着下**：`BLOG_FONT_CSS` 是 CDN 地址表，页面只挂一个 `<link data-blog-font>`，
+换字体时改 `href`，不新增节点；切到 system 则 `removeChild`。实测：
+
+| 操作 | `data-write-font` | `body` 计算字体 | `.row` 按钮 | `blog-font` | link 数 |
+|---|---|---|---|---|---|
+| 初始 | zhuque | Zhuque Fangsong | Zhuque Fangsong | — | 1 |
+| 点「系统字体」 | system | -apple-system | -apple-system | system | **0** |
+| 点「霞鹜文楷」 | wenkai | LXGW WenKai Screen | LXGW WenKai Screen | wenkai | 1 |
 
 **首屏不跳字**：`<head>` 里一小段脚本在解析阶段就把 `data-write-font` 挂上（读 `blog-font`，
-默认 zhuque），所以首帧就是「目标字体 + 同类回退」（朱雀仿宋未到时回落 FangSong），
+默认 zhuque；`system` 也认），所以首帧就是「目标字体 + 同类回退」（朱雀仿宋未到时回落 FangSong），
 不会先按系统黑体排一遍再整页跳一次。
 
-**预览跟着走**：`blogLook()` 本来就读 `blog-font`，切字体后若预览开着，会 `renderPreview(previewPost)`
-重出一版 —— 否则会出现「字变了、预览还是旧字形」。
+**预览跟着走**：`blogLook()` 读 `blog-font`，切字体后若预览开着会 `renderPreview(previewPost)`
+重出一版。`previewShell` 只在地址非空时才拼 `<link>` —— 否则 `href=""` 会让 iframe 回头请求
+页面本身当 CSS。
 
-**实测**（无头 Chrome + 本地 http）：
+**博客站同步支持 system**：同一个键，只改一边会打架（博客站读不到 `system` 会回退 zhuque，
+而且 `font-switcher` 的 `apply()` 会把 `blog-font` 写回 zhuque，等于在写作页选完又被改掉）。
+所以 `palettes.css` 加了 `html[data-font="system"] body{…}`，`header.html` 与
+`font-switcher.js` 把 `system` 纳入选项；选中时 `link.disabled = true`，不赋空 `href`。
+点诗句的循环顺序变成：朱雀 → 新晰黑 → 文楷 → 新致宋 → 系统 → 回到朱雀。
 
-| 操作 | `data-write-font` | `#body` 计算字体 | `blog-font` | link 数 |
-|---|---|---|---|---|
-| 初始 | zhuque | "Zhuque Fangsong" | — | 1 |
-| 点「霞鹜文楷」 | wenkai | "LXGW WenKai Screen" | wenkai | 1 |
-| 点「霞鹜新晰黑」 | xixihei | "LXGW Neo XiHei" | xixihei | 1 |
+实测（博客首页，预置 `blog-font=system`）：`data-font=system`、`body` 与 `h1` 均为
+`-apple-system`、`link.disabled=true`；点一下诗句后 `data-font=zhuque`、`disabled=false`。
 
-预览侧读到的 `srcdoc` 里 `data-font="wenkai"`，与编辑区一致。
-
-**布局**：抽屉内容宽 283px 时，两列各 138px，行距 42px。flex-wrap 会排成 3+1（最后一个孤零零），
-所以用 grid 两列。
+**布局**：抽屉内容宽 283px，两列各 136px，「系统字体」`grid-column:1 / -1` 横跨整行。
+375 与 390 宽下五个按钮的 `clientWidth` 都等于 `scrollWidth`，没有截断。
 
 **一个已知差异**：霞鹜文楷那份 CSS 是 `@import` 两层子表（`lxgwwenkaiscreen.css` /
-`lxgwwenkaiscreenr.css`），首字节到字形可用比另外三种多两跳，弱网下切换有延迟感 —— 这是
-字体源本身的结构，博客站一样。其余三种都是单文件 `@font-face` 清单。
+`lxgwwenkaiscreenr.css`），首字节到字形可用比另外几种多两跳，弱网下切换有延迟感 —— 这是
+字体源本身的结构，博客站一样。
 
 **离线**：字体走 CDN，Service Worker 只管同源（`/css/`、`/beta/`），断网时字体回落
-FangSong / KaiTi / 系统黑体，写作不受影响。
+FangSong / KaiTi / 系统黑体，写作不受影响；system 本来就不下载。
 
-回归测试 `tests/beta-font-picker.test.mjs` 7 条：按钮 id 与 `BLOG_FONT_CSS` 一一对应、
-四种字体栈与 `palettes.css` 逐字相同、三处用上 `--write-font`、head 预设脚本在、
-只挂一个 link、落点是 `blog-font`、切字体时预览重渲染。
+回归测试 `tests/beta-font-picker.test.mjs` 10 条：五个按钮与 `BLOG_FONT_CSS` 键一一对应、
+system 无 CDN 地址、五种字体栈与 `palettes.css` 一致（逗号空格已归一）、`body` 接上
+`--write-font`、三处输入区仍显式声明、head 预设脚本在、切字体只改 href、切 system 摘 link、
+预览不拼空 href、落点是 `blog-font`、切字体时预览重渲染。

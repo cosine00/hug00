@@ -37,11 +37,11 @@
 })();
 </script>
 <script>
-/* 正文字体跟博客共用同一个偏好（blog-font）。这里只在解析阶段先把 data 属性挂上，
+/* 字体跟博客共用同一个偏好（blog-font）。这里只在解析阶段先把 data 属性挂上，
    让字体栈当场就是「目标字体 + 同类回退」，不至于先按系统字体排一遍再跳字。
-   字体文件本身在正文脚本里按需加载，四份不叠着下。 */
+   字体文件本身在正文脚本里按需加载，几份不叠着下；system 不下载任何字体。 */
 (function () {
-  var ids = ['zhuque', 'xixihei', 'wenkai', 'zhisong'];
+  var ids = ['system', 'zhuque', 'xixihei', 'wenkai', 'zhisong'];
   var id = 'zhuque';
   try {
     var saved = localStorage.getItem('blog-font');
@@ -67,8 +67,9 @@
   --ease:cubic-bezier(.32,.72,0,1);
   /* 行号列：--gut 是「行号宽 + 间距」，标题、元信息、工具栏都按它缩进，左缘才对得齐 */
   --padl:16px; --gut:30px; --read:1;
-  /* 正文字体：四种与博客站同名、同回退栈。默认朱雀仿宋，head 里那段小脚本
-     会在解析阶段就把 data-write-font 定下来，避免先按系统字体排一遍再跳字。 */
+  /* 字体：五种与博客站同名、同回退栈（含「系统」）。默认朱雀仿宋，
+     head 里那段小脚本会在解析阶段就把 data-write-font 定下来，
+     避免先按系统字体排一遍再跳字。 */
   --write-font:"Zhuque Fangsong", FangSong, "STFangsong", serif;
 }
 @media (prefers-color-scheme:dark){
@@ -86,7 +87,9 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);color:var(--fg)}
-body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+/* 字体落在 body 上，工具栏、抽屉、按钮、行号全部继承 —— 换字体是整页换，
+   只有代码/URL 这类等宽片段在各自规则里另指 monospace。 */
+body{font:16px/1.5 var(--write-font);
   -webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit;font-family:inherit}
 button{border:.5px solid var(--glass-edge);background:linear-gradient(180deg,var(--glass-top),var(--glass));padding:0;
@@ -214,7 +217,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
    三个图标和下面那摞东西自然被顶到下半屏去。矮屏上它会自己缩，不会把按钮挤到屏幕外。 */
 .hp-poem{flex:1 1 auto;margin:0 0 2px;min-height:112px;max-height:clamp(180px,44vh,400px);padding:0 4px;
   display:flex;flex-direction:column;justify-content:center;gap:2px}
-.hp-poem p{margin:0;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",ui-serif,Georgia,serif;
+.hp-poem p{margin:0;font-family:var(--write-font);
   font-size:16.5px;line-height:2.02;letter-spacing:.085em;
   color:color-mix(in srgb,var(--fg) 64%,transparent)}
 .hp-poem .pp-from{margin-top:11px;font-family:inherit;font-size:10.5px;line-height:1.6;
@@ -401,8 +404,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* 正文与行号并排：行号在左、随文档一起滚，不单独滚动 */
 .bodywrap{display:flex;align-items:flex-start;gap:10px}
 .bodywrap>#body{flex:1;min-width:0}
-/* 四种字体只换正文字形，界面控件（工具栏、菜单、按钮）仍是系统无衬线——
-   那里要的是清晰，衬线小字反而糊。字体栈与博客站 palettes.css 一致。 */
+/* 五种字体全局生效：界面控件也跟着换，只有代码块、URL、Markdown 符号仍用等宽/衬线。
+   「系统」= 不下载任何字体，直接用平台无衬线，等于随时能切回原生观感。
+   字体栈与博客站 palettes.css 逐字一致。 */
+html[data-write-font="system"]{--write-font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif}
 html[data-write-font="zhuque"]{--write-font:"Zhuque Fangsong", FangSong, "STFangsong", serif}
 html[data-write-font="xixihei"]{--write-font:"LXGW Neo XiHei", "Microsoft YaHei", sans-serif}
 html[data-write-font="wenkai"]{--write-font:"LXGW WenKai Screen", "KaiTi", serif}
@@ -614,8 +619,9 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
 .kv{display:flex;justify-content:space-between;gap:14px;font-size:12.5px;color:var(--muted);padding:4px 2px}
 .kv b{color:var(--fg);font-weight:500;text-align:right;word-break:break-all}
 .sect{font-size:11.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 4px}
-/* 正文字体：两列等宽（2×2）。用 flex-wrap 会排成 3+1，最后一行只剩一个孤零零的 */
+/* 字体选择：两列等宽，最后一项「系统字体」横跨整行（5 个格子两列排会剩一个孤零零的） */
 .fontpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:2px 0 4px}
+.fontpick [data-font="system"]{grid-column:1 / -1}
 .fontbtn{padding:8px 10px;border-radius:999px;border:.5px solid var(--line);
   background:transparent;color:var(--muted);font-size:13px;line-height:1.25;letter-spacing:.01em;
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -1429,14 +1435,15 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
       <button class="row" id="rowExport"><span class="k">导出 Markdown</span><span class="v">存到文件 / iCloud</span></button>
       <button class="row danger" id="rowClear"><span class="k">删除这篇草稿</span><span class="v">不可撤销</span></button>
     </div>
-    <div class="sect">正文字体</div>
-    <div class="fontpick" id="fontPick" role="group" aria-label="正文字体">
+    <div class="sect">界面与正文字体</div>
+    <div class="fontpick" id="fontPick" role="group" aria-label="界面与正文字体">
       <button class="fontbtn" type="button" data-font="zhuque">朱雀仿宋</button>
       <button class="fontbtn" type="button" data-font="xixihei">霞鹜新晰黑</button>
       <button class="fontbtn" type="button" data-font="wenkai">霞鹜文楷</button>
       <button class="fontbtn" type="button" data-font="zhisong">新致宋</button>
+      <button class="fontbtn" type="button" data-font="system">系统字体</button>
     </div>
-    <p class="sub" style="margin:8px 2px 0">跟博客站共用同一个选择，两边一起变；正文、标题和哔哔都按它排。</p>
+    <p class="sub" style="margin:8px 2px 0">跟博客站共用同一个选择，两边一起变；整个写作页都按它排。「系统字体」不下载字体文件，随时切回原生观感。</p>
     <div class="sect">服务状态</div>
     <div class="kv"><span>接口</span><b id="apiState">—</b></div>
     <div class="kv"><span>仓库写入</span><b id="ghState">登录后可见</b></div>
@@ -3765,12 +3772,19 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
   */
 
   var PALETTES = ['paper', 'night', 'sepia', 'mist'];
+  /* system 的地址留空：选中它就不该下载任何字体，用的是平台无衬线。 */
   var BLOG_FONT_CSS = {
+    system: '',
     zhuque: 'https://cdn.jsdelivr.net/npm/@free-fonts/zhuque-fangsong@1.0.0/zhuque-fangsong.css',
     wenkai: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css',
     xixihei: 'https://fontsapi.zeoseven.com/19/main/result.css',
     zhisong: 'https://fontsapi.zeoseven.com/22/main/result.css'
   };
+
+  /** 「system」的地址是空串，不能用真值判断，否则会被当成不存在。 */
+  function isKnownFont(id) {
+    return typeof id === 'string' && Object.prototype.hasOwnProperty.call(BLOG_FONT_CSS, id);
+  }
 
   /* 预览页里的收尾样式：博客 CSS 只管 .main 里的东西，外壳的宽度得自己收 */
   var PREVIEW_CSS = [
@@ -3791,7 +3805,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
       var savedPalette = localStorage.getItem('blog-palette');
       if (PALETTES.indexOf(savedPalette) > -1) palette = savedPalette;
       var savedFont = localStorage.getItem('blog-font');
-      if (BLOG_FONT_CSS[savedFont]) font = savedFont;
+      if (isKnownFont(savedFont)) font = savedFont;
     } catch (e) {}
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) palette = 'night';
     return { palette: palette, font: font };
@@ -3806,14 +3820,18 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
         return '#' + escapeHtml(tag);
       }).join('&nbsp; ') + '</div>';
     }
+    // system 没有字体样式表，硬挂一个空 href 会让浏览器回头请求页面本身当 CSS
+    var fontLink = BLOG_FONT_CSS[look.font]
+      ? '<link rel="stylesheet" href="' + BLOG_FONT_CSS[look.font] + '">'
+      : '';
     return '<!doctype html><html lang="zh-CN" data-theme="' + look.palette + '" data-font="' + look.font +
       '" style="color-scheme:' + (look.palette === 'night' ? 'dark' : 'light') + '"><head>' +
       '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
       '<link rel="stylesheet" href="/css/custom.css?v=20261111-1">' +
-      '<link rel="stylesheet" href="' + BLOG_FONT_CSS[look.font] + '">' +
+      fontLink +
       '<link rel="stylesheet" href="/css/style.css?v=20261111-01">' +
       '<link rel="stylesheet" href="/css/fonts.css">' +
-      '<link rel="stylesheet" href="/css/palettes.css?v=20260924-2">' +
+      '<link rel="stylesheet" href="/css/palettes.css?v=20261124-1">' +
       '<style>' + PREVIEW_CSS + '</style></head>' +
       '<body class="posts"><article class="main">' +
       '<header class="title"><h1>' + (title ? escapeHtml(title) : '还没起标题') + '</h1>' +
@@ -5536,32 +5554,39 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
 
   $('menuBackBtn').addEventListener('click', function () { showPane(null); });
 
-  /* ── 正文字体 ──
+  /* ── 字体选择 ──
      跟博客站共用 localStorage['blog-font']：那边点诗句切的字体，这里接着用；
-     在这儿换了，回去也一样。四份字体样式表都在 CDN 上，只挂载当前选中那份，
-     换字体时改同一个 link 的 href，不叠着下。 */
+     在这儿换了，回去也一样。几份字体样式表都在 CDN 上，只挂载当前选中那份，
+     换字体时改同一个 link 的 href，不叠着下；选「系统」则把 link 摘掉，一个字节都不下。 */
   var fontLink = null;
 
   function currentFont() {
     try {
       var saved = localStorage.getItem('blog-font');
-      if (BLOG_FONT_CSS[saved]) return saved;
+      if (isKnownFont(saved)) return saved;
     } catch (e) {}
     return 'zhuque';
   }
 
   function applyWriteFont(id, remember) {
-    if (!BLOG_FONT_CSS[id]) id = 'zhuque';
+    if (!isKnownFont(id)) id = 'zhuque';
     document.documentElement.dataset.writeFont = id;
-    if (!fontLink) {
-      fontLink = document.createElement('link');
-      fontLink.rel = 'stylesheet';
-      fontLink.setAttribute('data-blog-font', '');
-      document.head.appendChild(fontLink);
-    }
-    if (fontLink.getAttribute('data-font') !== id) {
-      fontLink.href = BLOG_FONT_CSS[id];
-      fontLink.setAttribute('data-font', id);
+    var href = BLOG_FONT_CSS[id];
+    if (href) {
+      if (!fontLink) {
+        fontLink = document.createElement('link');
+        fontLink.rel = 'stylesheet';
+        fontLink.setAttribute('data-blog-font', '');
+        document.head.appendChild(fontLink);
+      }
+      if (fontLink.getAttribute('data-font') !== id) {
+        fontLink.href = href;
+        fontLink.setAttribute('data-font', id);
+      }
+    } else if (fontLink) {
+      // 系统字体：卸掉样式表，避免留着一个指向空串的 link
+      if (fontLink.parentNode) fontLink.parentNode.removeChild(fontLink);
+      fontLink = null;
     }
     if (remember) {
       try { localStorage.setItem('blog-font', id); } catch (e) {}

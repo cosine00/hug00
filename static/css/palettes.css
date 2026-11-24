@@ -170,6 +170,8 @@ body { background: var(--page-bg); color: var(--text); transition: background-co
   background-attachment: fixed;
 }
 :root[data-theme="mist"] body { background: transparent; }
+/* 「系统」不加载任何字体文件，用平台无衬线；与 beta 写作页的 system 栈逐字一致 */
+html[data-font="system"] body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif; }
 html[data-font="wenkai"] body { font-family: "LXGW WenKai Screen", "KaiTi", serif; }
 html[data-font="zhuque"] body { font-family: "Zhuque Fangsong", FangSong, "STFangsong", serif; font-weight: 400; text-shadow: 0 0 0.15px currentColor;}
 html[data-font="zhisong"] body { font-family: "LXGW Neo ZhiSong", "Songti SC", SimSun, serif; font-weight: 400; text-shadow: 0 0 0.15px currentColor;}
