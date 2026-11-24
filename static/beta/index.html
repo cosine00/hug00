@@ -1094,7 +1094,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
           <header class="pk-h">
             <h3>悦动</h3>
             <span class="pk-sub" id="pkSportSub"></span>
-            <button class="pk-act" id="pkSportAdd" type="button">记一笔</button>
+            <button class="pk-act" id="pkSportAdd" type="button">管理</button>
           </header>
           <div class="pk-stat">
             <div class="pk-big"><span id="pkWeek">—</span><small>km</small></div>
@@ -1108,7 +1108,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
           <header class="pk-h">
             <h3>博友在写</h3>
             <span class="pk-sub" id="pkFeedSub"></span>
-            <button class="pk-act" id="pkFeedFetch" type="button">抓取</button>
+            <button class="pk-act" id="pkFeedFetch" type="button">同步</button>
             <a href="/recent/">全部</a>
           </header>
           <ul class="pk-feed" id="pkFeed"></ul>
@@ -1385,7 +1385,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
   <div class="sheet-backdrop" data-close></div>
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="spTitle">
     <div class="grabber"></div>
-    <h2 id="spTitle">记一笔</h2>
+    <h2 id="spTitle">运动记录</h2>
     <p class="sub" id="spSub">补记没有轨迹的运动，爬楼、跳绳、健身房都行。</p>
     <form id="spForm" autocomplete="off">
       <div class="field">
@@ -5368,12 +5368,16 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     feedItems = (friends && friends.items) || [];
     feedShown = 0;
     $('pkMore').hidden = true;
+    // 「谁在更新」不如「这堆数据有多新」有用：RSS 抓晚了，看这一眼就知道
+    var feedBits = [];
+    if (friends.friends) feedBits.push(friends.friends + ' 位');
+    var feedUpdatedText = feedUpdated(friends.updated);
+    if (feedUpdatedText) feedBits.push(feedUpdatedText);
+    $('pkFeedSub').textContent = feedBits.join(' · ');
     if (!feedItems.length) {
-      $('pkFeedSub').textContent = '';
       feedBox.appendChild(el('li', 'pk-empty', '还没读到博友近况，稍后再试。'));
       return;
     }
-    $('pkFeedSub').textContent = (friends.friends || 0) + ' 位订阅';
     appendFeed(FEED_PAGE);
   }
 
@@ -5388,6 +5392,30 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     var d = new Date();
     return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
       'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  /**
+   * 博友数据的更新时间。rss.json 里长这样："2026-11-24 10:32:17 UTC"。
+   * 卡片头那点宽度塞不下完整日期，只留「多新」：今天给时刻，昨天给「昨天」，
+   * 更早给月日。带 UTC 字样的按 UTC 建时间再取本地时刻，否则照本地解释。
+   */
+  function feedUpdated(text) {
+    var raw = String(text || '');
+    var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(raw);
+    if (!m) return '';
+    var mo = +m[2], dy = +m[3], hh = +m[4], mi = +m[5];
+    // Date 会把 13 月 99 号这类值默默滚到下一个月，不如自己挡掉
+    if (mo < 1 || mo > 12 || dy < 1 || dy > 31 || hh > 23 || mi > 59) return '';
+    var when = /UTC/i.test(raw)
+      ? new Date(Date.UTC(+m[1], mo - 1, dy, hh, mi))
+      : new Date(+m[1], mo - 1, dy, hh, mi);
+    if (isNaN(when.getTime())) return '';
+    var hhmm = pad2(when.getHours()) + ':' + pad2(when.getMinutes());
+    var day = when.toDateString();
+    var now = new Date();
+    if (day === now.toDateString()) return hhmm + ' 更新';
+    if (day === new Date(now.getTime() - 86400000).toDateString()) return '昨天 ' + hhmm;
+    return (when.getMonth() + 1) + '/' + when.getDate() + ' ' + hhmm;
   }
 
   function sportWhen(when) {
@@ -5428,7 +5456,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     $('spMin').value = item && item.minutes ? item.minutes : 30;
 
     var synced = Boolean(item && item.kind === 'synced');
-    $('spTitle').textContent = item ? '改这一条' : '记一笔';
+    $('spTitle').textContent = item ? '改这一条' : '运动记录';
     $('spSub').textContent = synced
       ? '这条是自动同步来的，只改显示名称，距离和轨迹保持原样。'
       : item
@@ -5538,7 +5566,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     if (!authed) { pendingFetch = true; openSheet('sheetLogin'); return; }
     feedFetching = true;
     btn.disabled = true;
-    btn.textContent = '派发中…';
+    btn.textContent = '同步中…';
     api('/api/write/refresh', { method: 'POST', body: { task: 'friends' } })
       .then(function () {
         toast('已提交，1–3 分钟后生效', 'ok', 3600);
@@ -5547,12 +5575,12 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
       })
       .catch(function (error) {
         toast(error.message || '触发失败', 'err', 3600);
-        btn.textContent = '抓取';
+        btn.textContent = '同步';
       })
       .then(function () {
         feedFetching = false;
         btn.disabled = false;
-        setTimeout(function () { btn.textContent = '抓取'; }, 4000);
+        setTimeout(function () { btn.textContent = '同步'; }, 4000);
       });
   }
 

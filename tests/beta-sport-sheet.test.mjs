@@ -1,10 +1,10 @@
 /**
- * 工作台里新长出来的三个动作：记一笔、改一条、手工补抓。
+ * 工作台里新长出来的三个动作：管理运动记录、改一条、手工同步博友。
  *
  * 钉住的是「别再变复杂」这件事：
  *   1. 表单只有四项 —— 时间、名称、类型、时长，心率不进抽屉；
  *   2. 同步记录只能改名，其它字段锁住，原始数据一个字节都不动；
- *   3. 抓取按钮只发 { task: 'friends' }，不把 workflow 文件名交给前端；
+ *   3. 同步按钮只发 { task: 'friends' }，不把 workflow 文件名交给前端；
  *   4. 三个入口都长在已有卡片上，没有新页面、没有新页签。
  */
 import { test } from 'node:test';
@@ -24,7 +24,7 @@ function sheetBlock(id) {
   return html.slice(at, next > at ? next : at + 4000);
 }
 
-test('悦动的卡头是「记一笔」，不再是跳去老后台的管理链接', () => {
+test('悦动的卡头是「管理」，不再是跳去老后台的外链', () => {
   const card = html.slice(html.indexOf('<h3>悦动</h3>'), html.indexOf('<h3>悦动</h3>') + 400);
   assert.match(card, /id="pkSportAdd"/);
   assert.doesNotMatch(card, /\/admin\/\?page=sports/);
@@ -52,7 +52,7 @@ test('同步记录只锁改名之外的字段', () => {
   assert.doesNotMatch(block, /spName.*disabled = synced/, '名称必须留着可改');
 });
 
-test('抓取按钮只传任务名，不传 workflow 文件名', () => {
+test('同步按钮只传任务名，不传 workflow 文件名', () => {
   const at = html.indexOf('function fetchFriends');
   const block = html.slice(at, at + 1200);
   assert.match(block, /\/api\/write\/refresh/);

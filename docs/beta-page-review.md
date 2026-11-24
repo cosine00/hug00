@@ -1072,7 +1072,7 @@ system 无 CDN 地址、五种字体栈与 `palettes.css` 一致（逗号空格�
 
 ---
 
-## 36. 工作台上补了三个高频动作：记一笔、改一条、手工抓取
+## 36. 工作台上补了三个高频动作：管理运动、改一条、手工同步博友
 
 老 admin 里每天都用得到的三件事，在 beta 里一直是空白：补记没有轨迹的运动（爬楼、跳绳、
 健身房）、给已有记录改个名字、RSS 抓晚了手动踢一脚。这次不再新增页面，全挂在已有的下拉
@@ -1121,10 +1121,20 @@ beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样）�
 
 三处改动，都长在已有卡片上：
 
-1. 「悦动」卡头的 `管理` 链接（跳去 `/admin/?page=sports`）换成 `记一笔`；
+1. 「悦动」卡头那个跳去 `/admin/?page=sports` 的 `管理` 链接，换成同名的 `管理` 按钮，直接开抽屉；
 2. 悦动里那四行带上 `data-when`，点一行直接进那条的编辑，省掉「进抽屉 → 在列表里找它」；
-3. 「博友在写」卡头加 `抓取`，点了派发 `fetch-friend-circle.yml`，150 秒后自动重拉一次
+3. 「博友在写」卡头加 `同步`，点了派发 `fetch-friend-circle.yml`，150 秒后自动重拉一次
    `desk-index.json`。
+
+**卡头那行小字改了内容**：原来只写 `68 位订阅`，只说明「有多少人」，不说明「这堆数据有多新」——
+RSS 抓晚了几小时，从界面上根本看不出来，只能去翻 Action 记录。现在拼成 `68 位 · 17:52 更新`，
+时间取 `rss.json` 里的 `statistical_data.last_updated_time`（`desk-index.json` 早就把这个字段
+带出来了，只是没人用）。
+
+时间显示分三档，因为卡头只剩一行的宽度：今天给 `17:52 更新`、昨天给 `昨天 17:52`、更早给
+`11/24 17:52`。**那个字段是 UTC**（`2026-11-24 09:52:24 UTC`），所以先按 UTC 建时间再取本地
+时刻 —— 直接照抄小时数会差八小时，把今天的数据显示成「昨天」。另外 `new Date(2026, 12, 99)`
+会把 13 月 99 号默默滚到下个月，所以月份/日/时/分先自己校验一遍，坏值给空串而不是给个假时间。
 
 抽屉 `#sheetSport` 只有四项：时间、名称、类型（爬楼 / 跳绳 / 健身）、时长 —— 心率不进手机屏。
 新增和编辑共用同一张表单：`fillSportForm(item)` 传 `null` 就是新建，传一条就是编辑；同步记录
@@ -1135,10 +1145,11 @@ beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样）�
 
 ### 实测
 
-- `node --test tests/*.test.mjs`：207 → **229** 条全过（新增 `sports-api.test.mjs` 15 条、
-  `beta-sport-sheet.test.mjs` 7 条）。
+- `node --test tests/*.test.mjs`：207 → **236** 条全过（新增 `sports-api.test.mjs` 15 条、
+  `beta-sport-sheet.test.mjs` 7 条、`beta-feed-stamp.test.mjs` 7 条）。
 - 无头 Chrome（把 `#app` 钉到 390 宽模拟移动屏）：工作台两张卡片的标题行分别是
-  `悦动 … 记一笔`、`博友在写 … 抓取 全部`，无重叠；抽屉新增态四个字段完整，编辑态
+  `悦动 … 管理`、`博友在写 … 68 位 · 17:52 更新 同步 全部`，无重叠（卡头 scrollWidth
+  == clientWidth == 313）；抽屉名为「运动记录」，新增态四个字段完整，编辑态
   `删除 / 取消 / 保存修改` 三个按钮文字不截断；同步记录编辑时时间 / 类型 / 时长变灰。
 - 拿真实仓库跑了一遍只读逻辑（`handleSportsGet` 直连 GitHub）：`counts` 手工 56 条、同步 691 条，
   取回 60 行；24 条同步记录的名字来自覆盖表，`activities.json` 里仍是 Keep 的原始名称。
@@ -1148,9 +1159,9 @@ beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样）�
 
 - `activities.json` 每次读都要走一趟 1.3MB 的 blob（约 1.7MB 出站），打开抽屉偶有半秒延迟。
   加 Cache API 能省，但先看实际频率再决定 —— 一天十几次不值得多一层缓存失效逻辑。
-- 抓取只派发不等待，按钮说「已提交，1–3 分钟后生效」而不是「已更新」。Action 跑完还要等
+- 同步只派发不等待，按钮说「已提交，1–3 分钟后生效」而不是「已更新」。Action 跑完还要等
   Vercel 重建，这时候说「已更新」就是在骗人。
-- **抓取按钮要令牌有 `Actions: Read and write`**。现有 `GITHUB_TOKEN` 是 fine-grained PAT，
+- **同步按钮要令牌有 `Actions: Read and write`**。现有 `GITHUB_TOKEN` 是 fine-grained PAT，
   当初只为发文章勾了 `Contents: Read and write`；`workflow_dispatch` 属于另一项权限，
   点下去若提示「令牌没有触发 Actions 的权限」，去 GitHub 重建 PAT 补勾 Actions 再
   `npx wrangler secret put GITHUB_TOKEN`。服务端已经把这种 403/404 换成这句话，不会假装成功。
