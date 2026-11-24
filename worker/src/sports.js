@@ -51,11 +51,14 @@ const MAX_NAME = 40;
 
 /* ------------------------------ 小工具 ------------------------------ */
 
+/**
+ * "0:57:20" → 57。秒直接丢掉（不进位），这样抽屉里的分钟数和卡片上的
+ * 「本周几分钟」用同一套算法 —— 两处必须是同一个数，否则看着像 bug。
+ */
 function timeToMinutes(text) {
   const parts = String(text || '').split(':').map(Number);
   if (parts.length < 2 || !parts.every(Number.isFinite)) return 0;
-  if (parts.length === 3) return parts[0] * 60 + parts[1] + Math.round(parts[2] / 60);
-  return parts[0] * 60 + Math.round(parts[1] / 60);
+  return parts[0] * 60 + Math.floor(parts[1]);
 }
 
 function minutesToTime(minutes) {

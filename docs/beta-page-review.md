@@ -1140,6 +1140,9 @@ beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样）�
 - 无头 Chrome（把 `#app` 钉到 390 宽模拟移动屏）：工作台两张卡片的标题行分别是
   `悦动 … 记一笔`、`博友在写 … 抓取 全部`，无重叠；抽屉新增态四个字段完整，编辑态
   `删除 / 取消 / 保存修改` 三个按钮文字不截断；同步记录编辑时时间 / 类型 / 时长变灰。
+- 拿真实仓库跑了一遍只读逻辑（`handleSportsGet` 直连 GitHub）：`counts` 手工 56 条、同步 691 条，
+  取回 60 行；24 条同步记录的名字来自覆盖表，`activities.json` 里仍是 Keep 的原始名称。
+  这同时验证了那条 1.3MB 走 `/git/blobs` 的兜底分支 —— 不处理的话这里会是 0 条。
 
 ### 还没覆盖的
 
@@ -1147,3 +1150,9 @@ beta 的写操作一直走 Worker（`/api/write/post` 发文章就是这样）�
   加 Cache API 能省，但先看实际频率再决定 —— 一天十几次不值得多一层缓存失效逻辑。
 - 抓取只派发不等待，按钮说「已提交，1–3 分钟后生效」而不是「已更新」。Action 跑完还要等
   Vercel 重建，这时候说「已更新」就是在骗人。
+- **抓取按钮要令牌有 `Actions: Read and write`**。现有 `GITHUB_TOKEN` 是 fine-grained PAT，
+  当初只为发文章勾了 `Contents: Read and write`；`workflow_dispatch` 属于另一项权限，
+  点下去若提示「令牌没有触发 Actions 的权限」，去 GitHub 重建 PAT 补勾 Actions 再
+  `npx wrangler secret put GITHUB_TOKEN`。服务端已经把这种 403/404 换成这句话，不会假装成功。
+- 抽屉里的分钟数**按秒截断不进位**（`H*60+M`），刻意和 `home.deskindex.json` 算卡片统计的
+  算法一致。两处若一个进位一个不进位，同一条记录在卡片上写 32 分、抽屉里写 33 分，看着就像 bug。
