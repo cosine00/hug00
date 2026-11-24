@@ -146,7 +146,8 @@ async function readActivities(env) {
   }
 }
 
-async function putJson(env, path, value, message, sha) {  const payload = {
+async function putJson(env, path, value, message, sha) {
+  const payload = {
     message,
     content: base64Utf8(JSON.stringify(value, null, 2) + '\n'),
     branch: branchOf(env),
