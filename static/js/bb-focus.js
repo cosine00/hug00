@@ -12,9 +12,14 @@
 
   const css = `
     #bber{margin-top:1rem;width:auto!important;min-height:100vh}
-    .bb-timeline>ul{margin:0;padding:0}.bb-timeline>ul>li{margin-bottom:2.5rem;list-style-type:none}.bb-timeline>ul>li .bb-cont ul li{margin-bottom:0}
-    .bb-timeline .bb-item,.bb-load button{border:1px solid var(--border,#dcdcdc);border-radius:8px;box-shadow:3px 3px 5px var(--shadow,rgba(0,0,0,.1))}
-    .bb-timeline .bb-item{padding:.6rem 1rem .6rem;font-size:16px;background:var(--surface,transparent)}
+    .bb-timeline>ul{margin:0;padding:0}.bb-timeline>ul>li{margin-bottom:2rem;list-style-type:none}.bb-timeline>ul>li .bb-cont ul li{margin-bottom:0}
+    /* 条目卡片照改造前首页那条哔哔来：不画硬边线，只压一层 0/1/4 的柔影 + 12px 圆角，
+       底色跟页面同色（透明），轮廓全靠影子勾。悬停时整块上浮 1px、投影换成 10/28 散开。
+       palettes.css 里给 .bb-timeline .bb-item 压了 1px 实边 + 同名投影（带 !important），
+       这里用同等权重盖回「无边框」那一版，不然两个页面的卡片不是一个长相。 */
+    .bb-timeline .bb-item{border:1px solid transparent!important;border-radius:12px!important;background:transparent;box-shadow:0 1px 4px color-mix(in srgb,var(--shadow,rgba(0,0,0,.1)) 58%,transparent)!important;transition:box-shadow .26s ease,transform .26s ease}
+    @media (hover:hover) and (pointer:fine){.bb-timeline .bb-item:hover{transform:translateY(-1px);box-shadow:0 10px 28px color-mix(in srgb,var(--shadow,rgba(0,0,0,.1)) 72%,transparent)!important}}
+    .bb-timeline .bb-item{padding:.72rem 1rem .7rem;font-size:15px;background:transparent}
     .bb-timeline .bb-info{position:relative;margin-top:.5rem;font-size:14px}.bb-timeline .bb-info a{text-decoration:none}.bb-timeline .datatime{font-size:15px}
     .bb-timeline a.datatime{color:inherit;border-bottom:1px dotted transparent;transition:color .18s ease,border-color .18s ease}.bb-timeline a.datatime:hover{color:var(--accent,#42b983);border-bottom-color:currentColor}
     .bb-timeline .bb-foot-right{margin-left:auto;display:inline-flex;align-items:center;gap:.5rem;flex-wrap:nowrap}
@@ -25,7 +30,7 @@
     .tag-span.tag-filter{cursor:pointer;text-decoration:none}.tag-span.tag-filter:hover{background:var(--accent-soft,rgba(66,185,131,.1));border-color:var(--accent,#42b983);color:var(--accent-hover,#42b983)}
     .bb-timeline .bb-cont ul{list-style-type:disc;margin:1em 0;padding-left:2em}.bb-timeline .bb-cont ol{list-style-type:decimal;margin:1em 0;padding-left:2em}.bb-timeline .bb-cont ul li,.bb-timeline .bb-cont ol li{list-style-type:inherit;margin-bottom:.5em}
     .emoji-reaction-bar{margin-bottom:.5em;display:flex;align-items:center;gap:8px}
-    .bb-load{text-align:center;margin:2em 0 1em}.bb-load button{padding:8px 24px;border-radius:9999px;background:var(--surface-soft,transparent);color:var(--accent-hover,#42b983);font-size:1em;cursor:pointer;transition:all .2s ease}
+    .bb-load{text-align:center;margin:2em 0 1em}.bb-load button{padding:8px 24px;border:1px solid var(--border,#dcdcdc);border-radius:9999px;background:var(--surface-soft,transparent);box-shadow:0 1px 4px color-mix(in srgb,var(--shadow,rgba(0,0,0,.1)) 58%,transparent);color:var(--accent-hover,#42b983);font-size:1em;cursor:pointer;transition:all .2s ease}
     .bb-load button:hover{background:var(--accent,#42b983);border-color:var(--accent,#42b983);color:var(--accent-contrast,#fff);transform:translateY(-1px)}
     .bb-cont img{max-width:100%;max-height:320px;height:auto;width:auto;display:block;margin:.5em 0;object-fit:contain}
     .bb-cont:has(.bb-image-trigger){overflow:visible}.bb-image-trigger{position:relative;display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;margin:0;padding:0;border:0;background:transparent;color:var(--accent,#42b983);font:inherit;line-height:1;vertical-align:-.12em;cursor:zoom-in;isolation:isolate;opacity:.82;transition:color .18s ease,opacity .18s ease,transform .18s ease}

@@ -1473,6 +1473,466 @@ html[data-theme="sepia"] .cm-form {
   margin: 0;
 }
 
+/* ----------------------------------------------------------------------
+   首页哔哔的评论浮层
+   卡片墙里每张卡只有一栏宽（约 230px），评论框塞进卡里输入区就剩几十像素，
+   完全没法用。点评论时把整条线程提到 body 级浮层里渲染：宽度按阅读舒适度给
+   620px，卡片墙一格都不动，关掉后线程收回卡片里（隐藏），下次再点还是同一个
+   实例，不重新拉数据。
+   ---------------------------------------------------------------------- */
+
+html.bb-csheet-open {
+  overflow: hidden;
+}
+
+/* 浮层的可占范围由 JS 按正文栏（.main）算出来写进这两个变量：
+   面板在右侧内容区里居中，不越过分隔线。 */
+.bb-csheet {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: var(--bb-sheet-left, 0px);
+  right: var(--bb-sheet-right, 0px);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.bb-csheet[hidden] {
+  display: none;
+}
+
+/* 遮罩不用压暗的灰纱：灰纱铺满整个正文栏，在跟导航栏交界的分隔线那里切一刀，
+   看起来就像「右半边被人贴了张灰纸」。改成跟页面底色同色的极薄一层 + 轻微模糊，
+   背后的哔哔退成虚影，但纸面还是纸的颜色；左边用 mask 渐隐 30px，
+   让这层从分隔线里慢慢长出来，而不是硬生生从那儿开始。 */
+.bb-csheet-mask {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--page-bg, #fafafa) 62%, transparent);
+  -webkit-backdrop-filter: blur(2.5px) saturate(1.02);
+  backdrop-filter: blur(2.5px) saturate(1.02);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 30px);
+  mask-image: linear-gradient(to right, transparent 0, #000 30px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* 老浏览器没有 backdrop-filter：至少别让背后的字跟面板抢戏 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bb-csheet-mask {
+    background: color-mix(in srgb, var(--page-bg, #fafafa) 78%, transparent);
+  }
+}
+
+/* 面板用主页卡片那套：细边框、小圆角、克制的阴影 */
+.bb-csheet-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(620px, 100%);
+  max-height: min(82vh, 760px);
+  border: 1px solid color-mix(in srgb, var(--border, #ddd) 58%, transparent);
+  border-radius: 0.78rem;
+  background: var(--hux-clip-bg, var(--surface, #fff));
+  /* 底下不再压灰纱，浮起来全靠这层投影：贴地一薄层 + 下方大范围散开 */
+  box-shadow:
+    0 2px 6px color-mix(in srgb, var(--shadow, rgba(0, 0, 0, 0.2)) 26%, transparent),
+    0 22px 54px -18px color-mix(in srgb, var(--shadow, rgba(0, 0, 0, 0.28)) 92%, transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.24s cubic-bezier(0.22, 0.68, 0.3, 1);
+  overflow: hidden;
+  outline: none;
+}
+
+.bb-csheet.is-open .bb-csheet-mask {
+  opacity: 1;
+}
+
+.bb-csheet.is-open .bb-csheet-panel {
+  opacity: 1;
+  transform: none;
+}
+
+.bb-csheet-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: none;
+  padding: 0.6rem 0.8rem 0.1rem 0.95rem;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--hux-clip-muted, #8a8f98);
+}
+
+/* 「哔哔·#1250」这个标题同时是「去独立页面看这条」的入口。
+   裸文字看着像小标签，没人知道能点；这里照评论按钮（.cm-pill）做成药丸：
+   26px 高、999px 圆角、1px 边框、12.5px 字，悬停时描边转主题色、底上浮一层淡色。
+   两处的规格必须一样 —— 同一个浮层里两个可点的东西长两种样子，看着就散。 */
+.bb-csheet-title {
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  max-width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: var(--muted, #707673);
+  background: transparent;
+  border: 1px solid var(--border, #dedfdb);
+  border-radius: 999px;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  /* 站点的全局 a 带一条虚线下划线，会把药丸画出一道横杠 */
+  border-bottom-color: var(--border, #dedfdb);
+}
+
+/* 药丸里的图标：跟评论按钮那个气泡同规格（12px、2px 描边、圆头圆角）。
+   画的是「箭头出框」的意思 —— 这条标题是「去独立页面看」的入口。
+   只有两根线：一角加一撇，小尺寸下也认得出，线条一多就糊成一团。 */
+.bb-csheet-title-ic {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 文本在一个 span 里，才能让它自己截断，不把图标挤出去 */
+.bb-csheet-title-txt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.bb-csheet-title:hover {
+  color: var(--accent-hover, var(--accent, #42b983));
+  border-color: color-mix(in srgb, var(--accent, #6870a8) 45%, var(--border, #dedfdb));
+  background: color-mix(in srgb, var(--accent, #6870a8) 8%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--accent, #6870a8) 45%, var(--border, #dedfdb));
+}
+
+.bb-csheet-close {
+  flex: none;
+  /* 标题不再撑满整行（它是药丸），关闭键得自己贴到右边去 */
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.bb-csheet-close:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: var(--fg, #222);
+}
+
+.bb-csheet-close svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.bb-csheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0;
+}
+
+/* 浮层上半截：被评论的那条哔哔本身，排版按主页卡片来。
+   卡片正文是 .bb-cont 的克隆，原来靠 `.bb-timeline` / `#bber` 作用域撑起来的排版
+   到浮层里全失效（而且那些规则里有写死的深色字），这里补一套跟着主题走的。
+   这里还照着卡片悬停时的样子描一圈边、压一层投影：浮层底色和卡片同色，
+   不圈出来就看不出「哪一段是被评论的那条」，正文和下面的评论糊成一片。
+   边线用渐变而不是纯色：上沿偏主题色、往下淡成普通边线，跟卡片那圈
+   color-mix 边线一个色系，光从上面来。 */
+.bb-csheet-memo {
+  flex: none;
+  position: relative;
+  margin: 0.4rem 0.95rem 0;
+  padding: 0.78rem 0.85rem 0.62rem;
+  border: 1px solid transparent;
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(var(--surface-raised, var(--surface, #fff)), var(--surface-raised, var(--surface, #fff))) padding-box,
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--accent, #9c27b0) 30%, transparent) 0%,
+      color-mix(in srgb, var(--border, #ddd) 82%, transparent) 46%,
+      color-mix(in srgb, var(--border, #ddd) 34%, transparent) 100%) border-box;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--shadow, rgba(0, 0, 0, 0.18)) 34%, transparent),
+    0 12px 26px -14px color-mix(in srgb, var(--shadow, rgba(0, 0, 0, 0.28)) 96%, transparent);
+  /* 15px —— 跟首页卡片墙的正文同一档（bb-home.js 里 .bb-card .bb-cont 也是 15px）。
+     浮层里这条就是那张卡，字号必须一样，压一档一眼就看得出来。 */
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--fg, inherit);
+}
+
+/* 只有正文在滚。底行（日期/标签/表情/评论）留在滚动区外，
+   否则表情的挑选弹层会被 overflow 裁掉。 */
+.bb-csheet-memo-body {
+  max-height: 34vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.bb-csheet-memo .bb-cont {
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.bb-csheet-memo .bb-cont p {
+  margin: 0 0 0.5em;
+  min-height: 0;
+  line-height: inherit;
+  letter-spacing: 0.01em;
+  color: inherit;
+}
+
+.bb-csheet-memo .bb-cont p:last-child {
+  margin-bottom: 0;
+}
+
+.bb-csheet-memo .bb-cont ul,
+.bb-csheet-memo .bb-cont ol {
+  margin: 0.35em 0 0.55em;
+  padding-left: 1.35em;
+}
+
+.bb-csheet-memo .bb-cont li {
+  margin: 0.18em 0;
+}
+
+/* 引用块：跟主页卡片、/bb/ 哔哔页同一套「左上折线 · 紧凑版」。
+   浮窗里这段正文只是卡片的克隆，点开前后是同一段引用，不能点开就换一副长相。
+   尺寸单位用 px，跟 layouts/partials/recent-memo.html 里 #bber 那套逐字对齐：
+   折线两笔各 24px、左内边距 14px、上下留 6px，字号压到 .95em。 */
+.bb-csheet-memo .bb-cont blockquote {
+  position: relative;
+  margin: 6px 0;
+  padding: 2px 0 2px 14px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    linear-gradient(var(--accent, #6870a8), var(--accent, #6870a8)) left top / 24px 1px no-repeat,
+    linear-gradient(var(--accent, #6870a8), var(--accent, #6870a8)) left top / 1px 24px no-repeat;
+  color: var(--quote, #59645f);
+  font-size: 0.95em;
+  line-height: 1.65;
+}
+
+/* 主题自带的两个大引号伪元素在这套折线样式下会露在折线外侧 */
+.bb-csheet-memo .bb-cont blockquote::before,
+.bb-csheet-memo .bb-cont blockquote::after {
+  content: none;
+  display: none;
+}
+
+/* 上面的 .bb-cont p 规则给了 0.5em 段距和 inherit 行高，引用里要压回 0 */
+.bb-csheet-memo .bb-cont blockquote p {
+  margin: 0 !important;
+  padding: 0;
+  line-height: 1.65;
+  letter-spacing: 0.5px;
+  color: inherit;
+}
+
+.bb-csheet-memo .bb-cont blockquote p + p {
+  margin-top: 4px !important;
+}
+
+/* 引用里的链接：卡片上被 palettes 的 #bber 规则压成 accent-hover，浮窗里同一处
+   不能退回正文链接色，否则点开前后链接颜色也跟着变。 */
+.bb-csheet-memo .bb-cont blockquote a {
+  color: var(--accent-hover, var(--accent, #4f578f));
+  border-color: color-mix(in srgb, var(--accent, #6870a8) 48%, var(--border, #ddd));
+}
+
+.bb-csheet-memo .bb-cont img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.bb-csheet-memo .bb-cont a {
+  color: var(--accent, #42b983);
+  overflow-wrap: anywhere;
+}
+
+.bb-csheet-memo .bb-cont code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  font-size: 0.9em;
+}
+
+/* 图片角标在浮层里同样要有，否则多图看不出张数 */
+.bb-csheet-memo .bb-image-count {
+  position: absolute;
+  right: -8px;
+  top: -7px;
+  left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 13px;
+  height: 13.5px;
+  padding: 0 1.5px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--hux-clip-bg, var(--surface, #fff));
+  border-radius: 999px;
+  background: var(--accent, #42b983);
+  color: var(--accent-contrast, #fff);
+  font: 600 9.5px/1 system-ui, sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+  pointer-events: none;
+}
+
+/* 卡片底部那行（日期 · 标签 · 表情 · 评论）在卡片里是绝对定位、悬停才出来；
+   浮层里没得悬停，直接按普通流常显。position 留成 relative 是给表情的挑选弹层
+   当定位基准（弹层是 absolute + 往上翻的）。 */
+.bb-csheet-memo .bb-foot-right {
+  position: relative !important;
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.55rem 0 0 !important;
+  padding: 0 !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  height: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  font-size: 12.5px;
+  color: var(--hux-clip-muted, #8a8f98);
+}
+
+.bb-csheet-memo .bb-foot-right .datatime {
+  font-size: 12.5px;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 0 !important;
+}
+
+.bb-csheet-memo .bb-foot-right .datatime:hover {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.bb-csheet-memo .bb-foot-right .bb-foot-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bb-csheet-memo .bb-foot-right .tag-span {
+  height: 20px;
+  padding: 0 7px;
+  font-size: 11.5px;
+}
+
+.bb-csheet-memo .bb-foot-right .bb-foot-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+/* 表情在浮层里是可用的：药丸能点、笑脸能挑，跟卡片上同一个组件 */
+.bb-csheet-memo .bb-react {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 组件容器是 1.5rem 高的定高行，浮层里字号比卡片大一点，别让它溢出来 */
+.bb-csheet-memo .bb-foot-actions emoji-reaction {
+  display: inline-flex;
+  align-items: center;
+  line-height: normal;
+}
+
+/* 提到浮层里的线程：保持单条展开时的样子 —— 下面是评论表单那张卡。
+   顶上那条虚线去掉了：原帖现在自己有框、有投影，虚线紧贴框边 14px 会变成
+   两道分隔线并排，看着像多画了一条。留白交给 padding。
+   只把左右内距换成 margin，好跟上面的原帖对齐。 */
+.bb-csheet-body > .cm-inline-thread {
+  margin: 0 0.95rem;
+  padding: 16px 0 1.15rem;
+  border-top: 0;
+}
+
+@media (max-width: 640px) {
+  .bb-csheet {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .bb-csheet-panel {
+    width: 100%;
+    max-height: 90vh;
+    max-height: 90dvh;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 0;
+  }
+
+  .bb-csheet-memo {
+    margin: 0.1rem 0.85rem 0;
+    padding: 0.7rem 0.75rem 0.55rem;
+  }
+
+  .bb-csheet-memo-body {
+    max-height: 30vh;
+  }
+
+  .bb-csheet-head {
+    padding: 0.55rem 0.7rem 0.1rem 0.85rem;
+  }
+
+  .bb-csheet-body > .cm-inline-thread {
+    margin: 0 0.85rem;
+    padding: 12px 0 calc(1.1rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-csheet-mask,
+  .bb-csheet-panel {
+    transition: none;
+  }
+}
+
 /* ======================================================================
    单条哔哔的独立页面（/m/:id）
    ====================================================================== */
@@ -1689,6 +2149,15 @@ html[data-theme="sepia"] .cm-memo-card {
 
 .cm-tip[data-place="bottom"].is-visible {
   transform: translateY(0) scale(1);
+}
+
+/* 贴在元素右边时从左侧滑进来 */
+.cm-tip[data-place="right"] {
+  transform: translateX(-2px) scale(0.96);
+}
+
+.cm-tip[data-place="right"].is-visible {
+  transform: translateX(0) scale(1);
 }
 
 @media (hover: none), (pointer: coarse) {

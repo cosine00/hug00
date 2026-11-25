@@ -2061,6 +2061,17 @@
     var rect = target.getBoundingClientRect();
     var width = el.offsetWidth;
     var height = el.offsetHeight;
+    var force = target.getAttribute('data-tip-place');
+
+    // data-tip-place="right"：贴在元素右侧、垂直居中。
+    // 评论浮层的标题药丸上面就是面板边缘、下面紧跟着原帖正文，往上往下弹都会
+    // 漂到面板外或者盖住字，只有右边（到关闭键之间）是空的。
+    if (force === 'right' && rect.right + 8 + width <= window.innerWidth - 8) {
+      el.style.left = Math.round(rect.right + 8) + 'px';
+      el.style.top = Math.round(rect.top + rect.height / 2 - height / 2) + 'px';
+      el.setAttribute('data-place', 'right');
+      return;
+    }
 
     var left = rect.left + rect.width / 2 - width / 2;
     var maxLeft = window.innerWidth - width - 8;
@@ -2069,9 +2080,13 @@
 
     var top = rect.top - height - 8;
     var place = 'top';
-    if (top < 8) {
-      top = rect.bottom + 8;
-      place = 'bottom';
+    // data-tip-place="bottom" 强制往下弹：贴着视口顶部的元素往上弹会飘到屏幕外。
+    if (top < 8 || force === 'bottom') {
+      var below = rect.bottom + 8;
+      if (below + height <= window.innerHeight - 8) {
+        top = below;
+        place = 'bottom';
+      }
     }
 
     el.style.left = Math.round(left) + 'px';

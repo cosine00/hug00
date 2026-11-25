@@ -923,3 +923,9 @@
 @media (prefers-reduced-motion: reduce) {
   .poster-review-tooltip { transition: none; }
 }
+
+/* 图片灯箱（view-image.min.js 里写死 z-index:500）要盖得住哔哔评论浮层，
+   否则在浮层里点开原帖配图，图会跑到浮层下面去。 */
+.view-image {
+  z-index: 9500 !important;
+}
