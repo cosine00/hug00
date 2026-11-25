@@ -232,6 +232,20 @@ img[src$="#border"] { border-color: var(--border); box-shadow: 5px 5px 12px var(
 .palette-trigger:hover { background: var(--accent-soft); color: var(--accent-hover); }
 .palette-trigger:focus-visible { outline: 1px dashed var(--accent); outline-offset: 3px; }
 
+/* 换色调时新配色从按钮处涨开（View Transitions API，脚本在 palette-switcher.js）。
+   浏览器默认那套交叉淡入淡出必须关掉：它会把两套配色同时摊在半透明里，
+   和下面的圆形裁切叠在一起，中段看着像褪色。关掉之后旧画面原地不动，
+   新画面只从圆里露出来。 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 新的一层压在旧的上面，圆才有「从按钮往外推」的方向感 */
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
 /* The sidebar poem doubles as an intentionally quiet font switch. */
 .masthead .tagline {
   padding: .3rem .45rem;
