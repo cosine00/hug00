@@ -1660,7 +1660,11 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
   var LEGACY_KEY = 'hux-write-draft-v2';
   var MAX_DRAFTS = 30;
   var MAX_TAGS = 8;
-  var MAX_SIDE = 1600;
+  // 与老 admin 的 r2ImageMaxSide 默认值（1920）对齐。原来这里是 1600，
+  // 缩完的图在 Retina 屏上刚好贴着 1:1 甚至不够，再被 webp 0.82 的软边一压，
+  // 就比 admin 传的明显发糊 —— 用户能看出差别，说明不是心理作用。
+  var MAX_SIDE = 1920;
+  var WEBP_QUALITY = 0.82;
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -3154,6 +3158,10 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
     if (file.size < 220 * 1024 && /^image\/(webp|jpeg)$/.test(file.type)) {
       return Promise.resolve(file);
     }
+    // GIF 过 canvas 只剩第一帧，动图会变静图。原样传，宁可大一点。
+    if (/^image\/gif$/.test(file.type)) {
+      return Promise.resolve(file);
+    }
     return loadImage(file).then(function (img) {
       var w = img.width || img.naturalWidth;
       var h = img.height || img.naturalHeight;
@@ -3164,7 +3172,7 @@ html[data-write-font="zhisong"]{--write-font:"LXGW Neo ZhiSong", "Songti SC", Si
       var ctx = canvas.getContext('2d');
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      return toBlob(canvas, 'image/webp', 0.82).then(function (blob) {
+      return toBlob(canvas, 'image/webp', WEBP_QUALITY).then(function (blob) {
         if (!blob || blob.type !== 'image/webp') return toBlob(canvas, 'image/jpeg', 0.86);
         return blob;
       });
